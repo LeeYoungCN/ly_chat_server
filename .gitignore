@@ -1,0 +1,10 @@
+buildcache
+install
+build
+.cache
+.idea
+.vs
+out
+*.pyc
+third_party
+external

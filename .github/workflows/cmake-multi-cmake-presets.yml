@@ -1,0 +1,57 @@
+# This starter workflow is for a CMake project running on multiple platforms. There is a different starter workflow if you just want a single platform.
+# See: https://github.com/actions/starter-workflows/blob/main/ci/cmake-single-platform.yml
+name: CMake on multiple CMakePresets.json
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      # Set fail-fast to false to ensure that feedback is delivered for all matrix combinations. Consider changing this to true when your workflow is stable.
+      fail-fast: false
+
+      matrix:
+        os: [ubuntu-latest, macos-15]
+        platform: [gnu, clang]
+        include:
+          - os: ubuntu-latest
+            platform: clang
+            preset: linux_clang_release
+          - os: ubuntu-latest
+            platform: gnu
+            preset: linux_gnu_release
+          - os: macos-15
+            platform: clang
+            preset: darwin_clang_release
+        exclude:
+          - os: macos-15
+            platform: gnu
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set reusable strings
+      # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
+      id: strings
+      shell: bash
+      run: |
+        echo "build-output-dir=${{ github.workspace }}/out/build" >> "$GITHUB_OUTPUT"
+        echo "build-install-dir=${{ github.workspace }}/out/install" >> "$GITHUB_OUTPUT"
+
+    - name: Configure CMake
+      working-directory: ${{ github.workspace }}
+      run: cmake --preset=${{ matrix.preset }}
+
+    - name: Build And Install
+      working-directory: ${{ github.workspace }}
+      run: cmake --build --preset=${{ matrix.preset }}_build
+
+    - name: Test
+      working-directory: ${{ github.workspace }}
+      run: ctest --preset=${{ matrix.preset }}_ctest
