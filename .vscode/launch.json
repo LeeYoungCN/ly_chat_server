@@ -21,7 +21,7 @@
             "name": "GDB: Debug Executable",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/out/build/linux_clang_debug/bin/leetcode_test",
+            "program": "${workspaceFolder}/out/build/linux_clang_debug/bin/ly_chat_test",
             "args": [],
             "cwd": "${workspaceFolder}",
             "environment": [],
