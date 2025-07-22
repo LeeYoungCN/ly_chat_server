@@ -8,7 +8,7 @@
             "name": "MSVC: Debug Executable",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/out/build/win_clang_debug/bin/leetcode_test.exe",
+            "program": "${workspaceFolder}/out/build/win_clang_msvc_debug/bin/ly_chat_test.exe",
             "args": [
                 "--gtest_filter=*"
             ],

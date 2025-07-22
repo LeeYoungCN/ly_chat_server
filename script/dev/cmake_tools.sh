@@ -68,6 +68,9 @@ cmake_preset=""
 cmake_build_target=""
 cmake_install_component=""
 cmake_configure_param_cfg=""
+# shellcheck disable=SC2034
+ARCHITECTURE="x64"
+env_param_file=""
 
 g_is_init_param=1
 
@@ -166,6 +169,10 @@ function list_cmake_configure_param() {
 
 function init_cmake_preset() {
     case ${OS} in
+    Windows)
+        cmake_preset="win_clang_msvc_debug"
+        preset_array=("win_mingw_debug" "win_mingw_release" "win_clang_msvc_debug" "win_clang_msvc_release")
+        ;;
     Linux)
         cmake_preset="linux_clang_debug"
         preset_array=("linux_gnu_debug" "linux_gnu_release" "linux_clang_debug" "linux_clang_release")
@@ -188,6 +195,70 @@ function init_cmake_preset() {
 
 function init_cmake_configure_param() {
     case "${OS}" in
+    Windows)
+        case "${cmake_preset}" in
+        win_mingw_debug)
+            cmake_toolchain_file="${TOOLCHAIN_FILE_DIR}/win_mingw.cmake"
+            cmake_generator="MinGW Makefiles"
+            cmake_build_type="Debug"
+            ;;
+        win_mingw_release)
+            cmake_toolchain_file="${TOOLCHAIN_FILE_DIR}/win_mingw.cmake"
+            cmake_generator="MinGW Makefiles"
+            cmake_build_type="Release"
+            ;;
+        win_clang_msvc_debug)
+            cmake_toolchain_file="${TOOLCHAIN_FILE_DIR}/win_clang_msvc.cmake"
+            cmake_generator="Ninja"
+            cmake_build_type="Debug"
+            ;;
+        win_clang_msvc_release)
+            cmake_toolchain_file="${TOOLCHAIN_FILE_DIR}/win_clang_msvc.cmake"
+            cmake_generator="Ninja"
+            cmake_build_type="Release"
+            ;;
+        win_clang_mingw_debug)
+            cmake_toolchain_file="${TOOLCHAIN_FILE_DIR}/win_clang_mingw.cmake"
+            cmake_generator="MinGW Makefiles"
+            cmake_build_type="Debug"
+            ;;
+        win_clang_mingw_release)
+            cmake_toolchain_file="${TOOLCHAIN_FILE_DIR}/win_clang_mingw.cmake"
+            cmake_generator="MinGW Makefiles"
+            cmake_build_type="Release"
+            ;;
+        msvc_x64_debug)
+            cmake_toolchain_file="${TOOLCHAIN_FILE_DIR}/win_msvc.cmake"
+            cmake_generator="Ninja"
+            cmake_build_type="Debug"
+            env_param_file="${SCRIPT_DIR}/load_msvc_env.sh"
+            ;;
+        msvc_x64_release)
+            cmake_toolchain_file="${TOOLCHAIN_FILE_DIR}/win_msvc.cmake"
+            cmake_generator="Ninja"
+            cmake_build_type="Release"
+            env_param_file="${SCRIPT_DIR}/load_msvc_env.sh"
+            ;;
+        msvc_x86_debug)
+            cmake_toolchain_file="${TOOLCHAIN_FILE_DIR}/win_msvc.cmake"
+            cmake_generator="Ninja"
+            cmake_build_type="Debug"
+            ARCHITECTURE="x86"
+            env_param_file="${SCRIPT_DIR}/load_msvc_env.sh"
+            ;;
+        msvc_x86_release)
+            cmake_toolchain_file="${TOOLCHAIN_FILE_DIR}/win_msvc.cmake"
+            cmake_generator="Ninja"
+            cmake_build_type="Release"
+            ARCHITECTURE="x86"
+            env_param_file="${SCRIPT_DIR}/load_msvc_env.sh"
+            ;;
+        *)
+            print_log "Preset: ${arg_preset} error!" error
+            exit 1
+            ;;
+        esac
+        ;;
     Linux)
         case "${cmake_preset}" in
         linux_gnu_debug)
@@ -242,6 +313,10 @@ function init_cmake_configure_param() {
 
     cmake_install_prefix="${INSTALL_ROOT_DIR}/${cmake_preset}"
 
+    if [ -n "${env_param_file}" ]; then
+        # shellcheck disable=SC1090
+        source "${env_param_file}"
+    fi
     g_is_init_param=0
     print_log "Init CMake configure param success." info
 }
@@ -264,6 +339,10 @@ function init_cmake_env() {
     else
         print_log "${cmake_configure_param_cfg} not exist." error
     fi
+    if [ -n "${env_param_file}" ]; then
+        # shellcheck disable=SC1090
+        source "${env_param_file}"
+    fi
 }
 
 function cmake_configure() {
@@ -278,6 +357,7 @@ function cmake_configure() {
         -DCMAKE_BUILD_TYPE="${cmake_build_type}" \
         -DCMAKE_INSTALL_PREFIX="${cmake_install_prefix}" \
         -DCMAKE_PRESET="${cmake_preset}" \
+        -DENV_PARAM_FILE="${env_param_file}" \
         -DBUILD_TESTS="ON"; then
         print_log "[${cmake_preset}] CMake configuration success." info
         cp "${cmake_binary_dir}/compile_commands.json" "${BUILDCACHE_ROOT_DIR}/compile_commands.json"

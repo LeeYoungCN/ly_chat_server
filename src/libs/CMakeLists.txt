@@ -1,6 +1,4 @@
-set(LIBS_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
-
-file(GLOB LIBS_DIR "${LIBS_SRC_DIR}/*")
+file(GLOB LIBS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/*")
 foreach(DIR ${LIBS_DIR})
     if (IS_DIRECTORY ${DIR})
         add_subdirectory(${DIR})
