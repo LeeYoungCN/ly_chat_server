@@ -1,29 +1,29 @@
 /**
- * @file constants.h
+ * @file date_time_constants.h
  * @author your name (you@domain.com)
- * @brief 公共常量
+ * @brief
  * @version 0.1
- * @date 2025-07-23
+ * @date 2025-07-27
  *
  * @copyright Copyright (c) 2025
  *
  */
+
 #pragma once
-#ifndef CONATENTS_H
-#define CONATENTS_H
+#ifndef COMMON_CONSTANTS_TIME_CONATENTS_H
+#define COMMON_CONSTANTS_TIME_CONATENTS_H
 
 #include <cstdint>
 
-#include "common/types/time_common.h"
+#include "common/types/date_time_types.h"
 
-namespace common {
-constexpr uint32_t MAX_PATH_LEN = 1024;
+namespace common::constants::date_time {
 
 constexpr int32_t TIME_COMP_START_YEAR = 1900;
 constexpr int32_t TIME_COMP_START_MONTH = 1;
 
 // 1970-01-01 00:00:00 UTC对应的时间戳（毫秒）
-constexpr common::types::TimeStamp UNIX_EPOCH_MS = 0;
+constexpr common::types::date_time::TimeStamp UNIX_EPOCH_MS = 0;
 
 // 纪元年份（Unix时间戳起始年份）
 // EPOCH（通常译为 “纪元” 或 “时间起点”）指的是时间戳计数的起始点，是用于统一时间计算的基准时间。
@@ -46,7 +46,7 @@ constexpr int64_t UNIX_EPOCH_TIMESTAMP_SEC = 0;       // 纪元时间的秒级�
 constexpr int64_t UNIX_EPOCH_TIMESTAMP_MS = 0;        // 纪元时间的毫秒级时间戳
 constexpr int64_t WINDOWS_EPOCH_TIMESTAMP_100NS = 0;  // Windows纪元的100纳秒级时间戳
 
-constexpr const char* DEFAULT_TIME_FMT = "%Y-%m-%d %H:%M:%S.%3f";
+constexpr const char* DEFAULT_TIME_FMT = "%Y-%m-%d %H:%M:%S";
 constexpr const char* MILLIS_PLACEHOLDER = "%3f";
 constexpr uint32_t MAX_TIME_STR_LEN = 256;
 
@@ -71,5 +71,13 @@ constexpr int64_t MICROS_PER_SECOND = 1000000;
  */
 constexpr int64_t MICROS_PER_MILLI = 1000;
 
-}  // namespace common
-#endif  // CONATENTS_H
+constexpr uint32_t MONTHS_PER_YEAR = 12;
+constexpr uint32_t MIN_MONTH = 1;
+constexpr uint32_t MAX_MONTH = 12;
+
+constexpr uint32_t DAYS_PER_WEEK = 7;
+constexpr uint32_t MIN_WEEK_DAY = 0;
+constexpr uint32_t MAX_WEEk_DAY = 6;
+}  // namespace common::constants::date_time
+
+#endif  // COMMON_CONSTANTS_TIME_CONATENTS_H

@@ -27,6 +27,7 @@ public:
     std::shared_ptr<Appender> getAppender(const std::string& appenderName, AppenderType type);
     void registerAppender(const std::string& appenderName, const std::shared_ptr<Appender>& appender);
     void removeAppender(const std::string& appenderName);
+
 private:
     std::unordered_map<std::string, std::shared_ptr<Appender>> m_appenderMap;
     std::mutex m_mapMutex;

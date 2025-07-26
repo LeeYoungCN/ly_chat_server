@@ -27,6 +27,7 @@ public:
     std::shared_ptr<Logger> getLogger(const std::string& loggerName = "root");
     void registerLogger(const std::string& loggerName, const std::shared_ptr<Logger>& logger);
     void removeLogger(const std::string& loggerName);
+
 private:
     std::unordered_map<std::string, std::shared_ptr<Logger>> m_loggerMap;
     std::mutex m_mapMutex;

@@ -12,9 +12,10 @@
 
 #include <filesystem>
 
-#include "common/constants.h"
+#include "common/constants/date_time_constants.h"
+#include "common/constants/filesystem_constants.h"
+#include "common/utils/date_time_utils.h"
 #include "logging/logging_types.h"
-#include "utils/time_utils.h"
 
 namespace logging {
 
@@ -30,7 +31,7 @@ void Appender::append(const logging::LogRecord& record)
 std::string Appender::defaultFormatLog(const logging::LogRecord& record)
 {
     std::stringstream logStream;
-    logStream << "[" << utils::time::TimeStamp2String(record.time, common::DEFAULT_TIME_FMT) << "] "
+    logStream << "[" << utils::date_time::FormatTimeString(record.time) << "] "
               << "[" << common::types::logLevelToStr(record.level) << "] "
               << "[" << record.threadId << "] " << "[" << std::filesystem::path(record.file).filename().string() << ":"
               << record.line << "] " << "[" << record.loggerName << "] " << record.message;

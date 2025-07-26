@@ -12,7 +12,7 @@
 #ifndef DEBUG_ASSERT_H
 #define DEBUG_ASSERT_H
 
-#include "common/debug/log.h"
+#include "common/debug/debug_log.h"
 
 #ifdef NDEBUG
 
@@ -37,12 +37,11 @@
 #endif  // COMMON_ASSERT
 
 #ifndef COMMON_ASSERT_MSG
-#define COMMON_ASSERT_MSG(condition, fmt, ...)              \
-    do {                                                    \
-        if (!(condition)) {                                 \
-            COMMON_LOG_ERR(fmt __VA_OPT__(, ) __VA_ARGS__); \
-            std::abort();                                   \
-        }                                                   \
+#define COMMON_ASSERT_MSG(condition, fmt, ...)                \
+    do {                                                      \
+        if (!(condition)) {                                   \
+            COMMON_LOG_FATAL(fmt __VA_OPT__(, ) __VA_ARGS__); \
+        }                                                     \
     } while (0)
 #endif  // COMMON_ASSERT_MSG
 #endif  // NDEBUG

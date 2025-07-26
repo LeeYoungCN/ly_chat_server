@@ -16,7 +16,7 @@
 
 #include "common/base/singleton.h"
 #include "common/types/log_level.h"
-#include "common/types/time_common.h"
+#include "common/types/date_time_types.h"
 
 /**
  * @enum LogRollingPolicy
@@ -129,7 +129,7 @@ private:
     LogRollingPolicy m_roolingPolicy{LogRollingPolicy::SIZE_AND_TIME};
     LogTimeSplitPolicy m_timeSplitPolicy{LogTimeSplitPolicy::DAILY};
     std::chrono::steady_clock::time_point m_lastFlushTime;
-    common::types::TimeComponent m_lastSplitTime;
+    common::types::date_time::TimeComponent m_lastSplitTime;
 
     std::atomic<bool> m_isRunning{false};
     std::thread m_workThread;
@@ -142,6 +142,6 @@ private:
 #define LOG_DEBUG(fmt, ...) LOG(common::types::LogLevel::DEBUG, fmt __VA_OPT__(, ) __VA_ARGS__)
 #define LOG_INFO(fmt, ...) LOG(common::types::LogLevel::INFO, fmt __VA_OPT__(, ) __VA_ARGS__)
 #define LOG_WARNING(fmt, ...) LOG(common::types::LogLevel::WARNING, fmt __VA_OPT__(, ) __VA_ARGS__)
-#define LOG_ERROR(fmt, ...) LOG(common::types::LogLevel::ERROR, fmt __VA_OPT__(, ) __VA_ARGS__)
+#define ERR(fmt, ...) LOG(common::types::LogLevel::ERROR, fmt __VA_OPT__(, ) __VA_ARGS__)
 #define LOG_EVENT(fmt, ...) LOG(common::types::LogLevel::EVENT, fmt __VA_OPT__(, ) __VA_ARGS__)
 #endif  // LOGGER_H

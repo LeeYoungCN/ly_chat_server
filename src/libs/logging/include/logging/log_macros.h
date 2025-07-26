@@ -20,7 +20,7 @@
 #define LOG_DEBUG(name, fmt, ...) LOG(common::types::LogLevel::DEBUG, fmt __VA_OPT__(, ) __VA_ARGS__)
 #define LOG_INFO(name, fmt, ...) LOG(common::types::LogLevel::INFO, fmt __VA_OPT__(, ) __VA_ARGS__)
 #define LOG_WARNING(name, fmt, ...) LOG(common::types::LogLevel::WARNING, fmt __VA_OPT__(, ) __VA_ARGS__)
-#define LOG_ERROR(name, fmt, ...) LOG(common::types::LogLevel::ERROR, fmt __VA_OPT__(, ) __VA_ARGS__)
+#define LOG_ERR(name, fmt, ...) LOG(common::types::LogLevel::ERROR, fmt __VA_OPT__(, ) __VA_ARGS__)
 #define LOG_EVENT(name, fmt, ...) LOG(common::types::LogLevel::EVENT, fmt __VA_OPT__(, ) __VA_ARGS__)
 
 #endif  // LOG_MACROS_H

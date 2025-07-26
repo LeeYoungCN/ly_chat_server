@@ -8,18 +8,12 @@
  * @copyright Copyright (c) 2025
  *
  */
-#ifndef FILESYSTEM_UTILS_H
-#define FILESYSTEM_UTILS_H
+#ifndef COMMON_UTILS_FILESYSTEM_UTILS_H
+#define COMMON_UTILS_FILESYSTEM_UTILS_H
 
 #include <string>
 
-namespace utils {
-enum class PathType {
-    Nonexistent,  // 不存在
-    File,         // 是文件
-    Directory     // 是文件夹
-};
-
+namespace utils::fs {
 /**
  * @brief 创建文件夹，如果存在，则删除。
  *
@@ -27,7 +21,7 @@ enum class PathType {
  * @return true
  * @return false
  */
-bool CreateDirectoryAndRemoveOld(const std::string& path);
+bool CreateDirAndRmOld(const std::string& path);
 
 /**
  * @brief 创建文件夹，如果文件夹存在,则不再创建。
@@ -36,7 +30,7 @@ bool CreateDirectoryAndRemoveOld(const std::string& path);
  * @return true
  * @return false
  */
-bool CreateDirectoryIfNotExist(const std::string& path);
+bool CreateDirIfNotExist(const std::string& path);
 
 /**
  * @brief 删除文件夹，并递归删除文件夹内的所有文件。
@@ -45,7 +39,7 @@ bool CreateDirectoryIfNotExist(const std::string& path);
  * @return true
  * @return false
  */
-bool RemoveDirectory(const std::string& path);
+bool RemoveDir(const std::string& path);
 
 /**
  * @brief 判断文件是否存在。
@@ -70,12 +64,12 @@ std::string RelativeToAbsolutePath(const std::string& relPath, const std::string
  */
 std::string GetProcessPath();
 
-std::string GetProcessDirectory();
+std::string GetProcessDir();
 /**
  * @brief 获取当前工作路径。
  *
  * @return std::string
  */
 std::string GetWorkingPath();
-}  // namespace utils
-#endif  // FILESYSTEM_UTILS_H
+}  // namespace utils::fs
+#endif  // COMMON_UTILS_FILESYSTEM_UTILS_H

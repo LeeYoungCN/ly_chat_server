@@ -9,7 +9,6 @@
  *
  */
 #pragma once
-#include <cstdio>
 #ifndef DEBUG_LOG_H
 #define DEBUG_LOG_H
 
@@ -72,9 +71,8 @@ void CommonDebugLog(const char* file, int line, const char* func, std::format_st
 #define COMMON_LOG_INFO(fmt, ...) \
     common::CommonDebugLog<common::types::LogLevel::INFO>(__FILE__, __LINE__, __func__, fmt __VA_OPT__(, ) __VA_ARGS__);
 
-#define COMMON_LOG_ERR(fmt, ...)                            \
-    common::CommonDebugLog<common::types::LogLevel::ERROR>( \
-        __FILE__, __LINE__, __func__, fmt __VA_OPT__(, ) __VA_ARGS__);
+#define COMMON_LOG_ERR(fmt, ...) \
+    common::CommonDebugLog<common::types::LogLevel::ERR>(__FILE__, __LINE__, __func__, fmt __VA_OPT__(, ) __VA_ARGS__);
 
 #define COMMON_LOG_FATAL(fmt, ...)                                         \
     do {                                                                   \
@@ -85,10 +83,8 @@ void CommonDebugLog(const char* file, int line, const char* func, std::format_st
 
 #define COMMON_LOG_COND(condition, fmt, ...)                             \
     do {                                                                 \
-        if ((condition)) {                                               \
+        if (!(condition)) {                                              \
             COMMON_LOG_INFO("[Success]" fmt __VA_OPT__(, ) __VA_ARGS__); \
-        } else {                                                         \
-            COMMON_LOG_ERR("[Fail]" fmt __VA_OPT__(, ) __VA_ARGS__);     \
         }                                                                \
     } while (0)
 

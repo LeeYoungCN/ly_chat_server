@@ -7,10 +7,10 @@
 #include <vector>
 
 #include "common/macros.h"
-#include "logging/appender.h"
+#include "common/utils/date_time_utils.h"
 #include "internal/console_appender.h"
+#include "logging/appender.h"
 #include "logging/logging_types.h"
-#include "utils/time_utils.h"
 
 namespace logging {
 Logger::Logger(std::string name) : m_name(std::move(name)) {};
@@ -46,7 +46,7 @@ void Logger::log(common::types::LogLevel level, const char* file, int32_t line, 
     va_end(argList);
 
     LogRecord record = {.level = level,
-                        .time = utils::time::GetCurrentTimeStamp(),
+                        .time = utils::date_time::GetCurrentTimeStamp(),
                         .file = file,
                         .line = line,
                         .func = func,

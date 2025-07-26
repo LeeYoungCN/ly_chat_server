@@ -4,14 +4,13 @@
 #include <string>
 #include <thread>
 
+#include "common/types/date_time_types.h"
 #include "common/types/log_level.h"
-#include "common/types/time_common.h"
-
 
 namespace logging {
 struct LogRecord {
     common::types::LogLevel level;
-    const common::types::TimeStamp time;
+    const common::types::date_time::TimeStamp time;
     const char* file;
     int line;
     const char* func;
