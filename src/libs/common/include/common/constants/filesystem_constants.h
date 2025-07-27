@@ -9,11 +9,11 @@
  *
  */
 #pragma once
-#ifndef COMMON_CONSTANTS_FILESYSTEM_CONATENTS_H
-#define COMMON_CONSTANTS_FILESYSTEM_CONATENTS_H
+#ifndef COMMON_CONSTANTS_FILESYSTEM_CONSTANTS_H
+#define COMMON_CONSTANTS_FILESYSTEM_CONSTANTS_H
 #include <cstdint>
 namespace common::constants::filesystem {
 constexpr uint32_t MAX_PATH_LEN = 1024;
 }  // namespace common::constants::filesystem
 
-#endif  // COMMON_CONSTANTS_FILESYSTEM_CONATENTS_H
+#endif  // COMMON_CONSTANTS_FILESYSTEM_CONSTANTS_H

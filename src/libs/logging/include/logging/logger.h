@@ -1,5 +1,5 @@
-#ifndef LOGGER_H
-#define LOGGER_H
+#ifndef LOGGING_LOGGER_H
+#define LOGGING_LOGGER_H
 
 #include <memory>
 #include <mutex>
@@ -31,4 +31,4 @@ private:
     std::mutex m_apenderMtx;
 };
 }  // namespace logging
-#endif  // LOGGER_H
+#endif  // LOGGING_LOGGER_H

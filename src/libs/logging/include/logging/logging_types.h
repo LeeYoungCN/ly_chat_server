@@ -1,5 +1,5 @@
-#ifndef LOGGING_TYPES_H
-#define LOGGING_TYPES_H
+#ifndef LOGGING_LOGGING_TYPES_H
+#define LOGGING_LOGGING_TYPES_H
 
 #include <string>
 #include <thread>
@@ -20,4 +20,4 @@ struct LogRecord {
 };
 }  // namespace logging
 
-#endif  // LOGGING_TYPES_H
+#endif  // LOGGING_LOGGING_TYPES_H

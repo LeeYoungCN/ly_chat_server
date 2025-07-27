@@ -9,8 +9,8 @@
  *
  */
 #pragma once
-#ifndef DEBUG_ASSERT_H
-#define DEBUG_ASSERT_H
+#ifndef COMMON_DEBUG_ASSERT_H
+#define COMMON_DEBUG_ASSERT_H
 
 #include "common/debug/debug_log.h"
 
@@ -45,4 +45,4 @@
     } while (0)
 #endif  // COMMON_ASSERT_MSG
 #endif  // NDEBUG
-#endif  // DEBUG_ASSERT_H
+#endif  // COMMON_DEBUG_ASSERT_H

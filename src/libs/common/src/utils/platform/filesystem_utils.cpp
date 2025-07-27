@@ -12,8 +12,7 @@
 #include "common/types/filesystem_types.h"
 #include "common/utils/filesystem_utils.h"
 
-
-namespace utils::fs {
+namespace utils::filesystem {
 
 namespace stdfs = std::filesystem;
 using namespace common::constants::filesystem;
@@ -47,14 +46,14 @@ common::types::fs::PathType CheckPathType(const std::string& path)
         return std::filesystem::is_directory(path) ? common::types::fs::PathType::Directory
                                                    : common::types::fs::PathType::File;
     } catch (const std::filesystem::filesystem_error& e) {
-        COMMON_ASSERT_MSG(false, "Check path type fail: {}", e.what());
+        COMMON_LOG_ERR("Check path type fail: {}, error code: {}", e.what(), e.code().value());
         return common::types::fs::PathType::Nonexistent;
     }
 }
 
 bool CreateDirAndRmOld(const std::string& path)
 {
-    if (utils::fs::RemoveDir(path)) {
+    if (utils::filesystem::RemoveDir(path)) {
         return false;
     }
     return stdfs::create_directories(path);
@@ -70,7 +69,7 @@ bool CreateDirIfNotExist(const std::string& path)
             try {
                 return stdfs::create_directories(path);
             } catch (const stdfs::filesystem_error& e) {
-                COMMON_ASSERT_MSG(false, "Failed to create directory: {}", e.what());
+                COMMON_LOG_ERR("Failed to create directory: {}, error code: {}", e.what(), e.code().value());
                 return false;
             }
         default:
@@ -88,7 +87,7 @@ bool RemoveDir(const std::string& path)
                 COMMON_LOG_COND((n > 0), "Remove directory {}. n = {}", path, n);
                 return n > 0;
             } catch (const stdfs::filesystem_error& e) {
-                COMMON_LOG_INFO("Failed to remove direcotry: {}", e.what());
+                COMMON_LOG_ERR("Failed to remove directory: {}, error code: {}", e.what(), e.code().value());
                 return false;
             }
             break;
@@ -128,4 +127,4 @@ std::string GetProcessDir()
     return proc.parent_path().string();
 }
 
-}  // namespace utils::fs
+}  // namespace utils::filesystem

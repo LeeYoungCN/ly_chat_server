@@ -109,7 +109,7 @@ void Logger::openNewLogFile()
 {
     backupLogFile();
     m_logFileStream.open(m_baseLogFile, std::ios::out | std::ios::trunc);
-    m_lastSplitTime = utils::date_time::GetCurrentTimeComp();
+    m_lastSplitTime = common::utils::date_time::GetCurrentTimeComponent();
     if (!m_logFileStream.is_open()) {
         ERR("Failed to open log file: %s", m_baseLogFile.c_str());
     } else {
@@ -125,7 +125,7 @@ void Logger::backupLogFile()
 
     if (utils::IsRegularFile(m_baseLogFile) &&
         (m_roolingPolicy == LogRollingPolicy::SIZE_AND_TIME || m_roolingPolicy == LogRollingPolicy::TIME)) {
-        std::string timeStamp = utils::date_time::FormatCurrTimeStr("%Y%m%d%H%M%S");
+        std::string timeStamp = common::utils::date_time::FormatCurrTimeStr("%Y%m%d%H%M%S");
         std::string backupLogFile = m_logFolder + "/" + baseFileName + "." + timeStamp + extention;
         closeLogFile();
         fs::rename(m_baseLogFile, backupLogFile);
@@ -168,7 +168,7 @@ std::string Logger::formatLog(common::types::LogLevel level, const char *fileNam
                               const std::string &message)
 {
     std::stringstream logStream;
-    logStream << "[" << utils::date_time::FormatCurrTimeStr("%Y-%m-%d %H:%M:%S") << "] "
+    logStream << "[" << common::utils::date_time::FormatCurrTimeStr("%Y-%m-%d %H:%M:%S") << "] "
               << "[" << common::types::logLevelToStr(level) << "] "
               << "[" << std::this_thread::get_id() << "] " << "[" << fs::path(fileName).filename().string() << ":"
               << line << "] " << message;
@@ -215,7 +215,7 @@ void Logger::checkAndRollLogFile()
     }
     if (!needRoll && m_timeSplitPolicy != LogTimeSplitPolicy::NONE &&
         (m_roolingPolicy == LogRollingPolicy::SIZE_AND_TIME || m_roolingPolicy == LogRollingPolicy::TIME)) {
-        auto now = utils::date_time::GetCurrentTimeComp();
+        auto now = common::utils::date_time::GetCurrentTimeComponent();
         switch (m_timeSplitPolicy) {
             case LogTimeSplitPolicy::DAILY:
                 needRoll = (now.day != m_lastSplitTime.day);

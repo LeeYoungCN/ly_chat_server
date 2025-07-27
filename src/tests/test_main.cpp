@@ -4,12 +4,12 @@
 
 int main(int argc, char *argv[])
 {
-    std::string processPath = utils::fs::GetProcessPath();
+    std::string processPath = utils::filesystem::GetProcessPath();
     COMMON_LOG_INFO("Running main() from {}", __FILE__);
     COMMON_LOG_INFO("Test runtime: {}", processPath.c_str());
-    std::string logFolder = utils::fs::RelativeToAbsolutePath("./logs", utils::fs::GetProcessDir());
+    std::string logFolder = utils::filesystem::RelativeToAbsolutePath("./logs", utils::filesystem::GetProcessDir());
     std::string logFile = logFolder + "/test.log";
-    utils::fs::RemoveDir(logFolder);
+    utils::filesystem::RemoveDir(logFolder);
 
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

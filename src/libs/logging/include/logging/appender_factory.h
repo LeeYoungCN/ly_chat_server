@@ -15,8 +15,8 @@
 #include <string>
 #include <unordered_map>
 
-#ifndef APPENDER_FACTORY_H
-#define APPENDER_FACTORY_H
+#ifndef LOGGING_APPENDER_FACTORY_H
+#define LOGGING_APPENDER_FACTORY_H
 
 #include "common/base/singleton.h"
 #include "logging.h"
@@ -33,4 +33,4 @@ private:
     std::mutex m_mapMutex;
 };
 }  // namespace logging
-#endif  // APPENDER_FACTORY_H
+#endif  // LOGGING_APPENDER_FACTORY_H

@@ -8,6 +8,8 @@
  * @copyright Copyright (c) 2025
  *
  */
+#ifndef LOGGING_FORMATTER_H
+#define LOGGING_FORMATTER_H
 #include <string>
 
 #include "logging/logging_types.h"
@@ -26,3 +28,4 @@ private:
     std::string m_pattern;
 };
 }  // namespace logging
+#endif  // LOGGING_FORMATTER_H

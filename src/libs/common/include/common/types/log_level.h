@@ -19,11 +19,11 @@ namespace common::types {
  * @brief 日志级别枚举
  */
 enum class LogLevel {
-    DEBUG,     //  调试信息
-    INFO,      // 一般信息
-    WARNNING,  // 警告信息
-    ERR,       //  错误信息
-    FATAL,     //  致命错误
+    DEBUG,     ///< 调试信息（仅开发/测试环境使用，包含详细调试数据）
+    INFO,      ///< 一般信息（正常运行时的流程性信息，如服务启动成功）
+    WARN,      ///< 警告信息（不影响主流程但需关注的异常，如配置项缺失使用默认值）
+    ERR,       ///< 错误信息（功能异常但不导致程序退出，如单次接口调用失败）
+    FATAL      ///< 致命错误（导致程序无法继续运行的严重异常，如核心资源初始化失败）
 };
 
 inline const char* logLevelToStr(LogLevel level)
@@ -33,8 +33,8 @@ inline const char* logLevelToStr(LogLevel level)
             return "DEBUG";
         case LogLevel::INFO:
             return "INFO";
-        case LogLevel::WARNNING:
-            return "WARNNING";
+        case LogLevel::WARN:
+            return "WARN";
         case LogLevel::ERR:
             return "ERROR";
         case LogLevel::FATAL:

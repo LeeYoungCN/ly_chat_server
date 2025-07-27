@@ -1,6 +1,6 @@
 {
     "logger": {
-        "level": "Debug", // DEBUG, INFO, WARNNING, ERROR
+        "level": "DEBUG", // DEBUG, INFO, WARN, ERR
         "derectory": "./logs/"
     }
 }

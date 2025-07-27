@@ -4,6 +4,8 @@
 #include <array>
 #include <cstddef>
 #include <cstdint>
+#include <cstring>
+#include <string>
 #include <string_view>
 
 #include "common/constants/date_time_constants.h"
@@ -72,39 +74,70 @@ const std::array<std::string_view, 12> MONTH_ABBR_NAMES = {
 
 }  // namespace
 
-namespace utils::date_time {
+namespace common::utils::date_time {
 
 using namespace ::common::constants::date_time;
 using namespace ::common::types::date_time;
 
-std::string_view GetMonthFullNames(uint32_t month)
+std::string_view GetMonthFullName(uint32_t month)
 {
-    return MONTH_FULL_NAMES.at(month);
+    if (month < MIN_MONTH || month > MAX_MONTH) {
+        COMMON_LOG_ERR("month out of range [{}, {}]. weekday: {}.", MIN_MONTH, MAX_MONTH, month);
+        return "";
+    }
+    return MONTH_FULL_NAMES.at(month - MIN_MONTH);
+}
+
+std::string_view GetMonthAbbrName(uint32_t month)
+{
+    if (month < MIN_MONTH || month > MAX_MONTH) {
+        COMMON_LOG_ERR("Month out of range [{}, {}]. weekday: {}.", MIN_MONTH, MAX_MONTH, month);
+        return "";
+    }
+    return MONTH_ABBR_NAMES.at(month - MIN_MONTH);
+}
+
+std::string_view GetWeekdayFullName(uint32_t weekday)
+{
+    if (weekday < MIN_WEEK_DAY || weekday > MAX_WEEK_DAY) {
+        COMMON_LOG_ERR("Weekday out of range [{}, {}]. weekday: {}.", MIN_WEEK_DAY, MAX_WEEK_DAY, weekday);
+        return "";
+    }
+    return WEEKDAY_FULL_NAMES.at(weekday);
+}
+
+std::string_view GetWeekdayAbbrName(uint32_t weekday)
+{
+    if (weekday < MIN_WEEK_DAY || weekday > MAX_WEEK_DAY) {
+        COMMON_LOG_ERR("Weekday out of range [{}, {}]. weekday: {}.", MIN_WEEK_DAY, MAX_WEEK_DAY, weekday);
+        return "";
+    }
+    return WEEKDAY_ABBR_NAMES.at(weekday);
 }
 
 std::string FormatTimeString(TimeStamp timeStamp, const std::string_view& format)
 {
-    std::string timeString;
-    timeString.reserve(MAX_TIME_STR_LEN);
-    auto len = FormatTimeBuffer(timeString.data(), timeString.capacity(), timeStamp, format);
-    COMMON_ASSERT_MSG((len > 0), "Format time str fail.");
-    timeString.resize(len);
-    return timeString;
+    auto timeComp = LocalTimeComponent(timeStamp);
+    return FormatTimeString(timeComp, format);
 }
 
 std::string FormatTimeString(const TimeComponent& timeComp, const std::string_view& format)
 {
-    std::string timeString;
-    timeString.reserve(MAX_TIME_STR_LEN);
-    auto len = FormatTimeBuffer(timeString.data(), timeString.capacity(), timeComp, format);
-    COMMON_ASSERT_MSG((len > 0), "Format time str fail.");
-    timeString.resize(len);
+    std::string timeString("", MAX_TIME_STR_LEN);
+    size_t len = FormatTimeBuffer(timeString.data(), timeString.capacity(), timeComp, format);
+
+    if (len <= 0 || len > timeString.capacity()) {
+        COMMON_LOG_ERR("Time format failed or buffer overflow. len: {}.", len);
+        len = 0;
+    }
+    timeString.resize(len);  // resize仅修改字符串的size属性，不拷贝数据
+
     return timeString;
 }
 
 size_t FormatTimeBuffer(char* buffer, size_t bufferSize, TimeStamp timeStamp, const std::string_view& format)
 {
-    auto timeComp = TimeStamp2Component(timeStamp);
+    auto timeComp = LocalTimeComponent(timeStamp);
     return FormatTimeBuffer(buffer, bufferSize, timeComp, format);
 }
 
@@ -114,117 +147,115 @@ size_t FormatTimeBuffer(char* buffer, size_t bufferSize, const TimeComponent& ti
         COMMON_LOG_ERR("Invalid param!");
         return 0;
     }
-    size_t formatIndex = 0;
-    size_t bufferIndex = 0;
+    size_t formatIdx = 0;
+    size_t bufferIdx = 0;
 
     //  lambda函数：将数字按指定长度写入缓冲区（自动补前导零）
     //  @param number    待写入的数字（如月份1 → 01）
     //  @param numberLen 数字固定长度（如2位、3位）
     //  @return 成功返回true；缓冲区不足返回false
-    auto insertNumber = [&](uint32_t number, size_t numberLen) -> bool {
+    auto insertDateTimeNumber = [&](uint32_t number, size_t numberLen) -> bool {
         uint32_t tmp = number;
-        if (bufferIndex + numberLen >= bufferSize) {
+        if (bufferIdx + numberLen >= bufferSize) {
             COMMON_LOG_ERR("Failed to insert number: {}", number);
             return false;
         }
 
-        size_t currIdx = bufferIndex + numberLen;
-        while (currIdx > bufferIndex) {
+        size_t currIdx = bufferIdx + numberLen;
+        while (currIdx > bufferIdx) {
             buffer[currIdx - 1] = static_cast<char>(tmp % 10 + '0');
             tmp = tmp / 10;
             currIdx--;
         }
-        bufferIndex += numberLen;
+        bufferIdx += numberLen;
         return true;
     };
 
-    auto insertString = [&](const std::string_view& string) -> bool {
-        if (bufferIndex + string.length() >= bufferSize) {
-            COMMON_LOG_ERR("Failed to insert string: {}", string);
+    auto insertString = [&](const std::string_view& name) -> bool {
+        std::string_view insertName = name.empty() ? "?" : name;
+
+        if (bufferIdx + insertName.length() >= bufferSize) {
+            COMMON_LOG_ERR("Failed to insert string: {}", insertName);
             return false;
         }
-        for (const auto& c : string) {
-            buffer[bufferIndex++] = c;
-        }
+
+        std::memcpy(buffer + bufferIdx, insertName.data(), insertName.size());
+        bufferIdx += insertName.size();
         return true;
     };
 
-    for (; bufferIndex < bufferSize && formatIndex < format.length(); formatIndex++) {
-        if (format[formatIndex] != '%') {
-            buffer[bufferIndex++] = format[formatIndex];
+    for (; bufferIdx < bufferSize && formatIdx < format.length(); formatIdx++) {
+        if (format[formatIdx] != '%') {
+            buffer[bufferIdx++] = format[formatIdx];
             continue;
         }
-        formatIndex++;
-        if (formatIndex >= format.length()) {
-            buffer[bufferIndex++] = '%';
+        formatIdx++;
+        if (formatIdx >= format.length()) {
+            buffer[bufferIdx++] = '%';
             break;
         }
-        bool formatResult = true;
-        switch (format[formatIndex]) {
+        bool success = true;
+        switch (format[formatIdx]) {
             case 'Y':
-                formatResult = insertNumber(timeComp.year, 4);
+                success = insertDateTimeNumber(timeComp.year, 4);
                 break;
             case 'y':
-                formatResult = insertNumber(timeComp.year, 2);
+                success = insertDateTimeNumber(timeComp.year, 2);
                 break;
             case 'm':
-                formatResult = insertNumber(timeComp.month, 2);
+                success = insertDateTimeNumber(timeComp.month, 2);
                 break;
             case 'd':
-                formatResult = insertNumber(timeComp.day, 2);
+                success = insertDateTimeNumber(timeComp.day, 2);
                 break;
             case 'H':
-                formatResult = insertNumber(timeComp.hour, 2);
+                success = insertDateTimeNumber(timeComp.hour, 2);
                 break;
             case 'M':
-                formatResult = insertNumber(timeComp.minute, 2);
+                success = insertDateTimeNumber(timeComp.minute, 2);
                 break;
             case 'S':
-                formatResult = insertNumber(timeComp.second, 2);
+                success = insertDateTimeNumber(timeComp.second, 2);
                 break;
             case 'B':  // 完整月份名称
-                formatResult = insertString(MONTH_FULL_NAMES.at(timeComp.month - 1));
+                success = insertString(GetMonthFullName(timeComp.month));
                 break;
             case 'b':  // 缩写月份名称
             case 'h':  // 缩写月份名称
-                formatResult = insertString(MONTH_ABBR_NAMES.at(timeComp.month - 1));
+                success = insertString(GetMonthAbbrName(timeComp.month));
                 break;
             case 'A':  // 完整星期名称
-                formatResult = insertString(WEEKDAY_FULL_NAMES.at(timeComp.wday));
+                success = insertString(GetWeekdayFullName(timeComp.wday));
                 break;
             case 'a':  // 缩写星期名称
-                formatResult = insertString(WEEKDAY_ABBR_NAMES.at(timeComp.wday));
+                success = insertString(GetWeekdayAbbrName(timeComp.wday));
                 break;
             case '%':
-                buffer[bufferIndex++] = '%';
+                buffer[bufferIdx++] = '%';
                 break;
             case '3':
-                if (formatIndex + 1 < format.length() && format[formatIndex + 1] == 'f') {
-                    formatIndex++;
-                    formatResult = insertNumber(timeComp.millis, 3);
-                    break;
-                }
-                [[fallthrough]];  // C++17特性，显式表示需要继续执行default
-            default:
-                if (bufferIndex + 2 < bufferSize) {
-                    buffer[bufferIndex++] = '%';
-                    buffer[bufferIndex++] = format[formatIndex];
+                if (formatIdx + 1 < format.length() && format[formatIdx + 1] == 'f') {
+                    formatIdx++;
+                    success = insertDateTimeNumber(timeComp.millis, 3);
                 } else {
-                    formatResult = false;
+                    success = insertString(std::string_view(format.data() + formatIdx - 1, 1));
                 }
                 break;
+            default:
+                success = insertString(std::string_view(format.data() + formatIdx - 1, 1));
+                break;
         }
-        if (!formatResult) {
+        if (!success) {
             break;
         }
     }
-    if (formatIndex < format.length() || bufferIndex >= bufferSize) {
-        COMMON_LOG_ERR("Format fail! fmtIdx: {}, bufIdx: {}, bufSize: {}", formatIndex, bufferIndex, bufferSize);
-        bufferIndex = 0;
+    if (formatIdx < format.length() || bufferIdx >= bufferSize) {
+        COMMON_LOG_ERR("Incomplete format processing (remaining: {})", std::string_view(format.data() + formatIdx));
+        bufferIdx = 0;
     }
 
-    buffer[bufferIndex] = '\0';
+    buffer[bufferIdx] = '\0';
 
-    return bufferIndex;
+    return bufferIdx;
 }
-}  // namespace utils::date_time
+}  // namespace common::utils::date_time

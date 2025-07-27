@@ -8,8 +8,8 @@
  * @copyright Copyright (c) 2025
  *
  */
-#ifndef LOG_MACROS_H
-#define LOG_MACROS_H
+#ifndef LOGGING_LOG_MACROS_H
+#define LOGGING_LOG_MACROS_H
 #include "common/macros.h"
 
 #ifndef LOGGER
@@ -23,4 +23,4 @@
 #define LOG_ERR(name, fmt, ...) LOG(common::types::LogLevel::ERROR, fmt __VA_OPT__(, ) __VA_ARGS__)
 #define LOG_EVENT(name, fmt, ...) LOG(common::types::LogLevel::EVENT, fmt __VA_OPT__(, ) __VA_ARGS__)
 
-#endif  // LOG_MACROS_H
+#endif  // LOGGING_LOG_MACROS_H

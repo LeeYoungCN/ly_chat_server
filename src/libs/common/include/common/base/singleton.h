@@ -1,5 +1,5 @@
-#ifndef SINGLETON_H
-#define SINGLETON_H
+#ifndef COMMON_BASE_SINGLETON_H
+#define COMMON_BASE_SINGLETON_H
 
 namespace common::base {
 template <typename T>
@@ -19,4 +19,4 @@ protected:
     virtual ~SingletonBase() = default;
 };
 }  // namespace common::base
-#endif  // SINGLETON_H
+#endif  // COMMON_BASE_SINGLETON_H

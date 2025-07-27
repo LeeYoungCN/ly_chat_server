@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef COMMON_CONSTANTS_TIME_CONATENTS_H
-#define COMMON_CONSTANTS_TIME_CONATENTS_H
+#ifndef COMMON_CONSTANTS_DATE_TIME_CONSTANTS_H
+#define COMMON_CONSTANTS_DATE_TIME_CONSTANTS_H
 
 #include <cstdint>
 
@@ -77,7 +77,7 @@ constexpr uint32_t MAX_MONTH = 12;
 
 constexpr uint32_t DAYS_PER_WEEK = 7;
 constexpr uint32_t MIN_WEEK_DAY = 0;
-constexpr uint32_t MAX_WEEk_DAY = 6;
+constexpr uint32_t MAX_WEEK_DAY = 6;
 }  // namespace common::constants::date_time
 
-#endif  // COMMON_CONSTANTS_TIME_CONATENTS_H
+#endif  // COMMON_CONSTANTS_DATE_TIME_CONSTANTS_H

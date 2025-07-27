@@ -8,8 +8,8 @@
  * @copyright Copyright (c) 2025
  *
  */
-#ifndef APPENDER_H
-#define APPENDER_H
+#ifndef LOGGING_APPENDER_H
+#define LOGGING_APPENDER_H
 
 #include <mutex>
 #include <string>
@@ -44,4 +44,4 @@ protected:
     std::string defaultFormatLog(const logging::LogRecord& record);
 };
 }  // namespace logging
-#endif  // APPENDER_H
+#endif  // LOGGING_APPENDER_H

@@ -31,7 +31,7 @@ void Appender::append(const logging::LogRecord& record)
 std::string Appender::defaultFormatLog(const logging::LogRecord& record)
 {
     std::stringstream logStream;
-    logStream << "[" << utils::date_time::FormatTimeString(record.time) << "] "
+    logStream << "[" << common::utils::date_time::FormatTimeString(record.time) << "] "
               << "[" << common::types::logLevelToStr(record.level) << "] "
               << "[" << record.threadId << "] " << "[" << std::filesystem::path(record.file).filename().string() << ":"
               << record.line << "] " << "[" << record.loggerName << "] " << record.message;

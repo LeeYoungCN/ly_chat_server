@@ -9,8 +9,8 @@
  *
  */
 #pragma once
-#ifndef DEBUG_LOG_H
-#define DEBUG_LOG_H
+#ifndef COMMON_DEBUG_DEBUG_LOG_H
+#define COMMON_DEBUG_DEBUG_LOG_H
 
 #include <chrono>
 #include <filesystem>
@@ -58,7 +58,33 @@ void CommonDebugLog(const char* file, int line, const char* func, std::format_st
 }  // namespace common
 
 #ifdef NDEBUG
+   // Release模式：空操作，显式消费所有参数避免警告
+#define COMMON_LOG(level, fmt, ...)             \
+    do {                                        \
+        (void)#level;       /* 处理level参数 */  \
+        (void)fmt;          /* 单独处理格式串 */ \
+        (void)(##__VA_ARGS__);/* 处理可变参数 */   \
+    } while (0)
+#else
+   // Debug模式：实际日志输出，支持所有级别
+#define COMMON_LOG(level, fmt, ...)                                   \
+    do {                                                              \
+        /* 传递级别、位置信息和日志内容 */                            \
+        common::CommonDebugLog<common::types::LogLevel::level>(       \
+            __FILE__,                      /* 文件名 */               \
+            __LINE__,                      /* 行号 */                 \
+            __func__,                      /* 函数名 */               \
+            fmt __VA_OPT__(, ) __VA_ARGS__ /* 格式串+参数（C++17） */ \
+        );                                                            \
+    } while (0)
+#endif
+
+
+#ifdef NDEBUG
+
 #define COMMON_LOG_INFO(fmt, ...) (static_cast<void>(0))
+
+#define COMMON_LOG_WARN(fmt, ...) (static_cast<void>(0))
 
 #define COMMON_LOG_ERR(fmt, ...) (static_cast<void>(0))
 
@@ -70,6 +96,9 @@ void CommonDebugLog(const char* file, int line, const char* func, std::format_st
 
 #define COMMON_LOG_INFO(fmt, ...) \
     common::CommonDebugLog<common::types::LogLevel::INFO>(__FILE__, __LINE__, __func__, fmt __VA_OPT__(, ) __VA_ARGS__);
+
+#define COMMON_LOG_WARN(fmt, ...) \
+    common::CommonDebugLog<common::types::LogLevel::WARN>(__FILE__, __LINE__, __func__, fmt __VA_OPT__(, ) __VA_ARGS__);
 
 #define COMMON_LOG_ERR(fmt, ...) \
     common::CommonDebugLog<common::types::LogLevel::ERR>(__FILE__, __LINE__, __func__, fmt __VA_OPT__(, ) __VA_ARGS__);
@@ -89,4 +118,4 @@ void CommonDebugLog(const char* file, int line, const char* func, std::format_st
     } while (0)
 
 #endif  // NDEBUG
-#endif  // DEBUG_LOG_H
+#endif  // COMMON_DEBUG_DEBUG_LOG_H

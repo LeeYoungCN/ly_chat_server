@@ -9,11 +9,11 @@
  *
  */
 #pragma once
-#ifndef MACROS_H
-#define MACROS_H
+#ifndef COMMON_MACROS_H
+#define COMMON_MACROS_H
 
 #ifndef INST
 #define INST(CLASS_NAME) CLASS_NAME::getInstance()
 #endif  // INST
 
-#endif  // MACROS_H
+#endif  // COMMON_MACROS_H

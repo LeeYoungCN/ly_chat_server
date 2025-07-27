@@ -16,7 +16,7 @@ if (MSVC)
     set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /MD")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MD")
-    add_compile_options(/permissive-  /Zc:preprocessor)
+    add_compile_options(/permissive- /utf-8 /Zc:preprocessor)
 endif()
 
 if (MINGW OR CMAKE_COMPILER_IS_GNUCXX OR
