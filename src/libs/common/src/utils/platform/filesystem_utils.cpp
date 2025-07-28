@@ -7,7 +7,6 @@
 #include <string>
 
 #include "common/constants/filesystem_constants.h"
-#include "common/debug/assert.h"
 #include "common/debug/debug_log.h"
 #include "common/types/filesystem_types.h"
 #include "common/utils/filesystem_utils.h"
@@ -84,7 +83,7 @@ bool RemoveDir(const std::string& path)
         case common::types::fs::PathType::Directory:
             try {
                 auto n = stdfs::remove_all(path);
-                COMMON_LOG_COND((n > 0), "Remove directory {}. n = {}", path, n);
+                COMMON_LOG_COND((n > 0), "Remove directory %s. n = %u", path.c_str(), n);
                 return n > 0;
             } catch (const stdfs::filesystem_error& e) {
                 COMMON_LOG_ERR("Failed to remove directory: {}, error code: {}", e.what(), e.code().value());
@@ -92,11 +91,11 @@ bool RemoveDir(const std::string& path)
             }
             break;
         case common::types::fs::PathType::File:
-            COMMON_LOG_FATAL("Failed to remove directory. {} is file.", path);
+            COMMON_LOG_FATAL("Failed to remove directory. %s is file.", path.c_str());
             return false;
             break;
         default:
-            COMMON_LOG_INFO("Directory not exist. [{}]", path);
+            COMMON_LOG_INFO("Directory not exist. [%s]", path.c_str());
             return true;
             break;
     }

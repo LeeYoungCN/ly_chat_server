@@ -15,7 +15,7 @@
 namespace logging {
 Logger::Logger(std::string name) : m_name(std::move(name)) {};
 
-Logger::Logger(std::string name, common::types::LogLevel level) : m_name(std::move(name)), m_logLevel(level) {};
+Logger::Logger(std::string name, common::types::logging::LogLevel level) : m_name(std::move(name)), m_logLevel(level) {};
 
 const std::string& Logger::getLoggerName()
 {
@@ -28,12 +28,12 @@ void Logger::addAppder(const std::shared_ptr<Appender>& apender)
     m_appenders.emplace_back(apender);
 }
 
-void Logger::setLogLevel(common::types::LogLevel level)
+void Logger::setLogLevel(common::types::logging::LogLevel level)
 {
     m_logLevel = level;
 }
 
-void Logger::log(common::types::LogLevel level, const char* file, int32_t line, const char* func, const char* fmt, ...)
+void Logger::log(common::types::logging::LogLevel level, const char* file, int32_t line, const char* func, const char* fmt, ...)
 {
     if (level < m_logLevel) {
         return;

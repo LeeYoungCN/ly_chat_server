@@ -15,7 +15,7 @@
 #include <thread>
 
 #include "common/base/singleton.h"
-#include "common/types/log_level.h"
+#include "common/types/logging_types.h"
 #include "common/types/date_time_types.h"
 
 /**
@@ -51,7 +51,7 @@ enum class LogTarget {
 
 struct LoggerInitParams {
     const std::string baseFileName;
-    common::types::LogLevel logLevel = common::types::LogLevel::INFO;
+    common::types::logging::LogLevel logLevel = common::types::logging::LogLevel::INFO;
     uint32_t maxBufferSize = 1024;
     uint32_t flushIntervalSec = 1;
     uint32_t maxFileSize = 1024 * 1024;
@@ -90,7 +90,7 @@ public:
      * @brief 设置日志级别
      * @param level 日志级别
      */
-    void setLogLevel(common::types::LogLevel level);
+    void setLogLevel(common::types::logging::LogLevel level);
     void setLogTarget(LogTarget target);
     /**
      * @brief 记录日志,如果日志模块未运行, 则直接打印在屏幕上。
@@ -101,7 +101,7 @@ public:
      * @param fmt 日志内容格式
      * @param ... 要打印的内容
      */
-    void log(common::types::LogLevel level, const char *fileName, uint32_t line, const char *fmt, ...);
+    void log(common::types::logging::LogLevel level, const char *fileName, uint32_t line, const char *fmt, ...);
 
 private:
     void openNewLogFile();
@@ -109,17 +109,17 @@ private:
     void backupLogFile();
     void checkAndRollLogFile();
     void logWorkerThreader();
-    void printLog(common::types::LogLevel level, const std::string &logStr);
+    void printLog(common::types::logging::LogLevel level, const std::string &logStr);
     void flushLog();
     void shutdown();
-    std::string formatLog(common::types::LogLevel level, const char *fileName, uint32_t line,
+    std::string formatLog(common::types::logging::LogLevel level, const char *fileName, uint32_t line,
                           const std::string &message);
 
 private:
     std::string m_baseLogFile;
     std::string m_logFolder;
     std::ofstream m_logFileStream{};
-    common::types::LogLevel m_logLevel{common::types::LogLevel::INFO};
+    common::types::logging::LogLevel m_logLevel{common::types::logging::LogLevel::INFO};
 
     uint32_t m_maxBufferSize{1024};
     uint32_t m_flushIntervalSec{1};
@@ -139,9 +139,9 @@ private:
 };
 
 #define LOG(level, fmt, ...) INST(Logger).log(level, __FILE__, __LINE__, fmt __VA_OPT__(, ) __VA_ARGS__)
-#define LOG_DEBUG(fmt, ...) LOG(common::types::LogLevel::DEBUG, fmt __VA_OPT__(, ) __VA_ARGS__)
-#define LOG_INFO(fmt, ...) LOG(common::types::LogLevel::INFO, fmt __VA_OPT__(, ) __VA_ARGS__)
-#define LOG_WARNING(fmt, ...) LOG(common::types::LogLevel::WARNING, fmt __VA_OPT__(, ) __VA_ARGS__)
-#define ERR(fmt, ...) LOG(common::types::LogLevel::ERROR, fmt __VA_OPT__(, ) __VA_ARGS__)
-#define LOG_EVENT(fmt, ...) LOG(common::types::LogLevel::EVENT, fmt __VA_OPT__(, ) __VA_ARGS__)
+#define LOG_DEBUG(fmt, ...) LOG(common::types::logging::LogLevel::DEBUG, fmt __VA_OPT__(, ) __VA_ARGS__)
+#define LOG_INFO(fmt, ...) LOG(common::types::logging::LogLevel::INFO, fmt __VA_OPT__(, ) __VA_ARGS__)
+#define LOG_WARNING(fmt, ...) LOG(common::types::logging::LogLevel::WARNING, fmt __VA_OPT__(, ) __VA_ARGS__)
+#define ERR(fmt, ...) LOG(common::types::logging::LogLevel::ERROR, fmt __VA_OPT__(, ) __VA_ARGS__)
+#define LOG_EVENT(fmt, ...) LOG(common::types::logging::LogLevel::EVENT, fmt __VA_OPT__(, ) __VA_ARGS__)
 #endif  // LOGGER_H

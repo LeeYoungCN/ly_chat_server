@@ -55,7 +55,7 @@ void Logger::init(const LoggerInitParams &params)
     LOG_INFO("Logger initialized: %s", m_baseLogFile.c_str());
 }
 
-void Logger::setLogLevel(common::types::LogLevel level)
+void Logger::setLogLevel(common::types::logging::LogLevel level)
 {
     m_logLevel = level;
 }
@@ -65,7 +65,7 @@ void Logger::setLogTarget(LogTarget target)
     m_logTargt = target;
 }
 
-void Logger::log(common::types::LogLevel level, const char *fileName, uint32_t line, const char *fmt, ...)
+void Logger::log(common::types::logging::LogLevel level, const char *fileName, uint32_t line, const char *fmt, ...)
 {
     if (!m_isRunning && m_logTargt != LogTarget::CONSOLE && m_logTargt != LogTarget::BOTH) {
         return;
@@ -164,21 +164,21 @@ void Logger::shutdown()
     closeLogFile();
 }
 
-std::string Logger::formatLog(common::types::LogLevel level, const char *fileName, uint32_t line,
+std::string Logger::formatLog(common::types::logging::LogLevel level, const char *fileName, uint32_t line,
                               const std::string &message)
 {
     std::stringstream logStream;
     logStream << "[" << common::utils::date_time::FormatCurrTimeStr("%Y-%m-%d %H:%M:%S") << "] "
-              << "[" << common::types::logLevelToStr(level) << "] "
+              << "[" << common::types::logging::logLevelToStr(level) << "] "
               << "[" << std::this_thread::get_id() << "] " << "[" << fs::path(fileName).filename().string() << ":"
               << line << "] " << message;
     return logStream.str();
 }
 
-void Logger::printLog(common::types::LogLevel level, const std::string &logStr)
+void Logger::printLog(common::types::logging::LogLevel level, const std::string &logStr)
 {
     if (m_logTargt == LogTarget::BOTH || m_logTargt == LogTarget::CONSOLE) {
-        if (level == common::types::LogLevel::ERROR || level == common::types::LogLevel::FATAL) {
+        if (level == common::types::logging::LogLevel::ERROR || level == common::types::logging::LogLevel::FATAL) {
             std::cerr << "Consol: " << logStr << std::endl;
         } else {
             std::cout << "Consol: " << logStr << std::endl;

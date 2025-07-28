@@ -17,10 +17,10 @@
 #endif  // LOGGER
 
 #define LOG(name, level, fmt, ...) LOGGER(name)->log(level, __FILE__, __LINE__, fmt __VA_OPT__(, ) __VA_ARGS__)
-#define LOG_DEBUG(name, fmt, ...) LOG(common::types::LogLevel::DEBUG, fmt __VA_OPT__(, ) __VA_ARGS__)
-#define LOG_INFO(name, fmt, ...) LOG(common::types::LogLevel::INFO, fmt __VA_OPT__(, ) __VA_ARGS__)
-#define LOG_WARNING(name, fmt, ...) LOG(common::types::LogLevel::WARNING, fmt __VA_OPT__(, ) __VA_ARGS__)
-#define LOG_ERR(name, fmt, ...) LOG(common::types::LogLevel::ERROR, fmt __VA_OPT__(, ) __VA_ARGS__)
-#define LOG_EVENT(name, fmt, ...) LOG(common::types::LogLevel::EVENT, fmt __VA_OPT__(, ) __VA_ARGS__)
+#define LOG_DEBUG(name, fmt, ...) LOG(common::types::logging::LogLevel::DEBUG, fmt __VA_OPT__(, ) __VA_ARGS__)
+#define LOG_INFO(name, fmt, ...) LOG(common::types::logging::LogLevel::INFO, fmt __VA_OPT__(, ) __VA_ARGS__)
+#define LOG_WARNING(name, fmt, ...) LOG(common::types::logging::LogLevel::WARNING, fmt __VA_OPT__(, ) __VA_ARGS__)
+#define LOG_ERR(name, fmt, ...) LOG(common::types::logging::LogLevel::ERROR, fmt __VA_OPT__(, ) __VA_ARGS__)
+#define LOG_EVENT(name, fmt, ...) LOG(common::types::logging::LogLevel::EVENT, fmt __VA_OPT__(, ) __VA_ARGS__)
 
 #endif  // LOGGING_LOG_MACROS_H

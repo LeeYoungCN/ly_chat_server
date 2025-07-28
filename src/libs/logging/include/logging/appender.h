@@ -1,6 +1,6 @@
 /**
  * @file appender_base.h
- * @author your name (you@domain.com)
+ * @author LiYang
  * @brief
  * @version 0.1
  * @date 2025-07-23
@@ -14,7 +14,7 @@
 #include <mutex>
 #include <string>
 
-#include "common/types/log_level.h"
+#include "common/types/logging_types.h"
 #include "logging/logging_types.h"
 
 namespace logging {
@@ -34,7 +34,7 @@ protected:
 protected:
     std::mutex m_appendMtx;
     std::string m_name = "Appender";
-    common::types::LogLevel m_filterLevel = common::types::LogLevel::INFO;
+    common::types::logging::LogLevel m_filterLevel = common::types::logging::LogLevel::INFO;
     /**
      * @brief 默认log序列化。
      *
