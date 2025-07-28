@@ -563,6 +563,15 @@
             ]
         },
         {
+            "name": "win_mingw_release_ctest",
+            "displayName": "MinGW Release Ctest",
+            "description": "Test the MinGW Release target.",
+            "configurePreset": "win_mingw_release",
+            "inherits": [
+                "windows_ctest_base"
+            ]
+        },
+        {
             "name": "linux_ctest_base",
             "hidden": true,
             "condition": {
