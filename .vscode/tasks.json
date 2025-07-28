@@ -78,6 +78,16 @@
             "command": "./format_all.sh*",
             "args": [],
             "problemMatcher": []
+        },
+        {
+            "label": "git push -f",
+            "detail": "推送代码",
+            "options": {
+                "cwd": "${workspaceFolder}/script/dev"
+            },
+            "command": "./git_push.sh*",
+            "args": [],
+            "problemMatcher": []
         }
     ]
 }
