@@ -79,7 +79,7 @@ jobs:
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4  # 升级到v4版本
       with:
-        name: ${{ matrix.os }}-${{ matrix.platform }}-build
+        name: ${{ matrix.prese }}-build
         path: ${{ steps.strings.outputs.build-install-dir }}
         # v4版本新增的可选配置（根据需要添加）
         if-no-files-found: warn  # 无文件时警告而非失败
