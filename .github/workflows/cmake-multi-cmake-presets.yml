@@ -17,9 +17,15 @@ jobs:
       fail-fast: false
 
       matrix:
-        os: [ubuntu-latest, macos-15]
-        platform: [gnu, clang]
+        os: [ubuntu-latest, windows-latest, macos-15]
+        platform: [gnu, clang, msvc]
         include:
+          - os: windows-latest
+            platform: msvc
+            preset: win_clang_msvc_release
+          - os: windows-latest
+            platform: gnu
+            preset: win_clang_mingw_release
           - os: ubuntu-latest
             platform: clang
             preset: linux_clang_release
@@ -30,6 +36,12 @@ jobs:
             platform: clang
             preset: darwin_clang_release
         exclude:
+          - os: windows-latest
+            platform: clang
+          - os: ubuntu-latest
+            platform: msvc
+          - os: macos-15
+            platform: msvc
           - os: macos-15
             platform: gnu
 
