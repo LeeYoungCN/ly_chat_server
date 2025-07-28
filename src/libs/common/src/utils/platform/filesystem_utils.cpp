@@ -2,9 +2,11 @@
 
 #ifdef _WIN32
 #include <windows.h>
-#else
-#include <unistd.h>
-#endif  // _WIN32
+#elif defined(__linux__)
+#include <unistd.h>  // Linux的readlink函数
+#elif defined(__APPLE__)
+#include <mach-o/dyld.h>  // macOS的_NSGetExecutablePath
+#endif
 #include <filesystem>
 #include <string>
 
@@ -27,14 +29,21 @@ std::string GetProcessPath()
         COMMON_LOG_ERR("[WIN32]Failed to get process path, length: {}", length);
         length = 0;
     }
-#else
+#elif defined(__linux__)
     auto length = readlink("/proc/self/exe", path, MAX_PATH_LEN - 1);
     if (length == -1) {
         COMMON_LOG_ERR("[Linux]Failed to get process path.");
         length = 0;
     }
-#endif  // _WIN32
     path[length] = '\0';
+#elif defined(__APPLE__)
+    uint32_t size = sizeof(path);
+    if (_NSGetExecutablePath(path, &size) != 0) {
+        COMMON_LOG_ERR("[Macos]Failed to get process path.");
+    }
+#else
+#error "Unsupport system."
+#endif
     return path;
 }
 
@@ -47,7 +56,7 @@ common::types::fs::PathType CheckPathType(const std::string& path)
         return std::filesystem::is_directory(path) ? common::types::fs::PathType::Directory
                                                    : common::types::fs::PathType::File;
     } catch (const std::filesystem::filesystem_error& e) {
-        COMMON_LOG_ERR("Check path type fail: {}, error code: {}", e.what(), e.code().value());
+        COMMON_LOG_ERR("Check path type fail: %s, error code: %d", e.what(), e.code().value());
         return common::types::fs::PathType::Nonexistent;
     }
 }
@@ -70,7 +79,7 @@ bool CreateDirIfNotExist(const std::string& path)
             try {
                 return stdfs::create_directories(path);
             } catch (const stdfs::filesystem_error& e) {
-                COMMON_LOG_ERR("Failed to create directory: {}, error code: {}", e.what(), e.code().value());
+                COMMON_LOG_ERR("Failed to create directory: %s, error code: %d", e.what(), e.code().value());
                 return false;
             }
         default:
@@ -88,7 +97,7 @@ bool RemoveDir(const std::string& path)
                 COMMON_LOG_COND((n > 0), "Remove directory %s. n = %u", path.c_str(), n);
                 return n > 0;
             } catch (const stdfs::filesystem_error& e) {
-                COMMON_LOG_ERR("Failed to remove directory: {}, error code: {}", e.what(), e.code().value());
+                COMMON_LOG_ERR("Failed to remove directory: %s, error code: %d", e.what(), e.code().value());
                 return false;
             }
             break;
@@ -107,6 +116,7 @@ bool IsRegularFile(const std::string& file)
 {
     return stdfs::exists(file) && stdfs::is_regular_file(file);
 }
+
 std::string RelativeToAbsolutePath(const std::string& relPath, const std::string& basePath)
 {
     try {

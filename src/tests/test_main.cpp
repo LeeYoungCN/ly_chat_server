@@ -5,8 +5,8 @@
 int main(int argc, char *argv[])
 {
     std::string processPath = utils::filesystem::GetProcessPath();
-    COMMON_LOG_INFO("Running main() from {}", __FILE__);
-    COMMON_LOG_INFO("Test runtime: {}", processPath.c_str());
+    COMMON_LOG_INFO("Running main() from %s", __FILE__);
+    COMMON_LOG_INFO("Test runtime: %s", processPath.c_str());
     std::string logFolder = utils::filesystem::RelativeToAbsolutePath("./logs", utils::filesystem::GetProcessDir());
     std::string logFile = logFolder + "/test.log";
     utils::filesystem::RemoveDir(logFolder);

@@ -2,6 +2,7 @@
 #include <ctime>
 #include <string_view>
 #include <tuple>
+#include <vector>
 
 #include "common/constants/date_time_constants.h"
 #include "common/types/date_time_types.h"
@@ -17,6 +18,12 @@ using namespace common::types::date_time;
 using namespace common::utils::date_time;
 
 namespace test::test_utils::date_time_test {
+
+std::vector<std::string_view> MONTH_TEST_FORMAT = {
+    "Y-%y-%m-%d-%H:%M %B", "Y-%y-%m-%d-%H:%M %b", "Y-%y-%m-%d-%H:%M %h", "Y-%y-%m-%d-%H:%M %B %b %h"};
+
+std::vector<std::string_view> WEEKDAY_TEST_FORMAT = {
+    "Y-%y-%m-%d-%H:%M %A", "Y-%y-%m-%d-%H:%M %a", "Y-%y-%m-%d-%H:%M %A %a"};
 
 class TestFormatTimeBufferInvalid : public ::testing::TestWithParam<TestBufferParam> {
 protected:
@@ -48,20 +55,18 @@ INSTANTIATE_TEST_SUITE_P(LENGTH, TestFormatTimeBufferInvalid,
                          testing::Combine(testing::Values("%Y-%y-%m-%d-%H:%M:%S-%A-%a-%B-%b-%h", "111"),
                                           testing::Range(1U, 50U), testing::Values(2), testing::Values(2)));
 
-#ifndef _WIN32
-INSTANTIATE_TEST_SUITE_P(LINUX_MONTH, TestFormatTimeBufferInvalid,
-                         testing::Combine(testing::Values("Y-%y-%m-%d-%H:%M %B", "Y-%y-%m-%d-%H:%M %b",
-                                                          "Y-%y-%m-%d-%H:%M %h", "Y-%y-%m-%d-%H:%M %B %b %h"),
-                                          testing::Values(MAX_TIME_STR_LEN), testing::Range(0U, 15U),
-                                          testing::Values(2)));
+#if defined(__linux__) || defined(__APPLE__)
+INSTANTIATE_TEST_SUITE_P(LINUX_AND_APPLE_MONTH, TestFormatTimeBufferInvalid,
+                         testing::Combine(testing::ValuesIn(MONTH_TEST_FORMAT), testing::Values(MAX_TIME_STR_LEN),
+                                          testing::Range(0U, 15U), testing::Values(2)));
 
 INSTANTIATE_TEST_SUITE_P(
-    LINUX_WEEKDAY, TestFormatTimeBufferInvalid,
-    testing::Combine(testing::Values("Y-%y-%m-%d-%H:%M %A", "Y-%y-%m-%d-%H:%M %a", "Y-%y-%m-%d-%H:%M %A %a"),
+    LINUX_AND_APPLE_WEEKDAY, TestFormatTimeBufferInvalid,
+    testing::Combine(testing::ValuesIn(WEEKDAY_TEST_FORMAT),
                      testing::Values(MAX_TIME_STR_LEN), testing::Values(10U), testing::Range(0U, 10U)));
 #endif
 
-#ifndef _WIN32
+#if defined(__linux__) || defined(__APPLE__)
 class TestFormatTimeStringInvalid : public ::testing::TestWithParam<TestStringParam> {
 protected:
     static void SetUpTestSuite() {}
@@ -87,14 +92,12 @@ TEST_P(TestFormatTimeStringInvalid, TimeComponent)
     TestTimeString(format, timeInfo, timeComp);
 }
 
-INSTANTIATE_TEST_SUITE_P(LINUX_MONTH, TestFormatTimeStringInvalid,
-                         testing::Combine(testing::Values("Y-%y-%m-%d-%H:%M %B", "Y-%y-%m-%d-%H:%M %b",
-                                                          "Y-%y-%m-%d-%H:%M %h", "Y-%y-%m-%d-%H:%M %B %b %h"),
-                                          testing::Range(0U, 15U), testing::Values(2)));
+INSTANTIATE_TEST_SUITE_P(LINUX_AND_APPLE_MONTH, TestFormatTimeStringInvalid,
+                         testing::Combine(testing::ValuesIn(MONTH_TEST_FORMAT), testing::Range(0U, 15U),
+                                          testing::Values(2)));
 
-INSTANTIATE_TEST_SUITE_P(LINUX_WEEKDAY, TestFormatTimeStringInvalid,
-                         testing::Combine(testing::Values("Y-%y-%m-%d-%H:%M %A", "Y-%y-%m-%d-%H:%M %a",
-                                                          "Y-%y-%m-%d-%H:%M %A %a"),
+INSTANTIATE_TEST_SUITE_P(LINUX_AND_APPLE_WEEKDAY, TestFormatTimeStringInvalid,
+                         testing::Combine(testing::ValuesIn(WEEKDAY_TEST_FORMAT),
                                           testing::Values(10U), testing::Range(0U, 10U)));
 #endif
 }  // namespace test::test_utils::date_time_test
