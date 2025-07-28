@@ -24,7 +24,7 @@ jobs:
       # To add more build types (Release, Debug, RelWithDebInfo, etc.) customize the build_type list.
       matrix:
         os: [ubuntu-latest, windows-latest, macos-15]
-        build_type: [Release]
+        build_type: [Release Debug]
         c_compiler: [gcc, clang, cl]
         include:
           - os: windows-latest
@@ -88,3 +88,12 @@ jobs:
       # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest --test-dir ${{ steps.strings.outputs.build-output-dir }} --build-config ${{ matrix.build_type }}  --tests-regex ^TEST_ALL$ -V
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4  # 升级到v4版本
+      with:
+        name: ${{ matrix.os }}-${{ matrix.c_compiler }}-${{ matrix.build_type }}-build
+        path: ${{ steps.strings.outputs.build-install-dir }}
+        # v4版本新增的可选配置（根据需要添加）
+        if-no-files-found: warn  # 无文件时警告而非失败
+        retention-days: 7  #  artifacts保留7天
