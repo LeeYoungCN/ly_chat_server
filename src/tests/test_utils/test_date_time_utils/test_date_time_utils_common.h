@@ -8,7 +8,8 @@
 
 #include "common/types/date_time_types.h"
 
-namespace test::test_utils::date_time_test {
+namespace test::test_utils::test_date_time_utils {
+
 std::tm TimeStampToTimeInfo(::common::types::date_time::TimeStamp ts);
 
 void TestTimeBuffer(const std::string_view& format, uint32_t length, common::types::date_time::TimeStamp timeStamp);

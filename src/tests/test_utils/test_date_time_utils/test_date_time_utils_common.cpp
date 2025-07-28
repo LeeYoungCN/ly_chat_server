@@ -11,7 +11,7 @@
 #include "common/utils/date_time_utils.h"
 #include "gtest/gtest.h"
 
-namespace test::test_utils::date_time_test {
+namespace test::test_utils::test_date_time_utils {
 
 using namespace common::constants::date_time;
 using namespace common::types::date_time;

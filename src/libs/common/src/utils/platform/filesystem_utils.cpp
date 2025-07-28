@@ -15,7 +15,7 @@
 #include "common/types/filesystem_types.h"
 #include "common/utils/filesystem_utils.h"
 
-namespace utils::filesystem {
+namespace common::utils::filesystem {
 
 namespace stdfs = std::filesystem;
 using namespace common::constants::filesystem;
@@ -44,6 +44,7 @@ std::string GetProcessPath()
 #else
 #error "Unsupport system."
 #endif
+    COMMON_LOG_ERR("Get process path. [%s]", path);
     return path;
 }
 
@@ -63,7 +64,7 @@ common::types::fs::PathType CheckPathType(const std::string& path)
 
 bool CreateDirAndRmOld(const std::string& path)
 {
-    if (utils::filesystem::RemoveDir(path)) {
+    if (common::utils::filesystem::RemoveDir(path)) {
         return false;
     }
     return stdfs::create_directories(path);
@@ -138,4 +139,4 @@ std::string GetProcessDir()
     return proc.parent_path().string();
 }
 
-}  // namespace utils::filesystem
+}  // namespace common::utils::filesystem

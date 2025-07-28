@@ -9,7 +9,7 @@
 using namespace common::constants::date_time;
 using namespace common::types::date_time;
 
-namespace test::test_utils::date_time_test {
+namespace test::test_utils::test_date_time_utils {
 TEST(GetMothNames, case)
 {
     for (uint32_t i = 0; i < 20; i++) {

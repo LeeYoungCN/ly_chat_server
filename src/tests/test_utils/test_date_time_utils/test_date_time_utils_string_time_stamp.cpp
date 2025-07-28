@@ -8,12 +8,12 @@
 #include "gtest/gtest.h"
 #include "test_date_time_utils_common.h"
 
+namespace test::test_utils::test_date_time_utils {
+
 using TestBufferParam = std::tuple<std::string_view, int32_t>;
 
 using namespace common::constants::date_time;
 using namespace common::types::date_time;
-
-namespace test::test_utils::date_time_test {
 
 const std::vector<std::string_view> TestMillisFormats = {"%Y-%y-%m-%d-%H:%M:%S-%A-%a-%B-%b-%h-%3f",
                                                          "%3f",
@@ -40,7 +40,8 @@ TEST_P(TestFormatTimeBuffer, TimeStamp)
 }
 
 INSTANTIATE_TEST_SUITE_P(DAY, TestFormatTimeBuffer,
-                         testing::Combine(testing::Values("%Y-%y-%m-%d %H:%M:%S %A %a %B %b"), testing::Range(0, 365, 5)));
+                         testing::Combine(testing::Values("%Y-%y-%m-%d %H:%M:%S %A %a %B %b"),
+                                          testing::Range(0, 365, 5)));
 
 #ifdef __linux__
 INSTANTIATE_TEST_SUITE_P(Linux, TestFormatTimeBuffer,
@@ -71,4 +72,4 @@ INSTANTIATE_TEST_SUITE_P(FORMAT, TestFormatTimeString,
 #ifdef _MSVC
 INSTANTIATE_TEST_SUITE_P(Windows, TestFormatTimeString, testing::ValuesIn(TestMillisFormats));
 #endif
-}  // namespace test::test_utils::date_time_test
+}  // namespace test::test_utils::test_date_time_utils

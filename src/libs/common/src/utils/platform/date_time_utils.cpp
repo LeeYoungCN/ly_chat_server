@@ -119,7 +119,7 @@ TimeStamp GetCurrentTimeStamp()
     );
 #else
     std::chrono::time_point now = std::chrono::system_clock::now();
-    std::chrono::duration ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch());
+    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch());
     return static_cast<TimeStamp>(ms.count());
 #endif
 }

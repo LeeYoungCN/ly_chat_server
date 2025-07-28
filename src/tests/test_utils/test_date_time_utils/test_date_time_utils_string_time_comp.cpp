@@ -10,20 +10,22 @@
 #include "gtest/gtest.h"
 #include "test_date_time_utils_common.h"
 
+namespace {
+const std::vector<std::string_view> MONTH_TEST_FORMAT = {
+    "Y-%y-%m-%d-%H:%M %B", "Y-%y-%m-%d-%H:%M %b", "Y-%y-%m-%d-%H:%M %h", "Y-%y-%m-%d-%H:%M %B %b %h"};
+
+const std::vector<std::string_view> WEEKDAY_TEST_FORMAT = {
+    "Y-%y-%m-%d-%H:%M %A", "Y-%y-%m-%d-%H:%M %a", "Y-%y-%m-%d-%H:%M %A %a"};
+}  // namespace
+
+namespace test::test_utils::test_date_time_utils {
+
 using TestBufferParam = std::tuple<std::string_view, uint32_t, uint32_t, uint32_t>;
 using TestStringParam = std::tuple<std::string_view, uint32_t, uint32_t>;
 
 using namespace common::constants::date_time;
 using namespace common::types::date_time;
 using namespace common::utils::date_time;
-
-namespace test::test_utils::date_time_test {
-
-std::vector<std::string_view> MONTH_TEST_FORMAT = {
-    "Y-%y-%m-%d-%H:%M %B", "Y-%y-%m-%d-%H:%M %b", "Y-%y-%m-%d-%H:%M %h", "Y-%y-%m-%d-%H:%M %B %b %h"};
-
-std::vector<std::string_view> WEEKDAY_TEST_FORMAT = {
-    "Y-%y-%m-%d-%H:%M %A", "Y-%y-%m-%d-%H:%M %a", "Y-%y-%m-%d-%H:%M %A %a"};
 
 class TestFormatTimeBufferInvalid : public ::testing::TestWithParam<TestBufferParam> {
 protected:
@@ -60,10 +62,9 @@ INSTANTIATE_TEST_SUITE_P(LINUX_AND_APPLE_MONTH, TestFormatTimeBufferInvalid,
                          testing::Combine(testing::ValuesIn(MONTH_TEST_FORMAT), testing::Values(MAX_TIME_STR_LEN),
                                           testing::Range(0U, 15U), testing::Values(2)));
 
-INSTANTIATE_TEST_SUITE_P(
-    LINUX_AND_APPLE_WEEKDAY, TestFormatTimeBufferInvalid,
-    testing::Combine(testing::ValuesIn(WEEKDAY_TEST_FORMAT),
-                     testing::Values(MAX_TIME_STR_LEN), testing::Values(10U), testing::Range(0U, 10U)));
+INSTANTIATE_TEST_SUITE_P(LINUX_AND_APPLE_WEEKDAY, TestFormatTimeBufferInvalid,
+                         testing::Combine(testing::ValuesIn(WEEKDAY_TEST_FORMAT), testing::Values(MAX_TIME_STR_LEN),
+                                          testing::Values(10U), testing::Range(0U, 10U)));
 #endif
 
 #if defined(__linux__) || defined(__APPLE__)
@@ -97,7 +98,7 @@ INSTANTIATE_TEST_SUITE_P(LINUX_AND_APPLE_MONTH, TestFormatTimeStringInvalid,
                                           testing::Values(2)));
 
 INSTANTIATE_TEST_SUITE_P(LINUX_AND_APPLE_WEEKDAY, TestFormatTimeStringInvalid,
-                         testing::Combine(testing::ValuesIn(WEEKDAY_TEST_FORMAT),
-                                          testing::Values(10U), testing::Range(0U, 10U)));
+                         testing::Combine(testing::ValuesIn(WEEKDAY_TEST_FORMAT), testing::Values(10U),
+                                          testing::Range(0U, 10U)));
 #endif
-}  // namespace test::test_utils::date_time_test
+}  // namespace test::test_utils::test_date_time_utils

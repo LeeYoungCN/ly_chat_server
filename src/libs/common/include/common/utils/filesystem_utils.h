@@ -13,7 +13,7 @@
 
 #include <string>
 
-namespace utils::filesystem {
+namespace common::utils::filesystem {
 /**
  * @brief 创建文件夹，如果存在，则删除。
  *
@@ -71,5 +71,5 @@ std::string GetProcessDir();
  * @return std::string
  */
 std::string GetWorkingPath();
-}  // namespace utils::filesystem
+}  // namespace common::utils::filesystem
 #endif  // COMMON_UTILS_FILESYSTEM_UTILS_H
