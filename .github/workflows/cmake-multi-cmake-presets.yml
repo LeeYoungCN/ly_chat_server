@@ -11,33 +11,37 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
-
     strategy:
-      # Set fail-fast to false to ensure that feedback is delivered for all matrix combinations. Consider changing this to true when your workflow is stable.
       fail-fast: false
-
       matrix:
         os: [ubuntu-latest, windows-latest, macos-15]
         platform: [gnu, clang, msvc]
         include:
+          # Windows 配置
           - os: windows-latest
             platform: msvc
             preset: win_clang_msvc_release
-          - os: windows-latest
-            platform: gnu
-            preset: win_clang_mingw_release
+            compiler: msvc
           - os: windows-latest
             platform: gnu
             preset: win_mingw_release
+            compiler: mingw
+          # Ubuntu 配置
           - os: ubuntu-latest
             platform: clang
             preset: linux_clang_release
+            compiler: clang
+            packages: "clang libc++-dev libc++abi-dev"
           - os: ubuntu-latest
             platform: gnu
             preset: linux_gnu_release
+            compiler: gcc
+            packages: "g++"
+          # macOS 配置
           - os: macos-15
             platform: clang
             preset: darwin_clang_release
+            compiler: clang
         exclude:
           - os: windows-latest
             platform: clang
@@ -50,6 +54,31 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: Set reusable paths
+      id: paths
+      shell: bash
+      run: |
+        echo "build-output-dir=${{ github.workspace }}/out/build" >> "$GITHUB_OUTPUT"
+        echo "build-install-dir=${{ github.workspace }}/out/install" >> "$GITHUB_OUTPUT"
+        echo "preset=${{ matrix.preset }}" >> "$GITHUB_OUTPUT"
+
+    - name: Install dependencies (Ubuntu)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ${{ matrix.packages }} cmake ninja-build
+
+    - name: Install MinGW (Windows)
+      if: matrix.os == 'windows-latest' && matrix.compiler == 'mingw'
+      uses: msys2/setup-msys2@v2
+      with:
+        install: >-
+          mingw-w64-x86_64-gcc
+          mingw-w64-x86_64-make
+          mingw-w64-x86_64-cmake
+        msystem: MINGW64
+        update: true
 
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
@@ -70,3 +99,13 @@ jobs:
     - name: Test
       working-directory: ${{ github.workspace }}
       run: ctest --preset=${{ matrix.preset }}_ctest
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4  # 升级到v4版本
+      with:
+        name: ${{ matrix.os }}-${{ matrix.platform }}-build
+        path: ${{ steps.paths.outputs.build-install-dir }}
+        # v4版本新增的可选配置（根据需要添加）
+        if-no-files-found: warn  # 无文件时警告而非失败
+        retention-days: 7  #  artifacts保留7天
+
