@@ -26,6 +26,9 @@ jobs:
           - os: windows-latest
             platform: gnu
             preset: win_clang_mingw_release
+          - os: windows-latest
+            platform: gnu
+            preset: win_mingw_release
           - os: ubuntu-latest
             platform: clang
             preset: linux_clang_release
