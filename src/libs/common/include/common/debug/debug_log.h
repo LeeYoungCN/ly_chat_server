@@ -46,7 +46,7 @@ void CommonDebugLog(common::types::logging::LogLevel level, const char* file, in
 #define COMMON_LOG_COND(condition, fmt, ...)                             \
     do {                                                                 \
         if (!(condition)) {                                              \
-            COMMON_LOG_INFO("Failed to " fmt __VA_OPT__(, ) __VA_ARGS__); \
+            COMMON_LOG_ERR("Failed to " fmt __VA_OPT__(, ) __VA_ARGS__); \
         }                                                                \
     } while (0)
 #define COMMON_LOG_EXCEPTION(e, fmt, ...)                             \
