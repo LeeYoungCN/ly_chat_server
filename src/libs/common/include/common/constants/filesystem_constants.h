@@ -19,8 +19,8 @@ namespace common::constants::filesystem {
  * @brief 路径长度常量（跨平台自动适配）
  */
 #ifdef _WIN32
-constexpr size_t PATH_MAX_STD = 260;     ///< Windows标准路径最大长度（含终止符）
-constexpr size_t PATH_MAX_LONG = 32767;  ///< Windows长路径最大长度（启用后）
+constexpr size_t MAX_PATH_STD = 260;     ///< Windows标准路径最大长度（含终止符）
+constexpr size_t MAX_PATH_LONG = 32767;  ///< Windows长路径最大长度（启用后）
 #else
 constexpr size_t MAX_PATH_STD = 4096;    ///< Unix系统标准路径最大长度
 constexpr size_t MAX_PATH_LONG = 65536;  ///< Unix系统扩展路径长度

@@ -69,7 +69,7 @@ std::string GetProcessPath()
     char path[MAX_PATH_STD] = {'\0'};
 #ifdef _WIN32
     DWORD length = GetModuleFileNameA(nullptr, path, MAX_PATH_STD);
-    if (length == 0 || length >= MAX_PATH_LEN) {
+    if (length == 0 || length >= MAX_PATH_STD) {
         SetLastError(ErrorCode::SYSTEM_ERROR);
         COMMON_LOG_ERR("[WIN32]Failed to get process path, length: {}", length);
         length = 0;
@@ -127,7 +127,7 @@ PathString JoinPaths(const PathList& parts)
         result /= parts[i];  // std::filesystem 自动处理分隔符
     }
     SetLastError(ErrorCode::SUCCESS);
-    return result;
+    return result.string();
 }
 
 PathString NormalLizePath(const PathString& path)
