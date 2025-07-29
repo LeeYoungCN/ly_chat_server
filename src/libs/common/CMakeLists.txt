@@ -12,7 +12,7 @@ target_include_directories(${LIB_NAME}
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>  # 编译时路径
         $<INSTALL_INTERFACE:include>                            # 安装时路径
     PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/src                # 内部头文件路径
+        ${CMAKE_CURRENT_SOURCE_DIR}/src                        # 内部头文件路径
 )
 
 set_target_properties(${LIB_NAME} PROPERTIES

@@ -1,16 +1,12 @@
-#include "common/debug/debug_log.h"
+#include <cstdio>
 #include "common/utils/filesystem_utils.h"
 #include "gtest/gtest.h"
 
 int main(int argc, char *argv[])
 {
-    std::string processPath = common::utils::filesystem::GetProcessPath();
-    COMMON_LOG_INFO("Running main() from %s", __FILE__);
-    COMMON_LOG_INFO("Test runtime: %s", processPath.c_str());
-    std::string logFolder = common::utils::filesystem::RelativeToAbsolutePath("./logs", common::utils::filesystem::GetProcessDir());
-    std::string logFile = logFolder + "/test.log";
-    common::utils::filesystem::RemoveDir(logFolder);
-
+    printf("Running main() from %s\n", __FILE__);
+    printf("Test runtime: %s\n", common::utils::filesystem::GetProcessPath().c_str());
+    printf("Current working directory: %s\n", common::utils::filesystem::GetCurrentWorkingDirectory().c_str());
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
