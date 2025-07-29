@@ -26,7 +26,7 @@ function replace_text() {
     local new_str="$2"
     local file_path="$3"
     if [ "$(uname -s)" == "Darwin" ]; then
-        if ! sed -i '' "s#${old_str}#${new_str}#g" "${file_path}"; then
+        if ! sed -i '' "s|${old_str}|${new_str}|g" "${file_path}"; then
             print_log "Replace failed. ${old_str} -> ${new_str}  ${file_path}." error
             return 1
         fi
