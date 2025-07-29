@@ -33,7 +33,7 @@ std::string formatLog(common::types::logging::LogLevel level, const char* file, 
     logStream << "[" << timeSs.str() << "] "
               << "[" << logLevelToStr(level) << "] "
               << "[Tid: " << std::this_thread::get_id() << "] " << "["
-              << std::filesystem::path(file).filename().string() << ":" << line << "] " << "[" << func << "]"
+              << std::filesystem::path(file).filename().string() << ":" << line << "] " << "[" << func << "] "
               << message;
     return logStream.str();
 }
