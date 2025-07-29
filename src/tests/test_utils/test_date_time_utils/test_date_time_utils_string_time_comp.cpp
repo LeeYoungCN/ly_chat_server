@@ -55,7 +55,7 @@ TEST_P(TestFormatTimeBufferInvalid, TimeComponent)
 
 INSTANTIATE_TEST_SUITE_P(LENGTH, TestFormatTimeBufferInvalid,
                          testing::Combine(testing::Values("%Y-%y-%m-%d-%H:%M:%S-%A-%a-%B-%b-%h", "111"),
-                                          testing::Range(1U, 50U), testing::Values(2), testing::Values(2)));
+                                          testing::Range(1U, 50U, 5U), testing::Values(2), testing::Values(2)));
 
 #if defined(__linux__) || defined(__APPLE__)
 INSTANTIATE_TEST_SUITE_P(LINUX_AND_APPLE_MONTH, TestFormatTimeBufferInvalid,

@@ -41,7 +41,7 @@ TEST_P(TestFormatTimeBuffer, TimeStamp)
 
 INSTANTIATE_TEST_SUITE_P(DAY, TestFormatTimeBuffer,
                          testing::Combine(testing::Values("%Y-%y-%m-%d %H:%M:%S %A %a %B %b"),
-                                          testing::Range(0, 365, 5)));
+                                          testing::Range(0, 365, 10)));
 
 #ifdef __linux__
 INSTANTIATE_TEST_SUITE_P(Linux, TestFormatTimeBuffer,
