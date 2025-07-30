@@ -1,7 +1,13 @@
-#include <cstddef>
-#include <exception>
-#include <random>
-
+/**
+ * @file filesystem_utils.cpp
+ * @author your name (you@domain.com)
+ * @brief
+ * @version 0.1
+ * @date 2025-07-30
+ *
+ * @copyright Copyright (c) 2025
+ *
+ */
 #include "common/utils/filesystem_utils.h"
 
 #ifdef _WIN32
@@ -11,8 +17,13 @@
 #elif defined(__APPLE__)
 #include <mach-o/dyld.h>  // macOS的_NSGetExecutablePath
 #endif
+
+#include <cstddef>
+#include <exception>
 #include <filesystem>
+#include <fstream>
 #include <string>
+#include <string_view>
 
 #include "common/constants/filesystem_constants.h"
 #include "common/debug/debug_log.h"
@@ -31,8 +42,7 @@ EntryType GetEtryType(const PathString& path)
 {
     if (!fs::exists(path)) {
         SetLastError(ErrorCode::NOT_FOUND);
-        COMMON_LOG_WARN("Target nonexist: %s", path.c_str());
-        return EntryType::Nonexistent;
+        return EntryType::NONEXISTENT;
     }
     // 获取文件状态（使用symlink_status而非status，保留符号链接本身的类型）
     std::error_code ec;  // 用于非抛出式错误处理
@@ -40,26 +50,51 @@ EntryType GetEtryType(const PathString& path)
     if (ec) {
         COMMON_LOG_ERR("Failed to get symlink status. errCode: %s", ec.value());
         SetLastError(ErrorCode::SYSTEM_ERROR);
-        return EntryType::Unknown;
+        return EntryType::UNKNOWN;
     }
     SetLastError(ErrorCode::SUCCESS);
     switch (status.type()) {
         case fs::file_type::regular:  // 普通文件
-            return EntryType::File;
+            return EntryType::FILE;
         case fs::file_type::directory:
-            return EntryType::Directory;
+            return EntryType::DIRECTORY;
         case fs::file_type::symlink:
-            return EntryType::SymLink;
+            return EntryType::SYMBOL_LINK;
         case fs::file_type::character:  // 字符设备
-            return EntryType::CharacterDevice;
+            return EntryType::CHARACTER_DEVICE;
         case fs::file_type::block:
-            return EntryType::BlockDevice;
+            return EntryType::BLOCK_DEVICE;
         case fs::file_type::fifo:
-            return EntryType::Socket;
+            return EntryType::SOCKET;
         case fs::file_type::unknown:
         default:
             COMMON_LOG_WARN("Unknown entry type: %s", path.c_str());
-            return EntryType::Unknown;
+            return EntryType::UNKNOWN;
+    }
+}
+
+std::string_view GetEntryTypeString(EntryType type)
+{
+    switch (type) {
+        case EntryType::NONEXISTENT:
+            return "Nonexistent";
+        case EntryType::FILE:
+            return "File";
+        case EntryType::DIRECTORY:
+            return "Directory";
+        case EntryType::SYMBOL_LINK:
+            return "Symbol link";
+        case EntryType::BLOCK_DEVICE:
+            return "Block device";
+        case EntryType::CHARACTER_DEVICE:
+            return "Character Device";
+        case EntryType::FIFO:
+            return "FIFO";
+        case EntryType::SOCKET:
+            return "Socket";
+        case EntryType::UNKNOWN:
+        default:
+            return "Unknown";
     }
 }
 
@@ -130,7 +165,7 @@ PathString JoinPaths(const PathList& parts)
     return result.string();
 }
 
-PathString NormalLizePath(const PathString& path)
+PathString NormalizePath(const PathString& path)
 {
     try {
         auto normalized = fs::weakly_canonical(path);
@@ -210,23 +245,99 @@ bool IsPathTooLong(const PathString& path)
 // ------------------------------ 文件操作接口 ------------------------------
 bool FileExists(const PathString& path)
 {
+    auto entrType = GetEtryType(path);
+    bool exists = false;
+    switch (entrType) {
+        case EntryType::FILE:
+            exists = true;
+            SetLastError(ErrorCode::SUCCESS);
+            break;
+        case EntryType::NONEXISTENT:
+            SetLastError(ErrorCode::NOT_FOUND);
+            COMMON_LOG_ERR("File not exist: %s", path.c_str());
+            break;
+        default:
+            SetLastError(ErrorCode::NOT_FILE);
+            COMMON_LOG_ERR("File is %s: %s", GetEntryTypeString(entrType), path.c_str());
+            break;
+    }
+    return exists;
+}
+
+bool CreateFile(const PathString& path)
+{
+    std::ofstream file(path, std::ios::out | std::ios::binary);
+    if (file.is_open()) {
+        SetLastError(ErrorCode::SUCCESS);
+        return true;
+    }
+
+    return false;
+}
+
+// ------------------------------ 目录操作接口 ------------------------------
+
+bool DirExists(const PathString& path)
+{
+    EntryType type = GetEtryType(path);
+    bool result = false;
+    switch (type) {
+        case EntryType::DIRECTORY:
+            result = true;
+            SetLastError(ErrorCode::SUCCESS);
+            break;
+        case EntryType::NONEXISTENT:
+            SetLastError(ErrorCode::NOT_FOUND);
+            break;
+        default:
+            COMMON_LOG_ERR("Target type invalid: %s", GetEntryTypeString(type));
+            SetLastError(ErrorCode::NOT_DIRECTORY);
+            break;
+    }
+    return result;
+}
+
+bool CreateDir(const PathString& path, bool recursive)
+{
+    auto type = GetEtryType(path);
+    if (type == EntryType::DIRECTORY) {
+        SetLastError(ErrorCode::SUCCESS);
+        COMMON_LOG_INFO("Dir already exist: %s", path.c_str());
+        return true;
+    }
+    if (type != EntryType::NONEXISTENT) {
+        COMMON_LOG_ERR("Target type invalid: %s", GetEntryTypeString(type));
+        SetLastError(ErrorCode::NOT_DIRECTORY);
+        return false;
+    }
     try {
-        bool exists = fs::is_regular_file(path);
-        SetLastError(exists ? ErrorCode::SUCCESS : ErrorCode::NOT_FOUND);
-        return exists;
+        if (recursive) {
+            fs::create_directories(path);
+        } else {
+            fs::create_directory(path);
+        }
+        SetLastError(ErrorCode::SUCCESS);
+        return true;
     } catch (const std::exception& e) {
-        COMMON_LOG_EXCEPTION(e, "Failed to check rugular file.");
-        SetLastError(ErrorCode::SYSTEM_ERROR);
+        COMMON_LOG_EXCEPTION(e, "Failed to create dir %s.", recursive ? "recursive" : "not recursive");
+        SetLastError(ErrorCode::PERMISSION_DENIED);
         return false;
     }
 }
 
-// ------------------------------ 目录操作接口 ------------------------------
 bool DeleteDir(const PathString& path, bool recursive)
 {
-    if (!FileExists(path)) {
+    EntryType type = GetEtryType(path);
+
+    if (type == EntryType::NONEXISTENT) {
         COMMON_LOG_INFO("Delete dir success, not exits: %s", path.c_str());
+        SetLastError(ErrorCode::NOT_FOUND);
         return true;
+    }
+    if (type != EntryType::DIRECTORY) {
+        COMMON_LOG_ERR("Failed to delete dir %s, Type: %s", path.c_str(), GetEntryTypeString(type));
+        SetLastError(ErrorCode::NOT_DIRECTORY);
+        return false;
     }
     try {
         bool result = false;
@@ -237,9 +348,9 @@ bool DeleteDir(const PathString& path, bool recursive)
         }
         SetLastError(result ? ErrorCode::SUCCESS : ErrorCode::NOT_FOUND);
         COMMON_LOG_COND(result, "Remove directory %s : %s", recursive ? "recursive" : "not recursive", path.c_str());
-        return result;
+        return true;
     } catch (const std::exception& e) {
-        COMMON_LOG_EXCEPTION(e, "Failed to delete dir: %s", path.c_str());
+        COMMON_LOG_EXCEPTION(e, "Failed to delete dir %s", recursive ? "recursive" : "not recursive");
         SetLastError(ErrorCode::PERMISSION_DENIED);
         return false;
     }

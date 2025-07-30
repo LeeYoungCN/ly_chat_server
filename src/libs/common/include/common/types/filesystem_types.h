@@ -50,15 +50,15 @@ using ByteVector = std::vector<uint8_t>;
  * @brief 文件/目录条目类型枚举
  */
 enum class EntryType {
-    Nonexistent = 0,    // 路径不存在
-    File,           // 普通文件
-    Directory,      // 目录
-    SymLink,   // 符号链接
-    CharacterDevice,// 字符设备
-    BlockDevice,    // 块设备
-    FIFO,           // 管道(FIFO)
-    Socket,         // 套接字
-    Unknown         // 未知类型
+    NONEXISTENT = 0,   // 路径不存在
+    FILE,              // 普通文件
+    DIRECTORY,         // 目录
+    SYMBOL_LINK,       // 符号链接
+    CHARACTER_DEVICE,  // 字符设备
+    BLOCK_DEVICE,      // 块设备
+    FIFO,              // 管道(FIFO)
+    SOCKET,            // 套接字
+    UNKNOWN            // 未知类型
 };
 /**
  * @brief 文件权限枚举，跨平台统一封装

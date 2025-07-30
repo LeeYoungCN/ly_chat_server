@@ -11,7 +11,6 @@
 #ifndef COMMON_UTILS_FILESYSTEM_UTILS_H
 #define COMMON_UTILS_FILESYSTEM_UTILS_H
 
-#include <string>
 #include <string_view>
 
 #include "common/constants/filesystem_constants.h"
@@ -43,6 +42,7 @@ namespace common::utils::filesystem {
  */
 common::types::filesystem::EntryType GetEtryType(const types::filesystem::PathString& path);
 
+std::string_view GetEntryTypeString(common::types::filesystem::EntryType type);
 /**
  * @brief 获取当前进程的可执行文件路径
  * @return 可执行文件的绝对路径
@@ -233,7 +233,7 @@ bool DirExists(const types::filesystem::PathString& path);
  * @param recursive 是否递归创建父目录（默认为false）
  * @return 创建成功返回true，否则返回false
  */
-bool CreateDir(const types::filesystem::PathString& path, bool recursive = false);
+bool CreateDir(const types::filesystem::PathString& path, bool recursive = true);
 
 /**
  * @brief 删除目录
@@ -241,7 +241,7 @@ bool CreateDir(const types::filesystem::PathString& path, bool recursive = false
  * @param recursive 是否递归删除非空目录（默认为false）
  * @return 删除成功返回true，否则返回false
  */
-bool DeleteDir(const types::filesystem::PathString& path, bool recursive = false);
+bool DeleteDir(const types::filesystem::PathString& path, bool recursive = true);
 
 /**
  * @brief 列出目录中的所有条目（文件和子目录）
