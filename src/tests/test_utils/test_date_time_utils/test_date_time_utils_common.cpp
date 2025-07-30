@@ -17,7 +17,7 @@ using namespace common::constants::date_time;
 using namespace common::types::date_time;
 using namespace common::utils::date_time;
 
-tm TimeStampToTimeInfo(TimeStamp ts)
+tm TimestampToTimeInfo(Timestamp ts)
 {
     auto timer = static_cast<std::time_t>(ts / MILLIS_PER_SECOND);
     std::tm timeInfo{};
@@ -46,10 +46,10 @@ void CompareString(const common::types::date_time::TimeComponent& timeComp, std:
     EXPECT_EQ(stdTimeStr, utilsTimeStr);
 }
 
-void TestTimeBuffer(const std::string_view& format, uint32_t length, common::types::date_time::TimeStamp timeStamp)
+void TestTimeBuffer(const std::string_view& format, uint32_t length, common::types::date_time::Timestamp timestamp)
 {
-    auto timeComp = LocalTimeComponent(timeStamp);
-    auto timeInfo = TimeStampToTimeInfo(timeStamp);
+    auto timeComp = LocalTimeComponent(timestamp);
+    auto timeInfo = TimestampToTimeInfo(timestamp);
     TestTimeBuffer(format, length, timeInfo, timeComp);
 }
 
@@ -69,10 +69,10 @@ void TestTimeBuffer(const std::string_view& format, uint32_t length, std::tm tim
     }
 }
 
-void TestTimeString(const std::string_view& format, common::types::date_time::TimeStamp timeStamp)
+void TestTimeString(const std::string_view& format, common::types::date_time::Timestamp timestamp)
 {
-    auto timeComp = LocalTimeComponent(timeStamp);
-    auto timeInfo = TimeStampToTimeInfo(timeStamp);
+    auto timeComp = LocalTimeComponent(timestamp);
+    auto timeInfo = TimestampToTimeInfo(timestamp);
     TestTimeString(format, timeInfo, timeComp);
 }
 
@@ -90,4 +90,4 @@ void TestTimeString(const std::string_view& format, std::tm timeInfo,
     }
 }
 
-}  // namespace test::test_utils::date_time_test
+}  // namespace test::test_utils::test_date_time_utils

@@ -19,14 +19,14 @@
 namespace common::types::date_time {
 
 // 时间戳(ms)
-using TimeStamp = int64_t;
+using Timestamp = int64_t;
 using TimestampMs = int64_t;
 using TimestampSec = int64_t;
 
 using StringTimestamp = std::string;
 
 struct ZonedTimestamp {
-    TimeStamp ms_since_epoch;  // 毫秒级时间戳
+    Timestamp ms_since_epoch;  // 毫秒级时间戳
     int timezone_offset;       // 时区偏移（分钟，如UTC+8为480）
 };
 

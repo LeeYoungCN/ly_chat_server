@@ -100,7 +100,7 @@ namespace common::utils::date_time {
 using namespace ::common::constants::date_time;
 using namespace ::common::types::date_time;
 
-TimeStamp GetCurrentTimeStamp()
+Timestamp GetCurrentTimestamp()
 {
 #ifdef _WIN32
     FILETIME ft;
@@ -115,25 +115,25 @@ TimeStamp GetCurrentTimeStamp()
     // 1. 先将100纳秒单位转换为毫秒（除以10000，因1毫秒=10000×100纳秒）
     // 2. 减去Windows纪元到Unix纪元（1970-01-01 00:00:00）的毫秒差值，得到标准Unix时间戳
     constexpr uint64_t HUNDRED_NANOSECONDS_PER_MILLISECOND = 10000;
-    return static_cast<TimeStamp>((file_time / HUNDRED_NANOSECONDS_PER_MILLISECOND)  // 转换为毫秒
+    return static_cast<Timestamp>((file_time / HUNDRED_NANOSECONDS_PER_MILLISECOND)  // 转换为毫秒
                                   - WINDOWS_EPOCH_TO_UNIX_EPOCH_MS                   // 校正到Unix纪元
     );
 #else
     std::chrono::time_point now = std::chrono::system_clock::now();
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch());
-    return static_cast<TimeStamp>(ms.count());
+    return static_cast<Timestamp>(ms.count());
 #endif
 }
 
 TimeComponent GetCurrentTimeComponent()
 {
-    return LocalTimeComponent(GetCurrentTimeStamp());
+    return LocalTimeComponent(GetCurrentTimestamp());
 }
 
-TimeComponent LocalTimeComponent(const TimeStamp& timeStamp)
+TimeComponent LocalTimeComponent(const Timestamp& timestamp)
 {
-    auto timer = static_cast<std::time_t>(timeStamp / MILLIS_PER_SECOND);
-    auto millis = static_cast<int32_t>(timeStamp % MILLIS_PER_SECOND);
+    auto timer = static_cast<std::time_t>(timestamp / MILLIS_PER_SECOND);
+    auto millis = static_cast<int32_t>(timestamp % MILLIS_PER_SECOND);
 
     std::tm timeInfo{};
     TimeComponent timeComp;
@@ -147,10 +147,10 @@ TimeComponent LocalTimeComponent(const TimeStamp& timeStamp)
     return timeComp;
 }
 
-TimeComponent UtcTimeComponent(const TimeStamp& timeStamp)
+TimeComponent UtcTimeComponent(const Timestamp& timestamp)
 {
-    auto timer = static_cast<std::time_t>(timeStamp / MILLIS_PER_SECOND);
-    auto millis = static_cast<int32_t>(timeStamp % MILLIS_PER_SECOND);
+    auto timer = static_cast<std::time_t>(timestamp / MILLIS_PER_SECOND);
+    auto millis = static_cast<int32_t>(timestamp % MILLIS_PER_SECOND);
 
     std::tm timeInfo{};
     TimeComponent timeComp;

@@ -39,4 +39,4 @@ TEST(GetWeekdayNames, case)
         }
     }
 }
-}  // namespace test::test_utils::date_time_test
+}  // namespace test::test_utils::test_date_time_utils

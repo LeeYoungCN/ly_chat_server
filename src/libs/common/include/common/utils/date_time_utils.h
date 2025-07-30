@@ -21,33 +21,33 @@ namespace common::utils::date_time {
 /**
  * @brief 获取当前系统时间的毫秒级时间戳
  * @details 以Unix纪元（1970-01-01 00:00:00 UTC）为基准，返回当前时间的毫秒数
- * @return common::types::date_time::TimeStamp 毫秒级时间戳
+ * @return common::types::date_time::Timestamp 毫秒级时间戳
  * @note 跨平台实现：Windows使用GetSystemTimeAsFileTime，Linux/macOS使用std::chrono
  */
-common::types::date_time::TimeStamp GetCurrentTimeStamp();
+common::types::date_time::Timestamp GetCurrentTimestamp();
 
 /**
  * @brief 获取当前系统时间的时间组件
- * @details 直接返回分解后的时间信息（年、月、日等），等价于TimeStamp2Component(GetCurrentTimeStamp())
+ * @details 直接返回分解后的时间信息（年、月、日等），等价于Timestamp2Component(GetCurrentTimestamp())
  * @return common::types::date_time::TimeComponent 当前时间的分解结构
  */
 common::types::date_time::TimeComponent GetCurrentTimeComponent();
 
 /**
  * @brief 将毫秒级时间戳转换为本地时间的时间组件
- * @param[in] timeStamp 待转换的毫秒级时间戳（Unix纪元基准）
+ * @param[in] timestamp 待转换的毫秒级时间戳（Unix纪元基准）
  * @return common::types::date_time::TimeComponent 转换后的时间组件
  *         失败时返回所有字段为0的结构
  */
-common::types::date_time::TimeComponent LocalTimeComponent(const common::types::date_time::TimeStamp& timeStamp);
+common::types::date_time::TimeComponent LocalTimeComponent(const common::types::date_time::Timestamp& timestamp);
 
 /**
  * @brief 将毫秒级时间戳转换为UTC时间的时间组件
- * @param[in] timeStamp 待转换的毫秒级时间戳（Unix纪元基准）
+ * @param[in] timestamp 待转换的毫秒级时间戳（Unix纪元基准）
  * @return common::types::date_time::TimeComponent 转换后的时间组件
  *         失败时返回所有字段为0的结构
  */
-common::types::date_time::TimeComponent UtcTimeComponent(const common::types::date_time::TimeStamp& timeStamp);
+common::types::date_time::TimeComponent UtcTimeComponent(const common::types::date_time::Timestamp& timestamp);
 
 /**
  * @brief 获取月份的完整英文名称
@@ -83,13 +83,13 @@ std::string_view GetWeekdayAbbrName(uint32_t weekday);
 
 /**
  * @brief 将时间戳按指定格式转换为字符串
- * @param[in] timeStamp 待格式化的毫秒级时间戳
+ * @param[in] timestamp 待格式化的毫秒级时间戳
  * @param[in] format 格式字符串（支持占位符，如%Y表示4位年份）
  *                   默认值：common::constants::date_time::DEFAULT_TIME_FMT（"%Y-%m-%d %H:%M:%S"）
  * @return std::string 格式化后的时间字符串
  *         若格式化失败或参数无效，返回空字符串
  */
-std::string FormatTimeString(common::types::date_time::TimeStamp timeStamp,
+std::string FormatTimeString(common::types::date_time::Timestamp timestamp,
                              const std::string_view& format = common::constants::date_time::DEFAULT_TIME_FMT);
 
 /**
@@ -108,13 +108,13 @@ std::string FormatTimeString(const common::types::date_time::TimeComponent& time
  * @details 直接写入用户提供的缓冲区，减少内存分配，适合高频调用场景
  * @param[out] buffer 目标缓冲区（需提前分配内存，不可为nullptr）
  * @param[in] bufferSize 缓冲区大小（字节），建议不小于256
- * @param[in] timeStamp 待格式化的毫秒级时间戳
+ * @param[in] timestamp 待格式化的毫秒级时间戳
  * @param[in] format 格式字符串（支持占位符）
  *                   默认值：common::constants::date_time::DEFAULT_TIME_FMT（"%Y-%m-%d %H:%M:%S"）
  * @return size_t 成功写入的字符数（不含终止符'\0'）
  *         若失败（缓冲区无效/空间不足/格式错误），返回0
  */
-size_t FormatTimeBuffer(char* buffer, size_t bufferSize, common::types::date_time::TimeStamp timeStamp,
+size_t FormatTimeBuffer(char* buffer, size_t bufferSize, common::types::date_time::Timestamp timestamp,
                         const std::string_view& format = common::constants::date_time::DEFAULT_TIME_FMT);
 
 /**

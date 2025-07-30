@@ -121,9 +121,9 @@ std::string_view GetWeekdayAbbrName(uint32_t weekday)
     return WEEKDAY_ABBR_NAMES.at(weekday);
 }
 
-std::string FormatTimeString(TimeStamp timeStamp, const std::string_view& format)
+std::string FormatTimeString(Timestamp timestamp, const std::string_view& format)
 {
-    auto timeComp = LocalTimeComponent(timeStamp);
+    auto timeComp = LocalTimeComponent(timestamp);
     return FormatTimeString(timeComp, format);
 }
 
@@ -141,9 +141,9 @@ std::string FormatTimeString(const TimeComponent& timeComp, const std::string_vi
     return timeString;
 }
 
-size_t FormatTimeBuffer(char* buffer, size_t bufferSize, TimeStamp timeStamp, const std::string_view& format)
+size_t FormatTimeBuffer(char* buffer, size_t bufferSize, Timestamp timestamp, const std::string_view& format)
 {
-    auto timeComp = LocalTimeComponent(timeStamp);
+    auto timeComp = LocalTimeComponent(timestamp);
     return FormatTimeBuffer(buffer, bufferSize, timeComp, format);
 }
 

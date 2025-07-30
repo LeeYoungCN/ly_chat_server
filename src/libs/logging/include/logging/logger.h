@@ -16,7 +16,8 @@ public:
     ~Logger() = default;
     explicit Logger(std::string name);
     Logger(std::string name, common::types::logging::LogLevel level);
-    void log(common::types::logging::LogLevel level, const char* file, int32_t line, const char* func, const char* fmt, ...);
+    void log(common::types::logging::LogLevel level, const char* file, int32_t line, const char* func, const char* fmt,
+             ...);
 
     const std::string& getLoggerName();
     void setLogLevel(common::types::logging::LogLevel level);

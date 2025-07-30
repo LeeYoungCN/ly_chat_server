@@ -86,13 +86,13 @@ enum class FileAttribute {
  * @brief 文件信息结构体，包含文件的元数据
  */
 struct FileInfo {
-    PathString Path;                                 ///< 文件的完整路径
-    FileSize Size;                                   ///< 文件大小（字节）
-    EntryType Type;                                  ///< 条目类型（文件/目录等）
-    common::types::date_time::TimeStamp CreateTime;  ///< 创建时间戳
-    common::types::date_time::TimeStamp ModifyTime;  ///< 最后修改时间戳
-    Permission Permissions;                          ///< 访问权限
-    FileAttribute Attributes;                        ///< 文件属性（隐藏/只读等）
+    PathString Path;                                    ///< 文件的完整路径
+    FileSize Size;                                      ///< 文件大小（字节）
+    EntryType Type;                                     ///< 条目类型（文件/目录等）
+    common::types::date_time::TimestampSec CreateTime;  ///< 创建时间戳
+    common::types::date_time::TimestampSec ModifyTime;  ///< 最后修改时间戳
+    Permission Permissions;                             ///< 访问权限
+    FileAttribute Attributes;                           ///< 文件属性（隐藏/只读等）
 };
 
 }  // namespace common::types::filesystem

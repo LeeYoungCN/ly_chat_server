@@ -125,8 +125,8 @@ void Logger::backupLogFile()
 
     if (utils::IsRegularFile(m_baseLogFile) &&
         (m_roolingPolicy == LogRollingPolicy::SIZE_AND_TIME || m_roolingPolicy == LogRollingPolicy::TIME)) {
-        std::string timeStamp = common::utils::date_time::FormatCurrTimeStr("%Y%m%d%H%M%S");
-        std::string backupLogFile = m_logFolder + "/" + baseFileName + "." + timeStamp + extention;
+        std::string timestamp = common::utils::date_time::FormatCurrTimeStr("%Y%m%d%H%M%S");
+        std::string backupLogFile = m_logFolder + "/" + baseFileName + "." + timestamp + extention;
         closeLogFile();
         fs::rename(m_baseLogFile, backupLogFile);
         LOG_INFO("Backup log file: %s", backupLogFile.c_str());

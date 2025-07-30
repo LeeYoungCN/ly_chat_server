@@ -15,7 +15,8 @@
 namespace logging {
 Logger::Logger(std::string name) : m_name(std::move(name)) {};
 
-Logger::Logger(std::string name, common::types::logging::LogLevel level) : m_name(std::move(name)), m_logLevel(level) {};
+Logger::Logger(std::string name, common::types::logging::LogLevel level)
+    : m_name(std::move(name)), m_logLevel(level) {};
 
 const std::string& Logger::getLoggerName()
 {
@@ -33,7 +34,8 @@ void Logger::setLogLevel(common::types::logging::LogLevel level)
     m_logLevel = level;
 }
 
-void Logger::log(common::types::logging::LogLevel level, const char* file, int32_t line, const char* func, const char* fmt, ...)
+void Logger::log(common::types::logging::LogLevel level, const char* file, int32_t line, const char* func,
+                 const char* fmt, ...)
 {
     if (level < m_logLevel) {
         return;
@@ -46,7 +48,7 @@ void Logger::log(common::types::logging::LogLevel level, const char* file, int32
     va_end(argList);
 
     LogRecord record = {.level = level,
-                        .time = common::utils::date_time::GetCurrentTimeStamp(),
+                        .time = common::utils::date_time::GetCurrentTimestamp(),
                         .file = file,
                         .line = line,
                         .func = func,
