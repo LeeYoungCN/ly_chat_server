@@ -41,7 +41,7 @@
             "name": "LLDB: Debug Executable",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/out/build/darwin_clang_debug/bin/leetcode_test",  // 可执行文件路径
+            "program": "${workspaceFolder}/out/build/darwin_clang_debug/bin/ly_chat_test",  // 可执行文件路径
             "args": [],  // 程序参数
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
