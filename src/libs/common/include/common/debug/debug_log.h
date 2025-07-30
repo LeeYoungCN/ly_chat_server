@@ -51,6 +51,6 @@ void CommonDebugLog(common::types::logging::LogLevel level, const char* file, in
     } while (0)
 #define COMMON_LOG_EXCEPTION(e, fmt, ...)                             \
     do {                                                              \
-        COMMON_LOG_ERR(fmt "excp: %s" __VA_OPT__(, ) __VA_ARGS__, e.what()); \
+        COMMON_LOG_ERR(fmt " excp: %s" __VA_OPT__(, ) __VA_ARGS__, e.what()); \
     } while (0)
 #endif  // COMMON_DEBUG_DEBUG_LOG_H
