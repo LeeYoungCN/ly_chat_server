@@ -23,3 +23,11 @@ target_link_libraries(${LIB_NAME} PRIVATE common)
 if (MINGW)
     target_link_libraries(${LIB_NAME} PRIVATE pthread)
 endif()
+
+install(DIRECTORY include/
+        DESTINATION include  # 安装路径：${CMAKE_INSTALL_PREFIX}/include
+        COMPONENT ${LIB_NAME}
+        FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
+
+install(TARGETS ${LIB_NAME} COMPONENT ${LIB_NAME})
+
