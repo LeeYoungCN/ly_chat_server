@@ -23,7 +23,7 @@
 #include <filesystem>
 #include <fstream>
 #include <string>
-#include <string_view>
+#include <system_error>
 
 #include "common/constants/filesystem_constants.h"
 #include "common/debug/debug_log.h"
@@ -38,7 +38,7 @@ using namespace common::constants::filesystem;
 using namespace common::types::filesystem;
 using namespace common::utils::filesystem::internal;
 
-EntryType GetEtryType(const PathString& path)
+EntryType GetEntryType(const PathString& path)
 {
     if (!fs::exists(path)) {
         SetLastError(ErrorCode::NOT_FOUND);
@@ -138,15 +138,10 @@ PathString GetProcessDirName()
 
 PathString GetCurrentWorkingDirectory()
 {
-    try {
-        auto p = fs::current_path();
-        SetLastError(ErrorCode::SUCCESS);
-        return p.string();
-    } catch (const fs::filesystem_error& e) {
-        COMMON_LOG_EXCEPTION(e, "Faied to get current working directory: %s");
-        SetLastError(ErrorCode::SYSTEM_ERROR);
-        return "";
-    }
+    std::error_code ec;
+    auto p = fs::current_path(ec);
+    ConvertSysEcToErrorCode(ec);
+    return p.string();
 }
 
 // ------------------------------ 路径处理接口 ------------------------------
@@ -167,15 +162,10 @@ PathString JoinPaths(const PathList& parts)
 
 PathString NormalizePath(const PathString& path)
 {
-    try {
-        auto normalized = fs::weakly_canonical(path);
-        SetLastError(ErrorCode::SUCCESS);
-        return normalized.string();
-    } catch (const std::exception& e) {
-        COMMON_LOG_EXCEPTION(e, "Failed to normalize path: %s", path.c_str());
-        SetLastError(ErrorCode::PATH_TOO_LONG);
-        return "";
-    }
+    std::error_code ec;
+    auto normalized = fs::weakly_canonical(path, ec);
+    ConvertSysEcToErrorCode(ec);
+    return ec ? "" : normalized.string();
 }
 
 PathString ToAbsolutePath(const PathString& relPath, const PathString& baseDir)
@@ -183,15 +173,10 @@ PathString ToAbsolutePath(const PathString& relPath, const PathString& baseDir)
     fs::path base = baseDir.empty() ? fs::current_path() : fs::path(baseDir);
     fs::path relative(relPath);
     fs::path combined = base / relative;
-    try {
-        auto absPath = fs::absolute(combined).lexically_normal().string();
-        SetLastError(ErrorCode::SUCCESS);
-        return absPath;
-    } catch (const fs::filesystem_error& e) {
-        COMMON_LOG_EXCEPTION(e, "Failed to convert the path: %s", relPath.c_str());
-        SetLastError(ErrorCode::PATH_TOO_LONG);
-        return "";
-    }
+    std::error_code ec;
+    auto absPath = fs::absolute(combined, ec);
+    ConvertSysEcToErrorCode(ec);
+    return ec ? "" : absPath.lexically_normal().string();
 }
 
 PathString GetDirName(const PathString& path)
@@ -245,7 +230,7 @@ bool IsPathTooLong(const PathString& path)
 // ------------------------------ 文件操作接口 ------------------------------
 bool FileExists(const PathString& path)
 {
-    auto entrType = GetEtryType(path);
+    auto entrType = GetEntryType(path);
     bool exists = false;
     switch (entrType) {
         case EntryType::FILE:
@@ -254,11 +239,9 @@ bool FileExists(const PathString& path)
             break;
         case EntryType::NONEXISTENT:
             SetLastError(ErrorCode::NOT_FOUND);
-            COMMON_LOG_ERR("File not exist: %s", path.c_str());
             break;
         default:
             SetLastError(ErrorCode::NOT_FILE);
-            COMMON_LOG_ERR("File is %s: %s", GetEntryTypeString(entrType), path.c_str());
             break;
     }
     return exists;
@@ -266,12 +249,83 @@ bool FileExists(const PathString& path)
 
 bool CreateFile(const PathString& path)
 {
+    EntryType type = GetEntryType(path);
+    if (type == EntryType::FILE) {
+        SetLastError(ErrorCode::ALREADY_EXISTS);
+        COMMON_LOG_INFO("File already exist: %s", path.c_str());
+        return true;
+    }
+    if (type != EntryType::NONEXISTENT) {
+        SetLastError(ErrorCode::NOT_FILE);
+        COMMON_LOG_WARN("Target invalid: %s", GetEntryTypeString(type));
+        return false;
+    }
     std::ofstream file(path, std::ios::out | std::ios::binary);
     if (file.is_open()) {
         SetLastError(ErrorCode::SUCCESS);
         return true;
     }
+    std::error_code ec(errno, std::generic_category());
+    ConvertSysEcToErrorCode(ec);
+    return false;
+}
 
+bool DeleteFile(const PathString& path)
+{
+    EntryType type = GetEntryType(path);
+    if (type == EntryType::NONEXISTENT) {
+        COMMON_LOG_INFO("File not exits: %s", path.c_str());
+        SetLastError(ErrorCode::NOT_FOUND);
+        return true;
+    }
+    if (type != EntryType::FILE) {
+        COMMON_LOG_ERR("Failed to delete file %s, Type: %s", path.c_str(), GetEntryTypeString(type));
+        SetLastError(ErrorCode::NOT_FILE);
+        return false;
+    }
+    std::error_code ec;
+    bool result = fs::remove(path, ec);
+    ConvertSysEcToErrorCode(ec);
+    return result;
+}
+
+bool CopyFile(const PathString& src, const PathString& dest, bool overwrite)
+{
+    return false;
+}
+
+PathString ReadTextFile(const PathString& path)
+{
+    return "";
+}
+
+types::filesystem::ByteVector ReadBinaryFile(const PathString& path)
+{
+    return {};
+}
+
+bool WriteTextFile(const PathString& path, const PathString& content, bool append)
+{
+    return false;
+}
+
+bool WriteBinaryFile(const PathString& path, const types::filesystem::ByteVector& data, bool append)
+{
+    return false;
+}
+
+types::filesystem::FileSize GetFileSize(const PathString& path)
+{
+    return {};
+}
+
+types::filesystem::FileInfo GetFileInfo(const PathString& path)
+{
+    return {};
+}
+
+bool SetFilePermissions(const PathString& path, types::filesystem::Permission perm)
+{
     return false;
 }
 
@@ -279,7 +333,7 @@ bool CreateFile(const PathString& path)
 
 bool DirExists(const PathString& path)
 {
-    EntryType type = GetEtryType(path);
+    EntryType type = GetEntryType(path);
     bool result = false;
     switch (type) {
         case EntryType::DIRECTORY:
@@ -290,7 +344,6 @@ bool DirExists(const PathString& path)
             SetLastError(ErrorCode::NOT_FOUND);
             break;
         default:
-            COMMON_LOG_ERR("Target type invalid: %s", GetEntryTypeString(type));
             SetLastError(ErrorCode::NOT_DIRECTORY);
             break;
     }
@@ -299,35 +352,32 @@ bool DirExists(const PathString& path)
 
 bool CreateDir(const PathString& path, bool recursive)
 {
-    auto type = GetEtryType(path);
+    auto type = GetEntryType(path);
     if (type == EntryType::DIRECTORY) {
-        SetLastError(ErrorCode::SUCCESS);
+        SetLastError(ErrorCode::ALREADY_EXISTS);
         COMMON_LOG_INFO("Dir already exist: %s", path.c_str());
         return true;
     }
-    if (type != EntryType::NONEXISTENT) {
+    if (type != EntryType::NONEXISTENT && type != EntryType::DIRECTORY) {
         COMMON_LOG_ERR("Target type invalid: %s", GetEntryTypeString(type));
         SetLastError(ErrorCode::NOT_DIRECTORY);
         return false;
     }
-    try {
-        if (recursive) {
-            fs::create_directories(path);
-        } else {
-            fs::create_directory(path);
-        }
-        SetLastError(ErrorCode::SUCCESS);
-        return true;
-    } catch (const std::exception& e) {
-        COMMON_LOG_EXCEPTION(e, "Failed to create dir %s.", recursive ? "recursive" : "not recursive");
-        SetLastError(ErrorCode::PERMISSION_DENIED);
-        return false;
+    std::error_code ec;
+    bool result = false;
+
+    if (recursive) {
+        result = fs::create_directories(path, ec);
+    } else {
+        result = fs::create_directory(path, ec);
     }
+    ConvertSysEcToErrorCode(ec);
+    return result;
 }
 
 bool DeleteDir(const PathString& path, bool recursive)
 {
-    EntryType type = GetEtryType(path);
+    EntryType type = GetEntryType(path);
 
     if (type == EntryType::NONEXISTENT) {
         COMMON_LOG_INFO("Delete dir success, not exits: %s", path.c_str());
@@ -339,21 +389,32 @@ bool DeleteDir(const PathString& path, bool recursive)
         SetLastError(ErrorCode::NOT_DIRECTORY);
         return false;
     }
-    try {
-        bool result = false;
-        if (recursive) {
-            result = fs::remove_all(path) > 0;
-        } else {
-            result = fs::remove(path);  // 非递归删除，目录必须为空
-        }
-        SetLastError(result ? ErrorCode::SUCCESS : ErrorCode::NOT_FOUND);
-        COMMON_LOG_COND(result, "Remove directory %s : %s", recursive ? "recursive" : "not recursive", path.c_str());
-        return true;
-    } catch (const std::exception& e) {
-        COMMON_LOG_EXCEPTION(e, "Failed to delete dir %s", recursive ? "recursive" : "not recursive");
-        SetLastError(ErrorCode::PERMISSION_DENIED);
-        return false;
+    std::error_code ec;
+    bool result = false;
+
+    if (recursive) {
+        result = fs::remove_all(path, ec) > 0;
+    } else {
+        result = fs::remove(path, ec);  // 非递归删除，目录必须为空
     }
+    ConvertSysEcToErrorCode(ec);
+    return result;
+}
+
+types::filesystem::PathList ListDir(const PathString& path)
+{
+    // TODO: 未实现
+    return {};
+}
+
+std::vector<types::filesystem::FileInfo> ListDirDetailed(const PathString& path)
+{
+    return {};
+}
+
+types::filesystem::FileSize GetDirSize(const PathString& path)
+{
+    return 0;
 }
 
 // ------------------------------ 错误处理接口 ------------------------------
@@ -362,30 +423,9 @@ ErrorCode GetLastError()
     return g_fileSystemLastError;
 }
 
-std::string_view GetErrorString(constants::filesystem::ErrorCode code)
+const char* GetLastErrorString()
 {
-    switch (code) {
-        case constants::filesystem::ErrorCode::SUCCESS:
-            return "Success";
-        case constants::filesystem::ErrorCode::NOT_FOUND:
-            return "Not found";
-        case constants::filesystem::ErrorCode::PERMISSION_DENIED:
-            return "Permissin denied";
-        case constants::filesystem::ErrorCode::PATH_TOO_LONG:
-            return "Path too long";
-        case constants::filesystem::ErrorCode::ALREADY_EXISTS:
-            return "Target already exists";
-        case constants::filesystem::ErrorCode::NOT_DIRECTORY:
-            return "Not directory";
-        case constants::filesystem::ErrorCode::NOT_FILE:
-            return "Not file";
-        case constants::filesystem::ErrorCode::IO_ERROR:
-            return "I/O error";
-        case constants::filesystem::ErrorCode::SYSTEM_ERROR:
-            return "System error";
-        default:
-            return "Unknown error code";
-    }
+    return GetErrorString(g_fileSystemLastError);
 }
 
 }  // namespace common::utils::filesystem

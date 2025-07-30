@@ -12,6 +12,8 @@
 #ifndef COMMON_UTILS_FILESYSTEM_UTILS_INTERNAL_H
 #define COMMON_UTILS_FILESYSTEM_UTILS_INTERNAL_H
 
+#include <system_error>
+
 #include "common/constants/filesystem_constants.h"
 
 namespace common::utils::filesystem::internal {
@@ -23,6 +25,9 @@ inline void SetLastError(constants::filesystem::ErrorCode code)
 {
     g_fileSystemLastError = code;
 }
+
+void ConvertSysEcToErrorCode(const std::error_code& ec);
+
 }  // namespace common::utils::filesystem::internal
 
 #endif  // COMMON_UTILS_FILESYSTEM_UTILS_INTERNAL_H

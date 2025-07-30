@@ -50,17 +50,53 @@ constexpr const char* ALT_PATH_SEP = "";  ///< 无替代分隔符
  * @brief 错误码枚举，跨平台统一的错误标识
  */
 enum class ErrorCode {
-    SUCCESS = 0,            ///< 操作成功
-    NOT_FOUND = 1,          ///< 路径不存在
-    PERMISSION_DENIED = 2,  ///< 权限不足
-    PATH_TOO_LONG = 3,      ///< 路径长度超过系统限制
-    ALREADY_EXISTS = 4,     ///< 目标路径已存在
-    NOT_DIRECTORY = 5,      ///< 路径指向的不是目录
-    NOT_FILE = 6,           ///< 路径指向的不是文件
-    IO_ERROR = 7,           ///< I/O操作错误
-    SYSTEM_ERROR = 100      ///< 系统级错误
+    SUCCESS = 0,        ///< 操作成功
+    NOT_FOUND,          ///< 路径不存在
+    PERMISSION_DENIED,  ///< 权限不足
+    PATH_TOO_LONG,      ///< 路径长度超过系统限制
+    ALREADY_EXISTS,     ///< 目标路径已存在
+    NOT_DIRECTORY,      ///< 路径指向的不是目录
+    NOT_FILE,           ///< 路径指向的不是文件
+    IO_ERROR,           ///< I/O操作错误
+    PATH_INVALID,
+    DIR_NOT_EMPTY,
+    SYSTEM_ERROR = 100  ///< 系统级错误
 };
 
+/**
+ * @brief 将错误码转换为人类可读的描述字符串
+ * @param code 错误码
+ * @return 错误描述字符串
+ */
+inline const char* GetErrorString(ErrorCode code)
+{
+    switch (code) {
+        case ErrorCode::SUCCESS:
+            return "Success";
+        case ErrorCode::NOT_FOUND:
+            return "Not found";
+        case ErrorCode::PERMISSION_DENIED:
+            return "Permissin denied";
+        case ErrorCode::PATH_TOO_LONG:
+            return "Path too long";
+        case ErrorCode::ALREADY_EXISTS:
+            return "Target already exists";
+        case ErrorCode::NOT_DIRECTORY:
+            return "Not directory";
+        case ErrorCode::NOT_FILE:
+            return "Not file";
+        case ErrorCode::IO_ERROR:
+            return "I/O error";
+        case ErrorCode::PATH_INVALID:
+            return "Path invalid";
+        case ErrorCode::DIR_NOT_EMPTY:
+            return "Directory not empty";
+        case ErrorCode::SYSTEM_ERROR:
+            return "System error";
+        default:
+            return "Unknown error code";
+    }
+}
 }  // namespace common::constants::filesystem
 
 #endif  // COMMON_CONSTANTS_FILESYSTEM_CONSTANTS_H

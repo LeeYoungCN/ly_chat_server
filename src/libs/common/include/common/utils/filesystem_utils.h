@@ -40,7 +40,7 @@ namespace common::utils::filesystem {
  * @note 函数内部处理了符号链接的特殊情况：返回链接本身的类型，
  *       而非链接指向的目标类型。如需获取目标类型，需先解析链接。
  */
-common::types::filesystem::EntryType GetEtryType(const types::filesystem::PathString& path);
+common::types::filesystem::EntryType GetEntryType(const types::filesystem::PathString& path);
 
 const char* GetEntryTypeString(common::types::filesystem::EntryType type);
 /**
@@ -271,10 +271,11 @@ types::filesystem::FileSize GetDirSize(const types::filesystem::PathString& path
 constants::filesystem::ErrorCode GetLastError();
 
 /**
- * @brief 将错误码转换为人类可读的描述字符串
+ * @brief 将最近的错误码转换为人类可读的描述字符串
  * @param code 错误码
  * @return 错误描述字符串
  */
-std::string_view GetErrorString(constants::filesystem::ErrorCode code);
+const char* GetLastErrorString();
+
 }  // namespace common::utils::filesystem
 #endif  // COMMON_UTILS_FILESYSTEM_UTILS_H

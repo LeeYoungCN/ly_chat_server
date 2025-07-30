@@ -23,8 +23,9 @@ protected:
 void TestFilesystemUtilsDir::SetUp()
 {
     TestFilesystemUtilsBase::SetUp();
-    m_testDir1 = m_processDir + "/test_dir1";
-    m_testDir2 = m_processDir + "/test_dir1/test_dir2";
+
+    m_testDir1 = ToAbsolutePath("./test_dir1", m_processDir);
+    m_testDir2 = ToAbsolutePath("./test_dir2", m_testDir1);
     EXPECT_TRUE(DeleteDir(m_testDir1, true));
     EXPECT_FALSE(DirExists(m_testDir1));
 }
@@ -69,13 +70,13 @@ TEST_F(TestFilesystemUtilsDir, DeleteDir_TypeInvalid)
 TEST_F(TestFilesystemUtilsDir, CreateDir_TypeInvalid)
 {
     EXPECT_FALSE(CreateDir(m_process));
-    EXPECT_EQ(GetLastError(), ErrorCode::NOT_DIRECTORY);
+    EXPECT_EQ(GetLastError(), ErrorCode::NOT_DIRECTORY) << GetLastErrorString();
 }
 
 TEST_F(TestFilesystemUtilsDir, CreateDir_AlreadyExist)
 {
     EXPECT_TRUE(CreateDir(m_processDir));
-    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS);
+    EXPECT_EQ(GetLastError(), ErrorCode::ALREADY_EXISTS) << GetLastErrorString();
 }
 
 TEST_F(TestFilesystemUtilsDir, CreateDir_NotRecursiveSuccess)
@@ -91,15 +92,16 @@ TEST_F(TestFilesystemUtilsDir, CreateDir_NotRecursiveSuccess)
 TEST_F(TestFilesystemUtilsDir, CreateDir_NotRecursiveFalse)
 {
     EXPECT_FALSE(CreateDir(m_testDir2, false));
-    EXPECT_EQ(GetLastError(), ErrorCode::PERMISSION_DENIED);
-    EXPECT_FALSE(DirExists(m_testDir2));
+    EXPECT_EQ(GetLastError(), ErrorCode::NOT_FOUND);
+    EXPECT_FALSE(DirExists(m_testDir2)) << GetLastErrorString();
 }
 
 TEST_F(TestFilesystemUtilsDir, CreateDir_RecursiveSuccess)
 {
     EXPECT_FALSE(DirExists(m_testDir1));
     EXPECT_TRUE(CreateDir(m_testDir2, true));
-    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS);
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+    ;
     EXPECT_TRUE(DirExists(m_testDir2));
 }
 
@@ -110,7 +112,7 @@ TEST_F(TestFilesystemUtilsDir, DeleteDir_NotRecursiveFalse)
     EXPECT_TRUE(DirExists(m_testDir2));
 
     EXPECT_FALSE(DeleteDir(m_testDir1, false));
-    EXPECT_EQ(GetLastError(), ErrorCode::PERMISSION_DENIED);
+    EXPECT_EQ(GetLastError(), ErrorCode::DIR_NOT_EMPTY);
     EXPECT_TRUE(DirExists(m_testDir1));
 }
 
