@@ -73,7 +73,7 @@ EntryType GetEtryType(const PathString& path)
     }
 }
 
-std::string_view GetEntryTypeString(EntryType type)
+const char* GetEntryTypeString(EntryType type)
 {
     switch (type) {
         case EntryType::NONEXISTENT:

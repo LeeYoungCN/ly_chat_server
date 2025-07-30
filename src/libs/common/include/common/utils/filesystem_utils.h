@@ -42,7 +42,7 @@ namespace common::utils::filesystem {
  */
 common::types::filesystem::EntryType GetEtryType(const types::filesystem::PathString& path);
 
-std::string_view GetEntryTypeString(common::types::filesystem::EntryType type);
+const char* GetEntryTypeString(common::types::filesystem::EntryType type);
 /**
  * @brief 获取当前进程的可执行文件路径
  * @return 可执行文件的绝对路径
