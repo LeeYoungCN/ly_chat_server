@@ -10,6 +10,10 @@
 
 #include "common/types/logging_types.h"
 
+namespace {
+common::types::logging::LogLevel g_logLevel = common::types::logging::LogLevel::INFO;
+}
+
 namespace common {
 
 using namespace common::types::logging;
@@ -41,6 +45,9 @@ std::string formatLog(common::types::logging::LogLevel level, const char* file, 
 void CommonDebugLog(common::types::logging::LogLevel level, const char* file, int line, const char* func,
                     const char* fmt, ...)
 {
+    if (level < g_logLevel) {
+        return;
+    }
     static std::mutex mtx;
     std::unique_lock<std::mutex> lock(mtx);
 
@@ -53,5 +60,10 @@ void CommonDebugLog(common::types::logging::LogLevel level, const char* file, in
 
     std::string logStr = formatLog(level, file, line, func, buffer);
     std::cout << logStr << std::endl;
+}
+
+void SetDebugLogLevel(common::types::logging::LogLevel level)
+{
+    g_logLevel = level;
 }
 }  // namespace common

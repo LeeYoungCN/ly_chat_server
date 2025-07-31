@@ -15,6 +15,8 @@
 #include "common/types/logging_types.h"
 
 namespace common {
+void SetDebugLogLevel(common::types::logging::LogLevel level);
+
 void CommonDebugLog(common::types::logging::LogLevel level, const char* file, int line, const char* func,
                     const char* fmt, ...);
 
@@ -31,6 +33,8 @@ void CommonDebugLog(common::types::logging::LogLevel level, const char* file, in
     } while (0)
 #endif
 
+#define COMMON_LOG_DBG(fmt, ...) COMMON_LOG(common::types::logging::LogLevel::DEBUG, fmt __VA_OPT__(, ) __VA_ARGS__);
+
 #define COMMON_LOG_INFO(fmt, ...) COMMON_LOG(common::types::logging::LogLevel::INFO, fmt __VA_OPT__(, ) __VA_ARGS__);
 
 #define COMMON_LOG_WARN(fmt, ...) COMMON_LOG(common::types::logging::LogLevel::WARN, fmt __VA_OPT__(, ) __VA_ARGS__);
@@ -46,11 +50,13 @@ void CommonDebugLog(common::types::logging::LogLevel level, const char* file, in
 #define COMMON_LOG_COND(condition, fmt, ...)                             \
     do {                                                                 \
         if (!(condition)) {                                              \
-            COMMON_LOG_ERR("Failed to " fmt __VA_OPT__(, ) __VA_ARGS__); \
+            COMMON_LOG_ERR(fmt " failed." __VA_OPT__(, ) __VA_ARGS__);   \
+        } else {                                                         \
+            COMMON_LOG_DBG(fmt " successed." __VA_OPT__(, ) __VA_ARGS__) \
         }                                                                \
     } while (0)
-#define COMMON_LOG_EXCEPTION(e, fmt, ...)                             \
-    do {                                                              \
+#define COMMON_LOG_EXCEPTION(e, fmt, ...)                                     \
+    do {                                                                      \
         COMMON_LOG_ERR(fmt " excp: %s" __VA_OPT__(, ) __VA_ARGS__, e.what()); \
     } while (0)
 #endif  // COMMON_DEBUG_DEBUG_LOG_H
