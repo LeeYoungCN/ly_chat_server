@@ -85,7 +85,17 @@
             "options": {
                 "cwd": "${workspaceFolder}/script/dev"
             },
-            "command": "./git_push.sh*",
+            "command": "./git_oper.sh push",
+            "args": [],
+            "problemMatcher": []
+        },
+        {
+            "label": "git pull --rebase",
+            "detail": "更新代码",
+            "options": {
+                "cwd": "${workspaceFolder}/script/dev"
+            },
+            "command": "./git_oper.sh pull",
             "args": [],
             "problemMatcher": []
         }
