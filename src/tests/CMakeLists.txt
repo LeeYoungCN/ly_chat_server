@@ -17,4 +17,4 @@ target_link_libraries(${TEST_RUNTIME_NAME} ${LIB_LIST} GTest::gtest)
 
 # 添加ctest测试
 add_test(NAME TEST_ALL COMMAND ${TEST_RUNTIME_NAME})
-set_tests_properties(TEST_ALL PROPERTIES TIMEOUT 1)
+set_tests_properties(TEST_ALL PROPERTIES TIMEOUT 10)

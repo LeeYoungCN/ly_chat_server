@@ -108,4 +108,42 @@ TEST_F(TestFilesystemUtilsFile, DelteteFile_FileExist)
     EXPECT_EQ(GetLastError(), ErrorCode::NOT_FOUND) << GetLastErrorString();
 }
 
+TEST_F(TestFilesystemUtilsFile, CopyFile_Success)
+{
+    EXPECT_TRUE(CreateFileUtils(m_testFile));
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+    std::string newFile = m_processDir + PATH_SEP + "file2";
+    EXPECT_TRUE(CopyFileUtils(m_testFile, newFile));
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+
+    EXPECT_TRUE(FileExists(newFile));
+
+    EXPECT_TRUE(CopyFileUtils(m_testFile, newFile, true));
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+    EXPECT_TRUE(DeleteFileUtils(newFile));
+}
+
+TEST_F(TestFilesystemUtilsFile, CopyFile_SrcNotExist)
+{
+    std::string newFile = m_processDir + PATH_SEP + "file2";
+    EXPECT_FALSE(CopyFileUtils(m_testFile, newFile));
+    EXPECT_EQ(GetLastError(), ErrorCode::NOT_FOUND) << GetLastErrorString();
+}
+
+TEST_F(TestFilesystemUtilsFile, CopyFile_SrcInvalid)
+{
+    std::string newFile = m_processDir + PATH_SEP + "file2";
+    EXPECT_FALSE(CopyFileUtils(m_processDir, newFile));
+    EXPECT_EQ(GetLastError(), ErrorCode::NOT_FILE) << GetLastErrorString();
+}
+
+TEST_F(TestFilesystemUtilsFile, CopyFile_DstInvalid)
+{
+    EXPECT_TRUE(CreateFileUtils(m_testFile));
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+    EXPECT_FALSE(CopyFileUtils(m_testFile, m_processDir));
+    EXPECT_EQ(GetLastError(), ErrorCode::NOT_FILE) << GetLastErrorString();
+}
+
+
 }  // namespace test::test_utils::test_filesystem_utils

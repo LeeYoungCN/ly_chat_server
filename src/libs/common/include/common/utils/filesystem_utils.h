@@ -160,7 +160,7 @@ bool DeleteFileUtils(const common::types::filesystem::PathString& path);
  * @param overwrite 若目标已存在，是否覆盖（默认为false）
  * @return 复制成功返回true，否则返回false
  */
-bool CopyFile(const types::filesystem::PathString& src, const types::filesystem::PathString& dest,
+bool CopyFileUtils(const types::filesystem::PathString& src, const types::filesystem::PathString& dest,
               bool overwrite = false);
 
 /**

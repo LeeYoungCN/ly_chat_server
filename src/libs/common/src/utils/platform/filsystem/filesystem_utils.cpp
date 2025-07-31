@@ -339,9 +339,41 @@ bool DeleteFileUtils(const PathString& path)
     }
 }
 
-bool CopyFile(const PathString& src, const PathString& dest, bool overwrite)
+bool CopyFileUtils(const PathString& src, const PathString& dest, bool overwrite)
 {
-    return false;
+    EntryType type = GetEntryType(src);
+    if (type == EntryType::NONEXISTENT) {
+        DEBUG_LOG_ERR("Src file nonexist: %s", src.c_str());
+        SetLastError(ErrorCode::NOT_FOUND);
+        return false;
+    } else if (type != EntryType::FILE) {
+        DEBUG_LOG_ERR("Src file: %s, Type invalid: %s", src.c_str(), GetEntryTypeString(type));
+        SetLastError(ErrorCode::NOT_FILE);
+        return false;
+    }
+
+    type = GetEntryType(dest);
+    if (type != EntryType::FILE && type != EntryType::NONEXISTENT) {
+        DEBUG_LOG_ERR("Dest file: %s, Type invalid: %s", src.c_str(), GetEntryTypeString(type));
+        SetLastError(ErrorCode::NOT_FILE);
+        return false;
+    }
+    fs::copy_options option = (overwrite ? fs::copy_options::overwrite_existing : fs::copy_options::none);
+    try {
+        fs::copy_file(src, dest, option);
+        SetLastError(ErrorCode::SUCCESS);
+        DEBUG_LOG_DBG(
+            "Copy file %s successd. src: %s. dst: %s", (overwrite ? "overweite" : "none"), src.c_str(), dest.c_str());
+        return true;
+    } catch (const fs::filesystem_error& e) {
+        ConvertSysEcToErrorCode(e.code());
+        DEBUG_LOG_EXCEPTION(e, "Copy file %s failed.", (overwrite ? "overweite" : "none"));
+        return false;
+    } catch (const std::exception& e) {
+        ConverExceptionToErrorCode(e);
+        DEBUG_LOG_EXCEPTION(e, "Copy file %s failed.", (overwrite ? "overweite" : "none"));
+        return false;
+    }
 }
 
 PathString ReadTextFile(const PathString& path)
