@@ -29,15 +29,15 @@ void ConverExceptionToErrorCode(const std::exception& ex)
     try {
         std::throw_with_nested(ex);
     } catch (const std::filesystem::filesystem_error& fse) {
-        COMMON_LOG_WARN("File system error: %s (code: %d)", fse.what(), fse.code().value());
+        DEBUG_LOG_WARN("File system error: %s (code: %d)", fse.what(), fse.code().value());
         ConvertSysEcToErrorCode(fse.code());
         return;
     } catch (const std::system_error& se) {
-        COMMON_LOG_WARN("System error: %s (code: %d)", se.what(), se.code().value());
+        DEBUG_LOG_WARN("System error: %s (code: %d)", se.what(), se.code().value());
         ConvertSysEcToErrorCode(se.code());
         return;
     } catch (const std::exception& other) {
-        COMMON_LOG_WARN("Non-filesystem exception: %s", other.what());
+        DEBUG_LOG_WARN("Non-filesystem exception: %s", other.what());
         SetLastError(ErrorCode::SYSTEM_ERROR);
         return;
     }
@@ -50,7 +50,7 @@ void ConvertSysEcToErrorCode(const std::error_code& ec)
         return;
     }
     // 详细日志便于调试
-    COMMON_LOG_WARN(
+    DEBUG_LOG_WARN(
         "Convert error: %s (category: %s, value: %d)", ec.message().c_str(), ec.category().name(), ec.value());
     // if (ec.category() != std::system_category()) {
     //     SetLastError(ErrorCode::SYSTEM_ERROR);

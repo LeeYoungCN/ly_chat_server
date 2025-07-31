@@ -21,7 +21,7 @@ using namespace ::common::types::date_time;
 bool SafeLocalTime(const time_t* timer, struct tm* timeInfo)
 {
     if (timeInfo == nullptr) {
-        COMMON_LOG_ERR("Output tm pointer is nullptr");
+        DEBUG_LOG_ERR("Output tm pointer is nullptr");
         return false;
     }
     time_t timeVal =
@@ -33,16 +33,16 @@ bool SafeLocalTime(const time_t* timer, struct tm* timeInfo)
     if (err != 0) {
         // 特别处理负数时间戳的错误提示
         if (timeVal < 0) {
-            COMMON_LOG_WARN("localtime_s may not support negative timestamp ({}), err={}", timeVal, err);
+            DEBUG_LOG_WARN("localtime_s may not support negative timestamp ({}), err={}", timeVal, err);
         } else {
-            COMMON_LOG_ERR("localtime_s failed, err={}", err);
+            DEBUG_LOG_ERR("localtime_s failed, err={}", err);
         }
         return false;
     }
 #else
     // Linux/macOS 使用 localtime_r
     if (localtime_r(&timeVal, timeInfo) == nullptr) {
-        COMMON_LOG_ERR("localtime_r failed for timestamp={}", timeVal);
+        DEBUG_LOG_ERR("localtime_r failed for timestamp={}", timeVal);
         return false;
     }
 #endif
@@ -52,7 +52,7 @@ bool SafeLocalTime(const time_t* timer, struct tm* timeInfo)
 bool SafeGmtime(const time_t* timer, struct tm* timeInfo)
 {
     if (timeInfo == nullptr) {
-        COMMON_LOG_ERR("Output tm pointer is nullptr");
+        DEBUG_LOG_ERR("Output tm pointer is nullptr");
         return false;
     }
     time_t timeVal =
@@ -64,16 +64,16 @@ bool SafeGmtime(const time_t* timer, struct tm* timeInfo)
     if (err != 0) {
         // 针对负数时间戳的错误做特殊提示
         if (timeVal < 0) {
-            COMMON_LOG_WARN("gmtime_s may not support negative timestamp ({}), err={}", timeVal, err);
+            DEBUG_LOG_WARN("gmtime_s may not support negative timestamp ({}), err={}", timeVal, err);
         } else {
-            COMMON_LOG_ERR("gmtime_s failed, err={}", err);
+            DEBUG_LOG_ERR("gmtime_s failed, err={}", err);
         }
         return false;
     }
 #else
     // Linux/macOS使用gmtime_r（对负数时间戳支持更完善）
     if (gmtime_r(&timeVal, timeInfo) == nullptr) {
-        COMMON_LOG_ERR("gmtime_r failed for timestamp={}", timeVal);
+        DEBUG_LOG_ERR("gmtime_r failed for timestamp={}", timeVal);
         return false;
     }
 #endif
@@ -139,7 +139,7 @@ TimeComponent LocalTimeComponent(const Timestamp& timestamp)
     TimeComponent timeComp;
 
     if (!SafeLocalTime(&timer, &timeInfo)) {
-        COMMON_LOG_ERR("Failed to get local time info.");
+        DEBUG_LOG_ERR("Failed to get local time info.");
         return timeComp;
     }
 
@@ -155,7 +155,7 @@ TimeComponent UtcTimeComponent(const Timestamp& timestamp)
     std::tm timeInfo{};
     TimeComponent timeComp;
     if (!SafeGmtime(&timer, &timeInfo)) {
-        COMMON_LOG_ERR("Failed to get UTC time info.");
+        DEBUG_LOG_ERR("Failed to get UTC time info.");
         return timeComp;
     }
 

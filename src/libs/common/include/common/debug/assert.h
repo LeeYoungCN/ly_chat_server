@@ -30,7 +30,7 @@
 #define COMMON_ASSERT(condition)             \
     do {                                     \
         if (!(condition)) {                  \
-            COMMON_LOG_ERR("ASSERT FAILED"); \
+            DEBUG_LOG_ERR("ASSERT FAILED"); \
             std::abort();                    \
         }                                    \
     } while (0)
@@ -40,7 +40,7 @@
 #define COMMON_ASSERT_MSG(condition, fmt, ...)                \
     do {                                                      \
         if (!(condition)) {                                   \
-            COMMON_LOG_FATAL(fmt __VA_OPT__(, ) __VA_ARGS__); \
+            DEBUG_LOG_FATAL(fmt __VA_OPT__(, ) __VA_ARGS__); \
         }                                                     \
     } while (0)
 #endif  // COMMON_ASSERT_MSG

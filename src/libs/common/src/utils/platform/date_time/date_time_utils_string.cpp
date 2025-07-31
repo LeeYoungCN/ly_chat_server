@@ -88,7 +88,7 @@ using namespace ::common::types::date_time;
 std::string_view GetMonthFullName(uint32_t month)
 {
     if (month < MIN_MONTH || month > MAX_MONTH) {
-        COMMON_LOG_ERR("Month out of range [%u, %u]. weekday: %u.", MIN_MONTH, MAX_MONTH, month);
+        DEBUG_LOG_ERR("Month out of range [%u, %u]. weekday: %u.", MIN_MONTH, MAX_MONTH, month);
         return "";
     }
     return MONTH_FULL_NAMES.at(month - MIN_MONTH);
@@ -97,7 +97,7 @@ std::string_view GetMonthFullName(uint32_t month)
 std::string_view GetMonthAbbrName(uint32_t month)
 {
     if (month < MIN_MONTH || month > MAX_MONTH) {
-        COMMON_LOG_ERR("Month out of range [%u, %u]. weekday: %u.", MIN_MONTH, MAX_MONTH, month);
+        DEBUG_LOG_ERR("Month out of range [%u, %u]. weekday: %u.", MIN_MONTH, MAX_MONTH, month);
         return "";
     }
     return MONTH_ABBR_NAMES.at(month - MIN_MONTH);
@@ -106,7 +106,7 @@ std::string_view GetMonthAbbrName(uint32_t month)
 std::string_view GetWeekdayFullName(uint32_t weekday)
 {
     if (weekday < MIN_WEEK_DAY || weekday > MAX_WEEK_DAY) {
-        COMMON_LOG_ERR("Weekday out of range [%u, %u]. weekday: %u.", MIN_WEEK_DAY, MAX_WEEK_DAY, weekday);
+        DEBUG_LOG_ERR("Weekday out of range [%u, %u]. weekday: %u.", MIN_WEEK_DAY, MAX_WEEK_DAY, weekday);
         return "";
     }
     return WEEKDAY_FULL_NAMES.at(weekday);
@@ -115,7 +115,7 @@ std::string_view GetWeekdayFullName(uint32_t weekday)
 std::string_view GetWeekdayAbbrName(uint32_t weekday)
 {
     if (weekday < MIN_WEEK_DAY || weekday > MAX_WEEK_DAY) {
-        COMMON_LOG_ERR("Weekday out of range [%u, %u]. weekday: %u.", MIN_WEEK_DAY, MAX_WEEK_DAY, weekday);
+        DEBUG_LOG_ERR("Weekday out of range [%u, %u]. weekday: %u.", MIN_WEEK_DAY, MAX_WEEK_DAY, weekday);
         return "";
     }
     return WEEKDAY_ABBR_NAMES.at(weekday);
@@ -133,7 +133,7 @@ std::string FormatTimeString(const TimeComponent& timeComp, const std::string_vi
     size_t len = FormatTimeBuffer(timeString.data(), timeString.capacity(), timeComp, format);
 
     if (len <= 0 || len > timeString.capacity()) {
-        COMMON_LOG_ERR("Time format failed or buffer overflow. len: %llu.", len);
+        DEBUG_LOG_ERR("Time format failed or buffer overflow. len: %llu.", len);
         len = 0;
     }
     timeString.resize(len);  // resize仅修改字符串的size属性，不拷贝数据
@@ -150,7 +150,7 @@ size_t FormatTimeBuffer(char* buffer, size_t bufferSize, Timestamp timestamp, co
 size_t FormatTimeBuffer(char* buffer, size_t bufferSize, const TimeComponent& timeComp, const std::string_view& format)
 {
     if (buffer == nullptr || bufferSize == 0) {
-        COMMON_LOG_ERR("Invalid param!");
+        DEBUG_LOG_ERR("Invalid param!");
         return 0;
     }
     size_t formatIdx = 0;
@@ -163,7 +163,7 @@ size_t FormatTimeBuffer(char* buffer, size_t bufferSize, const TimeComponent& ti
     auto insertDateTimeNumber = [&](uint32_t number, size_t numberLen) -> bool {
         uint32_t tmp = number;
         if (bufferIdx + numberLen >= bufferSize) {
-            COMMON_LOG_ERR("Failed to insert number: %lu", number);
+            DEBUG_LOG_ERR("Failed to insert number: %lu", number);
             return false;
         }
 
@@ -181,7 +181,7 @@ size_t FormatTimeBuffer(char* buffer, size_t bufferSize, const TimeComponent& ti
         std::string_view insertName = name.empty() ? "?" : name;
 
         if (bufferIdx + insertName.length() >= bufferSize) {
-            COMMON_LOG_ERR("Failed to insert string: %s", insertName.data());
+            DEBUG_LOG_ERR("Failed to insert string: %s", insertName.data());
             return false;
         }
 
@@ -256,7 +256,7 @@ size_t FormatTimeBuffer(char* buffer, size_t bufferSize, const TimeComponent& ti
         }
     }
     if (formatIdx < format.length() || bufferIdx >= bufferSize) {
-        COMMON_LOG_ERR("Incomplete format processing (remaining: %s)", format.data() + formatIdx);
+        DEBUG_LOG_ERR("Incomplete format processing (remaining: %s)", format.data() + formatIdx);
         bufferIdx = 0;
     }
 
