@@ -27,7 +27,7 @@ void CommonDebugLog(common::types::logging::LogLevel level, const char* file, in
 #define DEBUG_LOG(level, fmt, ...) (static_cast<void>(0))
 #else
    // Debug模式：实际日志输出，支持所有级别
-#define DEBUG_LOG(level, fmt, ...)                                                                  \
+#define DEBUG_LOG(level, fmt, ...)                                                                   \
     do {                                                                                             \
         common::CommonDebugLog(level, __FILE__, __LINE__, __func__, fmt __VA_OPT__(, ) __VA_ARGS__); \
     } while (0)
@@ -42,21 +42,29 @@ void CommonDebugLog(common::types::logging::LogLevel level, const char* file, in
 #define DEBUG_LOG_ERR(fmt, ...) DEBUG_LOG(common::types::logging::LogLevel::ERR, fmt __VA_OPT__(, ) __VA_ARGS__);
 
 #define DEBUG_LOG_FATAL(fmt, ...)                                                           \
-    do {                                                                                     \
+    do {                                                                                    \
         DEBUG_LOG(common::types::logging::LogLevel::FATAL, fmt __VA_OPT__(, ) __VA_ARGS__); \
-        std::abort();                                                                        \
+        std::abort();                                                                       \
     } while (0)
 
 #define DEBUG_LOG_COND(condition, fmt, ...)                             \
-    do {                                                                 \
-        if (!(condition)) {                                              \
+    do {                                                                \
+        if (!(condition)) {                                             \
             DEBUG_LOG_ERR(fmt " failed." __VA_OPT__(, ) __VA_ARGS__);   \
-        } else {                                                         \
+        } else {                                                        \
             DEBUG_LOG_DBG(fmt " successed." __VA_OPT__(, ) __VA_ARGS__) \
-        }                                                                \
+        }                                                               \
     } while (0)
+
+#ifdef NDEBUG
+#define DEBUG_LOG_EXCEPTION(e, fmt, ...) \
+    do {                                 \
+        static_cast<void>(e);            \
+    } while (0)
+#else
 #define DEBUG_LOG_EXCEPTION(e, fmt, ...)                                     \
-    do {                                                                      \
+    do {                                                                     \
         DEBUG_LOG_ERR(fmt " excp: %s" __VA_OPT__(, ) __VA_ARGS__, e.what()); \
     } while (0)
+#endif
 #endif  // COMMON_DEBUG_DEBUG_LOG_H

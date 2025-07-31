@@ -1,5 +1,5 @@
-#ifndef COMMON_COMPILER_WARNINGS_H_
-#define COMMON_COMPILER_WARNINGS_H_
+#ifndef COMMON_COMPILER_WARNINGS_H
+#define COMMON_COMPILER_WARNINGS_H
 
 #include "common/compiler/macros.h"
 
@@ -29,4 +29,4 @@
 #define SUPPRESS_LOSSY_CONVERSION_WARNING _Pragma("GCC diagnostic ignored \"-Wconversion\"")
 #endif
 
-#endif  // COMMON_COMPILER_WARNINGS_H_
+#endif  // COMMON_COMPILER_WARNINGS_H

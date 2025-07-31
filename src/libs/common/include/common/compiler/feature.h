@@ -1,5 +1,5 @@
-#ifndef COMMON_COMPILER_FEATURES_H_
-#define COMMON_COMPILER_FEATURES_H_
+#ifndef COMMON_COMPILER_FEATURE_H
+#define COMMON_COMPILER_FEATURE_H
 
 #include "common/compiler/macros.h"
 
@@ -44,4 +44,4 @@
 #define thread_local __thread  // 对GCC旧版本的兼容
 #endif
 
-#endif  // COMMON_COMPILER_FEATURES_H_
+#endif  // COMMON_COMPILER_FEATURE_H

@@ -15,6 +15,12 @@ target_include_directories(${LIB_NAME}
         ${CMAKE_CURRENT_SOURCE_DIR}/src                        # 内部头文件路径
 )
 
+if (MINGW)
+    target_link_libraries(${LIB_NAME} PRIVATE pthread)
+endif()
+
+target_compile_definitions(${LIB_NAME} PRIVATE COMMON_BUILD_SHARED)
+
 set_target_properties(${LIB_NAME} PROPERTIES
     WINDOWS_EXPORT_ALL_SYMBOLS ON  # 自动导出所有符号
 )

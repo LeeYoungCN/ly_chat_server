@@ -93,7 +93,7 @@ TEST_F(TestFilesystemUtilsDir, CreateDir_NotRecursiveSuccess)
 TEST_F(TestFilesystemUtilsDir, CreateDir_NotRecursiveFalse)
 {
     EXPECT_FALSE(CreateDir(m_testDir2, false));
-    EXPECT_EQ(GetLastError(), ErrorCode::NOT_FOUND);
+    EXPECT_EQ(GetLastError(), ErrorCode::NOT_FOUND) << GetLastErrorString();;
     EXPECT_FALSE(DirExists(m_testDir2)) << GetLastErrorString();
 }
 

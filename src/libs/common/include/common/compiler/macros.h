@@ -1,5 +1,5 @@
-#ifndef COMMON_COMPILER_MACROS_H_
-#define COMMON_COMPILER_MACROS_H_
+#ifndef COMMON_COMPILER_MACROS_H
+#define COMMON_COMPILER_MACROS_H
 
 // 平台区分宏
 #if defined(_WIN32) || defined(_WIN64)
@@ -20,27 +20,31 @@
 #define PLATFORM_MACOS 0
 #endif
 
-// 编译器区分宏
-#define _COMPILER_MSVC_DEFINED defined(_MSC_VER)
-#define _COMPILER_GCC_DEFINED defined(__GNUC__) && !defined(__clang__)
-#define _COMPILER_CLANG_DEFINED defined(__clang__)
-
 #if defined(_MSC_VER)
 #define COMPILER_MSVC 1
 #define COMPILER_GCC 0
 #define COMPILER_CLANG 0
-#elif defined(__GNUC__) && !defined(__clang__)
+#define COMPILER_MINGW 0
+#elif defined(__MINGW32__) || defined(__MINGW64__)
 #define COMPILER_MSVC 0
-#define COMPILER_GCC 1
+#define COMPILER_GCC 0
 #define COMPILER_CLANG 0
+#define COMPILER_MINGW 1
 #elif defined(__clang__)
 #define COMPILER_MSVC 0
 #define COMPILER_GCC 0
 #define COMPILER_CLANG 1
+#define COMPILER_MINGW 0
+#elif defined(__GNUC__)
+#define COMPILER_MSVC 0
+#define COMPILER_GCC 1
+#define COMPILER_CLANG 0
+#define COMPILER_MINGW 0
 #else
 #define COMPILER_MSVC 0
 #define COMPILER_GCC 0
 #define COMPILER_CLANG 0
+#define COMPILER_MINGW 0
 #endif
 
 // 编译器版本检测
@@ -95,4 +99,4 @@
 #define LINK_LIBRARY(name)
 #endif
 
-#endif  // COMMON_COMPILER_MACROS_H_
+#endif  // COMMON_COMPILER_MACROS_H

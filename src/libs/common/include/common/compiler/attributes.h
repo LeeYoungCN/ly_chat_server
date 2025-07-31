@@ -1,8 +1,8 @@
-#ifndef COMMON_COMPILER_ATTRIBUTES_H_
-#define COMMON_COMPILER_ATTRIBUTES_H_
+#ifndef COMMON_COMPILER_ATTRIBUTES_H
+#define COMMON_COMPILER_ATTRIBUTES_H
 
 // 强制编译器保留符号（避免被优化）
-#ifdef _MSC_VER
+#ifdef _MSC_VER 
 #define ATTR_USED __declspec(used)
 #else
 #define ATTR_USED __attribute__((used))
@@ -55,4 +55,4 @@
 // 对齐控制（指定变量/类型的内存对齐字节数）
 #define ATTR_ALIGNED(alignment) __attribute__((aligned(alignment)))
 
-#endif  // COMMON_COMPILER_ATTRIBUTES_H_
+#endif  // COMMON_COMPILER_ATTRIBUTES_H

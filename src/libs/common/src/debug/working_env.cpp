@@ -79,7 +79,7 @@ std::string GetProcessPath()
     path[length] = '\0';
 #elif PLATFORM_MACOS
     uint32_t size = sizeof(path);
-    _NSGetExecutablePath(path, &size)
+    _NSGetExecutablePath(path, &size);
 #else
 #error "Unsupport system."
 #endif

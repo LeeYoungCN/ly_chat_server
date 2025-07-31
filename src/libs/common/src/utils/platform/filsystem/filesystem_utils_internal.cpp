@@ -1,17 +1,22 @@
 #include "internal/common/utils/filesystem_utils_internal.h"
 
+#include "common/compiler/macros.h"
+
+#if COMPILER_MSVC
+#include <windows.h>
+#endif
+
 #include <exception>
 #include <filesystem>
 #include <system_error>
 #include <unordered_map>
 
-#include "common/compiler/attributes.h"
 #include "common/constants/filesystem_constants.h"
 #include "common/debug/debug_log.h"
 #include "internal/common/utils/filesystem_utils_internal.h"
 
 namespace {
-thread_local volatile ATTR_USED common::constants::filesystem::ErrorCode g_fileSystemLastError =
+thread_local volatile common::constants::filesystem::ErrorCode g_fileSystemLastError =
     common::constants::filesystem::ErrorCode::SUCCESS;
 }
 
@@ -37,7 +42,7 @@ void ConverExceptionToErrorCode(const std::exception& ex)
         ConvertSysEcToErrorCode(se.code());
         return;
     } catch (const std::exception& other) {
-        DEBUG_LOG_WARN("Non-filesystem exception: %s", other.what());
+        DEBUG_LOG_EXCEPTION(other, "Non-filesystem exception");
         SetLastError(ErrorCode::SYSTEM_ERROR);
         return;
     }
@@ -65,6 +70,13 @@ void ConvertSysEcToErrorCode(const std::error_code& ec)
         {static_cast<int>(std::errc::directory_not_empty), ErrorCode::DIR_NOT_EMPTY},
         {static_cast<int>(std::errc::is_a_directory), ErrorCode::NOT_FILE},
         {static_cast<int>(std::errc::filename_too_long), ErrorCode::PATH_TOO_LONG},
+#if COMPILER_MSVC
+        {static_cast<int>(std::errc::no_such_process), ErrorCode::NOT_FOUND},
+        {ERROR_DIR_NOT_EMPTY, ErrorCode::DIR_NOT_EMPTY}
+#endif
+#if COMPILER_MINGW
+        {static_cast<int>(std::errc::io_error), ErrorCode::DIR_NOT_EMPTY}
+#endif
     };
 
     auto it = ERR_MAP.find(ec.value());

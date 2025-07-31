@@ -39,7 +39,7 @@ void TestFilesystemUtilsFile::SetUp()
 void TestFilesystemUtilsFile::TearDown()
 {
     TestFilesystemUtilsBase::TearDown();
-    EXPECT_TRUE(DeleteFile(m_testFile));
+    EXPECT_TRUE(DeleteFileUtils(m_testFile));
 }
 
 TEST_F(TestFilesystemUtilsFile, FileExists)
@@ -62,49 +62,49 @@ TEST_F(TestFilesystemUtilsFile, FileExists_TypeInvalid)
 
 TEST_F(TestFilesystemUtilsFile, CreateFile_AlreadyExists)
 {
-    EXPECT_TRUE(CreateFile(m_process));
+    EXPECT_TRUE(common::utils::filesystem::CreateFileUtils(m_process));
     EXPECT_EQ(GetLastError(), ErrorCode::ALREADY_EXISTS) << GetLastErrorString();
 }
 
 TEST_F(TestFilesystemUtilsFile, CreateFile_TypeInvalid)
 {
-    EXPECT_FALSE(CreateFile(m_processDir));
+    EXPECT_FALSE(common::utils::filesystem::CreateFileUtils(m_processDir));
     EXPECT_EQ(GetLastError(), ErrorCode::NOT_FILE) << GetLastErrorString();
 }
 
 TEST_F(TestFilesystemUtilsFile, CreateFile_Success)
 {
-    EXPECT_TRUE(CreateFile(m_testFile));
+    EXPECT_TRUE(common::utils::filesystem::CreateFileUtils(m_testFile));
     EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
 }
 
 TEST_F(TestFilesystemUtilsFile, CreateFile_DirNotExist)
 {
     auto newFile = ToAbsolutePath(m_testFileName, m_processDir + "/nonexist");
-    EXPECT_FALSE(CreateFile(newFile));
+    EXPECT_FALSE(common::utils::filesystem::CreateFileUtils(newFile));
     EXPECT_EQ(GetLastError(), ErrorCode::NOT_FOUND) << GetLastErrorString();
 }
 
 TEST_F(TestFilesystemUtilsFile, DelteteFile_DirNotExist)
 {
     auto newFile = ToAbsolutePath(m_testFileName, m_processDir + "/nonexist");
-    EXPECT_TRUE(DeleteFile(newFile));
+    EXPECT_TRUE(DeleteFileUtils(newFile));
     EXPECT_EQ(GetLastError(), ErrorCode::NOT_FOUND) << GetLastErrorString();
 }
 
 TEST_F(TestFilesystemUtilsFile, DelteteFile_TypeInvalid)
 {
-    EXPECT_FALSE(DeleteFile(m_processDir));
+    EXPECT_FALSE(DeleteFileUtils(m_processDir));
     EXPECT_EQ(GetLastError(), ErrorCode::NOT_FILE) << GetLastErrorString();
 }
 
 TEST_F(TestFilesystemUtilsFile, DelteteFile_FileExist)
 {
-    EXPECT_TRUE(CreateFile(m_testFile));
+    EXPECT_TRUE(common::utils::filesystem::CreateFileUtils(m_testFile));
     EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
-    EXPECT_TRUE(DeleteFile(m_testFile));
+    EXPECT_TRUE(DeleteFileUtils(m_testFile));
     EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
-    EXPECT_TRUE(DeleteFile(m_testFile));
+    EXPECT_TRUE(DeleteFileUtils(m_testFile));
     EXPECT_EQ(GetLastError(), ErrorCode::NOT_FOUND) << GetLastErrorString();
 }
 

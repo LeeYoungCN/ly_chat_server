@@ -104,14 +104,14 @@ const char* GetEntryTypeString(EntryType type)
 std::string GetProcessPath()
 {
     char path[MAX_PATH_STD] = {'\0'};
-#ifdef _WIN32
+#if PLATFORM_WINDOWS
     DWORD length = GetModuleFileNameA(nullptr, path, MAX_PATH_STD);
     if (length == 0 || length >= MAX_PATH_STD) {
         SetLastError(ErrorCode::SYSTEM_ERROR);
         DEBUG_LOG_ERR("[WIN32]Failed to get process path, length: {}", length);
         length = 0;
     }
-#elif defined(__linux__)
+#elif PLATFORM_LINUX
     auto length = readlink("/proc/self/exe", path, MAX_PATH_STD - 1);
     if (length == -1) {
         SetLastError(ErrorCode::SYSTEM_ERROR);
@@ -119,7 +119,7 @@ std::string GetProcessPath()
         length = 0;
     }
     path[length] = '\0';
-#elif defined(__APPLE__)
+#elif PLATFORM_MACOS
     uint32_t size = sizeof(path);
     if (_NSGetExecutablePath(path, &size) != 0) {
         SetLastError(ErrorCode::SYSTEM_ERROR);
@@ -129,6 +129,7 @@ std::string GetProcessPath()
 #error "Unsupport system."
 #endif
     SetLastError(ErrorCode::SUCCESS);
+    DEBUG_LOG_DBG("Get process path success: %s", path);
     return path;
 }
 
@@ -142,7 +143,7 @@ PathString GetCurrentWorkingDirectory()
 {
     try {
         auto p = fs::current_path();
-        DEBUG_LOG_DBG("Get current working dir successed: %s.", p.c_str());
+        DEBUG_LOG_DBG("Get current working dir successed: %s.", p.string().c_str());
         SetLastError(ErrorCode::SUCCESS);
         return p.string();
     } catch (const fs::filesystem_error& e) {
@@ -175,8 +176,8 @@ PathString JoinPaths(const PathList& parts)
 PathString NormalizePath(const PathString& path)
 {
     try {
-        auto normalized = fs::weakly_canonical(path);
-        DEBUG_LOG_DBG("Normalized path successedd: %s", normalized.c_str());
+        auto normalized=  fs::path(path).lexically_normal();
+        DEBUG_LOG_DBG("Normalized path successedd: %s", normalized.string().c_str());
         SetLastError(ErrorCode::SUCCESS);
         return normalized.string();
     } catch (const fs::filesystem_error& e) {
@@ -192,7 +193,11 @@ PathString NormalizePath(const PathString& path)
 
 PathString ToAbsolutePath(const PathString& relPath, const PathString& baseDir)
 {
-    fs::path base = baseDir.empty() ? fs::current_path() : fs::path(baseDir);
+    if (relPath.empty()) {
+        DEBUG_LOG_WARN("")
+        return GetCurrentWorkingDirectory();
+    }
+    fs::path base = fs::path(baseDir.empty() ? GetCurrentWorkingDirectory() : baseDir);
     fs::path relative(relPath);
     fs::path combined = base / relative;
 
@@ -280,7 +285,7 @@ bool FileExists(const PathString& path)
     return exists;
 }
 
-bool CreateFile(const PathString& path)
+bool CreateFileUtils(const PathString& path)
 {
     EntryType type = GetEntryType(path);
     if (type == EntryType::FILE) {
@@ -303,7 +308,7 @@ bool CreateFile(const PathString& path)
     return false;
 }
 
-bool DeleteFile(const PathString& path)
+bool DeleteFileUtils(const PathString& path)
 {
     EntryType type = GetEntryType(path);
     if (type == EntryType::NONEXISTENT) {
@@ -423,6 +428,7 @@ bool CreateDir(const PathString& path, bool recursive)
         DEBUG_LOG_EXCEPTION(e, "Create dir %s failed.: %s", recursive ? "recursive" : "not recursive", path.c_str());
         return false;
     } catch (const std::exception& e) {
+        ConverExceptionToErrorCode(e);
         DEBUG_LOG_EXCEPTION(e, "Create dir %s failed.: %s", recursive ? "recursive" : "not recursive", path.c_str());
         return false;
     }
