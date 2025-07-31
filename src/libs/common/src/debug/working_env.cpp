@@ -1,5 +1,6 @@
 #include "common/debug/working_env.h"
-#include <cstdint>
+
+#include <cstddef>
 
 #include "common/compiler/macros.h"
 #if PLATFORM_WINDOWS
@@ -10,10 +11,13 @@
 #include <mach-o/dyld.h>  // macOS的_NSGetExecutablePath
 #endif
 
+#include <cstdint>
+#include <cstdlib>
 #include <filesystem>
 #include <iostream>
 #include <string>
 #include <vector>
+#include <array>
 
 namespace {
 std::string GetOsName()
@@ -86,35 +90,61 @@ std::string GetProcessPath()
     return path;
 }
 
-std::string GetArchitecture() {
-    // x86 架构 (32位)
-    #if defined(__i386__) || defined(_M_IX86)
-        return "x86 (32-bit)";
+std::string GetArchitecture()
+{
+// x86 架构 (32位)
+#if defined(__i386__) || defined(_M_IX86)
+    return "x86 (32-bit)";
 
-    // x86_64 架构 (64位)
-    #elif defined(__x86_64__) || defined(_M_X64)
-        return "x86_64 (64-bit)";
+// x86_64 架构 (64位)
+#elif defined(__x86_64__) || defined(_M_X64)
+    return "x86_64 (64-bit)";
 
-    // ARM 架构 (32位)
-    #elif defined(__arm__) || defined(_M_ARM)
-        return "ARM (32-bit)";
+// ARM 架构 (32位)
+#elif defined(__arm__) || defined(_M_ARM)
+    return "ARM (32-bit)";
 
-    // ARM64 架构 (64位)
-    #elif defined(__aarch64__) || defined(_M_ARM64)
-        return "ARM64 (64-bit)";
+// ARM64 架构 (64位)
+#elif defined(__aarch64__) || defined(_M_ARM64)
+    return "ARM64 (64-bit)";
 
-    // 其他常见架构
-    #elif defined(__powerpc__) || defined(__ppc__)
-        return "PowerPC";
-    #elif defined(__mips__)
-        return "MIPS";
-    #elif defined(__riscv)
-        return "RISC-V";
+// 其他常见架构
+#elif defined(__powerpc__) || defined(__ppc__)
+    return "PowerPC";
+#elif defined(__mips__)
+    return "MIPS";
+#elif defined(__riscv)
+    return "RISC-V";
 
-    // 未知架构
-    #else
-        return "Unknown architecture";
-    #endif
+// 未知架构
+#else
+    return "Unknown architecture";
+#endif
+}
+
+void PrintEnvParams()
+{
+    const std::array<const char*, 5> ENV_NAMES {"PATH", "LD_LIBRARY_PATH", "LIBPATH", "LIB", "INCLUDE"};
+
+    for (const auto& name : ENV_NAMES) {
+        char* value = nullptr;
+        auto err = 0;
+        size_t len = 0;
+#if COMPILER_MSVC
+        err = _dupenv_s(&value, &len, name);
+#else
+        (void)err;
+        (void)len;
+        value = std::getenv(name);
+#endif
+        if (err == 0 && value != nullptr) {
+            std::cout << "-------------------- " << name << "--------------------" << std::endl;
+            std::cout << name << ": " << value << std::endl;
+#if COMPILER_MSVC
+            free(value);
+#endif
+        }
+    }
 }
 
 }  // namespace
@@ -131,6 +161,7 @@ void ShowWorkingEnv()
     std::cout << std::endl;
     std::cout << "Wording directory: " << std::filesystem::current_path() << std::endl;
     std::cout << "Process: " << GetProcessPath() << std::endl;
+    PrintEnvParams();
 }
 
 }  // namespace common::debug::working_env
