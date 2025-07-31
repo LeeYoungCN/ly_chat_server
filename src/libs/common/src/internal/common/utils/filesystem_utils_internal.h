@@ -17,16 +17,14 @@
 #include "common/constants/filesystem_constants.h"
 
 namespace common::utils::filesystem::internal {
-// 全局错误码（线程局部存储，避免多线程冲突）
-static thread_local constants::filesystem::ErrorCode g_fileSystemLastError = constants::filesystem::ErrorCode::SUCCESS;
 
-// 辅助函数：设置最后错误码
-inline void SetLastError(constants::filesystem::ErrorCode code)
-{
-    g_fileSystemLastError = code;
-}
+void SetLastError(constants::filesystem::ErrorCode code);
 
 void ConvertSysEcToErrorCode(const std::error_code& ec);
+
+void ConverExceptionToErrorCode(const std::exception& ex);
+
+constants::filesystem::ErrorCode GetLastErrorInternal();
 
 }  // namespace common::utils::filesystem::internal
 

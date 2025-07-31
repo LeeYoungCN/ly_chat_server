@@ -1,18 +1,47 @@
 #include "internal/common/utils/filesystem_utils_internal.h"
 
-#include <memory>
+#include <exception>
+#include <filesystem>
 #include <system_error>
+#include <unordered_map>
 
+#include "common/compiler/attributes.h"
 #include "common/constants/filesystem_constants.h"
 #include "common/debug/debug_log.h"
-#include "common/types/filesystem_types.h"
-#include "common/utils/filesystem_utils.h"
 #include "internal/common/utils/filesystem_utils_internal.h"
+
+namespace {
+thread_local volatile ATTR_USED common::constants::filesystem::ErrorCode g_fileSystemLastError =
+    common::constants::filesystem::ErrorCode::SUCCESS;
+}
 
 namespace common::utils::filesystem::internal {
 
 using namespace common::constants::filesystem;
-using namespace common::types::filesystem;
+
+void SetLastError(ErrorCode code)
+{
+    g_fileSystemLastError = code;
+}
+
+void ConverExceptionToErrorCode(const std::exception& ex)
+{
+    try {
+        std::throw_with_nested(ex);
+    } catch (const std::filesystem::filesystem_error& fse) {
+        COMMON_LOG_WARN("File system error: %s (code: %d)", fse.what(), fse.code().value());
+        ConvertSysEcToErrorCode(fse.code());
+        return;
+    } catch (const std::system_error& se) {
+        COMMON_LOG_WARN("System error: %s (code: %d)", se.what(), se.code().value());
+        ConvertSysEcToErrorCode(se.code());
+        return;
+    } catch (const std::exception& other) {
+        COMMON_LOG_WARN("Non-filesystem exception: %s", other.what());
+        SetLastError(ErrorCode::SYSTEM_ERROR);
+        return;
+    }
+}
 
 void ConvertSysEcToErrorCode(const std::error_code& ec)
 {
@@ -20,32 +49,31 @@ void ConvertSysEcToErrorCode(const std::error_code& ec)
         SetLastError(ErrorCode::SUCCESS);
         return;
     }
-    COMMON_LOG_ERR("Convert err: %s", ec.message().c_str());
-    switch (ec.value()) {
-        case static_cast<int>(std::errc::permission_denied):
-            SetLastError(ErrorCode::PERMISSION_DENIED);
-            break;
-        case static_cast<int>(std::errc::no_such_file_or_directory):
-            SetLastError(ErrorCode::NOT_FOUND);
-            break;
-        case static_cast<int>(std::errc::file_exists):
-            SetLastError(ErrorCode::ALREADY_EXISTS);
-            break;
-        case static_cast<int>(std::errc::invalid_argument):
-            SetLastError(ErrorCode::PATH_INVALID);
-            break;
-        case static_cast<int>(std::errc::directory_not_empty):
-            SetLastError(ErrorCode::DIR_NOT_EMPTY);
-            break;
-        case static_cast<int>(std::errc::is_a_directory):
-            SetLastError(ErrorCode::NOT_FILE);
-            break;
-        case static_cast<int>(std::errc::filename_too_long):
-            SetLastError(ErrorCode::PATH_TOO_LONG);
-            break;
-        default:
-            SetLastError(ErrorCode::SYSTEM_ERROR);
-            break;
-    }
+    // 详细日志便于调试
+    COMMON_LOG_WARN(
+        "Convert error: %s (category: %s, value: %d)", ec.message().c_str(), ec.category().name(), ec.value());
+    // if (ec.category() != std::system_category()) {
+    //     SetLastError(ErrorCode::SYSTEM_ERROR);
+    //     return;
+    // }
+
+    static const std::unordered_map<int, ErrorCode> ERR_MAP = {
+        {static_cast<int>(std::errc::permission_denied), ErrorCode::PERMISSION_DENIED},
+        {static_cast<int>(std::errc::no_such_file_or_directory), ErrorCode::NOT_FOUND},
+        {static_cast<int>(std::errc::file_exists), ErrorCode::ALREADY_EXISTS},
+        {static_cast<int>(std::errc::invalid_argument), ErrorCode::PATH_INVALID},
+        {static_cast<int>(std::errc::directory_not_empty), ErrorCode::DIR_NOT_EMPTY},
+        {static_cast<int>(std::errc::is_a_directory), ErrorCode::NOT_FILE},
+        {static_cast<int>(std::errc::filename_too_long), ErrorCode::PATH_TOO_LONG},
+    };
+
+    auto it = ERR_MAP.find(ec.value());
+    SetLastError(it != ERR_MAP.end() ? it->second : ErrorCode::SYSTEM_ERROR);
 }
+
+ErrorCode GetLastErrorInternal()
+{
+    return g_fileSystemLastError;
+}
+
 }  // namespace common::utils::filesystem::internal

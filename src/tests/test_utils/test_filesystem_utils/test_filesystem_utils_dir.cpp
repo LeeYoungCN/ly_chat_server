@@ -82,11 +82,12 @@ TEST_F(TestFilesystemUtilsDir, CreateDir_AlreadyExist)
 TEST_F(TestFilesystemUtilsDir, CreateDir_NotRecursiveSuccess)
 {
     EXPECT_TRUE(CreateDir(m_testDir1, false));
-    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS);
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
     EXPECT_FALSE(DirExists(m_testDir2));
     EXPECT_TRUE(CreateDir(m_testDir2, false));
-    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS);
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
     EXPECT_TRUE(DirExists(m_testDir2));
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
 }
 
 TEST_F(TestFilesystemUtilsDir, CreateDir_NotRecursiveFalse)
@@ -101,8 +102,8 @@ TEST_F(TestFilesystemUtilsDir, CreateDir_RecursiveSuccess)
     EXPECT_FALSE(DirExists(m_testDir1));
     EXPECT_TRUE(CreateDir(m_testDir2, true));
     EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
-    ;
     EXPECT_TRUE(DirExists(m_testDir2));
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
 }
 
 TEST_F(TestFilesystemUtilsDir, DeleteDir_NotRecursiveFalse)
@@ -112,7 +113,7 @@ TEST_F(TestFilesystemUtilsDir, DeleteDir_NotRecursiveFalse)
     EXPECT_TRUE(DirExists(m_testDir2));
 
     EXPECT_FALSE(DeleteDir(m_testDir1, false));
-    EXPECT_EQ(GetLastError(), ErrorCode::DIR_NOT_EMPTY);
+    EXPECT_EQ(GetLastError(), ErrorCode::DIR_NOT_EMPTY) << GetLastErrorString();
     EXPECT_TRUE(DirExists(m_testDir1));
 }
 

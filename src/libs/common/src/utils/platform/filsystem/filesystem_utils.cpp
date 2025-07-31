@@ -10,11 +10,13 @@
  */
 #include "common/utils/filesystem_utils.h"
 
-#ifdef _WIN32
+#include "common/compiler/macros.h"
+
+#if PLATFORM_WINDOWS
 #include <windows.h>
-#elif defined(__linux__)
+#elif PLATFORM_LINUX
 #include <unistd.h>  // Linux的readlink函数
-#elif defined(__APPLE__)
+#elif PLATFORM_MACOS
 #include <mach-o/dyld.h>  // macOS的_NSGetExecutablePath
 #endif
 
@@ -138,10 +140,20 @@ PathString GetProcessDirName()
 
 PathString GetCurrentWorkingDirectory()
 {
-    std::error_code ec;
-    auto p = fs::current_path(ec);
-    ConvertSysEcToErrorCode(ec);
-    return p.string();
+    try {
+        auto p = fs::current_path();
+        COMMON_LOG_DBG("Get current working dir successed: %s.", p.c_str());
+        SetLastError(ErrorCode::SUCCESS);
+        return p.string();
+    } catch (const fs::filesystem_error& e) {
+        COMMON_LOG_EXCEPTION(e, "Get currtn working dir failed.");
+        ConvertSysEcToErrorCode(e.code());
+        return "";
+    } catch (const std::exception& e) {
+        COMMON_LOG_EXCEPTION(e, "Get currtn working dir failed.");
+        ConverExceptionToErrorCode(e);
+        return "";
+    }
 }
 
 // ------------------------------ 路径处理接口 ------------------------------
@@ -162,10 +174,20 @@ PathString JoinPaths(const PathList& parts)
 
 PathString NormalizePath(const PathString& path)
 {
-    std::error_code ec;
-    auto normalized = fs::weakly_canonical(path, ec);
-    ConvertSysEcToErrorCode(ec);
-    return ec ? "" : normalized.string();
+    try {
+        auto normalized = fs::weakly_canonical(path);
+        COMMON_LOG_DBG("Normalized path successedd: %s", normalized.c_str());
+        SetLastError(ErrorCode::SUCCESS);
+        return normalized.string();
+    } catch (const fs::filesystem_error& e) {
+        COMMON_LOG_EXCEPTION(e, "Normalized path failed");
+        ConvertSysEcToErrorCode(e.code());
+        return "";
+    } catch (const std::exception& e) {
+        COMMON_LOG_EXCEPTION(e, "Normalized path failed");
+        ConverExceptionToErrorCode(e);
+        return "";
+    }
 }
 
 PathString ToAbsolutePath(const PathString& relPath, const PathString& baseDir)
@@ -173,10 +195,21 @@ PathString ToAbsolutePath(const PathString& relPath, const PathString& baseDir)
     fs::path base = baseDir.empty() ? fs::current_path() : fs::path(baseDir);
     fs::path relative(relPath);
     fs::path combined = base / relative;
-    std::error_code ec;
-    auto absPath = fs::absolute(combined, ec);
-    ConvertSysEcToErrorCode(ec);
-    return ec ? "" : absPath.lexically_normal().string();
+
+    try {
+        auto absPath = fs::absolute(combined).lexically_normal();
+        COMMON_LOG_DBG("Absolute path successed: %s", absPath.c_str());
+        SetLastError(ErrorCode::SUCCESS);
+        return absPath.string();
+    } catch (const fs::filesystem_error& e) {
+        COMMON_LOG_EXCEPTION(e, "Absolute path failed");
+        ConvertSysEcToErrorCode(e.code());
+        return "";
+    } catch (const std::exception& e) {
+        COMMON_LOG_EXCEPTION(e, "Absolute path failed: %s");
+        ConverExceptionToErrorCode(e);
+        return "";
+    }
 }
 
 PathString GetDirName(const PathString& path)
@@ -274,19 +307,31 @@ bool DeleteFile(const PathString& path)
 {
     EntryType type = GetEntryType(path);
     if (type == EntryType::NONEXISTENT) {
-        COMMON_LOG_INFO("File not exits: %s", path.c_str());
+        COMMON_LOG_DBG("Delete file successed: %s", path.c_str());
         SetLastError(ErrorCode::NOT_FOUND);
         return true;
     }
     if (type != EntryType::FILE) {
-        COMMON_LOG_ERR("Failed to delete file %s, Type: %s", path.c_str(), GetEntryTypeString(type));
+        COMMON_LOG_ERR("Delete file failed: %s, Type invalid: %s", path.c_str(), GetEntryTypeString(type));
         SetLastError(ErrorCode::NOT_FILE);
         return false;
     }
-    std::error_code ec;
-    bool result = fs::remove(path, ec);
-    ConvertSysEcToErrorCode(ec);
-    return result;
+
+    try {
+        bool result = false;
+        result = fs::remove(path);
+        COMMON_LOG_COND(result, "Delete file: %s", path.c_str());
+        SetLastError(result ? ErrorCode::SUCCESS : ErrorCode::NOT_FOUND);
+        return result;
+    } catch (const fs::filesystem_error& e) {
+        COMMON_LOG_EXCEPTION(e, "Delete file failed: %s", path.c_str());
+        ConvertSysEcToErrorCode(e.code());
+        return false;
+    } catch (const std::exception& e) {
+        COMMON_LOG_EXCEPTION(e, "Delete file failed: %s", path.c_str());
+        ConverExceptionToErrorCode(e);
+        return false;
+    }
 }
 
 bool CopyFile(const PathString& src, const PathString& dest, bool overwrite)
@@ -355,24 +400,32 @@ bool CreateDir(const PathString& path, bool recursive)
     auto type = GetEntryType(path);
     if (type == EntryType::DIRECTORY) {
         SetLastError(ErrorCode::ALREADY_EXISTS);
-        COMMON_LOG_INFO("Dir already exist: %s", path.c_str());
+        COMMON_LOG_INFO("Create dir successed: %s, alread exist.", path.c_str());
         return true;
     }
-    if (type != EntryType::NONEXISTENT && type != EntryType::DIRECTORY) {
-        COMMON_LOG_ERR("Target type invalid: %s", GetEntryTypeString(type));
+    if (type != EntryType::NONEXISTENT) {
+        COMMON_LOG_ERR("Create dir failed: %s, Target type invalid: %s", path.c_str(), GetEntryTypeString(type));
         SetLastError(ErrorCode::NOT_DIRECTORY);
         return false;
     }
-    std::error_code ec;
-    bool result = false;
 
-    if (recursive) {
-        result = fs::create_directories(path, ec);
-    } else {
-        result = fs::create_directory(path, ec);
+    try {
+        if (recursive) {
+            fs::create_directories(path);
+        } else {
+            fs::create_directory(path);
+        }
+        COMMON_LOG_DBG("Create dir %s success: %s", recursive ? "recursive" : "not recursive", path.c_str());
+        SetLastError(ErrorCode::SUCCESS);
+        return true;
+    } catch (const fs::filesystem_error& e) {
+        ConvertSysEcToErrorCode(e.code());
+        COMMON_LOG_EXCEPTION(e, "Create dir %s failed.: %s", recursive ? "recursive" : "not recursive", path.c_str());
+        return false;
+    } catch (const std::exception& e) {
+        COMMON_LOG_EXCEPTION(e, "Create dir %s failed.: %s", recursive ? "recursive" : "not recursive", path.c_str());
+        return false;
     }
-    ConvertSysEcToErrorCode(ec);
-    return result;
 }
 
 bool DeleteDir(const PathString& path, bool recursive)
@@ -380,25 +433,35 @@ bool DeleteDir(const PathString& path, bool recursive)
     EntryType type = GetEntryType(path);
 
     if (type == EntryType::NONEXISTENT) {
-        COMMON_LOG_INFO("Delete dir success, not exits: %s", path.c_str());
+        COMMON_LOG_INFO("Delete dir successed, not exits: %s", path.c_str());
         SetLastError(ErrorCode::NOT_FOUND);
         return true;
     }
     if (type != EntryType::DIRECTORY) {
-        COMMON_LOG_ERR("Failed to delete dir %s, Type: %s", path.c_str(), GetEntryTypeString(type));
+        COMMON_LOG_ERR("Delete dir failed: %s, Type invalid: %s", path.c_str(), GetEntryTypeString(type));
         SetLastError(ErrorCode::NOT_DIRECTORY);
         return false;
     }
-    std::error_code ec;
-    bool result = false;
 
-    if (recursive) {
-        result = fs::remove_all(path, ec) > 0;
-    } else {
-        result = fs::remove(path, ec);  // 非递归删除，目录必须为空
+    try {
+        bool result = false;
+        if (recursive) {
+            result = fs::remove_all(path) > 0;
+        } else {
+            result = fs::remove(path);  // 非递归删除，目录必须为空
+        }
+        COMMON_LOG_COND(result, "Delete dir %s successed: %s", recursive ? "recursive" : "not recursive", path.c_str());
+        SetLastError(result ? ErrorCode::SUCCESS : ErrorCode::NOT_FOUND);
+        return true;
+    } catch (const fs::filesystem_error& e) {
+        COMMON_LOG_EXCEPTION(e, "Delete dir %s failed: %s", recursive ? "recursive" : "not recursive", path.c_str());
+        ConvertSysEcToErrorCode(e.code());
+        return false;
+    } catch (const std::exception& e) {
+        COMMON_LOG_EXCEPTION(e, "Delete dir %s failed: %s", recursive ? "recursive" : "not recursive", path.c_str());
+        ConverExceptionToErrorCode(e);
+        return false;
     }
-    ConvertSysEcToErrorCode(ec);
-    return result;
 }
 
 types::filesystem::PathList ListDir(const PathString& path)
@@ -420,12 +483,12 @@ types::filesystem::FileSize GetDirSize(const PathString& path)
 // ------------------------------ 错误处理接口 ------------------------------
 ErrorCode GetLastError()
 {
-    return g_fileSystemLastError;
+    return GetLastErrorInternal();
 }
 
 const char* GetLastErrorString()
 {
-    return GetErrorString(g_fileSystemLastError);
+    return GetErrorString(GetLastErrorInternal());
 }
 
 }  // namespace common::utils::filesystem
