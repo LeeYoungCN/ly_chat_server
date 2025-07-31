@@ -10,7 +10,7 @@
  */
 #ifndef LOGGING_LOG_MACROS_H
 #define LOGGING_LOG_MACROS_H
-#include "common/macros.h"
+#include "common/common_macros.h"
 
 #ifndef LOGGER
 #define LOGGER(name) INST(logging::LoggerFactory).getLogger(name)

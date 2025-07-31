@@ -232,7 +232,7 @@ bool DirExists(const types::filesystem::PathString& path);
  * @param recursive 是否递归创建父目录（默认为false）
  * @return 创建成功返回true，否则返回false
  */
- bool CreateDir(const types::filesystem::PathString& path, bool recursive = true);
+bool CreateDir(const types::filesystem::PathString& path, bool recursive = true);
 
 /**
  * @brief 删除目录
@@ -240,7 +240,7 @@ bool DirExists(const types::filesystem::PathString& path);
  * @param recursive 是否递归删除非空目录（默认为false）
  * @return 删除成功返回true，否则返回false
  */
- bool DeleteDir(const types::filesystem::PathString& path, bool recursive = true);
+bool DeleteDir(const types::filesystem::PathString& path, bool recursive = true);
 
 /**
  * @brief 列出目录中的所有条目（文件和子目录）
@@ -267,14 +267,14 @@ types::filesystem::FileSize GetDirSize(const types::filesystem::PathString& path
  * @brief 获取最后一次操作的错误码
  * @return 错误码枚举值
  */
- constants::filesystem::ErrorCode GetLastError();
+constants::filesystem::ErrorCode GetLastError();
 
 /**
  * @brief 将最近的错误码转换为人类可读的描述字符串
  * @param code 错误码
  * @return 错误描述字符串
  */
- const char* GetLastErrorString();
+const char* GetLastErrorString();
 
 }  // namespace common::utils::filesystem
 #endif  // COMMON_UTILS_FILESYSTEM_UTILS_H

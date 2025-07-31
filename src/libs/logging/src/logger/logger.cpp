@@ -6,7 +6,7 @@
 #include <thread>
 #include <vector>
 
-#include "common/macros.h"
+#include "common/common_macros.h"
 #include "common/utils/date_time_utils.h"
 #include "internal/console_appender.h"
 #include "logging/appender.h"

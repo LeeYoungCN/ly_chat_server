@@ -87,7 +87,7 @@ TEST_F(TestFilesystemUtilsPath, NormalizePath_WithDots)
     PathString expect = "a" + std::string(PATH_SEP) + "c" + std::string(PATH_SEP) + "d";
 
     auto result = NormalizePath(test);
-    EXPECT_EQ(result,  expect);
+    EXPECT_EQ(result, expect);
     EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
 }
 

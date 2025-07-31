@@ -2,7 +2,7 @@
 #define COMMON_COMPILER_ATTRIBUTES_H
 
 // 强制编译器保留符号（避免被优化）
-#ifdef _MSC_VER 
+#ifdef _MSC_VER
 #define ATTR_USED __declspec(used)
 #else
 #define ATTR_USED __attribute__((used))

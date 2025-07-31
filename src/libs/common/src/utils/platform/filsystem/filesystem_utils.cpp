@@ -176,7 +176,7 @@ PathString JoinPaths(const PathList& parts)
 PathString NormalizePath(const PathString& path)
 {
     try {
-        auto normalized=  fs::path(path).lexically_normal();
+        auto normalized = fs::path(path).lexically_normal();
         DEBUG_LOG_DBG("Normalized path successedd: %s", normalized.string().c_str());
         SetLastError(ErrorCode::SUCCESS);
         return normalized.string();
