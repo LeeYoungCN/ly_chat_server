@@ -1,5 +1,5 @@
 {
-    "version": 10,
+    "version": 9,
     "configurePresets": [
         {
             "name": "project_base",
@@ -157,6 +157,38 @@
             "name": "win_mingw_release",
             "displayName": "Mingw Release Configure",
             "inherits": "win_mingw_base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "win_clang_cl_base",
+            "hidden": true,
+            "generator": "Ninja",
+            "inherits": "project_base",
+            "toolchainFile": "${sourceDir}/cmake/toolchain_files/win_clang_cl.cmake",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang-cl.exe",
+                "CMAKE_CXX_COMPILER": "clang-cl.exe"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            }
+        },
+        {
+            "name": "win_clang_cl_debug",
+            "displayName": "Clang-cl Debug Configure",
+            "inherits": "win_clang_cl_base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "win_clang_cl_release",
+            "displayName": "Clang-cl Release Configure",
+            "inherits": "win_clang_cl_base",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release"
             }
@@ -376,6 +408,24 @@
             ]
         },
         {
+            "name": "win_clang_cl_debug_build",
+            "configurePreset": "win_clang_cl_debug",
+            "displayName": "Clang-cl Debug Build",
+            "description": "Build the clang-cl Debug target.",
+            "inherits": [
+                "windows_build_base"
+            ]
+        },
+        {
+            "name": "win_clang_cl_release_build",
+            "configurePreset": "win_clang_cl_release",
+            "displayName": "Clang-cl Release Build",
+            "description": "Build the clang-cl Release target.",
+            "inherits": [
+                "windows_build_base"
+            ]
+        },
+        {
             "name": "linux_build_base",
             "hidden": true,
             "condition": {
@@ -567,6 +617,24 @@
             "displayName": "MinGW Release Ctest",
             "description": "Test the MinGW Release target.",
             "configurePreset": "win_mingw_release",
+            "inherits": [
+                "windows_ctest_base"
+            ]
+        },
+        {
+            "name": "win_clang_cl_debug_ctest",
+            "displayName": "Clang-cl Debug Ctest",
+            "description": "Test the Clang-cl Debug target.",
+            "configurePreset": "win_clang_cl_debug",
+            "inherits": [
+                "windows_ctest_base"
+            ]
+        },
+        {
+            "name": "win_clang_cl_release_ctest",
+            "displayName": "Clang-cl Release Ctest",
+            "description": "Test the Clang-cl Release target.",
+            "configurePreset": "win_clang_cl_release",
             "inherits": [
                 "windows_ctest_base"
             ]
@@ -800,6 +868,44 @@
                 {
                     "type": "test",
                     "name": "msvc_x86_release_ctest"
+                }
+            ]
+        },
+        {
+            "name": "win_clang_cl_debug_workflow",
+            "description": "Clang-cl Debug Workflow",
+            "displayName": "Clang-cl Debug Workflow",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "win_clang_cl_debug"
+                },
+                {
+                    "type": "build",
+                    "name": "win_clang_cl_debug_build"
+                },
+                {
+                    "type": "test",
+                    "name": "win_clang_cl_debug_ctest"
+                }
+            ]
+        },
+        {
+            "name": "win_clang_cl_release_workflow",
+            "description": "Clang-cl Release Workflow",
+            "displayName": "Clang-cl Release Workflow",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "win_clang_cl_release"
+                },
+                {
+                    "type": "build",
+                    "name": "win_clang_cl_release_build"
+                },
+                {
+                    "type": "test",
+                    "name": "win_clang_cl_release_ctest"
                 }
             ]
         },

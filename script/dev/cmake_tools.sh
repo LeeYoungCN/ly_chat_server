@@ -253,6 +253,16 @@ function init_cmake_configure_param() {
             ARCHITECTURE="x86"
             env_param_file="${SCRIPT_DIR}/load_msvc_env.sh"
             ;;
+        win_clang_cl_debug)
+            cmake_toolchain_file="${TOOLCHAIN_FILE_DIR}/win_clang_cl.cmake"
+            cmake_generator="Ninja"
+            cmake_build_type="Debug"
+            ;;
+        win_clang_cl_release)
+            cmake_toolchain_file="${TOOLCHAIN_FILE_DIR}/win_clang_cl.cmake"
+            cmake_generator="Ninja"
+            cmake_build_type="Release"
+            ;;
         *)
             print_log "Preset: ${arg_preset} error!" error
             exit 1
