@@ -60,7 +60,8 @@ enum class ErrorCode {
     IO_ERROR,           ///< I/O操作错误
     PATH_INVALID,
     DIR_NOT_EMPTY,
-    SYSTEM_ERROR = 100  ///< 系统级错误
+    SYSTEM_ERROR = 100,  ///< 系统级错误
+    GENERIC_ERROR
 };
 
 /**
@@ -93,6 +94,8 @@ inline const char* GetErrorString(ErrorCode code)
             return "Directory not empty";
         case ErrorCode::SYSTEM_ERROR:
             return "System error";
+        case ErrorCode::GENERIC_ERROR:
+            return "Generic error";
         default:
             return "Unknown error code";
     }
