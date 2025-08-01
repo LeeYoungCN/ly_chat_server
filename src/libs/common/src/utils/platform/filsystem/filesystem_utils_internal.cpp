@@ -5,7 +5,7 @@
 #if COMPILER_MSVC
 #include <windows.h>
 #else
-#include <errno.h>
+#include <cerrno>
 #endif
 
 #include <exception>

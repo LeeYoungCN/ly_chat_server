@@ -18,6 +18,7 @@
 #elif PLATFORM_MACOS
 #include <mach-o/dyld.h>  // macOS的_NSGetExecutablePath
 #endif
+#include <chrono>
 #include <cstddef>
 #include <exception>
 #include <filesystem>
@@ -28,6 +29,7 @@
 
 #include "common/constants/filesystem_constants.h"
 #include "common/debug/debug_log.h"
+#include "common/types/date_time_types.h"
 #include "common/types/filesystem_types.h"
 #include "common/utils/filesystem_utils.h"
 #include "internal/common/utils/filesystem_utils_internal.h"
@@ -36,6 +38,22 @@
 // std::ios::app：追加模式（文件存在时在末尾添加内容，不截断）。
 // std::ios::binary：二进制模式（避免文本模式的换行符转换）。
 // std::ios::trunc 表示如果文件存在则截断它（覆盖原有内容）
+
+namespace {
+namespace fs = std::filesystem;
+using namespace common::constants::filesystem;
+using namespace common::types::filesystem;
+using namespace common::utils::filesystem::internal;
+
+common::types::date_time::Timestamp GetFileModifyTimestampInternal(const PathString& path)
+{
+    fs::file_time_type fileTime = fs::last_write_time(path);
+    auto sysTime = std::chrono::time_point_cast<std::chrono::system_clock::duration>(
+        fileTime - std::filesystem::file_time_type::clock::now() + std::chrono::system_clock::now());
+    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(sysTime.time_since_epoch());
+    return static_cast<common::types::date_time::Timestamp>(ms.count());
+}
+}  // namespace
 
 namespace common::utils::filesystem {
 
@@ -208,16 +226,16 @@ bool WriteTextFile(const PathString& path, const PathString& content, bool appen
         return false;
     }
 
-    file << content;
+    if (file << content) {
+        file.close();
+        SetLastError(ErrorCode::SUCCESS);
+        DEBUG_LOG_DBG("Write text file successed: %s, message: %s", path.c_str(), GetLastErrorString());
+        return true;
+    }
 
-    file.close();
-    SetLastError(ErrorCode::SUCCESS);
-    DEBUG_LOG_DBG("Write text file successed: %s, message: %s", path.c_str(), GetLastErrorString());
-    return true;
-}
-
-bool WriteBinaryFile(const PathString& path, const types::filesystem::ByteVector& data, bool append)
-{
+    std::error_code ec(errno, std::system_category());
+    ConvertSysEcToErrorCode(ec);
+    DEBUG_LOG_ERR("Write text file failed: %s, message: %s", path.c_str(), GetLastErrorString());
     return false;
 }
 
@@ -235,12 +253,19 @@ types::filesystem::FileSize GetFileSize(const PathString& path)
 
 types::filesystem::FileInfo GetFileInfo(const PathString& path)
 {
-    return {};
-}
+    FileInfo fileInfo{};
+    fileInfo.path = path;
+    fileInfo.type = GetEntryType(path);
 
-bool SetFilePermissions(const PathString& path, types::filesystem::Permission perm)
-{
-    return false;
+    if (fileInfo.type == EntryType::NONEXISTENT) {
+        return fileInfo;
+    }
+    if (fileInfo.type == EntryType::FILE) {
+        fileInfo.size = fs::file_size(path);
+    }
+    fileInfo.modifyTime = GetFileModifyTimestampInternal(path);
+
+    return fileInfo;
 }
 
 }  // namespace common::utils::filesystem

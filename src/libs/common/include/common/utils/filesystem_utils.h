@@ -187,16 +187,6 @@ bool WriteTextFile(const types::filesystem::PathString& path, const types::files
                    bool append = false);
 
 /**
- * @brief 写入二进制内容到文件
- * @param path 目标文件路径
- * @param data 要写入的二进制数据
- * @param append 是否以追加模式写入（默认为false，覆盖模式）
- * @return 写入成功返回true，否则返回false
- */
-bool WriteBinaryFile(const types::filesystem::PathString& path, const types::filesystem::ByteVector& data,
-                     bool append = false);
-
-/**
  * @brief 获取文件大小（字节数）
  * @param path 文件路径
  * @return 文件大小（字节），获取失败返回0
@@ -209,14 +199,6 @@ types::filesystem::FileSize GetFileSize(const types::filesystem::PathString& pat
  * @return 包含文件信息的FileInfo结构体，获取失败返回默认初始化的结构体
  */
 types::filesystem::FileInfo GetFileInfo(const types::filesystem::PathString& path);
-
-/**
- * @brief 设置文件权限
- * @param path 文件路径
- * @param perm 要设置的权限组合
- * @return 设置成功返回true，否则返回false
- */
-bool SetFilePermissions(const types::filesystem::PathString& path, types::filesystem::Permission perm);
 
 /**
  * @brief 判断目录是否存在且为目录
@@ -240,27 +222,6 @@ bool CreateDir(const types::filesystem::PathString& path, bool recursive = true)
  * @return 删除成功返回true，否则返回false
  */
 bool DeleteDir(const types::filesystem::PathString& path, bool recursive = true);
-
-/**
- * @brief 列出目录中的所有条目（文件和子目录）
- * @param path 目录路径
- * @return 包含条目路径的列表，获取失败返回空列表
- */
-types::filesystem::PathList ListDir(const types::filesystem::PathString& path);
-
-/**
- * @brief 列出目录中所有条目的详细信息
- * @param path 目录路径
- * @return 包含条目详细信息的FileInfo列表，获取失败返回空列表
- */
-std::vector<types::filesystem::FileInfo> ListDirDetailed(const types::filesystem::PathString& path);
-
-/**
- * @brief 计算目录的总大小（包含所有子文件和子目录）
- * @param path 目录路径
- * @return 目录总大小（字节），计算失败返回0
- */
-types::filesystem::FileSize GetDirSize(const types::filesystem::PathString& path);
 
 /**
  * @brief 获取最后一次操作的错误码

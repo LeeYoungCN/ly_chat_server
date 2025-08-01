@@ -125,20 +125,5 @@ bool DeleteDir(const PathString& path, bool recursive)
     }
 }
 
-types::filesystem::PathList ListDir(const PathString& path)
-{
-    // TODO: 未实现
-    return {};
-}
-
-std::vector<types::filesystem::FileInfo> ListDirDetailed(const PathString& path)
-{
-    return {};
-}
-
-types::filesystem::FileSize GetDirSize(const PathString& path)
-{
-    return 0;
-}
 
 }  // namespace common::utils::filesystem

@@ -50,18 +50,18 @@ constexpr const char* ALT_PATH_SEP = "";  ///< 无替代分隔符
  * @brief 错误码枚举，跨平台统一的错误标识
  */
 enum class ErrorCode {
-    SUCCESS = 0,        ///< 操作成功
-    NOT_FOUND,          ///< 路径不存在
-    PERMISSION_DENIED,  ///< 权限不足
-    PATH_TOO_LONG,      ///< 路径长度超过系统限制
-    ALREADY_EXISTS,     ///< 目标路径已存在
-    NOT_DIRECTORY,      ///< 路径指向的不是目录
-    NOT_FILE,           ///< 路径指向的不是文件
-    IO_ERROR,           ///< I/O操作错误
-    PATH_INVALID,
-    DIR_NOT_EMPTY,
+    SUCCESS = 0,         ///< 操作成功
+    NOT_FOUND,           ///< 路径不存在
+    PERMISSION_DENIED,   ///< 权限不足
+    PATH_TOO_LONG,       ///< 路径长度超过系统限制
+    ALREADY_EXISTS,      ///< 目标路径已存在
+    NOT_DIRECTORY,       ///< 路径指向的不是目录
+    NOT_FILE,            ///< 路径指向的不是文件
+    IO_ERROR,            ///< I/O操作错误
+    DIR_NOT_EMPTY,       ///< 文件夹非空
     SYSTEM_ERROR = 100,  ///< 系统级错误
-    GENERIC_ERROR
+    GENERIC_ERROR,       ///<  标准库通用错误
+    UNKNOWN_ERROR        ///< 未知错误
 };
 
 /**
@@ -88,16 +88,15 @@ inline const char* GetErrorString(ErrorCode code)
             return "Not file";
         case ErrorCode::IO_ERROR:
             return "I/O error";
-        case ErrorCode::PATH_INVALID:
-            return "Path invalid";
         case ErrorCode::DIR_NOT_EMPTY:
             return "Directory not empty";
         case ErrorCode::SYSTEM_ERROR:
             return "System error";
         case ErrorCode::GENERIC_ERROR:
             return "Generic error";
+        case ErrorCode::UNKNOWN_ERROR:
         default:
-            return "Unknown error code";
+            return "Unknown error";
     }
 }
 }  // namespace common::constants::filesystem
