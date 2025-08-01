@@ -47,13 +47,13 @@ void CommonDebugLog(common::types::logging::LogLevel level, const char* file, in
         std::abort();                                                                       \
     } while (0)
 
-#define DEBUG_LOG_COND(condition, fmt, ...)                             \
-    do {                                                                \
-        if (!(condition)) {                                             \
-            DEBUG_LOG_ERR(fmt " failed." __VA_OPT__(, ) __VA_ARGS__);   \
-        } else {                                                        \
-            DEBUG_LOG_DBG(fmt " successed." __VA_OPT__(, ) __VA_ARGS__) \
-        }                                                               \
+#define DEBUG_LOG_COND(condition, fmt, ...)                            \
+    do {                                                               \
+        if (!(condition)) {                                            \
+            DEBUG_LOG_ERR("[Fail] " fmt __VA_OPT__(, ) __VA_ARGS__);   \
+        } else {                                                       \
+            DEBUG_LOG_DBG("[Success] " fmt __VA_OPT__(, ) __VA_ARGS__) \
+        }                                                              \
     } while (0)
 
 #ifdef NDEBUG
