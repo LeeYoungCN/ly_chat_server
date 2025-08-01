@@ -11,7 +11,6 @@
 #ifndef COMMON_UTILS_FILESYSTEM_UTILS_H
 #define COMMON_UTILS_FILESYSTEM_UTILS_H
 
-#include "common/compiler/macros.h"
 #include "common/constants/filesystem_constants.h"
 #include "common/types/filesystem_types.h"
 
@@ -161,14 +160,14 @@ bool DeleteFileUtils(const common::types::filesystem::PathString& path);
  * @return 复制成功返回true，否则返回false
  */
 bool CopyFileUtils(const types::filesystem::PathString& src, const types::filesystem::PathString& dest,
-              bool overwrite = false);
+                   bool overwrite = false);
 
 /**
  * @brief 读取文本文件内容
  * @param path 文本文件路径
  * @return 文件内容字符串，读取失败返回空字符串
  */
-types::filesystem::PathString ReadTextFile(const types::filesystem::PathString& path);
+std::string ReadTextFile(const types::filesystem::PathString& path);
 
 /**
  * @brief 读取二进制文件内容

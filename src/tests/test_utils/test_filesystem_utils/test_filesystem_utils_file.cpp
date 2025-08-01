@@ -145,5 +145,4 @@ TEST_F(TestFilesystemUtilsFile, CopyFile_DstInvalid)
     EXPECT_EQ(GetLastError(), ErrorCode::NOT_FILE) << GetLastErrorString();
 }
 
-
 }  // namespace test::test_utils::test_filesystem_utils
