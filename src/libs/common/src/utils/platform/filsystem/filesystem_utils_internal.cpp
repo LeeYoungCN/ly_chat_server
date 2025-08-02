@@ -32,7 +32,6 @@ void ConvertGenericCategory(const std::error_code& ec)
         {static_cast<int>(std::errc::permission_denied), ErrorCode::PERMISSION_DENIED},
         {static_cast<int>(std::errc::no_such_file_or_directory), ErrorCode::NOT_FOUND},
         {static_cast<int>(std::errc::file_exists), ErrorCode::ALREADY_EXISTS},
-        {static_cast<int>(std::errc::invalid_argument), ErrorCode::PATH_INVALID},
         {static_cast<int>(std::errc::directory_not_empty), ErrorCode::DIR_NOT_EMPTY},
         {static_cast<int>(std::errc::is_a_directory), ErrorCode::NOT_FILE},
         {static_cast<int>(std::errc::filename_too_long), ErrorCode::PATH_TOO_LONG},

@@ -166,7 +166,7 @@ bool CopyFileUtils(const PathString& src, const PathString& dest, bool overwrite
     }
 }
 
-std::string ReadTextFile(const PathString& path)
+std::string ReadTextFileUtils(const PathString& path)
 {
     if (!FileExists(path)) {
         DEBUG_LOG_ERR("Read file failed: %s, message: %s", path.c_str(), GetLastErrorString());
@@ -180,6 +180,7 @@ std::string ReadTextFile(const PathString& path)
         DEBUG_LOG_ERR("Read file failed: %s, message: %s", path.c_str(), GetLastErrorString());
         return "";
     }
+    DEBUG_LOG_DBG("Read file successed: %s, message: %s", path.c_str(), GetLastErrorString());
     return {std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()};
 }
 
@@ -206,7 +207,7 @@ types::filesystem::ByteVector ReadBinaryFile(const PathString& path)
     return buffer;
 }
 
-bool WriteTextFile(const PathString& path, const PathString& content, bool append)
+bool WriteTextFileUtils(const PathString& path, const PathString& content, bool append)
 {
     if (!FileExists(path)) {
         DEBUG_LOG_ERR("Write to text file failed: %s, message: %s", path.c_str(), GetLastErrorString());
@@ -222,24 +223,33 @@ bool WriteTextFile(const PathString& path, const PathString& content, bool appen
     if (!file.is_open()) {
         std::error_code ec(errno, std::generic_category());
         ConvertSysEcToErrorCode(ec);
-        DEBUG_LOG_ERR("Write text file failed: %s, message: %s", path.c_str(), GetLastErrorString());
+        DEBUG_LOG_ERR("Write text file %s failed: %s, message: %s",
+                      (append ? "append" : "overwrite"),
+                      path.c_str(),
+                      GetLastErrorString());
         return false;
     }
 
     if (file << content) {
         file.close();
         SetLastError(ErrorCode::SUCCESS);
-        DEBUG_LOG_DBG("Write text file successed: %s, message: %s", path.c_str(), GetLastErrorString());
+        DEBUG_LOG_DBG("Write text file %s successed: %s, message: %s",
+                      (append ? "append" : "overwrite"),
+                      path.c_str(),
+                      GetLastErrorString());
         return true;
     }
 
     std::error_code ec(errno, std::system_category());
     ConvertSysEcToErrorCode(ec);
-    DEBUG_LOG_ERR("Write text file failed: %s, message: %s", path.c_str(), GetLastErrorString());
+    DEBUG_LOG_ERR("Write text file %s failed: %s, message: %s",
+                  (append ? "append" : "overwrite"),
+                  path.c_str(),
+                  GetLastErrorString());
     return false;
 }
 
-types::filesystem::FileSize GetFileSize(const PathString& path)
+types::filesystem::FileSize GetFileSizeUtils(const PathString& path)
 {
     if (!FileExists(path)) {
         DEBUG_LOG_ERR("Get file size failed: %s, message: %s", path.c_str(), GetLastErrorString());

@@ -190,11 +190,11 @@ auto configPath = utils::filesystem::JoinPaths(parts);
 | `CreateFile`        | 创建空文件                        | `const PathString& path`                  | `bool`                                       |
 | `DeleteFile`        | 删除文件                          | `const PathString& path`                  | `bool`                                       |
 | `CopyFileUtils`          | 复制文件                          | `const PathString& src, const PathString& dest, bool overwrite` | `bool` |
-| `ReadTextFile`      | 读取文本文件内容                  | `const PathString& path`                  | `PathString`                                 |
+| `ReadTextFileUtils`      | 读取文本文件内容                  | `const PathString& path`                  | `PathString`                                 |
 | `ReadBinaryFile`    | 读取二进制文件内容                | `const PathString& path`                  | `ByteVector`                                 |
-| `WriteTextFile`     | 写入文本内容到文件                | `const PathString& path, const PathString& content, bool append` | `bool` |
+| `WriteTextFileUtils`     | 写入文本内容到文件                | `const PathString& path, const PathString& content, bool append` | `bool` |
 | `WriteBinaryFile`   | 写入二进制内容到文件              | `const PathString& path, const ByteVector& data, bool append` | `bool` |
-| `GetFileSize`       | 获取文件大小（字节）              | `const PathString& path`                  | `FileSize`                                   |
+| `GetFileSizeUtils`       | 获取文件大小（字节）              | `const PathString& path`                  | `FileSize`                                   |
 | `GetFileInfo`       | 获取文件详细信息                  | `const PathString& path`                  | `FileInfo`                                   |
 | `SetFilePermissions`| 设置文件权限                      | `const PathString& path, Permission perm` | `bool`                                       |
 
@@ -244,7 +244,7 @@ int main() {
     }
 
     // 写入日志文件
-    if (utils::filesystem::WriteTextFile(logFile, "Application started successfully", false)) {
+    if (utils::filesystem::WriteTextFileUtils(logFile, "Application started successfully", false)) {
         std::cout << "日志写入成功" << std::endl;
         
         // 获取文件信息

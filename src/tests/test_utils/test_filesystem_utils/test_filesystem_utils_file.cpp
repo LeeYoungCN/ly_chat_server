@@ -108,18 +108,127 @@ TEST_F(TestFilesystemUtilsFile, DelteteFile_FileExist)
     EXPECT_EQ(GetLastError(), ErrorCode::NOT_FOUND) << GetLastErrorString();
 }
 
-TEST_F(TestFilesystemUtilsFile, CopyFile_Success)
+TEST_F(TestFilesystemUtilsFile, ReadeFile_Success)
 {
     EXPECT_TRUE(CreateFileUtils(m_testFile));
     EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
-    std::string newFile = m_processDir + PATH_SEP + "file2";
+    EXPECT_EQ(ReadTextFileUtils(m_testFile), "");
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+    EXPECT_EQ(GetFileSizeUtils(m_testFile), 0);
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+}
+
+TEST_F(TestFilesystemUtilsFile, ReadeFile_TargetInvalid)
+{
+    EXPECT_EQ(ReadTextFileUtils(m_processDir), "");
+    EXPECT_EQ(GetLastError(), ErrorCode::NOT_FILE) << GetLastErrorString();
+}
+
+TEST_F(TestFilesystemUtilsFile, ReadeFile_Nonexist)
+{
+    EXPECT_EQ(ReadTextFileUtils(m_testFile), "");
+    EXPECT_EQ(GetLastError(), ErrorCode::NOT_FOUND) << GetLastErrorString();
+}
+
+TEST_F(TestFilesystemUtilsFile, WriteTextFile_success)
+{
+    std::string text = "1234";
+    EXPECT_TRUE(CreateFileUtils(m_testFile));
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+    EXPECT_TRUE(WriteTextFileUtils(m_testFile, text));
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+    EXPECT_EQ(ReadTextFileUtils(m_testFile), text);
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+    EXPECT_EQ(GetFileSizeUtils(m_testFile), text.size());
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+}
+
+TEST_F(TestFilesystemUtilsFile, WriteTextFile_OverwriteSuccess)
+{
+    std::string text = "1234";
+    EXPECT_TRUE(CreateFileUtils(m_testFile));
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+
+    EXPECT_TRUE(WriteTextFileUtils(m_testFile, text));
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+    EXPECT_EQ(ReadTextFileUtils(m_testFile), text);
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+    EXPECT_EQ(GetFileSizeUtils(m_testFile), text.size());
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+
+    EXPECT_TRUE(WriteTextFileUtils(m_testFile, text));
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+    EXPECT_EQ(ReadTextFileUtils(m_testFile), text);
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+    EXPECT_EQ(GetFileSizeUtils(m_testFile), text.size());
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+}
+
+TEST_F(TestFilesystemUtilsFile, WriteTextFile_AppendSuccess)
+{
+    std::string text = "1234\n";
+    EXPECT_TRUE(CreateFileUtils(m_testFile));
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+
+    EXPECT_TRUE(WriteTextFileUtils(m_testFile, text, true));
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+    EXPECT_EQ(ReadTextFileUtils(m_testFile), text);
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+    EXPECT_EQ(GetFileSizeUtils(m_testFile), text.size());
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+
+    EXPECT_TRUE(WriteTextFileUtils(m_testFile, text, true));
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+    EXPECT_EQ(ReadTextFileUtils(m_testFile), text + text);
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+    EXPECT_EQ(GetFileSizeUtils(m_testFile), 2 * text.size());
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+}
+
+TEST_F(TestFilesystemUtilsFile, WriteTextFile_Nonexist)
+{
+    EXPECT_FALSE(WriteTextFileUtils(m_testFile, ""));
+    EXPECT_EQ(GetLastError(), ErrorCode::NOT_FOUND);
+}
+
+TEST_F(TestFilesystemUtilsFile, WriteTextFile_TargetInvalid)
+{
+    EXPECT_FALSE(WriteTextFileUtils(m_processDir, ""));
+    EXPECT_EQ(GetLastError(), ErrorCode::NOT_FILE);
+}
+
+TEST_F(TestFilesystemUtilsFile, CopyFile_Success)
+{
+    PathString newFile = m_processDir + PATH_SEP + "file2";
+    std::string text = "12345";
+
+    EXPECT_TRUE(CreateFileUtils(m_testFile));
+    EXPECT_TRUE(WriteTextFileUtils(m_testFile, text));
     EXPECT_TRUE(CopyFileUtils(m_testFile, newFile));
     EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
 
-    EXPECT_TRUE(FileExists(newFile));
+    EXPECT_EQ(ReadTextFileUtils(m_testFile), ReadTextFileUtils(newFile));
+    EXPECT_EQ(GetFileSizeUtils(m_testFile), GetFileSizeUtils(newFile));
 
+    EXPECT_TRUE(DeleteFileUtils(newFile));
+}
+
+TEST_F(TestFilesystemUtilsFile, CopyFile_OverWirteSuccess)
+{
+    PathString newFile = m_processDir + PATH_SEP + "file2";
+    EXPECT_TRUE(CreateFileUtils(m_testFile));
+    EXPECT_TRUE(CopyFileUtils(m_testFile, newFile));
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+
+    EXPECT_EQ(ReadTextFileUtils(newFile), "");
+    EXPECT_EQ(GetFileSizeUtils(newFile), 0);
+
+    std::string text = "12345";
+    EXPECT_TRUE(WriteTextFileUtils(m_testFile, text));
     EXPECT_TRUE(CopyFileUtils(m_testFile, newFile, true));
     EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+    EXPECT_EQ(ReadTextFileUtils(m_testFile), ReadTextFileUtils(newFile));
+    EXPECT_EQ(GetFileSizeUtils(m_testFile), GetFileSizeUtils(newFile));
     EXPECT_TRUE(DeleteFileUtils(newFile));
 }
 
@@ -143,6 +252,24 @@ TEST_F(TestFilesystemUtilsFile, CopyFile_DstInvalid)
     EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
     EXPECT_FALSE(CopyFileUtils(m_testFile, m_processDir));
     EXPECT_EQ(GetLastError(), ErrorCode::NOT_FILE) << GetLastErrorString();
+}
+
+TEST_F(TestFilesystemUtilsFile, CopyFile_DstAlreadtExist)
+{
+    PathString newFile = m_processDir + PATH_SEP + "file2";
+    EXPECT_TRUE(CreateFileUtils(m_testFile));
+    EXPECT_TRUE(CopyFileUtils(m_testFile, newFile));
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+
+    EXPECT_EQ(ReadTextFileUtils(newFile), "");
+    EXPECT_EQ(GetFileSizeUtils(newFile), 0);
+    std::string text = "1234";
+    EXPECT_TRUE(WriteTextFileUtils(m_testFile, text));
+    EXPECT_FALSE(CopyFileUtils(m_testFile, newFile, false));
+    EXPECT_EQ(GetLastError(), ErrorCode::ALREADY_EXISTS) << GetLastErrorString();
+    EXPECT_NE(ReadTextFileUtils(m_testFile), ReadTextFileUtils(newFile));
+    EXPECT_NE(GetFileSizeUtils(m_testFile), GetFileSizeUtils(newFile));
+    EXPECT_TRUE(DeleteFileUtils(newFile));
 }
 
 }  // namespace test::test_utils::test_filesystem_utils

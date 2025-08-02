@@ -167,7 +167,7 @@ bool CopyFileUtils(const types::filesystem::PathString& src, const types::filesy
  * @param path 文本文件路径
  * @return 文件内容字符串，读取失败返回空字符串
  */
-std::string ReadTextFile(const types::filesystem::PathString& path);
+std::string ReadTextFileUtils(const types::filesystem::PathString& path);
 
 /**
  * @brief 读取二进制文件内容
@@ -183,15 +183,15 @@ types::filesystem::ByteVector ReadBinaryFile(const types::filesystem::PathString
  * @param append 是否以追加模式写入（默认为false，覆盖模式）
  * @return 写入成功返回true，否则返回false
  */
-bool WriteTextFile(const types::filesystem::PathString& path, const types::filesystem::PathString& content,
-                   bool append = false);
+bool WriteTextFileUtils(const types::filesystem::PathString& path, const types::filesystem::PathString& content,
+                        bool append = false);
 
 /**
  * @brief 获取文件大小（字节数）
  * @param path 文件路径
  * @return 文件大小（字节），获取失败返回0
  */
-types::filesystem::FileSize GetFileSize(const types::filesystem::PathString& path);
+types::filesystem::FileSize GetFileSizeUtils(const types::filesystem::PathString& path);
 
 /**
  * @brief 获取文件的详细信息
