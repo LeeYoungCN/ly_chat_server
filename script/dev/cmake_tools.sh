@@ -340,8 +340,8 @@ function init_cmake_env() {
         print_log "[${cmake_preset}] CMake not configure." error
         exit 1
     fi
+    cp "${cmake_binary_dir}/compile_commands.json" "${BUILDCACHE_ROOT_DIR}/compile_commands.json"
     cmake_configure_param_cfg="${cmake_binary_dir}/cmake_configure.conf"
-
     if [ -e "${cmake_configure_param_cfg}" ]; then
         # shellcheck disable=SC1090
         source "${cmake_configure_param_cfg}"
