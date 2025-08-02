@@ -8,6 +8,7 @@
  * @copyright Copyright (c) 2025
  *
  */
+#include "common/compiler/macros.h"
 #include "common/constants/filesystem_constants.h"
 #include "common/types/filesystem_types.h"
 #include "common/utils/filesystem_utils.h"
@@ -174,14 +175,22 @@ TEST_F(TestFilesystemUtilsFile, WriteTextFile_AppendSuccess)
     EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
     EXPECT_EQ(ReadTextFileUtils(m_testFile), text);
     EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
-    EXPECT_EQ(GetFileSizeUtils(m_testFile), text.size());
+#if PLATFORM_WINDOWS
+    EXPECT_EQ(GetFileSizeUtils(m_testFile), text.length() + 1);
+#else
+    EXPECT_EQ(GetFileSizeUtils(m_testFile), text.length());
+#endif
     EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
 
     EXPECT_TRUE(WriteTextFileUtils(m_testFile, text, true));
     EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
     EXPECT_EQ(ReadTextFileUtils(m_testFile), text + text);
     EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
-    EXPECT_EQ(GetFileSizeUtils(m_testFile), 2 * text.size());
+#if PLATFORM_WINDOWS
+    EXPECT_EQ(GetFileSizeUtils(m_testFile), 2 * (text.length() + 1));
+#else
+    EXPECT_EQ(GetFileSizeUtils(m_testFile), 2 * (text.length()));
+#endif
     EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
 }
 

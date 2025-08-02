@@ -46,7 +46,8 @@ void ConvertSystemCategory(const std::error_code& ec)
     static const std::unordered_map<int, ErrorCode> ERR_MAP = {
 #if COMPILER_MSVC
         {ERROR_DIR_NOT_EMPTY, ErrorCode::DIR_NOT_EMPTY},
-        {ERROR_PATH_NOT_FOUND, ErrorCode::NOT_FOUND}
+        {ERROR_PATH_NOT_FOUND, ErrorCode::NOT_FOUND},
+        {ERROR_FILE_EXISTS, ErrorCode::ALREADY_EXISTS}
 #endif
 #if COMPILER_MINGW
         {EIO, ErrorCode::DIR_NOT_EMPTY}
