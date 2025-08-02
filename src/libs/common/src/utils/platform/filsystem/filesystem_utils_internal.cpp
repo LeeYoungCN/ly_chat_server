@@ -33,9 +33,10 @@ void ConvertGenericCategory(const std::error_code& ec)
         {static_cast<int>(std::errc::no_such_file_or_directory), ErrorCode::NOT_FOUND},
         {static_cast<int>(std::errc::file_exists), ErrorCode::ALREADY_EXISTS},
         {static_cast<int>(std::errc::directory_not_empty), ErrorCode::DIR_NOT_EMPTY},
-        {static_cast<int>(std::errc::is_a_directory), ErrorCode::NOT_FILE},
+        {static_cast<int>(std::errc::is_a_directory), ErrorCode::IS_A_DIRECTORY},
         {static_cast<int>(std::errc::filename_too_long), ErrorCode::PATH_TOO_LONG},
-    };
+        {static_cast<int>(std::errc::invalid_argument), ErrorCode::PATH_INVALID},
+        {static_cast<int>(std::errc::io_error), ErrorCode::IO_ERROR}};
 
     auto it = ERR_MAP.find(ec.value());
     SetLastError(it != ERR_MAP.end() ? it->second : ErrorCode::GENERIC_ERROR);
@@ -45,12 +46,15 @@ void ConvertSystemCategory(const std::error_code& ec)
 {
     static const std::unordered_map<int, ErrorCode> ERR_MAP = {
 #if COMPILER_MSVC
+        {ERROR_FILE_NOT_FOUND, ErrorCode::NOT_FOUND},
         {ERROR_DIR_NOT_EMPTY, ErrorCode::DIR_NOT_EMPTY},
         {ERROR_PATH_NOT_FOUND, ErrorCode::NOT_FOUND},
-        {ERROR_FILE_EXISTS, ErrorCode::ALREADY_EXISTS}
-#endif
-#if COMPILER_MINGW
-        {EIO, ErrorCode::DIR_NOT_EMPTY}
+        {ERROR_FILE_EXISTS, ErrorCode::ALREADY_EXISTS},
+        {ERROR_SHARING_VIOLATION, ErrorCode::SHARING_VIOLATION},
+        {ERROR_ACCESS_DENIED, ErrorCode::PERMISSION_DENIED}
+#else
+        {EIO, ErrorCode::IO_ERROR},
+        {EBUSY, ErrorCode::SHARING_VIOLATION}
 #endif
     };
 

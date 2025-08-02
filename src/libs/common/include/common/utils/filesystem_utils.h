@@ -143,14 +143,14 @@ bool FileExists(const types::filesystem::PathString& path);
  * @return 创建成功返回true，否则返回false
  * @note 若文件已存在，将被截断为0字节
  */
-bool CreateFileUtils(const common::types::filesystem::PathString& path);
+bool CreateFile(const common::types::filesystem::PathString& path);
 
 /**
  * @brief 删除文件
  * @param path 要删除的文件路径
  * @return 删除成功返回true，否则返回false
  */
-bool DeleteFileUtils(const common::types::filesystem::PathString& path);
+bool DeleteFile(const common::types::filesystem::PathString& path);
 
 /**
  * @brief 复制文件
@@ -159,15 +159,25 @@ bool DeleteFileUtils(const common::types::filesystem::PathString& path);
  * @param overwrite 若目标已存在，是否覆盖（默认为false）
  * @return 复制成功返回true，否则返回false
  */
-bool CopyFileUtils(const types::filesystem::PathString& src, const types::filesystem::PathString& dest,
-                   bool overwrite = false);
+bool CopyFile(const types::filesystem::PathString& src, const types::filesystem::PathString& dest,
+              bool overwrite = false);
+
+/**
+ * @brief 移动文件
+ * @param src 源文件路径
+ * @param dest 目标文件路径
+ * @param overwrite 若目标已存在，是否覆盖（默认为false）
+ * @return 复制成功返回true，否则返回false
+ */
+bool RenameFile(const types::filesystem::PathString& src, const types::filesystem::PathString& dest,
+                bool overwrite = false);
 
 /**
  * @brief 读取文本文件内容
  * @param path 文本文件路径
  * @return 文件内容字符串，读取失败返回空字符串
  */
-std::string ReadTextFileUtils(const types::filesystem::PathString& path);
+std::string ReadTextFile(const types::filesystem::PathString& path);
 
 /**
  * @brief 读取二进制文件内容
@@ -180,18 +190,18 @@ types::filesystem::ByteVector ReadBinaryFile(const types::filesystem::PathString
  * @brief 写入文本内容到文件
  * @param path 目标文件路径
  * @param content 要写入的文本内容
- * @param append 是否以追加模式写入（默认为false，覆盖模式）
+ * @param overwrite 是否以覆盖模式写入（默认为false，追加模式）
  * @return 写入成功返回true，否则返回false
  */
-bool WriteTextFileUtils(const types::filesystem::PathString& path, const types::filesystem::PathString& content,
-                        bool append = false);
+bool WriteTextFile(const types::filesystem::PathString& path, const types::filesystem::PathString& content,
+                   bool overwrite = false);
 
 /**
  * @brief 获取文件大小（字节数）
  * @param path 文件路径
  * @return 文件大小（字节），获取失败返回0
  */
-types::filesystem::FileSize GetFileSizeUtils(const types::filesystem::PathString& path);
+types::filesystem::FileSize GetFileSize(const types::filesystem::PathString& path);
 
 /**
  * @brief 获取文件的详细信息

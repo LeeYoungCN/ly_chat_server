@@ -145,8 +145,11 @@ namespace filesystem {
         NOT_FILE,            ///< 路径指向的不是文件
         IO_ERROR,            ///< I/O操作错误
         DIR_NOT_EMPTY,       ///< 文件夹非空
+        PATH_INVALID,        ///< 路径不合法
+        SHARING_VIOLATION,   ///< 文件共享冲突
+        IS_A_DIRECTORY,      ///< 目标是文件夹
         SYSTEM_ERROR = 100,  ///< 系统级错误
-        GENERIC_ERROR,       ///<  标准库通用错误
+        GENERIC_ERROR,       ///< 标准库通用错误
         UNKNOWN_ERROR        ///< 未知错误
     };
 } // namespace filesystem
@@ -189,12 +192,13 @@ auto configPath = utils::filesystem::JoinPaths(parts);
 | `FileExists`        | 判断文件是否存在                  | `const PathString& path`                  | `bool`                                       |
 | `CreateFile`        | 创建空文件                        | `const PathString& path`                  | `bool`                                       |
 | `DeleteFile`        | 删除文件                          | `const PathString& path`                  | `bool`                                       |
-| `CopyFileUtils`          | 复制文件                          | `const PathString& src, const PathString& dest, bool overwrite` | `bool` |
-| `ReadTextFileUtils`      | 读取文本文件内容                  | `const PathString& path`                  | `PathString`                                 |
+| `CopyFile`          | 复制文件                          | `const PathString& src, const PathString& dest, bool overwrite` | `bool` |
+| `RenameFile`        | 移动或重命名文件                   | `const PathString& src, const PathString& dest, bool overwrite` | `bool` |
+| `ReadTextFile`      | 读取文本文件内容                  | `const PathString& path`                  | `PathString`                                 |
 | `ReadBinaryFile`    | 读取二进制文件内容                | `const PathString& path`                  | `ByteVector`                                 |
-| `WriteTextFileUtils`     | 写入文本内容到文件                | `const PathString& path, const PathString& content, bool append` | `bool` |
+| `WriteTextFile`     | 写入文本内容到文件                | `const PathString& path, const PathString& content, bool overwrite` | `bool` |
 | `WriteBinaryFile`   | 写入二进制内容到文件              | `const PathString& path, const ByteVector& data, bool append` | `bool` |
-| `GetFileSizeUtils`       | 获取文件大小（字节）              | `const PathString& path`                  | `FileSize`                                   |
+| `GetFileSize`       | 获取文件大小（字节）              | `const PathString& path`                  | `FileSize`                                   |
 | `GetFileInfo`       | 获取文件详细信息                  | `const PathString& path`                  | `FileInfo`                                   |
 | `SetFilePermissions`| 设置文件权限                      | `const PathString& path, Permission perm` | `bool`                                       |
 
@@ -244,7 +248,7 @@ int main() {
     }
 
     // 写入日志文件
-    if (utils::filesystem::WriteTextFileUtils(logFile, "Application started successfully", false)) {
+    if (utils::filesystem::WriteTextFile(logFile, "Application started successfully", true)) {
         std::cout << "日志写入成功" << std::endl;
         
         // 获取文件信息

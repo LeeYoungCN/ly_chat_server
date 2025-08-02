@@ -1,3 +1,4 @@
+#include "common/compiler/macros.h"
 #include "common/constants/filesystem_constants.h"
 #include "common/types/filesystem_types.h"
 #include "common/utils/filesystem_utils.h"
@@ -113,7 +114,11 @@ TEST_F(TestFilesystemUtilsDir, DeleteDir_NotRecursiveFalse)
     EXPECT_TRUE(DirExists(m_testDir2));
 
     EXPECT_FALSE(DeleteDir(m_testDir1, false));
+#if COMPILER_MINGW
+    EXPECT_EQ(GetLastError(), ErrorCode::IO_ERROR) << GetLastErrorString();
+#else
     EXPECT_EQ(GetLastError(), ErrorCode::DIR_NOT_EMPTY) << GetLastErrorString();
+#endif
     EXPECT_TRUE(DirExists(m_testDir1));
 }
 

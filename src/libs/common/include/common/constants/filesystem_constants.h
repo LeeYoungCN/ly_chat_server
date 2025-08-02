@@ -59,8 +59,11 @@ enum class ErrorCode {
     NOT_FILE,            ///< 路径指向的不是文件
     IO_ERROR,            ///< I/O操作错误
     DIR_NOT_EMPTY,       ///< 文件夹非空
+    PATH_INVALID,        ///< 路径不合法
+    SHARING_VIOLATION,   ///< 文件共享冲突
+    IS_A_DIRECTORY,      ///< 目标是文件夹
     SYSTEM_ERROR = 100,  ///< 系统级错误
-    GENERIC_ERROR,       ///<  标准库通用错误
+    GENERIC_ERROR,       ///< 标准库通用错误
     UNKNOWN_ERROR        ///< 未知错误
 };
 
@@ -90,6 +93,12 @@ inline const char* GetErrorString(ErrorCode code)
             return "I/O error";
         case ErrorCode::DIR_NOT_EMPTY:
             return "Directory not empty";
+        case ErrorCode::PATH_INVALID:
+            return "Path invalid";
+        case  ErrorCode::SHARING_VIOLATION:
+            return "Sharing violation";
+        case ErrorCode::IS_A_DIRECTORY:
+            return "Is a directory";
         case ErrorCode::SYSTEM_ERROR:
             return "System error";
         case ErrorCode::GENERIC_ERROR:

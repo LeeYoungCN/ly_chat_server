@@ -9,15 +9,6 @@
  *
  */
 
-#include "common/utils/filesystem_utils.h"
-
-#if PLATFORM_WINDOWS
-#include <windows.h>
-#elif PLATFORM_LINUX
-#include <unistd.h>  // Linux的readlink函数
-#elif PLATFORM_MACOS
-#include <mach-o/dyld.h>  // macOS的_NSGetExecutablePath
-#endif
 #include <chrono>
 #include <cstddef>
 #include <exception>
@@ -27,6 +18,7 @@
 #include <string>
 #include <system_error>
 
+#include "common/compiler/macros.h"
 #include "common/constants/filesystem_constants.h"
 #include "common/debug/debug_log.h"
 #include "common/types/date_time_types.h"
@@ -81,7 +73,7 @@ bool FileExists(const PathString& path)
     return exists;
 }
 
-bool CreateFileUtils(const PathString& path)
+bool CreateFile(const PathString& path)
 {
     EntryType type = GetEntryType(path);
     if (type == EntryType::FILE) {
@@ -105,13 +97,8 @@ bool CreateFileUtils(const PathString& path)
     return false;
 }
 
-bool DeleteFileUtils(const PathString& path)
+bool DeleteFileInternal(const PathString& path)
 {
-    if (!FileExists(path)) {
-        bool rst = (GetLastError() == ErrorCode::NOT_FOUND);
-        DEBUG_LOG_COND(rst, "Delete file: %s, message: %s.", path.c_str(), GetLastErrorString());
-        return rst;
-    }
     try {
         bool result = false;
         result = fs::remove(path);
@@ -129,19 +116,24 @@ bool DeleteFileUtils(const PathString& path)
     }
 }
 
-bool CopyFileUtils(const PathString& src, const PathString& dest, bool overwrite)
+bool DeleteFile(const PathString& path)
 {
-    EntryType type = GetEntryType(src);
-    if (type == EntryType::NONEXISTENT) {
-        DEBUG_LOG_ERR("Src file nonexist: %s", src.c_str());
-        SetLastError(ErrorCode::NOT_FOUND);
-        return false;
-    } else if (type != EntryType::FILE) {
-        DEBUG_LOG_ERR("Src file: %s, Type invalid: %s", src.c_str(), GetEntryTypeString(type));
-        SetLastError(ErrorCode::NOT_FILE);
+    if (!FileExists(path)) {
+        bool rst = (GetLastError() == ErrorCode::NOT_FOUND);
+        DEBUG_LOG_COND(rst, "Delete file: %s, message: %s.", path.c_str(), GetLastErrorString());
+        return rst;
+    }
+    return DeleteFileInternal(path);
+}
+
+bool CopyFile(const PathString& src, const PathString& dest, bool overwrite)
+{
+    if (!FileExists(src)) {
+        DEBUG_LOG_DBG("Copy file failed. src : %s, message: %s", src.c_str(), GetLastErrorString());
         return false;
     }
 
+    EntryType type = GetEntryType(dest);
     type = GetEntryType(dest);
     if (type != EntryType::FILE && type != EntryType::NONEXISTENT) {
         DEBUG_LOG_ERR("Dest file: %s, Type invalid: %s", src.c_str(), GetEntryTypeString(type));
@@ -166,7 +158,58 @@ bool CopyFileUtils(const PathString& src, const PathString& dest, bool overwrite
     }
 }
 
-std::string ReadTextFileUtils(const PathString& path)
+bool RenameFile(const PathString& src, const PathString& dest, bool overwrite)
+{
+    if (!FileExists(src)) {
+        DEBUG_LOG_DBG("Rename file failed. src : %s, message: %s", src.c_str(), GetLastErrorString());
+        return false;
+    }
+
+    EntryType type = GetEntryType(dest);
+    // 类型错误
+    if (type != EntryType::FILE && type != EntryType::NONEXISTENT) {
+        SetLastError(ErrorCode::NOT_FILE);
+        DEBUG_LOG_ERR("Rename file failed. dest invalid: %s, type: %s", dest.c_str(), GetEntryTypeString(type));
+        return false;
+    }
+    // 已存在
+    if (!overwrite && type == EntryType::FILE) {
+        SetLastError(ErrorCode::ALREADY_EXISTS);
+        DEBUG_LOG_ERR("Rename file failed. dest alreadt exist: %s, message: %s", dest.c_str(), GetLastErrorString());
+        return false;
+    }
+
+    try {
+        fs::rename(src, dest);
+        SetLastError(ErrorCode::SUCCESS);
+        DEBUG_LOG_DBG("Rename file %ssucceeed. src: %s, dest: %s, message: %s",
+                      (overwrite ? "overwrite " : ""),
+                      src.c_str(),
+                      dest.c_str(),
+                      GetLastErrorString());
+        return true;
+    } catch (const fs::filesystem_error& e) {
+        ConvertSysEcToErrorCode(e.code());
+        DEBUG_LOG_EXCEPTION(e,
+                            "Rename file %sfailed, src: %s, dest: %s, message: %s",
+                            (overwrite ? "overwrite " : ""),
+                            src.c_str(),
+                            dest.c_str(),
+                            GetLastErrorString());
+        return false;
+    } catch (const std::exception& e) {
+        ConverExceptionToErrorCode(e);
+        DEBUG_LOG_EXCEPTION(e,
+                            "Rename file %sfailed. src: %s, dest: %s, message: %s",
+                            (overwrite ? "overwrite " : ""),
+                            src.c_str(),
+                            dest.c_str(),
+                            GetLastErrorString());
+        return false;
+    }
+}
+
+std::string ReadTextFile(const PathString& path)
 {
     if (!FileExists(path)) {
         DEBUG_LOG_ERR("Read file failed: %s, message: %s", path.c_str(), GetLastErrorString());
@@ -207,24 +250,24 @@ types::filesystem::ByteVector ReadBinaryFile(const PathString& path)
     return buffer;
 }
 
-bool WriteTextFileUtils(const PathString& path, const PathString& content, bool append)
+bool WriteTextFile(const PathString& path, const PathString& content, bool overwrite)
 {
     if (!FileExists(path)) {
         DEBUG_LOG_ERR("Write to text file failed: %s, message: %s", path.c_str(), GetLastErrorString());
         return false;
     }
     std::ios::openmode mode = std::ios::out;
-    if (append) {
-        mode = (std::ios::out | std::ios::app);
-    } else {
+    if (overwrite) {
         mode = (std::ios::out | std::ios::trunc);
+    } else {
+        mode = (std::ios::out | std::ios::app);
     }
     std::ofstream file(path, mode);
     if (!file.is_open()) {
         std::error_code ec(errno, std::generic_category());
         ConvertSysEcToErrorCode(ec);
         DEBUG_LOG_ERR("Write text file %s failed: %s, message: %s",
-                      (append ? "append" : "overwrite"),
+                      (overwrite ? "append" : "overwrite"),
                       path.c_str(),
                       GetLastErrorString());
         return false;
@@ -234,7 +277,7 @@ bool WriteTextFileUtils(const PathString& path, const PathString& content, bool 
         file.close();
         SetLastError(ErrorCode::SUCCESS);
         DEBUG_LOG_DBG("Write text file %s successed: %s, message: %s",
-                      (append ? "append" : "overwrite"),
+                      (overwrite ? "append" : "overwrite"),
                       path.c_str(),
                       GetLastErrorString());
         return true;
@@ -243,13 +286,13 @@ bool WriteTextFileUtils(const PathString& path, const PathString& content, bool 
     std::error_code ec(errno, std::system_category());
     ConvertSysEcToErrorCode(ec);
     DEBUG_LOG_ERR("Write text file %s failed: %s, message: %s",
-                  (append ? "append" : "overwrite"),
+                  (overwrite ? "append" : "overwrite"),
                   path.c_str(),
                   GetLastErrorString());
     return false;
 }
 
-types::filesystem::FileSize GetFileSizeUtils(const PathString& path)
+FileSize GetFileSize(const PathString& path)
 {
     if (!FileExists(path)) {
         DEBUG_LOG_ERR("Get file size failed: %s, message: %s", path.c_str(), GetLastErrorString());
