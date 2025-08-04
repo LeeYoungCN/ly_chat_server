@@ -56,7 +56,7 @@ void CommonDebugLog(common::types::logging::LogLevel level, const char* file, in
         }                                                              \
     } while (0)
 
-#ifdef NDEBUG
+#if defined(NDEBUG) && !defined(ENABLE_TEST)
 #define DEBUG_LOG_EXCEPTION(e, fmt, ...) \
     do {                                 \
         static_cast<void>(e);            \
