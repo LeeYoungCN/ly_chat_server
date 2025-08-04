@@ -64,6 +64,18 @@ jobs:
         echo "build-output-dir=${{ github.workspace }}/out/build" >> "$GITHUB_OUTPUT"
         echo "build-install-dir=${{ github.workspace }}/out/install" >> "$GITHUB_OUTPUT"
 
+    - name: Add MSYS2 to PATH
+      if: runner.os == 'Windows'
+      run: |
+        echo "C:\msys64\usr\bin" >> $env:GITHUB_PATH
+        echo "C:\msys64\mingw64\bin" >> "$env:GITHUB_PATH"
+
+    - name: Verify MSYS2
+      if: runner.os == 'Windows'
+      run: |
+        pacman --version
+        gcc --version
+
     - name: Configure CMake
       working-directory: ${{ github.workspace }}
       run: cmake --preset=${{ matrix.preset }}
