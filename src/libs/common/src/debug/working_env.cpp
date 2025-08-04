@@ -1,7 +1,5 @@
 #include "common/debug/working_env.h"
 
-#include <cstddef>
-
 #include "common/compiler/macros.h"
 #if PLATFORM_WINDOWS
 #include <windows.h>
@@ -10,14 +8,16 @@
 #elif PLATFORM_MACOS
 #include <mach-o/dyld.h>  // macOS的_NSGetExecutablePath
 #endif
-
 #include <array>
+#include <cstddef>
 #include <cstdint>
 #include <cstdlib>
 #include <filesystem>
 #include <iostream>
 #include <string>
 #include <vector>
+
+#include "working_env_c.h"
 
 namespace {
 std::string GetOsName()
@@ -147,6 +147,28 @@ void PrintEnvParams()
     }
 }
 
+const char* GetCppStandard()
+{
+#if __cplusplus >= 202302L
+    return "C++23";
+#endif
+#if __cplusplus >= 202002L
+    return "C++20";
+#endif
+#if __cplusplus >= 201703L
+    return "C++17";
+#endif
+#if __cplusplus >= 201402L
+    return "C++14";
+#endif
+#if __cplusplus >= 201103L
+    return "C++11";
+#endif
+#if __cplusplus >= 199711L
+    return "C++98/C++03";
+#endif
+}
+
 }  // namespace
 
 namespace common::debug::working_env {
@@ -159,6 +181,9 @@ void ShowWorkingEnv()
         std::cout << c << " ";
     }
     std::cout << std::endl;
+
+    std::cout << "C++ Standard: " << GetCppStandard() << std::endl;
+    std::cout << "C   Standard: " << GetCStandard() << std::endl;
     std::cout << "Wording directory: " << std::filesystem::current_path() << std::endl;
     std::cout << "Process: " << GetProcessPath() << std::endl;
     PrintEnvParams();
