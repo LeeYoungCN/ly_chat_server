@@ -8,6 +8,8 @@
  * @copyright Copyright (c) 2025
  *
  */
+#include <cstddef>
+
 #include "common/constants/filesystem_constants.h"
 #include "common/types/filesystem_types.h"
 #include "common/utils/filesystem_utils.h"
@@ -84,8 +86,9 @@ TEST_F(TestFilesystemUtilsPath, NormalizePath)
 TEST_F(TestFilesystemUtilsPath, NormalizePath_WithDots)
 {
     PathString test = "a/b/../c/./d";
-    PathString expect = "a" + std::string(PATH_SEP) + "c" + std::string(PATH_SEP) + "d";
-
+    PathString expect(MAX_PATH_STD, '\0');
+    auto len = sprintf(expect.data(), "a%sc%sd", PATH_SEP, PATH_SEP);
+    expect.resize(static_cast<size_t>(len));
     auto result = NormalizePath(test);
     EXPECT_EQ(result, expect);
     EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
@@ -96,6 +99,22 @@ TEST_F(TestFilesystemUtilsPath, NormalizePath_EmptyPath)
     PathString result = NormalizePath("");
 
     EXPECT_EQ(result, "");
+    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+}
+
+TEST_F(TestFilesystemUtilsPath, JoinPaths_empty)
+{
+    EXPECT_EQ(JoinPaths({}), "");
+    EXPECT_EQ(GetLastError(), ErrorCode::PATH_INVALID) << GetLastErrorString();
+}
+
+TEST_F(TestFilesystemUtilsPath, JoinPaths_Success)
+{
+    PathList test = {"a", "b", "c"};
+    PathString expect(MAX_PATH_STD, '\0');
+    auto size = sprintf(expect.data(), "a%sb%sc", PATH_SEP, PATH_SEP);
+    expect.resize(static_cast<size_t>(size));
+    EXPECT_EQ(JoinPaths(test), expect);
     EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
 }
 
