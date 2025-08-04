@@ -22,7 +22,7 @@ void CommonDebugLog(common::types::logging::LogLevel level, const char* file, in
 
 }  // namespace common
 
-#ifdef NDEBUG
+#if defined(NDEBUG) && !defined(ENABLE_TEST)
    // Release模式：空操作，显式消费所有参数避免警告
 #define DEBUG_LOG(level, fmt, ...) (static_cast<void>(0))
 #else
@@ -50,9 +50,9 @@ void CommonDebugLog(common::types::logging::LogLevel level, const char* file, in
 #define DEBUG_LOG_COND(condition, fmt, ...)                            \
     do {                                                               \
         if (!(condition)) {                                            \
-            DEBUG_LOG_ERR("[Fail] " fmt __VA_OPT__(, ) __VA_ARGS__);   \
+            DEBUG_LOG_ERR("[FAILED] " fmt __VA_OPT__(, ) __VA_ARGS__);   \
         } else {                                                       \
-            DEBUG_LOG_DBG("[Success] " fmt __VA_OPT__(, ) __VA_ARGS__) \
+            DEBUG_LOG_DBG("[SUCCESS] " fmt __VA_OPT__(, ) __VA_ARGS__) \
         }                                                              \
     } while (0)
 
