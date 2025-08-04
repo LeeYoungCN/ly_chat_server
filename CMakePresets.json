@@ -796,6 +796,44 @@
             ]
         },
         {
+            "name": "win_mingw_debug_workflow",
+            "description": "MinGW Debug Workflow",
+            "displayName": "MinGW Debug Workflow",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "win_mingw_debug"
+                },
+                {
+                    "type": "build",
+                    "name": "win_mingw_debug_build"
+                },
+                {
+                    "type": "test",
+                    "name": "win_mingw_debug_ctest"
+                }
+            ]
+        },
+        {
+            "name": "win_mingw_release_workflow",
+            "description": "MinGW Release Workflow",
+            "displayName": "MinGW Release Workflow",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "win_mingw_release"
+                },
+                {
+                    "type": "build",
+                    "name": "win_mingw_release_build"
+                },
+                {
+                    "type": "test",
+                    "name": "win_mingw_release_ctest"
+                }
+            ]
+        },
+        {
             "name": "msvc_x64_debug_workflow",
             "description": "MSVC x64 Debug Workflow",
             "displayName": "MSVC x64 Debug Workflow",
