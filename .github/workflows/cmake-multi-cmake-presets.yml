@@ -64,17 +64,20 @@ jobs:
         echo "build-output-dir=${{ github.workspace }}/out/build" >> "$GITHUB_OUTPUT"
         echo "build-install-dir=${{ github.workspace }}/out/install" >> "$GITHUB_OUTPUT"
 
-    - name: Add MSYS2 to PATH
-      if: runner.os == 'Windows'
+    - name: Update MinGW via MSYS2 (Windows GCC only)
+      if: matrix.os == 'windows-latest' && matrix.compiler == 'mingw'
       run: |
-        echo "C:\msys64\usr\bin" >> $env:GITHUB_PATH
-        echo "C:\msys64\mingw64\bin" >> "$env:GITHUB_PATH"
-
-    - name: Verify MSYS2
-      if: runner.os == 'Windows'
-      run: |
-        pacman --version
-        gcc --version
+        # 1. 启动 MSYS2 终端并更新包数据库（仅更新必要的索引）
+        C:\msys64\usr\bin\bash -lc "pacman -Sy --noconfirm"
+        
+        # 2. 升级 MinGW 64位 GCC 工具链（包含 g++、标准库等）
+        C:\msys64\usr\bin\bash -lc "pacman -S --noconfirm mingw-w64-x86_64-gcc"
+        
+        # 3. （可选）升级配套工具（如 make、gdb，按需添加）
+        C:\msys64\usr\bin\bash -lc "pacman -S --noconfirm mingw-w64-x86_64-make mingw-w64-x86_64-gdb"
+        
+        # 4. 将 MinGW 路径添加到环境变量（确保优先使用）
+        echo "C:\msys64\mingw64\bin" >> $env:GITHUB_PATH
 
     - name: Configure CMake
       working-directory: ${{ github.workspace }}

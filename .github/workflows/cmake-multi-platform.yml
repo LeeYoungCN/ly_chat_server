@@ -27,20 +27,31 @@ jobs:
         build_type: [Release, Debug]
         c_compiler: [gcc, clang, cl]
         include:
+          # Windows + MSVC
           - os: windows-latest
             c_compiler: cl
             cpp_compiler: cl
+            generator: "Visual Studio 17 2022"  # MSVC默认生成器
+          # Windows + GCC
           - os: windows-latest
             c_compiler: gcc
+            cpp_compiler: g++  # 显式指定C++编译器
+            generator: "MinGW Makefiles"  # 显式指定MinGW生成器
+          # Ubuntu + GCC
           - os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
+            generator: "Unix Makefiles"
+          # Ubuntu + Clang
           - os: ubuntu-latest
             c_compiler: clang
             cpp_compiler: clang++
+            generator: "Unix Makefiles"
+          # macOS + Clang
           - os: macos-15
             c_compiler: clang
             cpp_compiler: clang++
+            generator: "Unix Makefiles"
         exclude:
           - os: windows-latest
             c_compiler: clang
@@ -62,17 +73,21 @@ jobs:
         echo "build-output-dir=${{ github.workspace }}/out/build" >> "$GITHUB_OUTPUT"
         echo "build-install-dir=${{ github.workspace }}/out/install" >> "$GITHUB_OUTPUT"
 
-    - name: Add MSYS2 to PATH
-      if: runner.os == 'Windows'
+    - name: Update MinGW via MSYS2 (Windows GCC only)
+      if: matrix.os == 'windows-latest' && matrix.c_compiler == 'gcc'
       run: |
-        echo "C:\msys64\usr\bin" >> $env:GITHUB_PATH
-        echo "C:\msys64\mingw64\bin" >> "$env:GITHUB_PATH"
-
-    - name: Verify MSYS2
-      if: runner.os == 'Windows'
-      run: |
-        pacman --version
-        gcc --version
+        # 1. 启动 MSYS2 终端并更新包数据库（仅更新必要的索引）
+        C:\msys64\usr\bin\bash -lc "pacman -Sy --noconfirm"
+        
+        # 2. 升级 MinGW 64位 GCC 工具链（包含 g++、标准库等）
+        C:\msys64\usr\bin\bash -lc "pacman -S --noconfirm mingw-w64-x86_64-gcc"
+        
+        # 3. （可选）升级配套工具（如 make、gdb，按需添加）
+        C:\msys64\usr\bin\bash -lc "pacman -S --noconfirm mingw-w64-x86_64-make mingw-w64-x86_64-gdb"
+        
+        # 4. 将 MinGW 路径添加到环境变量（确保优先使用）
+        echo "C:\msys64\mingw64\bin" >> $env:GITHUB_PATH
+        echo "$mingwPath" >> $env:GITHUB_PATH
 
     - name: Configure CMake
       working-directory: ${{ github.workspace }}
@@ -80,6 +95,7 @@ jobs:
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
       run: >
         cmake -B ${{ steps.strings.outputs.build-output-dir }}
+        -G "${{ matrix.generator }}"  # 使用显式生成器
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
