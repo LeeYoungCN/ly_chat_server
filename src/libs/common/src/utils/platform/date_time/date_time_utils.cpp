@@ -11,7 +11,6 @@
 #include "common/constants/date_time_constants.h"
 #include "common/debug/debug_log.h"
 #include "common/types/date_time_types.h"
-#include "internal/common/utils/date_time_utils_internal.h"
 
 namespace {
 
@@ -81,7 +80,7 @@ bool SafeGmtime(const time_t* timer, struct tm* timeInfo)
     return true;
 }
 
-void ConvertStdtmToTimeComp(const std::tm timeInfo, int32_t millis, common::types::date_time::TimeComponent& timeComp)
+void ConvertTmToTimeComp(const std::tm timeInfo, int32_t millis, common::types::date_time::TimeComponent& timeComp)
 {
     timeComp.year = static_cast<uint32_t>(TIME_COMP_START_YEAR + timeInfo.tm_year);
     timeComp.month = static_cast<uint32_t>(TIME_COMP_START_MONTH + timeInfo.tm_mon);
@@ -143,7 +142,7 @@ TimeComponent LocalTimeComponent(const Timestamp& timestamp)
         return timeComp;
     }
 
-    ConvertStdtmToTimeComp(timeInfo, millis, timeComp);
+    ConvertTmToTimeComp(timeInfo, millis, timeComp);
     return timeComp;
 }
 
@@ -159,7 +158,7 @@ TimeComponent UtcTimeComponent(const Timestamp& timestamp)
         return timeComp;
     }
 
-    ConvertStdtmToTimeComp(timeInfo, millis, timeComp);
+    ConvertTmToTimeComp(timeInfo, millis, timeComp);
     return timeComp;
 }
 

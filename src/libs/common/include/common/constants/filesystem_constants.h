@@ -80,7 +80,7 @@ inline const char* GetErrorString(ErrorCode code)
         case ErrorCode::NOT_FOUND:
             return "Not found";
         case ErrorCode::PERMISSION_DENIED:
-            return "Permissin denied";
+            return "Permission denied";
         case ErrorCode::PATH_TOO_LONG:
             return "Path too long";
         case ErrorCode::ALREADY_EXISTS:

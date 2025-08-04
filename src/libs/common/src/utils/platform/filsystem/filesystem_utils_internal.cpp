@@ -67,7 +67,7 @@ void SetLastError(ErrorCode code)
     g_fileSystemLastError = code;
 }
 
-void ConverExceptionToErrorCode(const std::exception& ex)
+void ConvertExceptionToErrorCode(const std::exception& ex)
 {
     try {
         std::throw_with_nested(ex);

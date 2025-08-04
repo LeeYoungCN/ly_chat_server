@@ -4,7 +4,7 @@ set(LIB_LIST "${LIB_LIST}" CACHE STRING "" FORCE)
 
 add_library(${LIB_NAME} SHARED)
 
-file(GLOB_RECURSE SRC_LIST src "*.cpp")
+file(GLOB_RECURSE SRC_LIST src "*.cpp" "*.c")
 target_sources(${LIB_NAME} PRIVATE ${SRC_LIST})
 
 target_include_directories(${LIB_NAME}

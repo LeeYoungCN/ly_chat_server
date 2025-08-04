@@ -24,7 +24,6 @@
 #include <exception>
 #include <filesystem>
 #include <string>
-#include <system_error>
 
 #include "common/constants/filesystem_constants.h"
 #include "common/debug/debug_log.h"
@@ -82,16 +81,16 @@ PathString GetCurrentWorkingDirectory()
 {
     try {
         auto p = fs::current_path();
-        DEBUG_LOG_DBG("Get current working dir successed: %s.", p.string().c_str());
+        DEBUG_LOG_DBG("Get current working dir succeeded: %s.", p.string().c_str());
         SetLastError(ErrorCode::SUCCESS);
         return p.string();
     } catch (const fs::filesystem_error& e) {
-        DEBUG_LOG_EXCEPTION(e, "Get currtn working dir failed.");
+        DEBUG_LOG_EXCEPTION(e, "Get current working dir failed.");
         ConvertSysEcToErrorCode(e.code());
         return "";
     } catch (const std::exception& e) {
-        DEBUG_LOG_EXCEPTION(e, "Get currtn working dir failed.");
-        ConverExceptionToErrorCode(e);
+        DEBUG_LOG_EXCEPTION(e, "Get current working dir failed.");
+        ConvertExceptionToErrorCode(e);
         return "";
     }
 }
@@ -116,7 +115,7 @@ PathString NormalizePath(const PathString& path)
 {
     try {
         auto normalized = fs::path(path).lexically_normal();
-        DEBUG_LOG_DBG("Normalized path successedd: %s", normalized.string().c_str());
+        DEBUG_LOG_DBG("Normalized path succeeded: %s", normalized.string().c_str());
         SetLastError(ErrorCode::SUCCESS);
         return normalized.string();
     } catch (const fs::filesystem_error& e) {
@@ -125,7 +124,7 @@ PathString NormalizePath(const PathString& path)
         return "";
     } catch (const std::exception& e) {
         DEBUG_LOG_EXCEPTION(e, "Normalized path failed");
-        ConverExceptionToErrorCode(e);
+        ConvertExceptionToErrorCode(e);
         return "";
     }
 }
@@ -142,7 +141,7 @@ PathString ToAbsolutePath(const PathString& relPath, const PathString& baseDir)
 
     try {
         auto absPath = fs::absolute(combined).lexically_normal();
-        DEBUG_LOG_DBG("Absolute path successed: %s", absPath.string().c_str());
+        DEBUG_LOG_DBG("Absolute path succeeded: %s", absPath.string().c_str());
         SetLastError(ErrorCode::SUCCESS);
         return absPath.string();
     } catch (const fs::filesystem_error& e) {
@@ -151,7 +150,7 @@ PathString ToAbsolutePath(const PathString& relPath, const PathString& baseDir)
         return "";
     } catch (const std::exception& e) {
         DEBUG_LOG_EXCEPTION(e, "Absolute path failed: %s");
-        ConverExceptionToErrorCode(e);
+        ConvertExceptionToErrorCode(e);
         return "";
     }
 }

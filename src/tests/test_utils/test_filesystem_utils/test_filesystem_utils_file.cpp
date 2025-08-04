@@ -49,7 +49,7 @@ TEST_F(TestFilesystemUtilsFile, FileExists)
     EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
 }
 
-TEST_F(TestFilesystemUtilsFile, FileExists_Nonexists)
+TEST_F(TestFilesystemUtilsFile, FileExists_Nonexistent)
 {
     EXPECT_FALSE(FileExists(m_testFile));
     EXPECT_EQ(GetLastError(), ErrorCode::NOT_FOUND) << GetLastErrorString();
@@ -81,25 +81,25 @@ TEST_F(TestFilesystemUtilsFile, CreateFile_Success)
 
 TEST_F(TestFilesystemUtilsFile, CreateFile_DirNotExist)
 {
-    auto newFile = ToAbsolutePath(m_testFileName, m_processDir + "/nonexist");
+    auto newFile = ToAbsolutePath(m_testFileName, m_processDir + "/nonexistent");
     EXPECT_FALSE(common::utils::filesystem::CreateFile(newFile));
     EXPECT_EQ(GetLastError(), ErrorCode::NOT_FOUND) << GetLastErrorString();
 }
 
-TEST_F(TestFilesystemUtilsFile, DelteteFile_DirNotExist)
+TEST_F(TestFilesystemUtilsFile, DeleteFile_DirNotExist)
 {
-    auto newFile = ToAbsolutePath(m_testFileName, m_processDir + "/nonexist");
+    auto newFile = ToAbsolutePath(m_testFileName, m_processDir + "/nonexistent");
     EXPECT_TRUE(DeleteFile(newFile));
     EXPECT_EQ(GetLastError(), ErrorCode::NOT_FOUND) << GetLastErrorString();
 }
 
-TEST_F(TestFilesystemUtilsFile, DelteteFile_TypeInvalid)
+TEST_F(TestFilesystemUtilsFile, DeleteFile_TypeInvalid)
 {
     EXPECT_FALSE(DeleteFile(m_processDir));
     EXPECT_EQ(GetLastError(), ErrorCode::NOT_FILE) << GetLastErrorString();
 }
 
-TEST_F(TestFilesystemUtilsFile, DelteteFile_FileExist)
+TEST_F(TestFilesystemUtilsFile, DeleteFile_FileExist)
 {
     EXPECT_TRUE(common::utils::filesystem::CreateFile(m_testFile));
     EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
@@ -125,7 +125,7 @@ TEST_F(TestFilesystemUtilsFile, ReadeFile_TargetInvalid)
     EXPECT_EQ(GetLastError(), ErrorCode::NOT_FILE) << GetLastErrorString();
 }
 
-TEST_F(TestFilesystemUtilsFile, ReadeFile_Nonexist)
+TEST_F(TestFilesystemUtilsFile, ReadeFile_Nonexistent)
 {
     EXPECT_EQ(ReadTextFile(m_testFile), "");
     EXPECT_EQ(GetLastError(), ErrorCode::NOT_FOUND) << GetLastErrorString();
@@ -194,7 +194,7 @@ TEST_F(TestFilesystemUtilsFile, WriteTextFile_AppendSuccess)
     EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
 }
 
-TEST_F(TestFilesystemUtilsFile, WriteTextFile_Nonexist)
+TEST_F(TestFilesystemUtilsFile, WriteTextFile_Nonexistent)
 {
     EXPECT_FALSE(WriteTextFile(m_testFile, ""));
     EXPECT_EQ(GetLastError(), ErrorCode::NOT_FOUND);
@@ -222,7 +222,7 @@ TEST_F(TestFilesystemUtilsFile, CopyFile_Success)
     EXPECT_TRUE(DeleteFile(newFile));
 }
 
-TEST_F(TestFilesystemUtilsFile, CopyFile_OverWirteSuccess)
+TEST_F(TestFilesystemUtilsFile, CopyFile_OverWriteSuccess)
 {
     PathString newFile = m_processDir + PATH_SEP + "file2";
     EXPECT_TRUE(CreateFile(m_testFile));
@@ -263,7 +263,7 @@ TEST_F(TestFilesystemUtilsFile, CopyFile_DstInvalid)
     EXPECT_EQ(GetLastError(), ErrorCode::NOT_FILE) << GetLastErrorString();
 }
 
-TEST_F(TestFilesystemUtilsFile, CopyFile_DstAlreadtExist)
+TEST_F(TestFilesystemUtilsFile, CopyFile_DstAlreadyExist)
 {
     PathString newFile = m_processDir + PATH_SEP + "file2";
     EXPECT_TRUE(CreateFile(m_testFile));
@@ -353,7 +353,7 @@ TEST_F(TestFilesystemUtilsFile, RenameFile_Overwrite)
     EXPECT_TRUE(DeleteFile(newFile));
 }
 
-TEST_F(TestFilesystemUtilsFile, RenameFile_SrcNonexist)
+TEST_F(TestFilesystemUtilsFile, RenameFile_SrcNonexistent)
 {
     PathString newFile = m_processDir + PATH_SEP + "file2";
 

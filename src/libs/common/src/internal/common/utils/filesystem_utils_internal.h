@@ -22,7 +22,7 @@ void SetLastError(constants::filesystem::ErrorCode code);
 
 void ConvertSysEcToErrorCode(const std::error_code& ec);
 
-void ConverExceptionToErrorCode(const std::exception& ex);
+void ConvertExceptionToErrorCode(const std::exception& ex);
 
 constants::filesystem::ErrorCode GetLastErrorInternal();
 

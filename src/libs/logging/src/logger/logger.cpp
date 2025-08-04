@@ -23,10 +23,10 @@ const std::string& Logger::getLoggerName()
     return m_name;
 }
 
-void Logger::addAppder(const std::shared_ptr<Appender>& apender)
+void Logger::addAppender(const std::shared_ptr<Appender>& appender)
 {
-    std::unique_lock<std::mutex> lock(m_apenderMtx);
-    m_appenders.emplace_back(apender);
+    std::unique_lock<std::mutex> lock(m_appenderMtx);
+    m_appenderList.emplace_back(appender);
 }
 
 void Logger::setLogLevel(common::types::logging::LogLevel level)
@@ -56,12 +56,12 @@ void Logger::log(common::types::logging::LogLevel level, const char* file, int32
                         .loggerName = getLoggerName(),
                         .message = buffer};
     {
-        std::unique_lock<std::mutex> lock(m_apenderMtx);
-        if (m_appenders.empty()) {
+        std::unique_lock<std::mutex> lock(m_appenderMtx);
+        if (m_appenderList.empty()) {
             INST(ConsoleAppender).append(record);
         } else {
-            for (const auto& apender : m_appenders) {
-                apender->append(record);
+            for (const auto& appender : m_appenderList) {
+                appender->append(record);
             }
         }
     }
@@ -69,14 +69,14 @@ void Logger::log(common::types::logging::LogLevel level, const char* file, int32
 
 void Logger::removeAppender(const std::shared_ptr<Appender>& appender)
 {
-    std::lock_guard<std::mutex> lock(m_apenderMtx);
-    auto it = std::remove(m_appenders.begin(), m_appenders.end(), appender);
-    m_appenders.erase(it, m_appenders.end());
+    std::lock_guard<std::mutex> lock(m_appenderMtx);
+    auto it = std::remove(m_appenderList.begin(), m_appenderList.end(), appender);
+    m_appenderList.erase(it, m_appenderList.end());
 }
 
 void Logger::removeAllAppender()
 {
-    std::lock_guard<std::mutex> lock(m_apenderMtx);
-    m_appenders.clear();
+    std::lock_guard<std::mutex> lock(m_appenderMtx);
+    m_appenderList.clear();
 }
 }  // namespace logging

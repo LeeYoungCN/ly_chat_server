@@ -18,7 +18,6 @@
 #include <string>
 #include <system_error>
 
-#include "common/compiler/macros.h"
 #include "common/constants/filesystem_constants.h"
 #include "common/debug/debug_log.h"
 #include "common/types/date_time_types.h"
@@ -111,7 +110,7 @@ bool DeleteFileInternal(const PathString& path)
         return false;
     } catch (const std::exception& e) {
         DEBUG_LOG_EXCEPTION(e, "Delete file failed: %s", path.c_str());
-        ConverExceptionToErrorCode(e);
+        ConvertExceptionToErrorCode(e);
         return false;
     }
 }
@@ -145,15 +144,15 @@ bool CopyFile(const PathString& src, const PathString& dest, bool overwrite)
         fs::copy_file(src, dest, option);
         SetLastError(ErrorCode::SUCCESS);
         DEBUG_LOG_DBG(
-            "Copy file %s successd. src: %s. dst: %s", (overwrite ? "overweite" : "none"), src.c_str(), dest.c_str());
+            "Copy file %s succeed. src: %s. dst: %s", (overwrite ? "overwrite" : "none"), src.c_str(), dest.c_str());
         return true;
     } catch (const fs::filesystem_error& e) {
         ConvertSysEcToErrorCode(e.code());
-        DEBUG_LOG_EXCEPTION(e, "Copy file %s failed.", (overwrite ? "overweite" : "none"));
+        DEBUG_LOG_EXCEPTION(e, "Copy file %s failed.", (overwrite ? "overwrite" : "none"));
         return false;
     } catch (const std::exception& e) {
-        ConverExceptionToErrorCode(e);
-        DEBUG_LOG_EXCEPTION(e, "Copy file %s failed.", (overwrite ? "overweite" : "none"));
+        ConvertExceptionToErrorCode(e);
+        DEBUG_LOG_EXCEPTION(e, "Copy file %s failed.", (overwrite ? "overwrite" : "none"));
         return false;
     }
 }
@@ -175,14 +174,14 @@ bool RenameFile(const PathString& src, const PathString& dest, bool overwrite)
     // 已存在
     if (!overwrite && type == EntryType::FILE) {
         SetLastError(ErrorCode::ALREADY_EXISTS);
-        DEBUG_LOG_ERR("Rename file failed. dest alreadt exist: %s, message: %s", dest.c_str(), GetLastErrorString());
+        DEBUG_LOG_ERR("Rename file failed. dest already exist: %s, message: %s", dest.c_str(), GetLastErrorString());
         return false;
     }
 
     try {
         fs::rename(src, dest);
         SetLastError(ErrorCode::SUCCESS);
-        DEBUG_LOG_DBG("Rename file %ssucceeed. src: %s, dest: %s, message: %s",
+        DEBUG_LOG_DBG("Rename file %s succeeded. src: %s, dest: %s, message: %s",
                       (overwrite ? "overwrite " : ""),
                       src.c_str(),
                       dest.c_str(),
@@ -198,7 +197,7 @@ bool RenameFile(const PathString& src, const PathString& dest, bool overwrite)
                             GetLastErrorString());
         return false;
     } catch (const std::exception& e) {
-        ConverExceptionToErrorCode(e);
+        ConvertExceptionToErrorCode(e);
         DEBUG_LOG_EXCEPTION(e,
                             "Rename file %sfailed. src: %s, dest: %s, message: %s",
                             (overwrite ? "overwrite " : ""),
@@ -223,7 +222,7 @@ std::string ReadTextFile(const PathString& path)
         DEBUG_LOG_ERR("Read file failed: %s, message: %s", path.c_str(), GetLastErrorString());
         return "";
     }
-    DEBUG_LOG_DBG("Read file successed: %s, message: %s", path.c_str(), GetLastErrorString());
+    DEBUG_LOG_DBG("Read file succeeded: %s, message: %s", path.c_str(), GetLastErrorString());
     return {std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()};
 }
 
@@ -276,7 +275,7 @@ bool WriteTextFile(const PathString& path, const PathString& content, bool overw
     if (file << content) {
         file.close();
         SetLastError(ErrorCode::SUCCESS);
-        DEBUG_LOG_DBG("Write text file %s successed: %s, message: %s",
+        DEBUG_LOG_DBG("Write text file %s succeeded: %s, message: %s",
                       (overwrite ? "append" : "overwrite"),
                       path.c_str(),
                       GetLastErrorString());

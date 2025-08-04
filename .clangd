@@ -1,7 +1,21 @@
 CompileFlags:
-    CompilationDatabase: out/build
-InlayHints:              # 代码提示设置部分
-  Enabled: true          # 启用代码提示
-  ParameterNames: true   # 显示参数名称提示
-  DeducedTypes: true     # 显示推断类型提示
-  Designators: true      # 显示设计器提示
+  CompilationDatabase: out/build
+
+# 补全相关配置（控制代码提示和自动完成行为）
+Completion:
+  AllScopes: Yes
+  ArgumentLists: FullPlaceholders
+
+# 索引相关配置（控制代码索引构建和存储方式）
+Index:
+  Background: Build
+  StandardLibrary: true
+
+InlayHints:
+  BlockEnd: false
+  Designators: true     # 聚合初始化提示（如 { .name = "foo" }）
+  Enabled: true         # 启用代码提示
+  ParameterNames: true  # 函数参数名提示（如 func(a: int, b: float)）
+  DeducedTypes: true        # 自动推断的类型提示（如 auto x /* = int */ = 5
+  DefaultArguments: true
+  TypeNameLimit: 24

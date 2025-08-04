@@ -40,14 +40,14 @@ TEST_F(TestFilesystemUtilsPath, WorkingDirectory)
     EXPECT_EQ(GetEntryType(m_workDir), EntryType::DIRECTORY);
 }
 
-TEST_F(TestFilesystemUtilsPath, AbosolutePath)
+TEST_F(TestFilesystemUtilsPath, AbsolutePath)
 {
     EXPECT_TRUE(IsAbsolutePath(m_process));
     EXPECT_TRUE(IsAbsolutePath(m_workDir));
     EXPECT_TRUE(IsAbsolutePath(m_processDir));
 }
 
-TEST_F(TestFilesystemUtilsPath, ToAbosolute)
+TEST_F(TestFilesystemUtilsPath, ToAbsolute)
 {
     auto baseName = GetBaseName(m_process);
     PathString relPah = std::string(".") + PATH_SEP + baseName;

@@ -21,15 +21,15 @@ public:
 
     const std::string& getLoggerName();
     void setLogLevel(common::types::logging::LogLevel level);
-    void addAppder(const std::shared_ptr<Appender>& apender);
+    void addAppender(const std::shared_ptr<Appender>& appender);
     void removeAppender(const std::shared_ptr<Appender>& appender);
     void removeAllAppender();
 
 private:
     std::string m_name = "root";
     common::types::logging::LogLevel m_logLevel = common::types::logging::LogLevel::INFO;
-    std::vector<std::shared_ptr<Appender>> m_appenders;
-    std::mutex m_apenderMtx;
+    std::vector<std::shared_ptr<Appender>> m_appenderList;
+    std::mutex m_appenderMtx;
 };
 }  // namespace logging
 #endif  // LOGGING_LOGGER_H

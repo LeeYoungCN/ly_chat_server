@@ -58,7 +58,7 @@ TEST_F(TestFilesystemUtilsDir, DeleteDir_NotExist)
 {
     EXPECT_TRUE(DeleteDir(m_testDir1));
     EXPECT_EQ(GetLastError(), ErrorCode::NOT_FOUND);
-    EXPECT_TRUE(DeleteDir(m_process + "/nonexist"));
+    EXPECT_TRUE(DeleteDir(m_process + "/nonexistent"));
     EXPECT_EQ(GetLastError(), ErrorCode::NOT_FOUND);
 }
 

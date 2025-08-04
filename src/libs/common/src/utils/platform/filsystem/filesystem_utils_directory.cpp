@@ -83,7 +83,7 @@ bool CreateDir(const PathString& path, bool recursive)
         DEBUG_LOG_EXCEPTION(e, "Create dir %s failed: %s", recursive ? "recursive" : "not recursive", path.c_str());
         return false;
     } catch (const std::exception& e) {
-        ConverExceptionToErrorCode(e);
+        ConvertExceptionToErrorCode(e);
         DEBUG_LOG_EXCEPTION(e, "Create dir %s failed: %s", recursive ? "recursive" : "not recursive", path.c_str());
         return false;
     }
@@ -120,7 +120,7 @@ bool DeleteDir(const PathString& path, bool recursive)
         return false;
     } catch (const std::exception& e) {
         DEBUG_LOG_EXCEPTION(e, "Delete dir %s failed: %s", recursive ? "recursive" : "not recursive", path.c_str());
-        ConverExceptionToErrorCode(e);
+        ConvertExceptionToErrorCode(e);
         return false;
     }
 }
