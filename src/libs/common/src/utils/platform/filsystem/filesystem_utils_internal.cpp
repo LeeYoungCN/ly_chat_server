@@ -53,8 +53,7 @@ void ConvertSystemCategory(const std::error_code& ec)
         {ERROR_SHARING_VIOLATION, ErrorCode::SHARING_VIOLATION},
         {ERROR_ACCESS_DENIED, ErrorCode::PERMISSION_DENIED}
 #else
-        {EIO, ErrorCode::IO_ERROR},
-        {EBUSY, ErrorCode::SHARING_VIOLATION}
+        {EIO, ErrorCode::IO_ERROR}, {EBUSY, ErrorCode::SHARING_VIOLATION}
 #endif
     };
 

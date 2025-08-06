@@ -95,7 +95,7 @@ inline const char* GetErrorString(ErrorCode code)
             return "Directory not empty";
         case ErrorCode::PATH_INVALID:
             return "Path invalid";
-        case  ErrorCode::SHARING_VIOLATION:
+        case ErrorCode::SHARING_VIOLATION:
             return "Sharing violation";
         case ErrorCode::IS_A_DIRECTORY:
             return "Is a directory";

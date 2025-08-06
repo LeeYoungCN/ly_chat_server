@@ -27,7 +27,7 @@ using namespace common::constants::date_time;
 using namespace common::types::date_time;
 using namespace common::utils::date_time;
 
-class TestFormatTimeBufferInvalid : public ::testing::TestWithParam<TestBufferParam> {
+class TestDateTimeUtilsFmtTimeCompBuffer : public ::testing::TestWithParam<TestBufferParam> {
 protected:
     static void SetUpTestSuite() {}
     static void TearDownTestSuite() {}
@@ -35,7 +35,7 @@ protected:
     void TearDown() override {};
 };
 
-TEST_P(TestFormatTimeBufferInvalid, TimeComponent)
+TEST_P(TestDateTimeUtilsFmtTimeCompBuffer, TimeComponent)
 {
     auto format = std::get<0>(GetParam());
     auto length = std::get<1>(GetParam());
@@ -53,22 +53,22 @@ TEST_P(TestFormatTimeBufferInvalid, TimeComponent)
     TestTimeBuffer(format, length, timeInfo, timeComp);
 }
 
-INSTANTIATE_TEST_SUITE_P(LENGTH, TestFormatTimeBufferInvalid,
+INSTANTIATE_TEST_SUITE_P(LENGTH, TestDateTimeUtilsFmtTimeCompBuffer,
                          testing::Combine(testing::Values("%Y-%y-%m-%d-%H:%M:%S-%A-%a-%B-%b-%h", "111"),
                                           testing::Range(1U, 50U, 5U), testing::Values(2), testing::Values(2)));
 
 #if defined(__linux__) || defined(__APPLE__)
-INSTANTIATE_TEST_SUITE_P(LINUX_AND_APPLE_MONTH, TestFormatTimeBufferInvalid,
+INSTANTIATE_TEST_SUITE_P(LINUX_AND_APPLE_MONTH, TestDateTimeUtilsFmtTimeCompBuffer,
                          testing::Combine(testing::ValuesIn(MONTH_TEST_FORMAT), testing::Values(MAX_TIME_STR_LEN),
                                           testing::Range(0U, 15U), testing::Values(2)));
 
-INSTANTIATE_TEST_SUITE_P(LINUX_AND_APPLE_WEEKDAY, TestFormatTimeBufferInvalid,
+INSTANTIATE_TEST_SUITE_P(LINUX_AND_APPLE_WEEKDAY, TestDateTimeUtilsFmtTimeCompBuffer,
                          testing::Combine(testing::ValuesIn(WEEKDAY_TEST_FORMAT), testing::Values(MAX_TIME_STR_LEN),
                                           testing::Values(10U), testing::Range(0U, 10U)));
 #endif
 
 #if defined(__linux__) || defined(__APPLE__)
-class TestFormatTimeStringInvalid : public ::testing::TestWithParam<TestStringParam> {
+class TestDateTimeUtilsTimeCompStr : public ::testing::TestWithParam<TestStringParam> {
 protected:
     static void SetUpTestSuite() {}
     static void TearDownTestSuite() {}
@@ -76,7 +76,7 @@ protected:
     void TearDown() override {};
 };
 
-TEST_P(TestFormatTimeStringInvalid, TimeComponent)
+TEST_P(TestDateTimeUtilsTimeCompStr, TimeComponent)
 {
     auto format = std::get<0>(GetParam());
     auto month = std::get<1>(GetParam());
@@ -93,11 +93,11 @@ TEST_P(TestFormatTimeStringInvalid, TimeComponent)
     TestTimeString(format, timeInfo, timeComp);
 }
 
-INSTANTIATE_TEST_SUITE_P(LINUX_AND_APPLE_MONTH, TestFormatTimeStringInvalid,
+INSTANTIATE_TEST_SUITE_P(LINUX_AND_APPLE_MONTH, TestDateTimeUtilsTimeCompStr,
                          testing::Combine(testing::ValuesIn(MONTH_TEST_FORMAT), testing::Range(0U, 15U),
                                           testing::Values(2)));
 
-INSTANTIATE_TEST_SUITE_P(LINUX_AND_APPLE_WEEKDAY, TestFormatTimeStringInvalid,
+INSTANTIATE_TEST_SUITE_P(LINUX_AND_APPLE_WEEKDAY, TestDateTimeUtilsTimeCompStr,
                          testing::Combine(testing::ValuesIn(WEEKDAY_TEST_FORMAT), testing::Values(10U),
                                           testing::Range(0U, 10U)));
 #endif

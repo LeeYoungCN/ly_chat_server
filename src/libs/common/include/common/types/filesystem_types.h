@@ -85,9 +85,9 @@ enum class FileAttribute {
  * @brief 文件信息结构体，包含文件的元数据
  */
 struct FileInfo {
-    PathString path;                                 ///< 文件的完整路径
-    FileSize size;                                   ///< 文件大小（字节）
-    EntryType type;                                  ///< 条目类型（文件/目录等）
+    PathString path;                                   ///< 文件的完整路径
+    FileSize size;                                     ///< 文件大小（字节）
+    EntryType type;                                    ///< 条目类型（文件/目录等）
     common::types::date_time::TimestampMs modifyTime;  ///< 最后修改时间戳）
 };
 

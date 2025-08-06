@@ -21,7 +21,7 @@ const std::vector<std::string_view> TestMillisFormats = {"%Y-%y-%m-%d-%H:%M:%S-%
                                                          "%3f%3f%3f%3f",
                                                          "%3f3f3f3f%3f"};
 
-class TestFormatTimeBuffer : public ::testing::TestWithParam<TestBufferParam> {
+class TestDateTimeUtilsTimestampBuffer : public ::testing::TestWithParam<TestBufferParam> {
 protected:
     static void SetUpTestSuite() {}
     static void TearDownTestSuite() {}
@@ -29,7 +29,7 @@ protected:
     void TearDown() override {};
 };
 
-TEST_P(TestFormatTimeBuffer, TimestampMs)
+TEST_P(TestDateTimeUtilsTimestampBuffer, TimestampMs)
 {
     constexpr int64_t MILLIS_PER_DAY = 86400000;
     const auto &format = std::get<0>(GetParam());
@@ -39,16 +39,16 @@ TEST_P(TestFormatTimeBuffer, TimestampMs)
     TestTimeBuffer(format, MAX_TIME_STR_LEN, currTs);
 }
 
-INSTANTIATE_TEST_SUITE_P(DAY, TestFormatTimeBuffer,
+INSTANTIATE_TEST_SUITE_P(DAY, TestDateTimeUtilsTimestampBuffer,
                          testing::Combine(testing::Values("%Y-%y-%m-%d %H:%M:%S %A %a %B %b"),
                                           testing::Range(0, 365, 10)));
 
 #ifdef __linux__
-INSTANTIATE_TEST_SUITE_P(Linux, TestFormatTimeBuffer,
+INSTANTIATE_TEST_SUITE_P(Linux, TestDateTimeUtilsTimestampBuffer,
                          testing::Combine(testing::ValuesIn(TestMillisFormats), testing::Values(0)));
 #endif
 
-class TestFormatTimeString : public ::testing::TestWithParam<std::string_view> {
+class TestDateTimeUtilsTimestampStr : public ::testing::TestWithParam<std::string_view> {
 protected:
     static void SetUpTestSuite() {}
     static void TearDownTestSuite() {}
@@ -56,14 +56,14 @@ protected:
     void TearDown() override {};
 };
 
-TEST_P(TestFormatTimeString, TimestampMs)
+TEST_P(TestDateTimeUtilsTimestampStr, TimestampMs)
 {
     const auto &format = GetParam();
     TimestampMs const currTs = common::utils::date_time::GetCurrentTimestampMs();
     TestTimeString(format, currTs);
 }
 
-INSTANTIATE_TEST_SUITE_P(FORMAT, TestFormatTimeString,
+INSTANTIATE_TEST_SUITE_P(FORMAT, TestDateTimeUtilsTimestampStr,
                          testing::Values(DEFAULT_TIME_FMT, "%Y-%m-%d %H:%M:%S %B", "%Y-%m-%d %H:%M:%S %b",
                                          "%Y-%m-%d %H:%M:%S %A", "%Y-%m-%d%H:%M:%S %a", "%Y%y%m%d%H%M%S%A%a%B%b",
                                          "%y-%m-%d%H:%M:%S", "%Y-%m-%d %H:%M:%S", "%Y%m%d%H%M%S", "%Y%m%d%H%M%S%%",
