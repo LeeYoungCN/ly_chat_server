@@ -10,14 +10,14 @@
 
 namespace test::test_utils::test_date_time_utils {
 
-std::tm TimestampToTimeInfo(::common::types::date_time::Timestamp ts);
+std::tm TimestampToTimeInfo(::common::types::date_time::TimestampMs ts);
 
-void TestTimeBuffer(const std::string_view& format, uint32_t length, common::types::date_time::Timestamp timestamp);
+void TestTimeBuffer(const std::string_view& format, uint32_t length, common::types::date_time::TimestampMs timestamp);
 
 void TestTimeBuffer(const std::string_view& format, uint32_t length, std::tm timeInfo,
                     const common::types::date_time::TimeComponent& timeComp);
 
-void TestTimeString(const std::string_view& format, common::types::date_time::Timestamp timestamp);
+void TestTimeString(const std::string_view& format, common::types::date_time::TimestampMs timestamp);
 
 void TestTimeString(const std::string_view& format, std::tm timeInfo,
                     const common::types::date_time::TimeComponent& timeComp);

@@ -30,7 +30,7 @@ TEST(GetWeekdayNames, case)
     for (uint32_t i = 0; i < 20; i++) {
         auto len1 = common::utils::date_time::GetWeekdayFullName(i).length();
         auto len2 = common::utils::date_time::GetWeekdayAbbrName(i).length();
-        if (i >= MIN_WEEK_DAY && i <= MAX_WEEK_DAY) {
+        if (i >= MIN_WEEKDAY && i <= MAX_WEEKDAY) {
             EXPECT_GT(len1, 0);
             EXPECT_GT(len2, 0);
         } else {

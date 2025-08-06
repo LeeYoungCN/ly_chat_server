@@ -42,7 +42,7 @@ TEST_P(TestFormatTimeBufferInvalid, TimeComponent)
     auto month = std::get<2>(GetParam());
     auto wday = std::get<3>(GetParam());
 
-    auto ts = GetCurrentTimestamp();
+    auto ts = GetCurrentTimestampMs();
     auto timeComp = LocalTimeComponent(ts);
     auto timeInfo = TimestampToTimeInfo(ts);
     timeComp.month = month;
@@ -82,7 +82,7 @@ TEST_P(TestFormatTimeStringInvalid, TimeComponent)
     auto month = std::get<1>(GetParam());
     auto wday = std::get<2>(GetParam());
 
-    auto ts = GetCurrentTimestamp();
+    auto ts = GetCurrentTimestampMs();
     auto timeComp = LocalTimeComponent(ts);
     auto timeInfo = TimestampToTimeInfo(ts);
     timeComp.month = month;

@@ -29,12 +29,12 @@ protected:
     void TearDown() override {};
 };
 
-TEST_P(TestFormatTimeBuffer, Timestamp)
+TEST_P(TestFormatTimeBuffer, TimestampMs)
 {
     constexpr int64_t MILLIS_PER_DAY = 86400000;
     const auto &format = std::get<0>(GetParam());
     auto day = std::get<1>(GetParam());
-    Timestamp const currTs = common::utils::date_time::GetCurrentTimestamp() + day * MILLIS_PER_DAY;
+    TimestampMs const currTs = common::utils::date_time::GetCurrentTimestampMs() + day * MILLIS_PER_DAY;
 
     TestTimeBuffer(format, MAX_TIME_STR_LEN, currTs);
 }
@@ -56,10 +56,10 @@ protected:
     void TearDown() override {};
 };
 
-TEST_P(TestFormatTimeString, Timestamp)
+TEST_P(TestFormatTimeString, TimestampMs)
 {
     const auto &format = GetParam();
-    Timestamp const currTs = common::utils::date_time::GetCurrentTimestamp();
+    TimestampMs const currTs = common::utils::date_time::GetCurrentTimestampMs();
     TestTimeString(format, currTs);
 }
 

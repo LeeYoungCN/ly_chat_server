@@ -14,21 +14,18 @@
 #define COMMON_TYPES_DATE_TIME_TYPES_H
 
 #include <cstdint>
-#include <string>
 
 namespace common::types::date_time {
 
 // 时间戳(ms)
-using Timestamp = int64_t;
-using TimestampMs = int64_t;
-using TimestampSec = int64_t;
+using TimestampSec = int64_t;  // 秒级时间戳（自UTC epoch）
+using TimestampMs = int64_t;   // 毫秒级时间戳
 
-using StringTimestamp = std::string;
-
-struct ZonedTimestamp {
-    Timestamp ms_since_epoch;  // 毫秒级时间戳
-    int timezone_offset;       // 时区偏移（分钟，如UTC+8为480）
-};
+/**
+ * @brief 时间间隔类型（不同精度）
+ */
+using DurationSec = int64_t;  // 秒级间隔
+using DurationMs = int64_t;   // 毫秒级间隔
 
 /**
  * @brief 时间分量结构体，用于表示分解后的日期和时间信息（含毫秒）
@@ -47,6 +44,25 @@ struct TimeComponent {
     uint32_t wday = 0;    ///< 星期几（0-6，具体对应关系取决于系统，通常0为星期日）
     uint32_t yday = 0;    ///< 年内天数（0-365，0表示1月1日）
 };
+
+/**
+ * @brief 时区类型（预定义常用时区）
+ */
+enum class TimeZone {
+    UTC,    // 世界协调时间
+    LOCAL,  // 本地时区（跟随系统）
+};
+
+inline const char *GetTimeZoneString(TimeZone zone)
+{
+    switch (zone) {
+        case TimeZone::UTC:
+            return "UTC";
+        case TimeZone::LOCAL:
+        default:
+            return "LOCAL";
+    }
+}
 
 }  // namespace common::types::date_time
 #endif  // COMMON_TYPES_DATE_TIME_TYPES_H

@@ -1,5 +1,7 @@
 #include "common/utils/date_time_utils.h"
 
+#include <cerrno>
+
 #ifdef _WIN32
 #include <windows.h>
 #endif  // _WIN32
@@ -11,72 +13,65 @@
 #include "common/constants/date_time_constants.h"
 #include "common/debug/debug_log.h"
 #include "common/types/date_time_types.h"
+#include "internal/common/utils/date_time_utils_internal.h"
 
 namespace {
 
 using namespace ::common::constants::date_time;
 using namespace ::common::types::date_time;
+using namespace ::common::utils::date_time_utils::internal;
 
-bool SafeLocalTime(const time_t* timer, struct tm* timeInfo)
+bool SafeLocalTime(time_t timer, tm& timeInfo)
 {
-    if (timeInfo == nullptr) {
-        DEBUG_LOG_ERR("Output tm pointer is nullptr");
-        return false;
-    }
-    time_t timeVal =
-        (timer != nullptr) ? *timer : std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-
 #ifdef _WIN32
     // Windows 使用 localtime_s
-    auto err = localtime_s(timeInfo, &timeVal);
+    auto err = localtime_s(&timeInfo, &timer);
     if (err != 0) {
+        SetLastError(ErrorCode::TIMESTAMP_INVALID);
         // 特别处理负数时间戳的错误提示
-        if (timeVal < 0) {
-            DEBUG_LOG_WARN("localtime_s may not support negative timestamp ({}), err={}", timeVal, err);
+        if (timer < 0) {
+            DEBUG_LOG_WARN("[FAILED] localtime_s may not support negative. time: %lld, err: %d", timer, err);
         } else {
-            DEBUG_LOG_ERR("localtime_s failed, err={}", err);
+            DEBUG_LOG_ERR("[FAILED] localtime_s. time: %lld, err: %d", timer, err);
         }
         return false;
     }
 #else
     // Linux/macOS 使用 localtime_r
-    if (localtime_r(&timeVal, timeInfo) == nullptr) {
-        DEBUG_LOG_ERR("localtime_r failed for timestamp={}", timeVal);
+    if (localtime_r(&timer, &timeInfo) == nullptr) {
+        SetLastError(ErrorCode::TIMESTAMP_INVALID);
+        DEBUG_LOG_ERR("[FAILED] localtime_r. time: %lld, errno: %d", timer, errno);
         return false;
     }
 #endif
+    SetLastError(ErrorCode::SUCCESS);
     return true;
 }
 
-bool SafeGmtime(const time_t* timer, struct tm* timeInfo)
+bool SafeGmtime(time_t timer, tm& timeInfo)
 {
-    if (timeInfo == nullptr) {
-        DEBUG_LOG_ERR("Output tm pointer is nullptr");
-        return false;
-    }
-    time_t timeVal =
-        (timer != nullptr) ? *timer : std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-
 #ifdef _WIN32
     // Windows下使用gmtime_s，增加负数时间戳检查
-    errno_t err = gmtime_s(timeInfo, &timeVal);
+    errno_t err = gmtime_s(&timeInfo, &timer);
     if (err != 0) {
+        SetLastError(ErrorCode::TIMESTAMP_INVALID);
         // 针对负数时间戳的错误做特殊提示
-        if (timeVal < 0) {
-            DEBUG_LOG_WARN("gmtime_s may not support negative timestamp ({}), err={}", timeVal, err);
+        if (timer < 0) {
+            DEBUG_LOG_WARN("[FAILED] gmtime_s may not support negative time: %lld, err: %d", timer, err);
         } else {
-            DEBUG_LOG_ERR("gmtime_s failed, err={}", err);
+            DEBUG_LOG_ERR("[FAILED] gmtime_s. time: %lld, err: %d", timer, err);
         }
         return false;
     }
 #else
     // Linux/macOS使用gmtime_r（对负数时间戳支持更完善）
-    if (gmtime_r(&timeVal, timeInfo) == nullptr) {
-        DEBUG_LOG_ERR("gmtime_r failed for timestamp={}", timeVal);
+    if (gmtime_r(&timer, &timeInfo) == nullptr) {
+        SetLastError(ErrorCode::TIMESTAMP_INVALID);
+        DEBUG_LOG_ERR("[FAILED] gmtime_r. time: %lld, errno: %d", timer, errno);
         return false;
     }
 #endif
-
+    SetLastError(ErrorCode::SUCCESS);
     return true;
 }
 
@@ -98,9 +93,11 @@ namespace common::utils::date_time {
 
 using namespace ::common::constants::date_time;
 using namespace ::common::types::date_time;
+using namespace ::common::utils::date_time_utils::internal;
 
-Timestamp GetCurrentTimestamp()
+TimestampMs GetCurrentTimestampMs()
 {
+    SetLastError(ErrorCode::SUCCESS);
 #ifdef _WIN32
     FILETIME ft;
     // 获取当前系统时间，以FILETIME格式存储（从Windows纪元1601-01-01 00:00:00开始的100纳秒间隔数）
@@ -114,52 +111,68 @@ Timestamp GetCurrentTimestamp()
     // 1. 先将100纳秒单位转换为毫秒（除以10000，因1毫秒=10000×100纳秒）
     // 2. 减去Windows纪元到Unix纪元（1970-01-01 00:00:00）的毫秒差值，得到标准Unix时间戳
     constexpr uint64_t HUNDRED_NANOSECONDS_PER_MILLISECOND = 10000;
-    return static_cast<Timestamp>((file_time / HUNDRED_NANOSECONDS_PER_MILLISECOND)  // 转换为毫秒
-                                  - WINDOWS_EPOCH_TO_UNIX_EPOCH_MS                   // 校正到Unix纪元
+    return static_cast<TimestampMs>((file_time / HUNDRED_NANOSECONDS_PER_MILLISECOND)  // 转换为毫秒
+                                    - WINDOWS_EPOCH_TO_UNIX_EPOCH_MS                   // 校正到Unix纪元
     );
 #else
     std::chrono::time_point now = std::chrono::system_clock::now();
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch());
-    return static_cast<Timestamp>(ms.count());
+    return static_cast<TimestampMs>(ms.count());
 #endif
 }
 
 TimeComponent GetCurrentTimeComponent()
 {
-    return LocalTimeComponent(GetCurrentTimestamp());
+    return TimeStampMs2Component(GetCurrentTimestampMs());
 }
 
-TimeComponent LocalTimeComponent(const Timestamp& timestamp)
+TimeComponent LocalTimeComponent(const TimestampMs& timestamp)
+{
+    return TimeStampMs2Component(timestamp, TimeZone::LOCAL);
+}
+
+TimeComponent UtcTimeComponent(const TimestampMs& timestamp)
+{
+    return TimeStampMs2Component(timestamp, TimeZone::UTC);
+}
+
+TimeComponent TimeStampMs2Component(TimestampMs timestamp, TimeZone timeZone)
 {
     auto timer = static_cast<std::time_t>(timestamp / MILLIS_PER_SECOND);
     auto millis = static_cast<int32_t>(timestamp % MILLIS_PER_SECOND);
 
     std::tm timeInfo{};
-    TimeComponent timeComp;
-
-    if (!SafeLocalTime(&timer, &timeInfo)) {
-        DEBUG_LOG_ERR("Failed to get local time info.");
-        return timeComp;
+    TimeComponent timeComp{};
+    bool rst = false;
+    switch (timeZone) {
+        case TimeZone::UTC:
+            rst = SafeGmtime(timer, timeInfo);
+            break;
+        case TimeZone::LOCAL:
+        default:
+            rst = SafeLocalTime(timer, timeInfo);
     }
 
-    ConvertTmToTimeComp(timeInfo, millis, timeComp);
+    if (!rst) {
+        DEBUG_LOG_ERR(
+            "[FAILED] Get time info, zone: %s, message: %s.", GetTimeZoneString(timeZone), GetLastErrorString());
+    } else {
+        ConvertTmToTimeComp(timeInfo, millis, timeComp);
+        SetLastError(ErrorCode::SUCCESS);
+        DEBUG_LOG_DBG(
+            "[SUCCESS] Get time info, zone: %s, message: %s.", GetTimeZoneString(timeZone), GetLastErrorString());
+    }
     return timeComp;
 }
 
-TimeComponent UtcTimeComponent(const Timestamp& timestamp)
+ErrorCode GetLastError()
 {
-    auto timer = static_cast<std::time_t>(timestamp / MILLIS_PER_SECOND);
-    auto millis = static_cast<int32_t>(timestamp % MILLIS_PER_SECOND);
+    return GetLastErrorInternal();
+}
 
-    std::tm timeInfo{};
-    TimeComponent timeComp;
-    if (!SafeGmtime(&timer, &timeInfo)) {
-        DEBUG_LOG_ERR("Failed to get UTC time info.");
-        return timeComp;
-    }
-
-    ConvertTmToTimeComp(timeInfo, millis, timeComp);
-    return timeComp;
+const char* GetLastErrorString()
+{
+    return GetErrorString(GetLastErrorInternal());
 }
 
 }  // namespace common::utils::date_time

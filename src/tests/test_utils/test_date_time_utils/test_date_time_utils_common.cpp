@@ -17,7 +17,7 @@ using namespace common::constants::date_time;
 using namespace common::types::date_time;
 using namespace common::utils::date_time;
 
-tm TimestampToTimeInfo(Timestamp ts)
+tm TimestampToTimeInfo(TimestampMs ts)
 {
     auto timer = static_cast<std::time_t>(ts / MILLIS_PER_SECOND);
     std::tm timeInfo{};
@@ -46,7 +46,7 @@ void CompareString(const common::types::date_time::TimeComponent& timeComp, std:
     EXPECT_EQ(stdTimeStr, utilsTimeStr);
 }
 
-void TestTimeBuffer(const std::string_view& format, uint32_t length, common::types::date_time::Timestamp timestamp)
+void TestTimeBuffer(const std::string_view& format, uint32_t length, common::types::date_time::TimestampMs timestamp)
 {
     auto timeComp = LocalTimeComponent(timestamp);
     auto timeInfo = TimestampToTimeInfo(timestamp);
@@ -69,7 +69,7 @@ void TestTimeBuffer(const std::string_view& format, uint32_t length, std::tm tim
     }
 }
 
-void TestTimeString(const std::string_view& format, common::types::date_time::Timestamp timestamp)
+void TestTimeString(const std::string_view& format, common::types::date_time::TimestampMs timestamp)
 {
     auto timeComp = LocalTimeComponent(timestamp);
     auto timeInfo = TimestampToTimeInfo(timestamp);

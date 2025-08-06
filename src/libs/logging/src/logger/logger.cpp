@@ -48,7 +48,7 @@ void Logger::log(common::types::logging::LogLevel level, const char* file, int32
     va_end(argList);
 
     LogRecord record = {.level = level,
-                        .time = common::utils::date_time::GetCurrentTimestamp(),
+                        .time = common::utils::date_time::GetCurrentTimestampMs(),
                         .file = file,
                         .line = line,
                         .func = func,

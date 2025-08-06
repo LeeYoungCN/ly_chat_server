@@ -84,7 +84,7 @@ namespace filesystem {
         PathString path;                                 ///< 文件的完整路径
         FileSize size;                                   ///< 文件大小（字节）
         EntryType type;                                  ///< 条目类型（文件/目录等）
-        common::types::date_time::Timestamp modifyTime;  ///< 最后修改时间戳）
+        common::types::date_time::TimestampMs modifyTime;  ///< 最后修改时间戳）
     };
 } // namespace filesystem
 } // namespace types

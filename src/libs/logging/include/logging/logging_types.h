@@ -10,7 +10,7 @@
 namespace logging {
 struct LogRecord {
     common::types::logging::LogLevel level;
-    const common::types::date_time::Timestamp time;
+    const common::types::date_time::TimestampMs time;
     const char* file;
     int line;
     const char* func;

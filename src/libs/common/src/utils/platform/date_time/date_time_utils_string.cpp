@@ -18,6 +18,7 @@
 #include "common/constants/date_time_constants.h"
 #include "common/debug/debug_log.h"
 #include "common/utils/date_time_utils.h"
+#include "internal/common/utils/date_time_utils_internal.h"
 
 namespace {
 // 星期英文名称（全程）
@@ -84,46 +85,55 @@ namespace common::utils::date_time {
 
 using namespace ::common::constants::date_time;
 using namespace ::common::types::date_time;
+using namespace ::common::utils::date_time_utils::internal;
 
 std::string_view GetMonthFullName(uint32_t month)
 {
     if (month < MIN_MONTH || month > MAX_MONTH) {
-        DEBUG_LOG_ERR("Month out of range [%u, %u]. weekday: %u.", MIN_MONTH, MAX_MONTH, month);
+        SetLastError(ErrorCode::MONTH_INVALID);
+        DEBUG_LOG_ERR("Month invalid out of range [%u, %u]. weekday: %u.", MIN_MONTH, MAX_MONTH, month);
         return "";
     }
+    SetLastError(ErrorCode::SUCCESS);
     return MONTH_FULL_NAMES.at(month - MIN_MONTH);
 }
 
 std::string_view GetMonthAbbrName(uint32_t month)
 {
     if (month < MIN_MONTH || month > MAX_MONTH) {
-        DEBUG_LOG_ERR("Month out of range [%u, %u]. weekday: %u.", MIN_MONTH, MAX_MONTH, month);
+        SetLastError(ErrorCode::MONTH_INVALID);
+        DEBUG_LOG_ERR("Month invalid out of range [%u, %u]. weekday: %u.", MIN_MONTH, MAX_MONTH, month);
         return "";
     }
+    SetLastError(ErrorCode::SUCCESS);
     return MONTH_ABBR_NAMES.at(month - MIN_MONTH);
 }
 
 std::string_view GetWeekdayFullName(uint32_t weekday)
 {
-    if (weekday < MIN_WEEK_DAY || weekday > MAX_WEEK_DAY) {
-        DEBUG_LOG_ERR("Weekday out of range [%u, %u]. weekday: %u.", MIN_WEEK_DAY, MAX_WEEK_DAY, weekday);
+    if (weekday < MIN_WEEKDAY || weekday > MAX_WEEKDAY) {
+        SetLastError(ErrorCode::WEEKDAY_INVALID);
+        DEBUG_LOG_ERR("Weekday invalid out of range [%u, %u]. weekday: %u.", MIN_WEEKDAY, MAX_WEEKDAY, weekday);
         return "";
     }
+    SetLastError(ErrorCode::SUCCESS);
     return WEEKDAY_FULL_NAMES.at(weekday);
 }
 
 std::string_view GetWeekdayAbbrName(uint32_t weekday)
 {
-    if (weekday < MIN_WEEK_DAY || weekday > MAX_WEEK_DAY) {
-        DEBUG_LOG_ERR("Weekday out of range [%u, %u]. weekday: %u.", MIN_WEEK_DAY, MAX_WEEK_DAY, weekday);
+    if (weekday < MIN_WEEKDAY || weekday > MAX_WEEKDAY) {
+        SetLastError(ErrorCode::WEEKDAY_INVALID);
+        DEBUG_LOG_ERR("Weekday invalid out of range [%u, %u]. weekday: %u.", MIN_WEEKDAY, MAX_WEEKDAY, weekday);
         return "";
     }
+    SetLastError(ErrorCode::SUCCESS);
     return WEEKDAY_ABBR_NAMES.at(weekday);
 }
 
-std::string FormatTimeString(Timestamp timestamp, const std::string_view& format)
+std::string FormatTimeString(TimestampMs timestamp, const std::string_view& format, TimeZone timeZone)
 {
-    auto timeComp = LocalTimeComponent(timestamp);
+    auto timeComp = TimeStampMs2Component(timestamp, timeZone);
     return FormatTimeString(timeComp, format);
 }
 
@@ -141,9 +151,10 @@ std::string FormatTimeString(const TimeComponent& timeComp, const std::string_vi
     return timeString;
 }
 
-size_t FormatTimeBuffer(char* buffer, size_t bufferSize, Timestamp timestamp, const std::string_view& format)
+size_t FormatTimeBuffer(char* buffer, size_t bufferSize, TimestampMs timestamp, const std::string_view& format,
+                        TimeZone timeZone)
 {
-    auto timeComp = LocalTimeComponent(timestamp);
+    auto timeComp = TimeStampMs2Component(timestamp, timeZone);
     return FormatTimeBuffer(buffer, bufferSize, timeComp, format);
 }
 
@@ -163,6 +174,7 @@ size_t FormatTimeBuffer(char* buffer, size_t bufferSize, const TimeComponent& ti
     auto insertDateTimeNumber = [&](uint32_t number, size_t numberLen) -> bool {
         uint32_t tmp = number;
         if (bufferIdx + numberLen >= bufferSize) {
+            SetLastError(ErrorCode::OUT_OF_RANGE);
             DEBUG_LOG_ERR("Failed to insert number: %lu", number);
             return false;
         }
@@ -181,6 +193,7 @@ size_t FormatTimeBuffer(char* buffer, size_t bufferSize, const TimeComponent& ti
         std::string_view insertName = name.empty() ? "?" : name;
 
         if (bufferIdx + insertName.length() >= bufferSize) {
+            SetLastError(ErrorCode::OUT_OF_RANGE);
             DEBUG_LOG_ERR("Failed to insert string: %s", insertName.data());
             return false;
         }
@@ -256,8 +269,13 @@ size_t FormatTimeBuffer(char* buffer, size_t bufferSize, const TimeComponent& ti
         }
     }
     if (formatIdx < format.length() || bufferIdx >= bufferSize) {
-        DEBUG_LOG_ERR("Incomplete format processing (remaining: %s)", format.data() + formatIdx);
+        DEBUG_LOG_ERR("Incomplete format processing (remaining: %s), message: %s",
+                      format.data() + formatIdx,
+                      GetLastErrorString());
         bufferIdx = 0;
+    } else {
+        SetLastError(ErrorCode::SUCCESS);
+        DEBUG_LOG_DBG("[SUCCESS] Format time string, message: %s.", GetLastErrorString());
     }
 
     buffer[bufferIdx] = '\0';

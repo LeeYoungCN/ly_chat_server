@@ -23,7 +23,7 @@ constexpr int32_t TIME_COMP_START_YEAR = 1900;
 constexpr int32_t TIME_COMP_START_MONTH = 1;
 
 // 1970-01-01 00:00:00 UTC对应的时间戳（毫秒）
-constexpr common::types::date_time::Timestamp UNIX_EPOCH_MS = 0;
+constexpr common::types::date_time::TimestampMs UNIX_EPOCH_MS = 0;
 
 // 纪元年份（Unix时间戳起始年份）
 // EPOCH（通常译为 “纪元” 或 “时间起点”）指的是时间戳计数的起始点，是用于统一时间计算的基准时间。
@@ -76,8 +76,48 @@ constexpr uint32_t MIN_MONTH = 1;
 constexpr uint32_t MAX_MONTH = 12;
 
 constexpr uint32_t DAYS_PER_WEEK = 7;
-constexpr uint32_t MIN_WEEK_DAY = 0;
-constexpr uint32_t MAX_WEEK_DAY = 6;
+constexpr uint32_t MIN_WEEKDAY = 0;
+constexpr uint32_t MAX_WEEKDAY = 6;
+
+enum class ErrorCode {
+    SUCCESS = 0,
+    MONTH_INVALID,
+    WEEKDAY_INVALID,
+    OUT_OF_RANGE,
+    PARSE_FAILED,
+    TIMEZONE_INVALID,
+    TIMESTAMP_INVALID,
+    SYSTEM_ERROR = 100,
+    GENERIC_ERROR,
+    UNKNOWN_ERROR
+};
+
+/**
+ * @brief 将错误码转换为人类可读的描述字符串
+ * @param code 错误码
+ * @return 错误描述字符串
+ */
+inline const char* GetErrorString(ErrorCode code)
+{
+    switch (code) {
+        case ErrorCode::SUCCESS:
+            return "Success";
+        case ErrorCode::MONTH_INVALID:
+            return "Month invalid";
+        case ErrorCode::WEEKDAY_INVALID:
+            return "Weekday invalid";
+        case ErrorCode::OUT_OF_RANGE:
+            return "Out of range";
+        case ErrorCode::SYSTEM_ERROR:
+            return "System error";
+        case ErrorCode::GENERIC_ERROR:
+            return "Generic error";
+        case ErrorCode::UNKNOWN_ERROR:
+        default:
+            return "Unknown error";
+    }
+}
+
 }  // namespace common::constants::date_time
 
 #endif  // COMMON_CONSTANTS_DATE_TIME_CONSTANTS_H
