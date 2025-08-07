@@ -87,7 +87,7 @@ TEST_F(TestFilesystemUtilsPath, NormalizePath_WithDots)
 {
     PathString test = "a/b/../c/./d";
     PathString expect(MAX_PATH_STD, '\0');
-    auto len = sprintf(expect.data(), "a%sc%sd", PATH_SEP, PATH_SEP);
+    auto len = snprintf(expect.data(), MAX_PATH_STD, "a%sc%sd", PATH_SEP, PATH_SEP);
     expect.resize(static_cast<size_t>(len));
     auto result = NormalizePath(test);
     EXPECT_EQ(result, expect);
@@ -112,7 +112,7 @@ TEST_F(TestFilesystemUtilsPath, JoinPaths_Success)
 {
     PathList test = {"a", "b", "c"};
     PathString expect(MAX_PATH_STD, '\0');
-    auto size = sprintf(expect.data(), "a%sb%sc", PATH_SEP, PATH_SEP);
+    auto size = snprintf(expect.data(), MAX_PATH_STD, "a%sb%sc", PATH_SEP, PATH_SEP);
     expect.resize(static_cast<size_t>(size));
     EXPECT_EQ(JoinPaths(test), expect);
     EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
