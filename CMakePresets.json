@@ -1023,6 +1023,44 @@
                     "name": "linux_gnu_release_ctest"
                 }
             ]
+        },
+        {
+            "name": "darwin_clang_debug_workflow",
+            "description": "Darwin Clang Debug Workflow",
+            "displayName": "Darwin Clang Debug Workflow",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "darwin_clang_debug"
+                },
+                {
+                    "type": "build",
+                    "name": "darwin_clang_debug_build"
+                },
+                {
+                    "type": "test",
+                    "name": "darwin_clang_debug_ctest"
+                }
+            ]
+        },
+        {
+            "name": "darwin_clang_release_workflow",
+            "description": "Darwin Clang Release Workflow",
+            "displayName": "Darwin Clang Release Workflow",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "darwin_clang_release"
+                },
+                {
+                    "type": "build",
+                    "name": "darwin_clang_release_build"
+                },
+                {
+                    "type": "test",
+                    "name": "darwin_clang_release_ctest"
+                }
+            ]
         }
     ]
 }
