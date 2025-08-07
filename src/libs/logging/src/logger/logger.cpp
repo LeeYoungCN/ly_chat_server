@@ -10,7 +10,7 @@
 #include "common/utils/date_time_utils.h"
 #include "internal/console_appender.h"
 #include "logging/appender.h"
-#include "logging/logging_types.h"
+#include "logging/log_record.h"
 
 namespace logging {
 Logger::Logger(std::string name) : m_name(std::move(name)) {};
@@ -46,15 +46,7 @@ void Logger::log(common::types::logging::LogLevel level, const char* file, int32
     va_start(argList, fmt);
     vsnprintf(buffer, BUFFER_LEN, fmt, argList);
     va_end(argList);
-
-    LogRecord record = {.level = level,
-                        .time = common::utils::date_time::GetCurrentTimestampMs(),
-                        .file = file,
-                        .line = line,
-                        .func = func,
-                        .threadId = std::this_thread::get_id(),
-                        .loggerName = getLoggerName(),
-                        .message = buffer};
+    LogRecord record(LogSource{file, line, func}, level, m_name, buffer);
     {
         std::unique_lock<std::mutex> lock(m_appenderMtx);
         if (m_appenderList.empty()) {

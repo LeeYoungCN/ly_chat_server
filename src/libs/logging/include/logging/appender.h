@@ -15,7 +15,7 @@
 #include <string>
 
 #include "common/types/logging_types.h"
-#include "logging/logging_types.h"
+#include "logging/log_record.h"
 
 namespace logging {
 enum AppenderType { CONSOLE_APPENDER, FILE, ROLLING_FLIE };

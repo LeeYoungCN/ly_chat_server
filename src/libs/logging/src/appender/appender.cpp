@@ -10,14 +10,16 @@
  */
 #include "logging/appender.h"
 
-#include <filesystem>
+#include <format>
 
-#include "common/constants/date_time_constants.h"
-#include "common/constants/filesystem_constants.h"
 #include "common/utils/date_time_utils.h"
-#include "logging/logging_types.h"
+#include "common/utils/filesystem_utils.h"
+#include "logging/log_record.h"
 
 namespace logging {
+using namespace common::utils::date_time;
+using namespace common::types::logging;
+using namespace common::utils::filesystem;
 
 void Appender::append(const logging::LogRecord& record)
 {
@@ -30,12 +32,14 @@ void Appender::append(const logging::LogRecord& record)
 
 std::string Appender::defaultFormatLog(const logging::LogRecord& record)
 {
-    std::stringstream logStream;
-    logStream << "[" << common::utils::date_time::FormatTimeString(record.time) << "] "
-              << "[" << common::types::logging::logLevelToStr(record.level) << "] "
-              << "[" << record.threadId << "] " << "[" << std::filesystem::path(record.file).filename().string() << ":"
-              << record.line << "] " << "[" << record.loggerName << "] " << record.message;
-    return logStream.str();
+    return std::format("[{}] [{}] [Tid: {:#x}] [{}:{}] [{}]  {}",
+                       FormatTimeString(record.time, "%Y-%m-%d %H:%M:%S.%3f"),
+                       logLevelToStr(record.level),
+                       record.tid,
+                       GetBaseName(record.source.file),
+                       record.source.line,
+                       record.source.func,
+                       record.message);
 }
 
 void Appender::setName(const std::string& name)
