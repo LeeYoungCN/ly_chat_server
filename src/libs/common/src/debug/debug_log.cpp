@@ -33,7 +33,7 @@ namespace common {
 
 using namespace common::types::logging;
 
-size_t GetCurrentThreadId()
+size_t GetCurrentThreadIdInternal()
 {
 #if PLATFORM_WINDOWS
     return static_cast<size_t>(GetCurrentThreadId());
@@ -72,7 +72,7 @@ std::string formatLog(common::types::logging::LogLevel level, const char* file, 
     return std::format("[{}] [{}] [Tid: {:#x}] [{}:{}] [{}] {}",
                        TimeString(),
                        logLevelToStr(level),
-                       GetCurrentThreadId(),
+                       GetCurrentThreadIdInternal(),
                        std::filesystem::path(file).filename().string(),
                        line,
                        func,
