@@ -11,9 +11,6 @@
 
 #include "common/utils/thread_utils.h"
 
-#include <threads.h>
-#include <unistd.h>
-
 #include "common/compiler/macros.h"
 #include "common/types/thread_types.h"
 
@@ -21,6 +18,7 @@
 #include <windows.h>
 #elif PLATFORM_LINUX
 #include <sys/syscall.h>
+#include <unistd.h>
 #elif PLATFORM_MACOS
 #include <pthread.h>
 #else

@@ -1,12 +1,27 @@
 #include "common/debug/debug_log.h"
 
+#include "common/compiler/macros.h"
+
+#if PLATFORM_WINDOWS
+#include <windows.h>
+#elif PLATFORM_LINUX
+#include <sys/syscall.h>
+#include <unistd.h>
+#elif PLATFORM_MACOS
+#include <pthread.h>
+#else
+#error "Unsupport system"
+#endif
+
 #include <chrono>
 #include <cstdarg>
+#include <cstddef>
 #include <cstdio>
+#include <ctime>
 #include <filesystem>
+#include <format>
 #include <iostream>
 #include <mutex>
-#include <thread>
 
 #include "common/types/logging_types.h"
 
@@ -18,12 +33,26 @@ namespace common {
 
 using namespace common::types::logging;
 
-std::string formatLog(common::types::logging::LogLevel level, const char* file, int line, const char* func,
-                      const std::string& message)
+size_t GetCurrentThreadId()
+{
+#if PLATFORM_WINDOWS
+    return static_cast<size_t>(GetCurrentThreadId());
+#elif PLATFORM_LINUX
+    return static_cast<size_t>(syscall(SYS_gettid));
+#elif PLATFORM_MACOS
+    uint64_t tid;
+    pthread_threadid_np(nullptr, &tid);
+    return static_cast<size_t>(tid);
+#else
+    return 0;
+#endif
+}
+
+std::string TimeString()
 {
     const std::time_t now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
     std::tm ltm{};
-#ifdef _WIN32
+#if PLATFORM_WINDOWS
     // Windows 使用 localtime_s
     localtime_s(&ltm, &now);
 #else
@@ -33,13 +62,21 @@ std::string formatLog(common::types::logging::LogLevel level, const char* file, 
     std::stringstream timeSs;
 
     timeSs << std::put_time(&ltm, "%Y-%m-%d %H:%M:%S");
-    std::stringstream logStream;
-    logStream << "[" << timeSs.str() << "] "
-              << "[" << logLevelToStr(level) << "] "
-              << "[Tid: " << std::this_thread::get_id() << "] " << "["
-              << std::filesystem::path(file).filename().string() << ":" << line << "] " << "[" << func << "] "
-              << message;
-    return logStream.str();
+
+    return timeSs.str();
+}
+
+std::string formatLog(common::types::logging::LogLevel level, const char* file, int line, const char* func,
+                      const std::string& message)
+{
+    return std::format("[{}] [{}] [Tid: {:#x}] [{}:{}] [{}] {}",
+                       TimeString(),
+                       logLevelToStr(level),
+                       GetCurrentThreadId(),
+                       std::filesystem::path(file).filename().string(),
+                       line,
+                       func,
+                       message);
 }
 
 void CommonDebugLog(common::types::logging::LogLevel level, const char* file, int line, const char* func,
