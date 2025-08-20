@@ -37,11 +37,11 @@
 #endif  // COMMON_ASSERT
 
 #ifndef COMMON_ASSERT_MSG
-#define COMMON_ASSERT_MSG(condition, fmt, ...)               \
-    do {                                                     \
-        if (!(condition)) {                                  \
+#define COMMON_ASSERT_MSG(condition, fmt, ...)                  \
+    do {                                                        \
+        if (!(condition)) {                                     \
             DEBUG_LOG_FATAL(fmt __VA_OPT__(, ) __VA_ARGS__); \
-        }                                                    \
+        }                                                       \
     } while (0)
 #endif  // COMMON_ASSERT_MSG
 #endif  // NDEBUG

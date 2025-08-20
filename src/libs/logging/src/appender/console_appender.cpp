@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2025
  *
  */
-#include "internal/console_appender.h"
+#include "logging/appender/console_appender.h"
 
 #include <iostream>
 

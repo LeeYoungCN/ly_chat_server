@@ -1,23 +1,14 @@
-#ifndef LOGGING_LOGGING_TYPES_H
-#define LOGGING_LOGGING_TYPES_H
+#ifndef LOGGING_DETAILS_LOG_RECORD_H
+#define LOGGING_DETAILS_LOG_RECORD_H
 
 #include <string_view>
 
 #include "common/types/date_time_types.h"
 #include "common/types/logging_types.h"
 #include "common/types/thread_types.h"
+#include "logging/details/log_source.h"
 
-namespace logging {
-
-struct LogSource {
-    const char *file{nullptr};
-    int32_t line{-1};
-    const char *func{nullptr};
-
-    [[nodiscard]] bool isEmpty() const;
-    LogSource() = default;
-    LogSource(const char *file, int32_t line, const char *func);
-};
+namespace logging::details {
 
 struct LogRecord {
     LogSource source;
@@ -32,6 +23,6 @@ struct LogRecord {
     LogRecord(LogSource source, common::types::logging::LogLevel level, std::string_view loggerName,
               std::string_view message);
 };
-}  // namespace logging
+}  // namespace logging::details
 
-#endif  // LOGGING_LOGGING_TYPES_H
+#endif  // LOGGING_DETAILS_LOG_RECORD_H

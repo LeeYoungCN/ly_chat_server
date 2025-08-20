@@ -3,72 +3,65 @@
 #include <algorithm>
 #include <cstdarg>
 #include <mutex>
-#include <thread>
+#include <utility>
 #include <vector>
 
-#include "common/common_macros.h"
-#include "common/utils/date_time_utils.h"
-#include "internal/console_appender.h"
-#include "logging/appender.h"
-#include "logging/log_record.h"
+#include "logging/appender/appender.h"
+#include "logging/details/log_record.h"
+#include "logging/details/logging_base.h"
 
 namespace logging {
-Logger::Logger(std::string name) : m_name(std::move(name)) {};
 
-Logger::Logger(std::string name, common::types::logging::LogLevel level)
-    : m_name(std::move(name)), m_logLevel(level) {};
+using namespace logging::details;
+using namespace common::types::logging;
 
-const std::string& Logger::getLoggerName()
-{
-    return m_name;
-}
+Logger::Logger(std::string name) : LoggingBase(std::move(name)) {};
 
 void Logger::addAppender(const std::shared_ptr<Appender>& appender)
 {
-    std::unique_lock<std::mutex> lock(m_appenderMtx);
+    std::unique_lock<std::mutex> lock(m_mutex);
     m_appenderList.emplace_back(appender);
 }
 
-void Logger::setLogLevel(common::types::logging::LogLevel level)
+void Logger::logInternal(LogSource source, LogLevel level, const std::string& message)
 {
-    m_logLevel = level;
-}
-
-void Logger::log(common::types::logging::LogLevel level, const char* file, int32_t line, const char* func,
-                 const char* fmt, ...)
-{
-    if (level < m_logLevel) {
-        return;
-    }
-    constexpr uint32_t BUFFER_LEN = 512;
-    char buffer[BUFFER_LEN] = {'\0'};
-    va_list argList;
-    va_start(argList, fmt);
-    vsnprintf(buffer, BUFFER_LEN, fmt, argList);
-    va_end(argList);
-    LogRecord record(LogSource{file, line, func}, level, m_name, buffer);
+    LogRecord record(source, level, m_name, message);
     {
-        std::unique_lock<std::mutex> lock(m_appenderMtx);
-        if (m_appenderList.empty()) {
-            INST(ConsoleAppender).append(record);
-        } else {
-            for (const auto& appender : m_appenderList) {
+        std::unique_lock<std::mutex> lock(m_mutex);
+
+        for (const auto& appender : m_appenderList) {
+            if (appender->shouldLog(level)) {
                 appender->append(record);
             }
         }
     }
 }
-
-void Logger::removeAppender(const std::shared_ptr<Appender>& appender)
+bool Logger::shouldLog(common::types::logging::LogLevel level) const
 {
-    std::lock_guard<std::mutex> lock(m_appenderMtx);
+    return getLevel() <= level;
+}
+
+void Logger::setLevel(common::types::logging::LogLevel level)
+{
+    return m_level.store(level);
+};
+
+common::types::logging::LogLevel Logger::getLevel() const
+{
+    return m_level.load(std::memory_order_relaxed);
+}
+
+void Logger::deleteAppender(const std::shared_ptr<Appender>& appender)
+{
+    std::lock_guard<std::mutex> lock(m_mutex);
     auto it = std::remove(m_appenderList.begin(), m_appenderList.end(), appender);
     m_appenderList.erase(it, m_appenderList.end());
 }
 
-void Logger::removeAllAppender()
+void Logger::clearAppender()
 {
-    std::lock_guard<std::mutex> lock(m_appenderMtx);
+    std::lock_guard<std::mutex> lock(m_mutex);
     m_appenderList.clear();
 }
+
 }  // namespace logging

@@ -8,47 +8,18 @@
  * @copyright Copyright (c) 2025
  *
  */
-#include "logging/appender.h"
+#include "logging/appender/appender.h"
 
-#include <format>
-
-#include "common/utils/date_time_utils.h"
-#include "common/utils/filesystem_utils.h"
-#include "logging/log_record.h"
+#include "logging/details/log_record.h"
 
 namespace logging {
-using namespace common::utils::date_time;
 using namespace common::types::logging;
-using namespace common::utils::filesystem;
+using namespace logging::details;
 
-void Appender::append(const logging::LogRecord& record)
+void Appender::append(LogRecord record)
 {
-    if (record.level < m_filterLevel) {
-        return;
-    }
-    std::unique_lock<std::mutex> lock(m_appendMtx);
-    flush(defaultFormatLog(record));
+    std::unique_lock<std::mutex> lock(m_mutex);
+    flush(m_formatter->format(record));
 }
 
-std::string Appender::defaultFormatLog(const logging::LogRecord& record)
-{
-    return std::format("[{}] [{}] [Tid: {:#x}] [{}:{}] [{}]  {}",
-                       FormatTimeString(record.time, "%Y-%m-%d %H:%M:%S.%3f"),
-                       logLevelToStr(record.level),
-                       record.tid,
-                       GetBaseName(record.source.file),
-                       record.source.line,
-                       record.source.func,
-                       record.message);
-}
-
-void Appender::setName(const std::string& name)
-{
-    m_name = name;
-}
-
-std::string Appender::getName()
-{
-    return m_name;
-}
 }  // namespace logging
