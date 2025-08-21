@@ -16,7 +16,6 @@
 #define LOGGER(name) INST(logging::LoggerFactory).getLogger(name)
 #endif  // LOGGER
 
-
 #define LOG(name, level, fmt, ...) LOGGER(name)->log(LOG_SOURCE, level, fmt __VA_OPT__(, ) __VA_ARGS__)
 #define LOG_DEBUG(name, fmt, ...) LOG(common::types::logging::LogLevel::DEBUG, fmt __VA_OPT__(, ) __VA_ARGS__)
 #define LOG_INFO(name, fmt, ...) LOG(common::types::logging::LogLevel::INFO, fmt __VA_OPT__(, ) __VA_ARGS__)

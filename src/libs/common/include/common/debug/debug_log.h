@@ -42,9 +42,9 @@ void CommonDebugLog(common::types::logging::LogLevel level, const char* file, in
 #define DEBUG_LOG_ERR(fmt, ...) DEBUG_LOG(common::types::logging::LogLevel::ERR, fmt __VA_OPT__(, ) __VA_ARGS__);
 
 #define DEBUG_LOG_FATAL(fmt, ...)                                                           \
-    do {                                                                                       \
+    do {                                                                                    \
         DEBUG_LOG(common::types::logging::LogLevel::FATAL, fmt __VA_OPT__(, ) __VA_ARGS__); \
-        std::abort();                                                                          \
+        std::abort();                                                                       \
     } while (0)
 
 #define DEBUG_LOG_COND(condition, fmt, ...)                            \
