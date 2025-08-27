@@ -8,6 +8,7 @@
  * @copyright Copyright (c) 2025
  *
  */
+#pragma once
 #ifndef COMMON_UTILS_FILESYSTEM_UTILS_H
 #define COMMON_UTILS_FILESYSTEM_UTILS_H
 

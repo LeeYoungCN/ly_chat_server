@@ -8,8 +8,8 @@
  * @copyright Copyright (c) 2025
  *
  */
-#ifndef LOGGING_APPENDER_H
-#define LOGGING_APPENDER_H
+#ifndef LOGGING_APPENDER_APPENDER_H
+#define LOGGING_APPENDER_APPENDER_H
 
 #include <atomic>
 #include <memory>
@@ -52,4 +52,4 @@ protected:
     std::unique_ptr<logging::Formatter> m_formatter{std::make_unique<Formatter>("default")};
 };
 }  // namespace logging
-#endif  // LOGGING_APPENDER_H
+#endif  // LOGGING_APPENDER_APPENDER_H

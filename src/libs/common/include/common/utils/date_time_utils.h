@@ -7,7 +7,7 @@
  * @date 2025-07-27
  * @copyright Copyright (c) 2025
  */
-
+#pragma once
 #ifndef COMMON_UTILS_DATE_TIME_UTILS_H
 #define COMMON_UTILS_DATE_TIME_UTILS_H
 #include <ctime>

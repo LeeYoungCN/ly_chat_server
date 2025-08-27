@@ -9,8 +9,8 @@
  *
  */
 #pragma once
-#ifndef LOGGING_CONSOLE_APPENDER_H
-#define LOGGING_CONSOLE_APPENDER_H
+#ifndef LOGGING_APPENDER_CONSOLE_APPENDER_H
+#define LOGGING_APPENDER_CONSOLE_APPENDER_H
 
 #include "logging/appender/appender.h"
 
@@ -24,4 +24,4 @@ public:
 };
 }  // namespace logging
 
-#endif  // LOGGING_CONSOLE_APPENDER_H
+#endif  // LOGGING_APPENDER_CONSOLE_APPENDER_H
