@@ -7,6 +7,8 @@ ROOT_DIR="$(
     cd "${SCRIPT_DIR}/../.." || exit 1
     pwd
 )"
+# shellcheck disable=SC1091
+source "${SCRIPT_DIR}/common_func.sh"
 
 cd "${ROOT_DIR}" || exit 1
 
@@ -14,9 +16,9 @@ cd "${ROOT_DIR}" || exit 1
 RETRY_DELAY=5
 
 function git_push() {
-    echo "开始尝试执行git push -f, 将持续重试直到成功..."
-    echo "重试间隔: $RETRY_DELAY 秒"
-    echo "按Ctrl+C可终止脚本"
+    print_log "开始尝试执行git push -f, 将持续重试直到成功..."
+    print_log "重试间隔: $RETRY_DELAY 秒"
+    print_log "按Ctrl+C可终止脚本"
 
     # 循环执行循环执行git push -f
     while true; do
@@ -26,20 +28,20 @@ function git_push() {
 
         # 检查命令是否成功执行
         if [ $exit_code -eq 0 ]; then
-            echo "✅ git push -f 执行成功!"
+            print_log "✅ git push -f 执行成功!"
             exit 0
         else
-            echo "❌ git push -f 执行失败，退出码: $exit_code"
-            echo "将在 $RETRY_DELAY 秒后重试..."
+            print_log "❌ git push -f 执行失败，退出码: $exit_code"
+            print_log "将在 $RETRY_DELAY 秒后重试..."
             sleep $RETRY_DELAY
         fi
     done
 }
 
 function git_pull() {
-    echo "开始尝试执行git pull --rebase, 将持续重试直到成功..."
-    echo "重试间隔: $RETRY_DELAY 秒"
-    echo "按Ctrl+C可终止脚本"
+    print_log "开始尝试执行git pull --rebase, 将持续重试直到成功..."
+    print_log "重试间隔: $RETRY_DELAY 秒"
+    print_log "按Ctrl+C可终止脚本"
 
     # 循环执行循环执行git push -f
     while true; do
@@ -49,11 +51,11 @@ function git_pull() {
 
         # 检查命令是否成功执行
         if [ $exit_code -eq 0 ]; then
-            echo "✅ git pull --rebase 执行成功!"
+            print_log "✅ git pull --rebase 执行成功!"
             exit 0
         else
-            echo "❌ git pull --rebase 执行失败，退出码: $exit_code"
-            echo "将在 $RETRY_DELAY 秒后重试..."
+            print_log "❌ git pull --rebase 执行失败，退出码: $exit_code"
+            print_log "将在 $RETRY_DELAY 秒后重试..."
             sleep $RETRY_DELAY
         fi
     done
@@ -64,5 +66,5 @@ if [ "$1" == "pull" ]; then
 elif [ "$1" == "push" ]; then
     git_push
 else
-    echo "Input invalid!"
+    print_log "Input invalid!"
 fi
