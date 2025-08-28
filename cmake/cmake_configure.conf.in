@@ -23,3 +23,4 @@ cmake_source_dir="@CMAKE_SOURCE_DIR@"
 cmake_binary_dir="@CMAKE_BINARY_DIR@"
 cmake_install_prefix="@CMAKE_INSTALL_PREFIX@"
 env_param_file="@ENV_PARAM_FILE@"
+cmake_enable_asan=@ENABLE_ASAN@

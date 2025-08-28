@@ -55,6 +55,8 @@ arg_ctest_case="all"
 
 arg_enable_list_param=1
 
+arg_enable_asan="OFF"
+
 preset_array=("")
 
 cmake_source_dir="${ROOT_DIR}"
@@ -71,6 +73,7 @@ cmake_configure_param_cfg=""
 # shellcheck disable=SC2034
 ARCHITECTURE="x64"
 env_param_file=""
+cmake_enable_asan="OFF"
 
 g_is_init_param=1
 
@@ -103,6 +106,8 @@ function print_help() {
     echo "                                       Run target ctest case:        --ctest=<ctest-case>"
     echo "                                       Run last failed ctest case:   --ctest=rerun"
     echo "                                       List all gtest case:          --ctest=list"
+    echo ""
+    echo "        --asan                         Enable asan."
     echo ""
     echo "        --list                         List cmake configure param."
     echo ""
@@ -343,6 +348,7 @@ function init_cmake_env() {
     fi
     cp "${cmake_binary_dir}/compile_commands.json" "${BUILD_CACHE_ROOT_DIR}/compile_commands.json"
     cmake_configure_param_cfg="${cmake_binary_dir}/cmake_configure.conf"
+    cmake_enable_asan="${arg_enable_asan}"
     if [ -e "${cmake_configure_param_cfg}" ]; then
         # shellcheck disable=SC1090
         source "${cmake_configure_param_cfg}"
@@ -369,6 +375,7 @@ function cmake_configure() {
         -DCMAKE_INSTALL_PREFIX="${cmake_install_prefix}" \
         -DCMAKE_PRESET="${cmake_preset}" \
         -DENV_PARAM_FILE="${env_param_file}" \
+        -DENABLE_ASAN="${cmake_enable_asan}" \
         -DBUILD_TESTS="ON"; then
         print_log "[${cmake_preset}] CMake configuration success." info
         cp "${cmake_binary_dir}/compile_commands.json" "${BUILD_CACHE_ROOT_DIR}/compile_commands.json"
@@ -480,7 +487,7 @@ function run_ctest() {
 function main() {
     if ! ARGS=$(
         getopt -o c::p:s: \
-            --long clean::,install::,preset:,configure,build::,gtest::,ctest::,help,list \
+            --long clean::,install::,preset:,configure,build::,gtest::,ctest::,help,list,asan \
             -n "$0" -- "$@"
     ); then
         print_log "getopt failed." error
@@ -491,6 +498,10 @@ function main() {
 
     while true; do
         case "$1" in
+        --asan)
+            arg_enable_asan="ON"
+            shift
+            ;;
         -c | --clean)
             arg_enable_clean=0
             if [ -n "${2}" ]; then
@@ -570,6 +581,8 @@ function main() {
 
     readonly arg_enable_ctest
     readonly arg_ctest_case
+
+    readonly arg_enable_asan
 
     if [ "${arg_preset}" == "list" ]; then
         echo "${preset_array[@]}"

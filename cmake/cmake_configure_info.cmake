@@ -44,3 +44,4 @@ message(STATUS "CMAKE_CXX_COMPILER_VERSION:             ${CMAKE_CXX_COMPILER_VER
 message(STATUS "CMAKE_CXX_COMPILER_FRONTEND_VARIANT:    ${CMAKE_CXX_COMPILER_FRONTEND_VARIANT}")
 message(STATUS "CMAKE_GENERATOR:                        ${CMAKE_GENERATOR}")
 message(STATUS "ENV_PARAM_FILE:                         ${ENV_PARAM_FILE}")
+message(STATUS "ENABLE_ASAN:                            ${ENABLE_ASAN}")

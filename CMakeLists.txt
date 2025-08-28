@@ -9,8 +9,10 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS   ON)
 set(CMAKE_VERBOSE_MAKEFILE          OFF)
-option(BUILD_TESTS "Build and run tests" ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+option(BUILD_TESTS "Build and run tests."   ON)
+option(ENABLE_ASAN "Enable asan."           OFF)
 
 if (MSVC)
     set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /MDd")
@@ -41,6 +43,13 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_compile_definitions(DEBUG_MODE)
 else()
     add_compile_definitions(NDEBUG_MODE)
+endif()
+
+if (ENABLE_ASAN)
+    # 启用 ASan 内存检测
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address -fno-omit-frame-pointer")
+    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fsanitize=address -fno-omit-frame-pointer")
+    set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} -fsanitize=address")
 endif()
 
 include(${CMAKE_SOURCE_DIR}/cmake/get_cmake_preset.cmake)
