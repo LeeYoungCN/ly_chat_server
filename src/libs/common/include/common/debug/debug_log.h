@@ -27,9 +27,9 @@ void CommonDebugLog(common::types::logging::LogLevel level, const char* file, in
 #define DEBUG_LOG(level, fmt, ...) (static_cast<void>(0))
 #else
    // Debug模式：实际日志输出，支持所有级别
-#define DEBUG_LOG(level, fmt, ...)                                                                   \
-    do {                                                                                             \
-        common::CommonDebugLog(level, __FILE__, __LINE__, __func__, fmt __VA_OPT__(, ) __VA_ARGS__); \
+#define DEBUG_LOG(level, fmt, ...)                                                                       \
+    do {                                                                                                 \
+        common::CommonDebugLog(level, __FILE__, __LINE__, __FUNCTION__, fmt __VA_OPT__(, ) __VA_ARGS__); \
     } while (0)
 #endif
 
