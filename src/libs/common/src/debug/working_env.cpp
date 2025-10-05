@@ -138,7 +138,7 @@ void PrintEnvParams()
         value = std::getenv(name);
 #endif
         if (err == 0 && value != nullptr) {
-            std::cout << "-------------------- " << name << "--------------------" << std::endl;
+            std::cout << "-------------------- " << name << " --------------------" << std::endl;
             std::cout << name << ": " << value << std::endl;
 #if COMPILER_MSVC
             free(value);

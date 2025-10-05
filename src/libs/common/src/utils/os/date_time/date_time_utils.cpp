@@ -59,7 +59,7 @@ bool SafeGmtime(time_t timer, tm& timeInfo)
         if (timer < 0) {
             DEBUG_LOG_WARN("[FAILED] gmtime_s may not support negative time: %lld, err: %d", timer, err);
         } else {
-            DEBUG_LOG_ERR("[FAILED] gmtime_s. time: %lld, err: %d", timer, err);
+            DEBUG_LOG_ERR("[FAILED] gmtime_s time: %lld, err: %d", timer, err);
         }
         return false;
     }
