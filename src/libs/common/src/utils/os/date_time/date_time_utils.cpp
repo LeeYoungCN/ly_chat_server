@@ -2,9 +2,11 @@
 
 #include <cerrno>
 
-#ifdef _WIN32
+#include "common/compiler/macros.h"
+
+#if PLATFORM_WINDOWS
 #include <windows.h>
-#endif  // _WIN32
+#endif  // PLATFORM_WINDOWS
 
 #include <chrono>
 #include <cstdint>
@@ -23,7 +25,7 @@ using namespace ::common::utils::date_time_utils::internal;
 
 bool SafeLocalTime(time_t timer, tm& timeInfo)
 {
-#ifdef _WIN32
+#if PLATFORM_WINDOWS
     // Windows 使用 localtime_s
     auto err = localtime_s(&timeInfo, &timer);
     if (err != 0) {
@@ -50,7 +52,7 @@ bool SafeLocalTime(time_t timer, tm& timeInfo)
 
 bool SafeGmtime(time_t timer, tm& timeInfo)
 {
-#ifdef _WIN32
+#if PLATFORM_WINDOWS
     // Windows下使用gmtime_s，增加负数时间戳检查
     errno_t err = gmtime_s(&timeInfo, &timer);
     if (err != 0) {
@@ -98,7 +100,7 @@ using namespace ::common::utils::date_time_utils::internal;
 TimestampMs GetCurrentTimestampMs()
 {
     SetLastError(ErrorCode::SUCCESS);
-#ifdef _WIN32
+#if PLATFORM_WINDOWS
     FILETIME ft;
     // 获取当前系统时间，以FILETIME格式存储（从Windows纪元1601-01-01 00:00:00开始的100纳秒间隔数）
     GetSystemTimeAsFileTime(&ft);

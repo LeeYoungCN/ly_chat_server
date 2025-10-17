@@ -14,11 +14,13 @@
 
 #include <cstddef>
 
+#include "common/compiler/macros.h"
+
 namespace common::constants::filesystem {
 /**
  * @brief 路径长度常量（跨平台自动适配）
  */
-#ifdef _WIN32
+#if PLATFORM_WINDOWS
 constexpr size_t MAX_PATH_STD = 260;     ///< Windows标准路径最大长度（含终止符）
 constexpr size_t MAX_PATH_LONG = 32767;  ///< Windows长路径最大长度（启用后）
 #else
@@ -29,7 +31,7 @@ constexpr size_t MAX_PATH_LONG = 65536;  ///< Unix系统扩展路径长度
 /**
  * @brief 文件名最大长度（不含路径部分）
  */
-#ifdef _WIN32
+#if PLATFORM_WINDOWS
 constexpr size_t MAX_FILENAME = 256;  ///< Windows文件名长度限制
 #else
 constexpr size_t MAX_FILENAME = 255;  ///< Unix文件名长度限制
@@ -38,7 +40,7 @@ constexpr size_t MAX_FILENAME = 255;  ///< Unix文件名长度限制
 /**
  * @brief 路径分隔符（平台相关）
  */
-#ifdef _WIN32
+#if PLATFORM_WINDOWS
 constexpr const char* PATH_SEP = "\\";     ///< Windows系统路径分隔符
 constexpr const char* ALT_PATH_SEP = "/";  ///< Windows兼容的替代分隔符
 #else

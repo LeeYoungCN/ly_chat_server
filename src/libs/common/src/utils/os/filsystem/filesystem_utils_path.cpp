@@ -193,7 +193,7 @@ bool IsPathTooLong(const PathString& path)
 {
     const auto len = path.length();
     bool result = false;
-#ifdef _WIN32
+#if PLATFORM_WINDOWS
     result = len > MAX_PATH_LONG;
 #else
     result = len > MAX_PATH_STD;

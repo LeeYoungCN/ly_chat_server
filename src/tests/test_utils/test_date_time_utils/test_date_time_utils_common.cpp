@@ -1,5 +1,8 @@
 #include "test_date_time_utils_common.h"
-#ifdef _WIN32
+
+#include "common/compiler/macros.h"
+
+#if PLATFORM_WINDOWS
 #include <windows.h>
 #endif
 #include <cstdint>
@@ -22,7 +25,7 @@ tm TimestampToTimeInfo(TimestampMs ts)
     auto timer = static_cast<std::time_t>(ts / MILLIS_PER_SECOND);
     std::tm timeInfo{};
 
-#ifdef _WIN32
+#if PLATFORM_WINDOWS
     localtime_s(&timeInfo, &timer);
 #else
     localtime_r(&timer, &timeInfo);
