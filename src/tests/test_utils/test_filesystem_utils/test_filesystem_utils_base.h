@@ -8,10 +8,13 @@
  * @copyright Copyright (c) 2025
  *
  */
-#include "common/constants/filesystem_constants.h"
+
 #include "common/types/filesystem_types.h"
 #include "common/utils/filesystem_utils.h"
 #include "gtest/gtest.h"
+#include "common/utils/error_code_utils.h"
+#include "common/common_error_code.h"
+#include "common/types/error_code_types.h"
 
 namespace test::test_utils::test_filesystem_utils {
 
@@ -22,11 +25,11 @@ protected:
     void SetUp() override
     {
         m_process = common::utils::filesystem::GetProcessPath();
-        EXPECT_EQ(common::utils::filesystem::GetLastError(), common::constants::filesystem::ErrorCode::SUCCESS);
+        EXPECT_EQ(common::utils::error_code::GetLastError(), ERR_COMM_SUCCESS);
         m_processDir = common::utils::filesystem::GetDirName(m_process);
-        EXPECT_EQ(common::utils::filesystem::GetLastError(), common::constants::filesystem::ErrorCode::SUCCESS);
+        EXPECT_EQ(common::utils::error_code::GetLastError(), ERR_COMM_SUCCESS);
         m_workDir = common::utils::filesystem::GetCurrentWorkingDirectory();
-        EXPECT_EQ(common::utils::filesystem::GetLastError(), common::constants::filesystem::ErrorCode::SUCCESS);
+        EXPECT_EQ(common::utils::error_code::GetLastError(), ERR_COMM_SUCCESS);
     };
     void TearDown() override {};
 

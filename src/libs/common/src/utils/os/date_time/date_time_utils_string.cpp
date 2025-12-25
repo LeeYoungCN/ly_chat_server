@@ -15,10 +15,12 @@
 #include <string>
 #include <string_view>
 
+#include "common/common_error_code.h"
 #include "common/constants/date_time_constants.h"
 #include "common/debug/debug_log.h"
+#include "common/types/error_code_types.h"
 #include "common/utils/date_time_utils.h"
-#include "internal/common/utils/date_time_utils_internal.h"
+#include "common/utils/error_code_utils.h"
 
 namespace {
 // 星期英文名称（全程）
@@ -85,49 +87,50 @@ namespace common::utils::date_time {
 
 using namespace ::common::constants::date_time;
 using namespace ::common::types::date_time;
-using namespace ::common::utils::date_time_utils::internal;
+using namespace ::common::utils::error_code;
+using namespace ::common::types::error_code;
 
 std::string_view GetMonthFullName(uint32_t month)
 {
     if (month < MIN_MONTH || month > MAX_MONTH) {
-        SetLastError(ErrorCode::MONTH_INVALID);
+        SetLastError(ERR_COMM_MONTH_INVALID);
         DEBUG_LOG_ERR("Month invalid out of range [%u, %u]. weekday: %u.", MIN_MONTH, MAX_MONTH, month);
         return "";
     }
-    SetLastError(ErrorCode::SUCCESS);
+    SetLastError(ERR_COMM_SUCCESS);
     return MONTH_FULL_NAMES.at(month - MIN_MONTH);
 }
 
 std::string_view GetMonthAbbrName(uint32_t month)
 {
     if (month < MIN_MONTH || month > MAX_MONTH) {
-        SetLastError(ErrorCode::MONTH_INVALID);
+        SetLastError(ERR_COMM_MONTH_INVALID);
         DEBUG_LOG_ERR("Month invalid out of range [%u, %u]. weekday: %u.", MIN_MONTH, MAX_MONTH, month);
         return "";
     }
-    SetLastError(ErrorCode::SUCCESS);
+    SetLastError(ERR_COMM_SUCCESS);
     return MONTH_ABBR_NAMES.at(month - MIN_MONTH);
 }
 
 std::string_view GetWeekdayFullName(uint32_t weekday)
 {
     if (weekday < MIN_WEEKDAY || weekday > MAX_WEEKDAY) {
-        SetLastError(ErrorCode::WEEKDAY_INVALID);
+        SetLastError(ERR_COMM_WEEKDAY_INVALID);
         DEBUG_LOG_ERR("Weekday invalid out of range [%u, %u]. weekday: %u.", MIN_WEEKDAY, MAX_WEEKDAY, weekday);
         return "";
     }
-    SetLastError(ErrorCode::SUCCESS);
+    SetLastError(ERR_COMM_SUCCESS);
     return WEEKDAY_FULL_NAMES.at(weekday);
 }
 
 std::string_view GetWeekdayAbbrName(uint32_t weekday)
 {
     if (weekday < MIN_WEEKDAY || weekday > MAX_WEEKDAY) {
-        SetLastError(ErrorCode::WEEKDAY_INVALID);
+        SetLastError(ERR_COMM_WEEKDAY_INVALID);
         DEBUG_LOG_ERR("Weekday invalid out of range [%u, %u]. weekday: %u.", MIN_WEEKDAY, MAX_WEEKDAY, weekday);
         return "";
     }
-    SetLastError(ErrorCode::SUCCESS);
+    SetLastError(ERR_COMM_SUCCESS);
     return WEEKDAY_ABBR_NAMES.at(weekday);
 }
 
@@ -174,7 +177,7 @@ size_t FormatTimeBuffer(char* buffer, size_t bufferSize, const TimeComponent& ti
     auto insertDateTimeNumber = [&](uint32_t number, size_t numberLen) -> bool {
         uint32_t tmp = number;
         if (bufferIdx + numberLen >= bufferSize) {
-            SetLastError(ErrorCode::OUT_OF_RANGE);
+            SetLastError(ERR_COMM_BUFFER_OVERFLOW);
             DEBUG_LOG_ERR("Failed to insert number: %lu", number);
             return false;
         }
@@ -193,7 +196,7 @@ size_t FormatTimeBuffer(char* buffer, size_t bufferSize, const TimeComponent& ti
         std::string_view insertName = name.empty() ? "?" : name;
 
         if (bufferIdx + insertName.length() >= bufferSize) {
-            SetLastError(ErrorCode::OUT_OF_RANGE);
+            SetLastError(ERR_COMM_BUFFER_OVERFLOW);
             DEBUG_LOG_ERR("Failed to insert string: %s", insertName.data());
             return false;
         }
@@ -271,11 +274,11 @@ size_t FormatTimeBuffer(char* buffer, size_t bufferSize, const TimeComponent& ti
     if (formatIdx < format.length() || bufferIdx >= bufferSize) {
         DEBUG_LOG_ERR("Incomplete format processing (remaining: %s), message: %s",
                       format.data() + formatIdx,
-                      GetLastErrorString());
+                      GetLastErrorStr());
         bufferIdx = 0;
     } else {
-        SetLastError(ErrorCode::SUCCESS);
-        DEBUG_LOG_DBG("[SUCCESS] Format time string, message: %s.", GetLastErrorString());
+        SetLastError(ERR_COMM_SUCCESS);
+        DEBUG_LOG_DBG("[SUCCESS] Format time string, message: %s.", GetLastErrorStr());
     }
 
     buffer[bufferIdx] = '\0';

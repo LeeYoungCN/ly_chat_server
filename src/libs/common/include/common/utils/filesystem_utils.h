@@ -234,18 +234,5 @@ bool CreateDir(const types::filesystem::PathString& path, bool recursive = true)
  */
 bool DeleteDir(const types::filesystem::PathString& path, bool recursive = true);
 
-/**
- * @brief 获取最后一次操作的错误码
- * @return 错误码枚举值
- */
-constants::filesystem::ErrorCode GetLastError();
-
-/**
- * @brief 将最近的错误码转换为人类可读的描述字符串
- * @param code 错误码
- * @return 错误描述字符串
- */
-const char* GetLastErrorString();
-
 }  // namespace common::utils::filesystem
 #endif  // COMMON_UTILS_FILESYSTEM_UTILS_H

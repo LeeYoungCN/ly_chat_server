@@ -1,6 +1,7 @@
+#include "common/common_error_code.h"
 #include "common/compiler/macros.h"
-#include "common/constants/filesystem_constants.h"
 #include "common/types/filesystem_types.h"
+#include "common/utils/error_code_utils.h"
 #include "common/utils/filesystem_utils.h"
 #include "gtest/gtest.h"
 #include "test_filesystem_utils_base.h"
@@ -10,6 +11,9 @@ namespace test::test_utils::test_filesystem_utils {
 using namespace common::utils::filesystem;
 using namespace common::types::filesystem;
 using namespace common::constants::filesystem;
+using namespace common::types::error_code;
+using namespace common::error_code;
+using namespace common::utils::error_code;
 
 class TestFilesystemUtilsDir : public TestFilesystemUtilsBase {
 protected:
@@ -39,85 +43,85 @@ void TestFilesystemUtilsDir::TearDown()
 TEST_F(TestFilesystemUtilsDir, DirExists_Exist)
 {
     EXPECT_TRUE(DirExists(m_processDir));
-    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS);
+    EXPECT_EQ(GetLastError(), ERR_COMM_SUCCESS);
 }
 
 TEST_F(TestFilesystemUtilsDir, DirExists_NonExist)
 {
     EXPECT_FALSE(DirExists(m_testDir1));
-    EXPECT_EQ(GetLastError(), ErrorCode::NOT_FOUND);
+    EXPECT_EQ(GetLastError(), ERR_COMM_NOT_FOUND);
 }
 
 TEST_F(TestFilesystemUtilsDir, DirExists_TargetInvalid)
 {
     EXPECT_FALSE(DirExists(m_process));
-    EXPECT_EQ(GetLastError(), ErrorCode::NOT_DIRECTORY);
+    EXPECT_EQ(GetLastError(), ERR_COMM_NOT_DIRECTORY);
 }
 
 TEST_F(TestFilesystemUtilsDir, DeleteDir_NotExist)
 {
     EXPECT_TRUE(DeleteDir(m_testDir1));
-    EXPECT_EQ(GetLastError(), ErrorCode::NOT_FOUND);
+    EXPECT_EQ(GetLastError(), ERR_COMM_NOT_FOUND);
     EXPECT_TRUE(DeleteDir(m_process + "/nonexistent"));
-    EXPECT_EQ(GetLastError(), ErrorCode::NOT_FOUND);
+    EXPECT_EQ(GetLastError(), ERR_COMM_NOT_FOUND);
 }
 
 TEST_F(TestFilesystemUtilsDir, DeleteDir_TypeInvalid)
 {
     EXPECT_FALSE(DeleteDir(m_process));
-    EXPECT_EQ(GetLastError(), ErrorCode::NOT_DIRECTORY);
+    EXPECT_EQ(GetLastError(), ERR_COMM_NOT_DIRECTORY);
 }
 
 TEST_F(TestFilesystemUtilsDir, CreateDir_TypeInvalid)
 {
     EXPECT_FALSE(CreateDir(m_process));
-    EXPECT_EQ(GetLastError(), ErrorCode::NOT_DIRECTORY) << GetLastErrorString();
+    EXPECT_EQ(GetLastError(), ERR_COMM_NOT_DIRECTORY) << GetLastErrorStr();
 }
 
 TEST_F(TestFilesystemUtilsDir, CreateDir_AlreadyExist)
 {
     EXPECT_TRUE(CreateDir(m_processDir));
-    EXPECT_EQ(GetLastError(), ErrorCode::ALREADY_EXISTS) << GetLastErrorString();
+    EXPECT_EQ(GetLastError(), ERR_COMM_ALREADY_EXISTS) << GetLastErrorStr();
 }
 
 TEST_F(TestFilesystemUtilsDir, CreateDir_NotRecursiveSuccess)
 {
     EXPECT_TRUE(CreateDir(m_testDir1, false));
-    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+    EXPECT_EQ(GetLastError(), ERR_COMM_SUCCESS) << GetLastErrorStr();
     EXPECT_FALSE(DirExists(m_testDir2));
     EXPECT_TRUE(CreateDir(m_testDir2, false));
-    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+    EXPECT_EQ(GetLastError(), ERR_COMM_SUCCESS) << GetLastErrorStr();
     EXPECT_TRUE(DirExists(m_testDir2));
-    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+    EXPECT_EQ(GetLastError(), ERR_COMM_SUCCESS) << GetLastErrorStr();
 }
 
 TEST_F(TestFilesystemUtilsDir, CreateDir_NotRecursiveFalse)
 {
     EXPECT_FALSE(CreateDir(m_testDir2, false));
-    EXPECT_EQ(GetLastError(), ErrorCode::NOT_FOUND) << GetLastErrorString();
-    EXPECT_FALSE(DirExists(m_testDir2)) << GetLastErrorString();
+    EXPECT_EQ(GetLastError(), ERR_COMM_NOT_FOUND) << GetLastErrorStr();
+    EXPECT_FALSE(DirExists(m_testDir2)) << GetLastErrorStr();
 }
 
 TEST_F(TestFilesystemUtilsDir, CreateDir_RecursiveSuccess)
 {
     EXPECT_FALSE(DirExists(m_testDir1));
     EXPECT_TRUE(CreateDir(m_testDir2, true));
-    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+    EXPECT_EQ(GetLastError(), ERR_COMM_SUCCESS) << GetLastErrorStr();
     EXPECT_TRUE(DirExists(m_testDir2));
-    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS) << GetLastErrorString();
+    EXPECT_EQ(GetLastError(), ERR_COMM_SUCCESS) << GetLastErrorStr();
 }
 
 TEST_F(TestFilesystemUtilsDir, DeleteDir_NotRecursiveFalse)
 {
     EXPECT_TRUE(CreateDir(m_testDir2, true));
-    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS);
+    EXPECT_EQ(GetLastError(), ERR_COMM_SUCCESS);
     EXPECT_TRUE(DirExists(m_testDir2));
 
     EXPECT_FALSE(DeleteDir(m_testDir1, false));
 #if COMPILER_MINGW
-    EXPECT_EQ(GetLastError(), ErrorCode::IO_ERROR) << GetLastErrorString();
+    EXPECT_EQ(GetLastError(), ERR_COMM_IO_ERROR) << GetLastErrorStr();
 #else
-    EXPECT_EQ(GetLastError(), ErrorCode::DIR_NOT_EMPTY) << GetLastErrorString();
+    EXPECT_EQ(GetLastError(), ERR_COMM_DIR_NOT_EMPTY) << GetLastErrorStr();
 #endif
     EXPECT_TRUE(DirExists(m_testDir1));
 }
@@ -125,26 +129,26 @@ TEST_F(TestFilesystemUtilsDir, DeleteDir_NotRecursiveFalse)
 TEST_F(TestFilesystemUtilsDir, DeleteDir_NotRecursiveSuccess)
 {
     EXPECT_TRUE(CreateDir(m_testDir2, true));
-    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS);
+    EXPECT_EQ(GetLastError(), ERR_COMM_SUCCESS);
     EXPECT_TRUE(DirExists(m_testDir2));
 
     EXPECT_TRUE(DeleteDir(m_testDir2, false));
-    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS);
+    EXPECT_EQ(GetLastError(), ERR_COMM_SUCCESS);
     EXPECT_FALSE(DirExists(m_testDir2));
 
     EXPECT_TRUE(DeleteDir(m_testDir1, false));
-    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS);
+    EXPECT_EQ(GetLastError(), ERR_COMM_SUCCESS);
     EXPECT_FALSE(DirExists(m_testDir1));
 }
 
 TEST_F(TestFilesystemUtilsDir, DeleteDir_RecursiveSuccess)
 {
     EXPECT_TRUE(CreateDir(m_testDir2, true));
-    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS);
+    EXPECT_EQ(GetLastError(), ERR_COMM_SUCCESS);
     EXPECT_TRUE(DirExists(m_testDir2));
 
     EXPECT_TRUE(DeleteDir(m_testDir2, true));
-    EXPECT_EQ(GetLastError(), ErrorCode::SUCCESS);
+    EXPECT_EQ(GetLastError(), ERR_COMM_SUCCESS);
     EXPECT_FALSE(DirExists(m_testDir2));
 }
 

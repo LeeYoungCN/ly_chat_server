@@ -14,17 +14,12 @@
 
 #include <system_error>
 
-#include "common/constants/filesystem_constants.h"
-
 namespace common::utils::filesystem::internal {
-
-void SetLastError(constants::filesystem::ErrorCode code);
 
 void ConvertSysEcToErrorCode(const std::error_code& ec);
 
 void ConvertExceptionToErrorCode(const std::exception& ex);
 
-constants::filesystem::ErrorCode GetLastErrorInternal();
 
 }  // namespace common::utils::filesystem::internal
 

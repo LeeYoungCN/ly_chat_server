@@ -23,23 +23,25 @@
 #include <filesystem>
 #include <system_error>
 
-#include "common/constants/filesystem_constants.h"
+#include "common/common_error_code.h"
 #include "common/debug/debug_log.h"
 #include "common/types/filesystem_types.h"
+#include "common/utils/error_code_utils.h"
 #include "common/utils/filesystem_utils.h"
-#include "internal/common/utils/filesystem_utils_internal.h"
 
 namespace common::utils::filesystem {
 
 namespace fs = std::filesystem;
 using namespace common::constants::filesystem;
 using namespace common::types::filesystem;
-using namespace common::utils::filesystem::internal;
+using namespace common::types::error_code;
+using namespace common::utils::error_code;
+using namespace common::error_code;
 
 EntryType GetEntryType(const PathString& path)
 {
     if (!fs::exists(path)) {
-        SetLastError(ErrorCode::NOT_FOUND);
+        SetLastError(ERR_COMM_NOT_FOUND);
         return EntryType::NONEXISTENT;
     }
     // 获取文件状态（使用symlink_status而非status，保留符号链接本身的类型）
@@ -47,10 +49,10 @@ EntryType GetEntryType(const PathString& path)
     fs::file_status status = fs::symlink_status(path, ec);
     if (ec) {
         DEBUG_LOG_ERR("Failed to get symlink status. errCode: %s", ec.value());
-        SetLastError(ErrorCode::SYSTEM_ERROR);
+        SetLastError(ERR_COMM_SYSTEM_ERROR);
         return EntryType::UNKNOWN;
     }
-    SetLastError(ErrorCode::SUCCESS);
+    SetLastError(ERR_COMM_SUCCESS);
     switch (status.type()) {
         case fs::file_type::regular:  // 普通文件
             return EntryType::FILE;
@@ -94,17 +96,6 @@ const char* GetEntryTypeString(EntryType type)
         default:
             return "Unknown";
     }
-}
-
-// ------------------------------ 错误处理接口 ------------------------------
-ErrorCode GetLastError()
-{
-    return GetLastErrorInternal();
-}
-
-const char* GetLastErrorString()
-{
-    return GetErrorString(GetLastErrorInternal());
 }
 
 }  // namespace common::utils::filesystem

@@ -1,6 +1,8 @@
 #include "internal/common/utils/filesystem_utils_internal.h"
 
+#include "common/common_error_code.h"
 #include "common/compiler/macros.h"
+#include "common/types/error_code_types.h"
 
 #if COMPILER_MSVC
 #include <windows.h>
@@ -13,57 +15,51 @@
 #include <system_error>
 #include <unordered_map>
 
-#include "common/constants/filesystem_constants.h"
+#include "common/common_error_code.h"
 #include "common/debug/debug_log.h"
+#include "common/types/error_code_types.h"
+#include "common/utils/error_code_utils.h"
 #include "internal/common/utils/filesystem_utils_internal.h"
-
-namespace {
-thread_local volatile common::constants::filesystem::ErrorCode g_fileSystemLastError =
-    common::constants::filesystem::ErrorCode::SUCCESS;
-}
 
 namespace common::utils::filesystem::internal {
 
-using namespace common::constants::filesystem;
+using namespace common::types::error_code;
+using namespace common::utils::error_code;
+using namespace common::error_code;
 
 void ConvertGenericCategory(const std::error_code& ec)
 {
     static const std::unordered_map<int, ErrorCode> ERR_MAP = {
-        {static_cast<int>(std::errc::permission_denied), ErrorCode::PERMISSION_DENIED},
-        {static_cast<int>(std::errc::no_such_file_or_directory), ErrorCode::NOT_FOUND},
-        {static_cast<int>(std::errc::file_exists), ErrorCode::ALREADY_EXISTS},
-        {static_cast<int>(std::errc::directory_not_empty), ErrorCode::DIR_NOT_EMPTY},
-        {static_cast<int>(std::errc::is_a_directory), ErrorCode::IS_A_DIRECTORY},
-        {static_cast<int>(std::errc::filename_too_long), ErrorCode::PATH_TOO_LONG},
-        {static_cast<int>(std::errc::invalid_argument), ErrorCode::PATH_INVALID},
-        {static_cast<int>(std::errc::io_error), ErrorCode::IO_ERROR}};
+        {static_cast<int>(std::errc::permission_denied), ERR_COMM_PERMISSION_DENIED},
+        {static_cast<int>(std::errc::no_such_file_or_directory), ERR_COMM_NOT_FOUND},
+        {static_cast<int>(std::errc::file_exists), ERR_COMM_ALREADY_EXISTS},
+        {static_cast<int>(std::errc::directory_not_empty), ERR_COMM_DIR_NOT_EMPTY},
+        {static_cast<int>(std::errc::is_a_directory), ERR_COMM_IS_A_DIRECTORY},
+        {static_cast<int>(std::errc::filename_too_long), ERR_COMM_PATH_TOO_LONG},
+        {static_cast<int>(std::errc::invalid_argument), ERR_COMM_PATH_INVALID},
+        {static_cast<int>(std::errc::io_error), ERR_COMM_IO_ERROR}};
 
     auto it = ERR_MAP.find(ec.value());
-    SetLastError(it != ERR_MAP.end() ? it->second : ErrorCode::GENERIC_ERROR);
+    SetLastError(it != ERR_MAP.end() ? it->second : ERR_COMM_GENERIC_ERROR);
 }
 
 void ConvertSystemCategory(const std::error_code& ec)
 {
     static const std::unordered_map<int, ErrorCode> ERR_MAP = {
 #if COMPILER_MSVC
-        {ERROR_FILE_NOT_FOUND, ErrorCode::NOT_FOUND},
-        {ERROR_DIR_NOT_EMPTY, ErrorCode::DIR_NOT_EMPTY},
-        {ERROR_PATH_NOT_FOUND, ErrorCode::NOT_FOUND},
-        {ERROR_FILE_EXISTS, ErrorCode::ALREADY_EXISTS},
-        {ERROR_SHARING_VIOLATION, ErrorCode::SHARING_VIOLATION},
-        {ERROR_ACCESS_DENIED, ErrorCode::PERMISSION_DENIED}
+        {ERROR_FILE_NOT_FOUND, ERR_COMM_NOT_FOUND},
+        {ERROR_DIR_NOT_EMPTY, ERR_COMM_DIR_NOT_EMPTY},
+        {ERROR_PATH_NOT_FOUND, ERR_COMM_NOT_FOUND},
+        {ERROR_FILE_EXISTS, ERR_COMM_ALREADY_EXISTS},
+        {ERROR_SHARING_VIOLATION, ERR_COMM_SHARING_VIOLATION},
+        {ERROR_ACCESS_DENIED, ERR_COMM_PERMISSION_DENIED}
 #else
-        {EIO, ErrorCode::IO_ERROR}, {EBUSY, ErrorCode::SHARING_VIOLATION}
+        {EIO, ERR_COMM_IO_ERROR}, {EBUSY, ERR_COMM_SHARING_VIOLATION}
 #endif
     };
 
     auto it = ERR_MAP.find(ec.value());
-    SetLastError(it != ERR_MAP.end() ? it->second : ErrorCode::SYSTEM_ERROR);
-}
-
-void SetLastError(ErrorCode code)
-{
-    g_fileSystemLastError = code;
+    SetLastError(it != ERR_MAP.end() ? it->second : ERR_COMM_SYSTEM_ERROR);
 }
 
 void ConvertExceptionToErrorCode(const std::exception& ex)
@@ -80,7 +76,7 @@ void ConvertExceptionToErrorCode(const std::exception& ex)
         return;
     } catch (const std::exception& other) {
         DEBUG_LOG_EXCEPTION(other, "Non-filesystem exception");
-        SetLastError(ErrorCode::SYSTEM_ERROR);
+        SetLastError(ERR_COMM_SYSTEM_ERROR);
         return;
     }
 }
@@ -88,7 +84,7 @@ void ConvertExceptionToErrorCode(const std::exception& ex)
 void ConvertSysEcToErrorCode(const std::error_code& ec)
 {
     if (!ec) {
-        SetLastError(ErrorCode::SUCCESS);
+        SetLastError(ERR_COMM_SUCCESS);
         return;
     }
     // 详细日志便于调试
@@ -102,11 +98,6 @@ void ConvertSysEcToErrorCode(const std::error_code& ec)
     } else {
         DEBUG_LOG_FATAL("Unkown");
     }
-}
-
-ErrorCode GetLastErrorInternal()
-{
-    return g_fileSystemLastError;
 }
 
 }  // namespace common::utils::filesystem::internal

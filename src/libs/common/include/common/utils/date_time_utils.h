@@ -172,20 +172,5 @@ types::date_time::DurationSec Diff(types::date_time::TimestampSec timestamp1,
  */
 void SleepMS(types::date_time::DurationMs ms);
 
-// ------------------------------ 错误处理 ------------------------------
-
-/**
- * @brief 获取最后一次操作的错误码
- * @return 错误码枚举
- */
-common::constants::date_time::ErrorCode GetLastError();
-
-/**
- * @brief 将最近的错误码转换为人类可读的描述字符串
- * @param code 错误码
- * @return 错误描述字符串
- */
-const char* GetLastErrorString();
-
 }  // namespace common::utils::date_time
 #endif  // COMMON_UTILS_DATE_TIME_UTILS_H
