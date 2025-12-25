@@ -9,8 +9,8 @@ fi
 
 export Platform="${ARCHITECTURE}"
 
-readonly VS_PATH="/D/Program Files/Microsoft Visual Studio/2022/Professional"
-MSVC_VERSION="14.44.35207"
+readonly VS_PATH="/D/Program Files/Microsoft Visual Studio/18/Community"
+MSVC_VERSION="14.50.35717"
 readonly WIN_KITS_10="/D/Windows Kits/10"
 readonly WINSDK_VERSION="10.0.26100.0"
 
