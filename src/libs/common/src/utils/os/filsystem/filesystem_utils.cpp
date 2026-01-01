@@ -34,14 +34,11 @@ namespace common::utils::filesystem {
 namespace fs = std::filesystem;
 using namespace common::constants::filesystem;
 using namespace common::types::filesystem;
-using namespace common::types::error_code;
-using namespace common::utils::error_code;
-using namespace common::error_code;
 
 EntryType GetEntryType(const PathString& path)
 {
     if (!fs::exists(path)) {
-        SetLastError(ERR_COMM_NOT_FOUND);
+        SetLastErrcode(ERR_COMM_NOT_FOUND);
         return EntryType::NONEXISTENT;
     }
     // 获取文件状态（使用symlink_status而非status，保留符号链接本身的类型）
@@ -49,10 +46,10 @@ EntryType GetEntryType(const PathString& path)
     fs::file_status status = fs::symlink_status(path, ec);
     if (ec) {
         DEBUG_LOG_ERR("Failed to get symlink status. errCode: %s", ec.value());
-        SetLastError(ERR_COMM_SYSTEM_ERROR);
+        SetLastErrcode(ERR_COMM_SYSTEM_ERROR);
         return EntryType::UNKNOWN;
     }
-    SetLastError(ERR_COMM_SUCCESS);
+    SetLastErrcode(ERR_COMM_SUCCESS);
     switch (status.type()) {
         case fs::file_type::regular:  // 普通文件
             return EntryType::FILE;

@@ -4,23 +4,23 @@
 #include "common/types/error_code_types.h"
 
 namespace {
-thread_local volatile common::types::error_code::ErrorCode g_lastError = ERR_COMM_SUCCESS;
+thread_local volatile ErrorCode g_lastError = ERR_COMM_SUCCESS;
 }
 
-namespace common::utils::error_code {
-void SetLastError(common::types::error_code::ErrorCode errcode)
+extern "C" {
+void SetLastErrcode(ErrorCode errcode)
 {
     g_lastError = errcode;
 }
 
-common::types::error_code::ErrorCode GetLastError()
+ErrorCode GetLastErrcode()
 {
     return g_lastError;
 }
 
 const char* GetLastErrorStr()
 {
-    return common::error_code::GetErrorMsg(g_lastError);
+    return GetCommErrorMsg(g_lastError);
 }
 
 }  // namespace common::utils::error_code

@@ -17,14 +17,14 @@
 #include <string>
 #include <system_error>
 
+#include "common/common_error_code.h"
 #include "common/debug/debug_log.h"
 #include "common/types/date_time_types.h"
+#include "common/types/error_code_types.h"
 #include "common/types/filesystem_types.h"
+#include "common/utils/error_code_utils.h"
 #include "common/utils/filesystem_utils.h"
 #include "internal/common/utils/filesystem_utils_internal.h"
-#include "common/types/error_code_types.h"
-#include "common/utils/error_code_utils.h"
-#include "common/common_error_code.h"
 
 // std::ios::out：默认模式，创建文件（若存在则截断）。
 // std::ios::app：追加模式（文件存在时在末尾添加内容，不截断）。
@@ -53,9 +53,6 @@ namespace fs = std::filesystem;
 using namespace common::constants::filesystem;
 using namespace common::types::filesystem;
 using namespace common::utils::filesystem::internal;
-using namespace common::types::error_code;
-using namespace common::error_code;
-using namespace common::utils::error_code;
 
 bool FileExists(const PathString& path)
 {
@@ -64,13 +61,13 @@ bool FileExists(const PathString& path)
     switch (entrType) {
         case EntryType::FILE:
             exists = true;
-            SetLastError(ERR_COMM_SUCCESS);
+            SetLastErrcode(ERR_COMM_SUCCESS);
             break;
         case EntryType::NONEXISTENT:
-            SetLastError(ERR_COMM_NOT_FOUND);
+            SetLastErrcode(ERR_COMM_NOT_FOUND);
             break;
         default:
-            SetLastError(ERR_COMM_NOT_FILE);
+            SetLastErrcode(ERR_COMM_NOT_FILE);
             break;
     }
     return exists;
@@ -80,19 +77,19 @@ bool CreateFile(const PathString& path)
 {
     EntryType type = GetEntryType(path);
     if (type == EntryType::FILE) {
-        SetLastError(ERR_COMM_ALREADY_EXISTS);
+        SetLastErrcode(ERR_COMM_ALREADY_EXISTS);
         DEBUG_LOG_DBG("[SUCCESS] File already exist: %s", path.c_str());
         return true;
     }
     if (type != EntryType::NONEXISTENT) {
-        SetLastError(ERR_COMM_NOT_FILE);
+        SetLastErrcode(ERR_COMM_NOT_FILE);
         DEBUG_LOG_ERR("[FAILED] Target invalid: %s", GetEntryTypeString(type));
         return false;
     }
 
     std::ofstream file(path, std::ios::app | std::ios::binary);
     if (file.is_open()) {
-        SetLastError(ERR_COMM_SUCCESS);
+        SetLastErrcode(ERR_COMM_SUCCESS);
         return true;
     }
     std::error_code ec(errno, std::generic_category());
@@ -106,7 +103,7 @@ bool DeleteFileInternal(const PathString& path)
         bool result = false;
         result = fs::remove(path);
         DEBUG_LOG_COND(result, "Delete file: %s", path.c_str());
-        SetLastError(result ? ERR_COMM_SUCCESS : ERR_COMM_NOT_FOUND);
+        SetLastErrcode(result ? ERR_COMM_SUCCESS : ERR_COMM_NOT_FOUND);
         return result;
     } catch (const fs::filesystem_error& e) {
         DEBUG_LOG_EXCEPTION(e, "[FAILED] Delete file: %s", path.c_str());
@@ -122,7 +119,7 @@ bool DeleteFileInternal(const PathString& path)
 bool DeleteFile(const PathString& path)
 {
     if (!FileExists(path)) {
-        bool rst = (GetLastError() == ERR_COMM_NOT_FOUND);
+        bool rst = (GetLastErrcode() == ERR_COMM_NOT_FOUND);
         DEBUG_LOG_COND(rst, "Delete file: %s, message: %s.", path.c_str(), GetLastErrorStr());
         return rst;
     }
@@ -140,13 +137,13 @@ bool CopyFile(const PathString& src, const PathString& dest, bool overwrite)
     type = GetEntryType(dest);
     if (type != EntryType::FILE && type != EntryType::NONEXISTENT) {
         DEBUG_LOG_ERR("[FAILED] Dest file: %s, Type invalid: %s", src.c_str(), GetEntryTypeString(type));
-        SetLastError(ERR_COMM_NOT_FILE);
+        SetLastErrcode(ERR_COMM_NOT_FILE);
         return false;
     }
     fs::copy_options option = (overwrite ? fs::copy_options::overwrite_existing : fs::copy_options::none);
     try {
         fs::copy_file(src, dest, option);
-        SetLastError(ERR_COMM_SUCCESS);
+        SetLastErrcode(ERR_COMM_SUCCESS);
         DEBUG_LOG_DBG("[SUCCESS] Copy file %s. src: %s. dst: %s",
                       (overwrite ? "overwrite" : "not overwrite"),
                       src.c_str(),
@@ -173,7 +170,7 @@ bool RenameFile(const PathString& src, const PathString& dest, bool overwrite)
     EntryType type = GetEntryType(dest);
     // 类型错误
     if (type != EntryType::FILE && type != EntryType::NONEXISTENT) {
-        SetLastError(ERR_COMM_NOT_FILE);
+        SetLastErrcode(ERR_COMM_NOT_FILE);
         DEBUG_LOG_ERR("[FAILED] Rename file %s. dest invalid: %s, type: %s",
                       (overwrite ? "overwrite " : "not overwrite"),
                       dest.c_str(),
@@ -182,7 +179,7 @@ bool RenameFile(const PathString& src, const PathString& dest, bool overwrite)
     }
     // 已存在
     if (!overwrite && type == EntryType::FILE) {
-        SetLastError(ERR_COMM_ALREADY_EXISTS);
+        SetLastErrcode(ERR_COMM_ALREADY_EXISTS);
         DEBUG_LOG_ERR("[FAILED] Rename file %s. dest already exist: %s, message: %s",
                       (overwrite ? "overwrite " : "not overwrite"),
                       dest.c_str(),
@@ -192,7 +189,7 @@ bool RenameFile(const PathString& src, const PathString& dest, bool overwrite)
 
     try {
         fs::rename(src, dest);
-        SetLastError(ERR_COMM_SUCCESS);
+        SetLastErrcode(ERR_COMM_SUCCESS);
         DEBUG_LOG_DBG("[SUCCESS] Rename file %s succeeded. src: %s, dest: %s, message: %s",
                       (overwrite ? "overwrite " : ""),
                       src.c_str(),
@@ -286,7 +283,7 @@ bool WriteTextFile(const PathString& path, const PathString& content, bool overw
 
     if (file << content) {
         file.close();
-        SetLastError(ERR_COMM_SUCCESS);
+        SetLastErrcode(ERR_COMM_SUCCESS);
         DEBUG_LOG_DBG("[SUCCESS] Write text file %s: %s, message: %s",
                       (overwrite ? "append" : "overwrite"),
                       path.c_str(),

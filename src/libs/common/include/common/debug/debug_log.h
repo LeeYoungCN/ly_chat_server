@@ -17,17 +17,15 @@
 extern "C" {
 void SetDebugLogLevel(LogLevel level);
 
-void CommonDebugLog(LogLevel level, const char* file, int line, const char* func,
-                    const char* fmt, ...);
-
+void CommonDebugLog(LogLevel level, const char* file, int line, const char* func, const char* fmt, ...);
 
 #if defined(NDEBUG) && !defined(ENABLE_TEST)
-   // Release模式：空操作，显式消费所有参数避免警告
+// Release模式：空操作，显式消费所有参数避免警告
 #define DEBUG_LOG(level, fmt, ...) (static_cast<void>(0))
 #else
-   // Debug模式：实际日志输出，支持所有级别
-#define DEBUG_LOG(level, fmt, ...)                                                                       \
-    do {                                                                                                 \
+// Debug模式：实际日志输出，支持所有级别
+#define DEBUG_LOG(level, fmt, ...)                                                               \
+    do {                                                                                         \
         CommonDebugLog(level, __FILE__, __LINE__, __FUNCTION__, fmt __VA_OPT__(, ) __VA_ARGS__); \
     } while (0)
 #endif
@@ -40,10 +38,10 @@ void CommonDebugLog(LogLevel level, const char* file, int line, const char* func
 
 #define DEBUG_LOG_ERR(fmt, ...) DEBUG_LOG(LOG_LVL_ERR, fmt __VA_OPT__(, ) __VA_ARGS__);
 
-#define DEBUG_LOG_FATAL(fmt, ...)                                                           \
-    do {                                                                                    \
+#define DEBUG_LOG_FATAL(fmt, ...)                                 \
+    do {                                                          \
         DEBUG_LOG(LOG_LVL_FATAL, fmt __VA_OPT__(, ) __VA_ARGS__); \
-        std::abort();                                                                       \
+        std::abort();                                             \
     } while (0)
 
 #define DEBUG_LOG_COND(condition, fmt, ...)                            \

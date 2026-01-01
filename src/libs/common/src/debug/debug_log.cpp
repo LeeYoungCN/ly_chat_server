@@ -61,8 +61,7 @@ std::string TimeString()
     return timeSs.str();
 }
 
-std::string formatLog(LogLevel level, const char* file, int line, const char* func,
-                      const std::string& message)
+std::string formatLog(LogLevel level, const char* file, int line, const char* func, const std::string& message)
 {
     return std::format("[{}] [{}] [Tid: {:#x}] [{}:{}] [{}] {}",
                        TimeString(),
@@ -73,11 +72,10 @@ std::string formatLog(LogLevel level, const char* file, int line, const char* fu
                        func,
                        message);
 }
-}
+}  // namespace
 
 extern "C" {
-void CommonDebugLog(LogLevel level, const char* file, int line, const char* func,
-                    const char* fmt, ...)
+void CommonDebugLog(LogLevel level, const char* file, int line, const char* func, const char* fmt, ...)
 {
     if (level < g_logLevel) {
         return;

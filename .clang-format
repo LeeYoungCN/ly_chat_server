@@ -33,7 +33,7 @@ AlignConsecutiveDeclarations:
   PadOperators:    false
 # 连续对齐宏定义
 AlignConsecutiveMacros:
-  Enabled:         false
+  Enabled:         true
   AcrossEmptyLines: false
   AcrossComments:  false
   AlignCompound:   false
@@ -84,7 +84,7 @@ AllowShortBlocksOnASingleLine: Never
 AllowShortCaseExpressionOnASingleLine: true
 AllowShortCaseLabelsOnASingleLine: false
 AllowShortCompoundRequirementOnASingleLine: true
-AllowShortEnumsOnASingleLine: true
+AllowShortEnumsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: Inline
 # 允许短的if语句保持在同一行
 AllowShortIfStatementsOnASingleLine: WithoutElse
