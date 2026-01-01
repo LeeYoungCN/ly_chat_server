@@ -7,7 +7,7 @@
 
 int main(int argc, char *argv[])
 {
-    common::SetDebugLogLevel(common::types::logging::LogLevel::DEBUG);
+    SetDebugLogLevel(LOG_LVL_DEBUG);
     printf("Running main() from %s\n", __FILE__);
     common::debug::working_env::ShowWorkingEnv();
     testing::InitGoogleTest(&argc, argv);

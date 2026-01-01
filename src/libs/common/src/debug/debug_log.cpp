@@ -26,12 +26,7 @@
 #include "common/types/logging_types.h"
 
 namespace {
-common::types::logging::LogLevel g_logLevel = common::types::logging::LogLevel::INFO;
-}
-
-namespace common {
-
-using namespace common::types::logging;
+LogLevel g_logLevel = LOG_LVL_INFO;
 
 size_t GetCurrentThreadIdInternal()
 {
@@ -66,7 +61,7 @@ std::string TimeString()
     return timeSs.str();
 }
 
-std::string formatLog(common::types::logging::LogLevel level, const char* file, int line, const char* func,
+std::string formatLog(LogLevel level, const char* file, int line, const char* func,
                       const std::string& message)
 {
     return std::format("[{}] [{}] [Tid: {:#x}] [{}:{}] [{}] {}",
@@ -78,8 +73,10 @@ std::string formatLog(common::types::logging::LogLevel level, const char* file, 
                        func,
                        message);
 }
+}
 
-void CommonDebugLog(common::types::logging::LogLevel level, const char* file, int line, const char* func,
+extern "C" {
+void CommonDebugLog(LogLevel level, const char* file, int line, const char* func,
                     const char* fmt, ...)
 {
     if (level < g_logLevel) {
@@ -99,8 +96,8 @@ void CommonDebugLog(common::types::logging::LogLevel level, const char* file, in
     std::cout << logStr << std::endl;
 }
 
-void SetDebugLogLevel(common::types::logging::LogLevel level)
+void SetDebugLogLevel(LogLevel level)
 {
     g_logLevel = level;
 }
-}  // namespace common
+}
