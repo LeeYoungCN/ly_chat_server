@@ -65,7 +65,7 @@ std::string formatLog(LogLevel level, const char* file, int line, const char* fu
 {
     return std::format("[{}] [{}] [Tid: {:#x}] [{}:{}] [{}] {}",
                        TimeString(),
-                       logLevelToStr(level),
+                       GetLogLvlStr(level),
                        GetCurrentThreadIdInternal(),
                        std::filesystem::path(file).filename().string(),
                        line,

@@ -13,12 +13,7 @@
 #ifndef COMMON_TYPES_THREAD_TYPES_H
 #define COMMON_TYPES_THREAD_TYPES_H
 
-#include <cstddef>
-#include <string>
-
-namespace common::types::thread {
-using ThreadId = size_t;
-using ThreadName = std::string;
-}  // namespace common::types::thread
+#include <stddef.h>
+typedef size_t ThreadId;
 
 #endif  // COMMON_TYPES_THREAD_TYPES_H

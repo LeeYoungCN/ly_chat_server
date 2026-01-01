@@ -15,29 +15,33 @@
 
 #include "common/types/thread_types.h"
 
-namespace common::utils::thread {
+#ifdef __cplusplus
+extern "C" {
+#endif  // __cplusplus
 
 /**
  * @brief 获取当前内核态线程ID
  *
  * @return 当前线程ID
  */
-common::types::thread::ThreadId GetCurrentThreadId();
+ThreadId GetCurrThreadId();
 
 /**
  * @brief 设置线程名称
  *
  * @param name 线程名称
  */
-void SetCurrentThreadName(const common::types::thread::ThreadName &name);
+void SetCurrThreadName(const char *name);
 
 /**
  * @brief 获取当前线程名称
  *
  * @return 当前线程名称，未设置则为空
  */
-common::types::thread::ThreadName GetCurrentThreadName();
+const char *GetCurrThreadName();
 
-}  // namespace common::utils::thread
+#ifdef __cplusplus
+}
+#endif  // __cplusplus
 
 #endif  // COMMON_UTILS_THREAD_UTILS_H

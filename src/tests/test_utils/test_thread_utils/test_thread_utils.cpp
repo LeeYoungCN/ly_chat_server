@@ -9,21 +9,17 @@
  *
  */
 
-#include "common/types/thread_types.h"
 #include "common/utils/thread_utils.h"
 #include "gtest/gtest.h"
 
-using namespace common::types::thread;
-using namespace common::utils::thread;
-
 TEST(TestThreadUtils, ThreadId)
 {
-    EXPECT_NE(GetCurrentThreadId(), 0);
+    EXPECT_NE(GetCurrThreadId(), 0);
 }
 
 TEST(TestThreadUtils, ThreadName)
 {
-    EXPECT_EQ(GetCurrentThreadName(), "");
-    SetCurrentThreadName("main");
-    EXPECT_EQ(GetCurrentThreadName(), "main");
+    EXPECT_STREQ(GetCurrThreadName(), "");
+    SetCurrThreadName("main");
+    EXPECT_STREQ(GetCurrThreadName(), "main");
 }

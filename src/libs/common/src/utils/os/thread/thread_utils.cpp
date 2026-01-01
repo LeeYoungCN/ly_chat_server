@@ -11,6 +11,8 @@
 
 #include "common/utils/thread_utils.h"
 
+#include <string>
+
 #include "common/compiler/macros.h"
 #include "common/types/thread_types.h"
 
@@ -26,9 +28,8 @@
 #endif
 
 namespace {
-using namespace common::types::thread;
 
-thread_local ThreadName g_threadName;
+thread_local std::string g_threadName;
 
 ThreadId GetCurrentThreadIdInternal()
 {
@@ -46,24 +47,22 @@ ThreadId GetCurrentThreadIdInternal()
 }
 }  // namespace
 
-using namespace common::types::thread;
+extern "C" {
 
-namespace common::utils::thread {
-
-ThreadId GetCurrentThreadId()
+ThreadId GetCurrThreadId()
 {
     static thread_local ThreadId tid = GetCurrentThreadIdInternal();
     return tid;
 }
 
-void SetCurrentThreadName(const ThreadName &name)
+void SetCurrThreadName(const char *name)
 {
     g_threadName = name;
 }
 
-ThreadName GetCurrentThreadName()
+const char *GetCurrThreadName()
 {
-    return g_threadName;
+    return g_threadName.c_str();
 }
 
 }  // namespace common::utils::thread

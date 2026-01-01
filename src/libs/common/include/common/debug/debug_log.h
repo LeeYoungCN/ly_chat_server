@@ -14,10 +14,15 @@
 
 #include "common/types/logging_types.h"
 
+#ifdef __cplusplus
 extern "C" {
+#endif  // __cplusplus
 void SetDebugLogLevel(LogLevel level);
 
 void CommonDebugLog(LogLevel level, const char* file, int line, const char* func, const char* fmt, ...);
+#ifdef __cplusplus
+}
+#endif  // __cplusplus
 
 #if defined(NDEBUG) && !defined(ENABLE_TEST)
 // Release模式：空操作，显式消费所有参数避免警告
@@ -52,7 +57,6 @@ void CommonDebugLog(LogLevel level, const char* file, int line, const char* func
             DEBUG_LOG_DBG("[SUCCESS] " fmt __VA_OPT__(, ) __VA_ARGS__) \
         }                                                              \
     } while (0)
-}
 
 #ifdef __cplusplus
 #if defined(NDEBUG) && !defined(ENABLE_TEST)
