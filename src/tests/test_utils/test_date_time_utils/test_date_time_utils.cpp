@@ -6,15 +6,14 @@
 #include "common/utils/date_time_utils.h"
 #include "gtest/gtest.h"
 
-using namespace common::constants::date_time;
-using namespace common::types::date_time;
+using namespace common::date_time;
 
 namespace test::test_utils::test_date_time_utils {
 TEST(TestDateTimeUtilsMonthName, case)
 {
     for (uint32_t i = 0; i < 20; i++) {
-        auto len1 = common::utils::date_time::GetMonthFullName(i).length();
-        auto len2 = common::utils::date_time::GetMonthAbbrName(i).length();
+        auto len1 = common::date_time::GetMonthFullName(i).length();
+        auto len2 = common::date_time::GetMonthAbbrName(i).length();
         if (i >= MIN_MONTH && i <= MAX_MONTH) {
             EXPECT_GT(len1, 0);
             EXPECT_GT(len2, 0);
@@ -28,8 +27,8 @@ TEST(TestDateTimeUtilsMonthName, case)
 TEST(TestDateTimeUtilsWeekdayName, case)
 {
     for (uint32_t i = 0; i < 20; i++) {
-        auto len1 = common::utils::date_time::GetWeekdayFullName(i).length();
-        auto len2 = common::utils::date_time::GetWeekdayAbbrName(i).length();
+        auto len1 = common::date_time::GetWeekdayFullName(i).length();
+        auto len2 = common::date_time::GetWeekdayAbbrName(i).length();
         if (i >= MIN_WEEKDAY && i <= MAX_WEEKDAY) {
             EXPECT_GT(len1, 0);
             EXPECT_GT(len2, 0);

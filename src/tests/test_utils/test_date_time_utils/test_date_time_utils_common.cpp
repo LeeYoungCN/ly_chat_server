@@ -16,9 +16,7 @@
 
 namespace test::test_utils::test_date_time_utils {
 
-using namespace common::constants::date_time;
-using namespace common::types::date_time;
-using namespace common::utils::date_time;
+using namespace common::date_time;
 
 tm TimestampToTimeInfo(TimestampMs ts)
 {
@@ -33,7 +31,7 @@ tm TimestampToTimeInfo(TimestampMs ts)
     return timeInfo;
 }
 
-void CompareString(const common::types::date_time::TimeComponent& timeComp, std::string stdTimeStr,
+void CompareString(const common::date_time::TimeComponent& timeComp, std::string stdTimeStr,
                    const std::string& utilsTimeStr)
 {
     char buffer[4];  // 3位数字 + 终止符
@@ -49,7 +47,7 @@ void CompareString(const common::types::date_time::TimeComponent& timeComp, std:
     EXPECT_EQ(stdTimeStr, utilsTimeStr);
 }
 
-void TestTimeBuffer(const std::string_view& format, uint32_t length, common::types::date_time::TimestampMs timestamp)
+void TestTimeBuffer(const std::string_view& format, uint32_t length, common::date_time::TimestampMs timestamp)
 {
     auto timeComp = LocalTimeComponent(timestamp);
     auto timeInfo = TimestampToTimeInfo(timestamp);
@@ -57,10 +55,10 @@ void TestTimeBuffer(const std::string_view& format, uint32_t length, common::typ
 }
 
 void TestTimeBuffer(const std::string_view& format, uint32_t length, std::tm timeInfo,
-                    const common::types::date_time::TimeComponent& timeComp)
+                    const common::date_time::TimeComponent& timeComp)
 {
     char bufferUtils[MAX_TIME_STR_LEN] = {'\0'};
-    auto sizeUtils = common::utils::date_time::FormatTimeBuffer(bufferUtils, length, timeComp, format);
+    auto sizeUtils = common::date_time::FormatTimeBuffer(bufferUtils, length, timeComp, format);
 
     char bufferStd[MAX_TIME_STR_LEN] = {'\0'};
     auto sizeStd = std::strftime(bufferStd, length, format.data(), &timeInfo);
@@ -72,7 +70,7 @@ void TestTimeBuffer(const std::string_view& format, uint32_t length, std::tm tim
     }
 }
 
-void TestTimeString(const std::string_view& format, common::types::date_time::TimestampMs timestamp)
+void TestTimeString(const std::string_view& format, common::date_time::TimestampMs timestamp)
 {
     auto timeComp = LocalTimeComponent(timestamp);
     auto timeInfo = TimestampToTimeInfo(timestamp);
@@ -80,9 +78,9 @@ void TestTimeString(const std::string_view& format, common::types::date_time::Ti
 }
 
 void TestTimeString(const std::string_view& format, std::tm timeInfo,
-                    const common::types::date_time::TimeComponent& timeComp)
+                    const common::date_time::TimeComponent& timeComp)
 {
-    auto utilsStr = common::utils::date_time::FormatTimeString(timeComp, format);
+    auto utilsStr = common::date_time::FormatTimeString(timeComp, format);
     std::stringstream ss;
     ss << std::put_time(&timeInfo, format.data());
 

@@ -23,9 +23,7 @@ namespace test::test_utils::test_date_time_utils {
 using TestBufferParam = std::tuple<std::string_view, uint32_t, uint32_t, uint32_t>;
 using TestStringParam = std::tuple<std::string_view, uint32_t, uint32_t>;
 
-using namespace common::constants::date_time;
-using namespace common::types::date_time;
-using namespace common::utils::date_time;
+using namespace common::date_time;
 
 class TestDateTimeUtilsFmtTimeCompBuffer : public ::testing::TestWithParam<TestBufferParam> {
 protected:

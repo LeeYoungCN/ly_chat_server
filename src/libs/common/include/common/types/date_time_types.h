@@ -15,7 +15,7 @@
 
 #include <cstdint>
 
-namespace common::types::date_time {
+namespace common::date_time {
 
 // 时间戳(ms)
 using TimestampSec = int64_t;  // 秒级时间戳（自UTC epoch）
@@ -64,5 +64,5 @@ inline const char *GetTimeZoneString(TimeZone zone)
     }
 }
 
-}  // namespace common::types::date_time
+}  // namespace common::date_time
 #endif  // COMMON_TYPES_DATE_TIME_TYPES_H

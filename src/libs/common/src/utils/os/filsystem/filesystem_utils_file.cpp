@@ -37,13 +37,13 @@ using namespace common::constants::filesystem;
 using namespace common::types::filesystem;
 using namespace common::utils::filesystem::internal;
 
-common::types::date_time::TimestampMs GetFileModifyTimestampInternal(const PathString& path)
+common::date_time::TimestampMs GetFileModifyTimestampInternal(const PathString& path)
 {
     fs::file_time_type fileTime = fs::last_write_time(path);
     auto sysTime = std::chrono::time_point_cast<std::chrono::system_clock::duration>(
         fileTime - std::filesystem::file_time_type::clock::now() + std::chrono::system_clock::now());
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(sysTime.time_since_epoch());
-    return static_cast<common::types::date_time::TimestampMs>(ms.count());
+    return static_cast<common::date_time::TimestampMs>(ms.count());
 }
 }  // namespace
 

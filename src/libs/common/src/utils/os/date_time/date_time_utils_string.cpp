@@ -83,10 +83,10 @@ const std::array<std::string_view, 12> MONTH_ABBR_NAMES = {
 
 }  // namespace
 
-namespace common::utils::date_time {
+namespace common::date_time {
 
-using namespace ::common::constants::date_time;
-using namespace ::common::types::date_time;
+using namespace ::common::date_time;
+using namespace ::common::date_time;
 
 std::string_view GetMonthFullName(uint32_t month)
 {
@@ -282,4 +282,4 @@ size_t FormatTimeBuffer(char* buffer, size_t bufferSize, const TimeComponent& ti
 
     return bufferIdx;
 }
-}  // namespace common::utils::date_time
+}  // namespace common::date_time

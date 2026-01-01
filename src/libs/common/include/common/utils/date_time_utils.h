@@ -17,48 +17,48 @@
 #include "common/constants/date_time_constants.h"
 #include "common/types/date_time_types.h"
 
-namespace common::utils::date_time {
+namespace common::date_time {
 /**
  * @brief 获取当前系统时间的毫秒级时间戳
  * @details 以Unix纪元（1970-01-01 00:00:00 UTC）为基准，返回当前时间的毫秒数
- * @return common::types::date_time::TimestampMs 毫秒级时间戳
+ * @return common::date_time::TimestampMs 毫秒级时间戳
  * @note 跨平台实现：Windows使用GetSystemTimeAsFileTime，Linux/macOS使用std::chrono
  */
-common::types::date_time::TimestampMs GetCurrentTimestampMs();
+common::date_time::TimestampMs GetCurrentTimestampMs();
 
 /**
  * @brief 获取当前系统时间的时间组件
  * @details 直接返回分解后的时间信息（年、月、日等），等价于Timestamp2Component(GetCurrentTimestampMs())
- * @return common::types::date_time::TimeComponent 当前时间的分解结构
+ * @return common::date_time::TimeComponent 当前时间的分解结构
  */
-common::types::date_time::TimeComponent GetCurrentTimeComponent();
+common::date_time::TimeComponent GetCurrentTimeComponent();
 
 /**
  * @brief 将毫秒级时间戳转换为本地时间的时间组件
  * @param[in] timestamp 待转换的毫秒级时间戳（Unix纪元基准）
- * @return common::types::date_time::TimeComponent 转换后的时间组件
+ * @return common::date_time::TimeComponent 转换后的时间组件
  *         失败时返回所有字段为0的结构
  */
-common::types::date_time::TimeComponent LocalTimeComponent(const common::types::date_time::TimestampMs& timestamp);
+common::date_time::TimeComponent LocalTimeComponent(const common::date_time::TimestampMs& timestamp);
 
 /**
  * @brief 将毫秒级时间戳转换为UTC时间的时间组件
  * @param[in] timestamp 待转换的毫秒级时间戳（Unix纪元基准）
- * @return common::types::date_time::TimeComponent 转换后的时间组件
+ * @return common::date_time::TimeComponent 转换后的时间组件
  *         失败时返回所有字段为0的结构
  */
-common::types::date_time::TimeComponent UtcTimeComponent(const common::types::date_time::TimestampMs& timestamp);
+common::date_time::TimeComponent UtcTimeComponent(const common::date_time::TimestampMs& timestamp);
 
 /**
  * @brief 将毫秒级时间戳转换为时间组件
  * @param[in] timestamp 待转换的毫秒级时间戳（Unix纪元基准）
  * @param[in] timeZone: 时区
- * @return common::types::date_time::TimeComponent 转换后的时间组件
+ * @return common::date_time::TimeComponent 转换后的时间组件
  *         失败时返回所有字段为0的结构
  */
-common::types::date_time::TimeComponent TimeStampMs2Component(
-    common::types::date_time::TimestampMs timestamp,
-    common::types::date_time::TimeZone timeZone = common::types::date_time::TimeZone::LOCAL);
+common::date_time::TimeComponent TimeStampMs2Component(
+    common::date_time::TimestampMs timestamp,
+    common::date_time::TimeZone timeZone = common::date_time::TimeZone::LOCAL);
 
 /**
  * @brief 获取月份的完整英文名称
@@ -100,9 +100,9 @@ std::string_view GetWeekdayAbbrName(uint32_t weekday);
  * @return std::string 格式化后的时间字符串
  *         若格式化失败或参数无效，返回空字符串
  */
-std::string FormatTimeString(common::types::date_time::TimestampMs timestamp,
-                             const std::string_view& format = common::constants::date_time::DEFAULT_TIME_FMT,
-                             common::types::date_time::TimeZone timeZone = common::types::date_time::TimeZone::LOCAL);
+std::string FormatTimeString(common::date_time::TimestampMs timestamp,
+                             const std::string_view& format = common::date_time::DEFAULT_TIME_FMT,
+                             common::date_time::TimeZone timeZone = common::date_time::TimeZone::LOCAL);
 
 /**
  * @brief 将时间组件按指定格式转换为字符串
@@ -112,8 +112,8 @@ std::string FormatTimeString(common::types::date_time::TimestampMs timestamp,
  * @return std::string 格式化后的时间字符串
  *         若格式化失败或参数无效，返回空字符串
  */
-std::string FormatTimeString(const common::types::date_time::TimeComponent& timeComp,
-                             const std::string_view& format = common::constants::date_time::DEFAULT_TIME_FMT);
+std::string FormatTimeString(const common::date_time::TimeComponent& timeComp,
+                             const std::string_view& format = common::date_time::DEFAULT_TIME_FMT);
 
 /**
  * @brief 将时间戳按指定格式写入字符缓冲区（高性能）
@@ -126,9 +126,9 @@ std::string FormatTimeString(const common::types::date_time::TimeComponent& time
  * @return size_t 成功写入的字符数（不含终止符'\0'）
  *         若失败（缓冲区无效/空间不足/格式错误），返回0
  */
-size_t FormatTimeBuffer(char* buffer, size_t bufferSize, common::types::date_time::TimestampMs timestamp,
-                        const std::string_view& format = common::constants::date_time::DEFAULT_TIME_FMT,
-                        common::types::date_time::TimeZone timeZone = common::types::date_time::TimeZone::LOCAL);
+size_t FormatTimeBuffer(char* buffer, size_t bufferSize, common::date_time::TimestampMs timestamp,
+                        const std::string_view& format = common::date_time::DEFAULT_TIME_FMT,
+                        common::date_time::TimeZone timeZone = common::date_time::TimeZone::LOCAL);
 
 /**
  * @brief 将时间组件按指定格式写入字符缓冲区（高性能）
@@ -141,8 +141,8 @@ size_t FormatTimeBuffer(char* buffer, size_t bufferSize, common::types::date_tim
  * @return size_t 成功写入的字符数（不含终止符'\0'）
  *         若失败（缓冲区无效/空间不足/格式错误），返回0
  */
-size_t FormatTimeBuffer(char* buffer, size_t bufferSize, const common::types::date_time::TimeComponent& timeComp,
-                        const std::string_view& format = common::constants::date_time::DEFAULT_TIME_FMT);
+size_t FormatTimeBuffer(char* buffer, size_t bufferSize, const common::date_time::TimeComponent& timeComp,
+                        const std::string_view& format = common::date_time::DEFAULT_TIME_FMT);
 
 // ------------------------------ 时间运算 ------------------------------
 
@@ -152,8 +152,8 @@ size_t FormatTimeBuffer(char* buffer, size_t bufferSize, const common::types::da
  * @param duration 间隔（秒，可正可负）
  * @return 运算后的时间戳
  */
-types::date_time::TimestampSec AddDuration(types::date_time::TimestampSec timestamp,
-                                           types::date_time::DurationSec duration);
+common::date_time::TimestampSec AddDuration(common::date_time::TimestampSec timestamp,
+                                            common::date_time::DurationSec duration);
 
 /**
  * @brief 计算两个时间戳的差值（秒级）
@@ -161,8 +161,8 @@ types::date_time::TimestampSec AddDuration(types::date_time::TimestampSec timest
  * @param timestamp2 时间戳2（秒）
  * @return timestamp1 - timestamp2（秒）
  */
-types::date_time::DurationSec Diff(types::date_time::TimestampSec timestamp1,
-                                   types::date_time::TimestampSec timestamp2);
+common::date_time::DurationSec Diff(common::date_time::TimestampSec timestamp1,
+                                    common::date_time::TimestampSec timestamp2);
 
 // ------------------------------ 系统时间操作 ------------------------------
 
@@ -170,7 +170,7 @@ types::date_time::DurationSec Diff(types::date_time::TimestampSec timestamp1,
  * @brief 线程睡眠指定毫秒数
  * @param ms 睡眠时长（毫秒）
  */
-void SleepMS(types::date_time::DurationMs ms);
+void SleepMS(common::date_time::DurationMs ms);
 
-}  // namespace common::utils::date_time
+}  // namespace common::date_time
 #endif  // COMMON_UTILS_DATE_TIME_UTILS_H

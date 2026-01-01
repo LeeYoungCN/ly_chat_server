@@ -21,8 +21,7 @@
 
 namespace {
 
-using namespace ::common::constants::date_time;
-using namespace ::common::types::date_time;
+using namespace ::common::date_time;
 
 bool SafeLocalTime(time_t timer, tm& timeInfo)
 {
@@ -78,7 +77,7 @@ bool SafeGmtime(time_t timer, tm& timeInfo)
     return true;
 }
 
-void ConvertTmToTimeComp(const std::tm timeInfo, int32_t millis, common::types::date_time::TimeComponent& timeComp)
+void ConvertTmToTimeComp(const std::tm timeInfo, int32_t millis, common::date_time::TimeComponent& timeComp)
 {
     timeComp.year = static_cast<uint32_t>(TIME_COMP_START_YEAR + timeInfo.tm_year);
     timeComp.month = static_cast<uint32_t>(TIME_COMP_START_MONTH + timeInfo.tm_mon);
@@ -92,10 +91,7 @@ void ConvertTmToTimeComp(const std::tm timeInfo, int32_t millis, common::types::
 }
 }  // namespace
 
-namespace common::utils::date_time {
-
-using namespace ::common::constants::date_time;
-using namespace ::common::types::date_time;
+namespace common::date_time {
 
 TimestampMs GetCurrentTimestampMs()
 {
@@ -166,4 +162,4 @@ TimeComponent TimeStampMs2Component(TimestampMs timestamp, TimeZone timeZone)
     return timeComp;
 }
 
-}  // namespace common::utils::date_time
+}  // namespace common::date_time
