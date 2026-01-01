@@ -2,8 +2,8 @@ set(SERVER_NAME ly_chat_server)
 
 add_executable(${SERVER_NAME})
 
-file(GLOB_RECURSE SRC_LIST "*.cpp")
+file(GLOB_RECURSE SRC_LIST "*.cpp" "*.c")
 target_sources(${SERVER_NAME} PRIVATE ${SRC_LIST})
-target_link_libraries(${SERVER_NAME} PRIVATE ${LIB_LIST} vfw32.lib user32.lib gdi32.lib ole32.lib)
+target_link_libraries(${SERVER_NAME} PRIVATE ${LIB_LIST})
 
 install(TARGETS ${SERVER_NAME} COMPONENT runtime)
