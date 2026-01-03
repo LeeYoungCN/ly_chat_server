@@ -3,11 +3,12 @@
 
 #include "common/types/error_code_types.h"
 
-#define COMMON_MODULE_ID 0
+#define COMMON_MODULE_ID 1
 typedef enum {
-    COMM_ERR_TYPE_COMM = 0,
+    COMM_ERR_TYPE_COMM = 1,
     COMM_ERR_TYPE_DATE_TIME,
-    COMM_ERR_TYPE_FILESYSTEM
+    COMM_ERR_TYPE_FILESYSTEM,
+    COMM_ERR_TYPE_CONTAINER
 } CommErrType;
 
 typedef enum {
@@ -24,7 +25,7 @@ typedef enum {
 } CommErrId;
 
 // 成功
-#define ERR_COMM_SUCCESS MAKE_ERROR(ERR_SEV_SUCCESS, COMMON_MODULE_ID, COMM_ERR_TYPE_COMM, COMM_ERR_ID_SUCCESS)
+#define ERR_COMM_SUCCESS 0
 
 #define MAKE_COMMON_ERROR(errId) MAKE_ERROR(ERR_SEV_ERROR, COMMON_MODULE_ID, COMM_ERR_TYPE_COMM, errId)
 
@@ -81,11 +82,21 @@ typedef enum {
 #define ERR_COMM_SHARING_VIOLATION MAKE_FILESYS_ERROR(FS_ERR_ID_SHARING_VIOLATION)
 #define ERR_COMM_IS_A_DIRECTORY    MAKE_FILESYS_ERROR(FS_ERR_ID_IS_A_DIRECTORY)
 
+typedef enum {
+    CTN_ERR_ID_OVERFLOW = 1,  ///< 路径不存在
+} ContainerErrId;
+
+#define MAKE_CONTAINER_ERROR(errId) MAKE_ERROR(ERR_SEV_ERROR, COMMON_MODULE_ID, COMM_ERR_TYPE_CONTAINER, errId)
+
+#define ERR_COMM_CTN_OVERFLOW MAKE_CONTAINER_ERROR(CTN_ERR_ID_OVERFLOW)
+
 static inline const char *GetCommErrorMsg(ErrorCode errCode)
 {
     switch (errCode) {
+        // Success.
         case ERR_COMM_SUCCESS:
             return "success";
+        // Common error code.
         case ERR_COMM_MALLOC_FAILED:
             return "malloc failed";
         case ERR_COMM_ARRAY_IDX_OOB:
@@ -103,8 +114,45 @@ static inline const char *GetCommErrorMsg(ErrorCode errCode)
         case ERR_COMM_GENERIC_ERROR:
             return "Generic error";
         case ERR_COMM_UNKNOWN_ERROR:
-        default:
             return "Unkown error";
+        // Date time error code.
+        case ERR_COMM_MONTH_INVALID:
+            return "Month invalid";
+        case ERR_COMM_WEEKDAY_INVALID:
+            return "Weekday invalid";
+        case ERR_COMM_TIMEZONE_INVALID:
+            return "Time zone invalid";
+        case ERR_COMM_TIMESTAMP_INVALID:
+            return "Timestamp invalid";
+        // Filesystem error code.
+        case ERR_COMM_NOT_FOUND:
+            return "Target not found";
+        case ERR_COMM_PERMISSION_DENIED:
+            return "Permission denied";
+        case ERR_COMM_PATH_TOO_LONG:
+            return "Path too long";
+        case ERR_COMM_ALREADY_EXISTS:
+            return "File already exists";
+        case ERR_COMM_NOT_DIRECTORY:
+            return "Target not directory";
+        case ERR_COMM_NOT_FILE:
+            return "Target not file";
+        case ERR_COMM_IO_ERROR:
+            return "IO error";
+        case ERR_COMM_DIR_NOT_EMPTY:
+            return "Directory not empty";
+        case ERR_COMM_PATH_INVALID:
+            return "Path invalid";
+        case ERR_COMM_SHARING_VIOLATION:
+            return "Sharing violation";
+        case ERR_COMM_IS_A_DIRECTORY:
+            return "Target is a directory";
+        // Container error code.
+        case ERR_COMM_CTN_OVERFLOW:
+            return "Container overflow";
+        // Unknown error code.
+        default:
+            return "Unkown error code";
     };
 }
 
