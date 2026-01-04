@@ -14,7 +14,7 @@
 
 TEST(TestThreadUtils, ThreadId)
 {
-    EXPECT_NE(GetCurrThreadId(), 0);
+    EXPECT_NE(get_curr_thread_id(), 0);
 }
 
 TEST(TestThreadUtils, ThreadName)
