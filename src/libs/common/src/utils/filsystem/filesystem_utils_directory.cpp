@@ -37,7 +37,7 @@ using namespace common::constants::filesystem;
 using namespace common::types::filesystem;
 using namespace common::utils::filesystem::internal;
 
-bool DirExists(const PathString& path)
+bool DirExists(std::string_view path)
 {
     EntryType type = GetEntryType(path);
     bool result = false;
@@ -56,16 +56,16 @@ bool DirExists(const PathString& path)
     return result;
 }
 
-bool CreateDir(const PathString& path, bool recursive)
+bool CreateDir(std::string_view path, bool recursive)
 {
     auto type = GetEntryType(path);
     if (type == EntryType::DIRECTORY) {
         SetLastErrcode(ERR_COMM_ALREADY_EXISTS);
-        DEBUG_LOG_DBG("[SUCCESS] Create dir: %s, already exist.", path.c_str());
+        DEBUG_LOG_DBG("[SUCCESS] Create dir: %s, already exist.", path.data());
         return true;
     }
     if (type != EntryType::NONEXISTENT) {
-        DEBUG_LOG_ERR("[FAILED] Create dir: %s, Target type invalid: %s", path.c_str(), GetEntryTypeString(type));
+        DEBUG_LOG_ERR("[FAILED] Create dir: %s, Target type invalid: %s", path.data(), GetEntryTypeString(type));
         SetLastErrcode(ERR_COMM_NOT_DIRECTORY);
         return false;
     }
@@ -76,25 +76,25 @@ bool CreateDir(const PathString& path, bool recursive)
         } else {
             fs::create_directory(path);
         }
-        DEBUG_LOG_DBG("[SUCCESS] Create dir %s: %s", recursive ? "recursive" : "not recursive", path.c_str());
+        DEBUG_LOG_DBG("[SUCCESS] Create dir %s: %s", recursive ? "recursive" : "not recursive", path.data());
         SetLastErrcode(ERR_COMM_SUCCESS);
         return true;
     } catch (const fs::filesystem_error& e) {
         ConvertSysEcToErrorCode(e.code());
-        DEBUG_LOG_EXCEPTION(e, "[FAILED] Create dir %s: %s", recursive ? "recursive" : "not recursive", path.c_str());
+        DEBUG_LOG_EXCEPTION(e, "[FAILED] Create dir %s: %s", recursive ? "recursive" : "not recursive", path.data());
         return false;
     } catch (const std::exception& e) {
         ConvertExceptionToErrorCode(e);
-        DEBUG_LOG_EXCEPTION(e, "[FAILED] Create dir %s: %s", recursive ? "recursive" : "not recursive", path.c_str());
+        DEBUG_LOG_EXCEPTION(e, "[FAILED] Create dir %s: %s", recursive ? "recursive" : "not recursive", path.data());
         return false;
     }
 }
 
-bool DeleteDir(const PathString& path, bool recursive)
+bool DeleteDir(std::string_view path, bool recursive)
 {
     if (!DirExists(path)) {
         bool rst = (GetLastErrcode() == ERR_COMM_NOT_FOUND);
-        DEBUG_LOG_COND(rst, "Delete dir: %s, message: %s", path.c_str(), GetLastErrorStr());
+        DEBUG_LOG_COND(rst, "Delete dir: %s, message: %s", path.data(), GetLastErrorStr());
         return rst;
     }
     try {
@@ -104,15 +104,15 @@ bool DeleteDir(const PathString& path, bool recursive)
         } else {
             result = fs::remove(path);  // 非递归删除，目录必须为空
         }
-        DEBUG_LOG_COND(result, "Delete dir %s: %s", recursive ? "recursive" : "not recursive", path.c_str());
+        DEBUG_LOG_COND(result, "Delete dir %s: %s", recursive ? "recursive" : "not recursive", path.data());
         SetLastErrcode(result ? ERR_COMM_SUCCESS : ERR_COMM_NOT_FOUND);
         return true;
     } catch (const fs::filesystem_error& e) {
-        DEBUG_LOG_EXCEPTION(e, "[FAILED] Delete dir %s: %s", recursive ? "recursive" : "not recursive", path.c_str());
+        DEBUG_LOG_EXCEPTION(e, "[FAILED] Delete dir %s: %s", recursive ? "recursive" : "not recursive", path.data());
         ConvertSysEcToErrorCode(e.code());
         return false;
     } catch (const std::exception& e) {
-        DEBUG_LOG_EXCEPTION(e, "[FAILED] Delete dir %s: %s", recursive ? "recursive" : "not recursive", path.c_str());
+        DEBUG_LOG_EXCEPTION(e, "[FAILED] Delete dir %s: %s", recursive ? "recursive" : "not recursive", path.data());
         ConvertExceptionToErrorCode(e);
         return false;
     }

@@ -1,16 +1,16 @@
 #include "common/utils/date_time_utils.h"
 
-#include <cerrno>
-
 #include "common/compiler/macros.h"
 
 #if PLATFORM_WINDOWS
 #include <windows.h>
 #endif  // PLATFORM_WINDOWS
 
+#include <cerrno>
 #include <chrono>
 #include <cstdint>
 #include <ctime>
+#include <thread>
 
 #include "common/common_error_code.h"
 #include "common/constants/date_time_constants.h"
@@ -160,6 +160,15 @@ TimeComponent TimeStampMs2Component(TimestampMs timestamp, TimeZone timeZone)
             "[SUCCESS] Get time info, zone: %s, message: %s.", GetTimeZoneString(timeZone), GetLastErrorStr());
     }
     return timeComp;
+}
+
+void SleepMS(common::date_time::DurationMs ms)
+{
+#if PLATFORM_WINDOWS
+    ::Sleep(ms);
+#else
+    std::this_thread::sleep_for(std::chrono::milliseconds(ms));
+#endif
 }
 
 }  // namespace common::date_time

@@ -35,7 +35,7 @@ namespace fs = std::filesystem;
 using namespace common::constants::filesystem;
 using namespace common::types::filesystem;
 
-EntryType GetEntryType(const PathString& path)
+EntryType GetEntryType(std::string_view path)
 {
     if (!fs::exists(path)) {
         SetLastErrcode(ERR_COMM_NOT_FOUND);
@@ -65,7 +65,7 @@ EntryType GetEntryType(const PathString& path)
             return EntryType::SOCKET;
         case fs::file_type::unknown:
         default:
-            DEBUG_LOG_WARN("Unknown entry type: %s", path.c_str());
+            DEBUG_LOG_WARN("Unknown entry type: %s", path.data());
             return EntryType::UNKNOWN;
     }
 }

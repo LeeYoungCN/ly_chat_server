@@ -114,25 +114,25 @@ PathString JoinPaths(const PathList& parts)
     return result.string();
 }
 
-PathString NormalizePath(const PathString& path)
+PathString NormalizePath(std::string_view path)
 {
     try {
         auto normalized = fs::path(path).lexically_normal();
         SetLastErrcode(ERR_COMM_SUCCESS);
-        DEBUG_LOG_DBG("[SUCCESS] Normalized path: %s, message: %s", path.c_str(), GetLastErrorStr());
+        DEBUG_LOG_DBG("[SUCCESS] Normalized path: %s, message: %s", path.data(), GetLastErrorStr());
         return normalized.string();
     } catch (const fs::filesystem_error& e) {
         ConvertSysEcToErrorCode(e.code());
-        DEBUG_LOG_EXCEPTION(e, "[FAILED] Normalized path: %s, message: %s", path.c_str(), GetLastErrorStr());
+        DEBUG_LOG_EXCEPTION(e, "[FAILED] Normalized path: %s, message: %s", path.data(), GetLastErrorStr());
         return "";
     } catch (const std::exception& e) {
         ConvertExceptionToErrorCode(e);
-        DEBUG_LOG_EXCEPTION(e, "[FAILED] Normalized path: %s, message: %s", path.c_str(), GetLastErrorStr());
+        DEBUG_LOG_EXCEPTION(e, "[FAILED] Normalized path: %s, message: %s", path.data(), GetLastErrorStr());
         return "";
     }
 }
 
-PathString ToAbsolutePath(const PathString& relPath, const PathString& baseDir)
+PathString ToAbsolutePath(std::string_view relPath, std::string_view baseDir)
 {
     if (relPath.empty()) {
         return GetCurrentWorkingDirectory();
@@ -144,55 +144,55 @@ PathString ToAbsolutePath(const PathString& relPath, const PathString& baseDir)
     try {
         auto absPath = fs::absolute(combined).lexically_normal();
         SetLastErrcode(ERR_COMM_SUCCESS);
-        DEBUG_LOG_DBG("[SUCCESS] Absolute path: %s, message: %s", relPath.c_str(), GetLastErrorStr());
+        DEBUG_LOG_DBG("[SUCCESS] Absolute path: %s, message: %s", relPath.data(), GetLastErrorStr());
         return absPath.string();
     } catch (const fs::filesystem_error& e) {
         ConvertSysEcToErrorCode(e.code());
-        DEBUG_LOG_EXCEPTION(e, "[FAILED] Absolute path: %s, message: %s", relPath.c_str(), GetLastErrorStr());
+        DEBUG_LOG_EXCEPTION(e, "[FAILED] Absolute path: %s, message: %s", relPath.data(), GetLastErrorStr());
         return "";
     } catch (const std::exception& e) {
         ConvertExceptionToErrorCode(e);
-        DEBUG_LOG_EXCEPTION(e, "[FAILED] Absolute path: %s, message: %s", relPath.c_str(), GetLastErrorStr());
+        DEBUG_LOG_EXCEPTION(e, "[FAILED] Absolute path: %s, message: %s", relPath.data(), GetLastErrorStr());
         return "";
     }
 }
 
-PathString GetDirName(const PathString& path)
+PathString GetDirName(std::string_view path)
 {
     fs::path proc(path);
     SetLastErrcode(ERR_COMM_SUCCESS);
     return proc.parent_path().string();
 }
 
-PathString GetBaseName(const PathString& path)
+PathString GetBaseName(std::string_view path)
 {
     fs::path p(path);
     SetLastErrcode(ERR_COMM_SUCCESS);
     return p.filename().string();
 }
 
-PathString GetFileName(const PathString& path)
+PathString GetFileName(std::string_view path)
 {
     fs::path p(path);
     SetLastErrcode(ERR_COMM_SUCCESS);
     return p.stem().string();
 }
 
-PathString GetExtension(const PathString& path)
+PathString GetExtension(std::string_view path)
 {
     fs::path p(path);
     SetLastErrcode(ERR_COMM_SUCCESS);
     return p.extension().string();
 }
 
-bool IsAbsolutePath(const PathString& path)
+bool IsAbsolutePath(std::string_view path)
 {
     bool result = fs::path(path).is_absolute();
     SetLastErrcode(ERR_COMM_SUCCESS);
     return result;
 }
 
-bool IsPathTooLong(const PathString& path)
+bool IsPathTooLong(std::string_view path)
 {
     const auto len = path.length();
     bool result = false;

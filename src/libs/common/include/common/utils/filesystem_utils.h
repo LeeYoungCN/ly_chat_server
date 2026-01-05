@@ -39,7 +39,7 @@ namespace common::utils::filesystem {
  * @note 函数内部处理了符号链接的特殊情况：返回链接本身的类型，
  *       而非链接指向的目标类型。如需获取目标类型，需先解析链接。
  */
-common::types::filesystem::EntryType GetEntryType(const types::filesystem::PathString& path);
+common::types::filesystem::EntryType GetEntryType(std::string_view path);
 
 const char* GetEntryTypeString(common::types::filesystem::EntryType type);
 /**
@@ -78,7 +78,7 @@ types::filesystem::PathString JoinPaths(const types::filesystem::PathList& parts
  * @param path 原始路径
  * @return 规范化后的路径
  */
-types::filesystem::PathString NormalizePath(const types::filesystem::PathString& path);
+types::filesystem::PathString NormalizePath(std::string_view path);
 
 /**
  * @brief 将相对路径转换为绝对路径
@@ -86,57 +86,57 @@ types::filesystem::PathString NormalizePath(const types::filesystem::PathString&
  * @param baseDir 基准目录（默认为当前工作目录）
  * @return 转换后的绝对路径
  */
-types::filesystem::PathString ToAbsolutePath(const types::filesystem::PathString& relPath,
-                                             const types::filesystem::PathString& baseDir = "");
+types::filesystem::PathString ToAbsolutePath(std::string_view relPath,
+                                             std::string_view baseDir = "");
 
 /**
  * @brief 获取路径中的目录部分（父目录路径）
  * @param path 完整路径
  * @return 父目录路径
  */
-types::filesystem::PathString GetDirName(const types::filesystem::PathString& path);
+types::filesystem::PathString GetDirName(std::string_view path);
 
 /**
  * @brief 获取路径中的文件名（含扩展名）
  * @param path 完整路径
  * @return 带扩展名的文件名
  */
-types::filesystem::PathString GetBaseName(const types::filesystem::PathString& path);
+types::filesystem::PathString GetBaseName(std::string_view path);
 
 /**
  * @brief 获取路径中的文件名（不含扩展名）
  * @param path 完整路径
  * @return 不带扩展名的文件名
  */
-types::filesystem::PathString GetFileName(const types::filesystem::PathString& path);
+types::filesystem::PathString GetFileName(std::string_view path);
 
 /**
  * @brief 获取文件的扩展名（含.）
  * @param path 完整路径或文件名
  * @return 文件扩展名（如".txt"），无扩展名则返回空字符串
  */
-types::filesystem::PathString GetExtension(const types::filesystem::PathString& path);
+types::filesystem::PathString GetExtension(std::string_view path);
 
 /**
  * @brief 判断路径是否为绝对路径
  * @param path 待判断的路径
  * @return 是绝对路径返回true，否则返回false
  */
-bool IsAbsolutePath(const types::filesystem::PathString& path);
+bool IsAbsolutePath(std::string_view path);
 
 /**
  * @brief 判断路径长度是否超过系统限制
  * @param path 待检查的路径
  * @return 超过限制返回true，否则返回false
  */
-bool IsPathTooLong(const types::filesystem::PathString& path);
+bool IsPathTooLong(std::string_view path);
 
 /**
  * @brief 判断文件是否存在且为普通文件
  * @param path 文件路径
  * @return 存在且为文件返回true，否则返回false
  */
-bool FileExists(const types::filesystem::PathString& path);
+bool FileExists(std::string_view path);
 
 /**
  * @brief 创建空文件
@@ -144,14 +144,14 @@ bool FileExists(const types::filesystem::PathString& path);
  * @return 创建成功返回true，否则返回false
  * @note 若文件已存在，将被截断为0字节
  */
-bool CreateFile(const common::types::filesystem::PathString& path);
+bool CreateFile(std::string_view path);
 
 /**
  * @brief 删除文件
  * @param path 要删除的文件路径
  * @return 删除成功返回true，否则返回false
  */
-bool DeleteFile(const common::types::filesystem::PathString& path);
+bool DeleteFile(std::string_view path);
 
 /**
  * @brief 复制文件
@@ -160,7 +160,7 @@ bool DeleteFile(const common::types::filesystem::PathString& path);
  * @param overwrite 若目标已存在，是否覆盖（默认为false）
  * @return 复制成功返回true，否则返回false
  */
-bool CopyFile(const types::filesystem::PathString& src, const types::filesystem::PathString& dest,
+bool CopyFile(std::string_view src, std::string_view dest,
               bool overwrite = false);
 
 /**
@@ -170,7 +170,7 @@ bool CopyFile(const types::filesystem::PathString& src, const types::filesystem:
  * @param overwrite 若目标已存在，是否覆盖（默认为false）
  * @return 复制成功返回true，否则返回false
  */
-bool RenameFile(const types::filesystem::PathString& src, const types::filesystem::PathString& dest,
+bool RenameFile(std::string_view src, std::string_view dest,
                 bool overwrite = false);
 
 /**
@@ -178,14 +178,14 @@ bool RenameFile(const types::filesystem::PathString& src, const types::filesyste
  * @param path 文本文件路径
  * @return 文件内容字符串，读取失败返回空字符串
  */
-std::string ReadTextFile(const types::filesystem::PathString& path);
+std::string ReadTextFile(std::string_view path);
 
 /**
  * @brief 读取二进制文件内容
  * @param path 二进制文件路径
  * @return 二进制数据容器，读取失败返回空容器
  */
-types::filesystem::ByteVector ReadBinaryFile(const types::filesystem::PathString& path);
+types::filesystem::ByteVector ReadBinaryFile(std::string_view path);
 
 /**
  * @brief 写入文本内容到文件
@@ -194,7 +194,7 @@ types::filesystem::ByteVector ReadBinaryFile(const types::filesystem::PathString
  * @param overwrite 是否以覆盖模式写入（默认为false，追加模式）
  * @return 写入成功返回true，否则返回false
  */
-bool WriteTextFile(const types::filesystem::PathString& path, const types::filesystem::PathString& content,
+bool WriteTextFile(std::string_view path, std::string_view content,
                    bool overwrite = false);
 
 /**
@@ -202,21 +202,21 @@ bool WriteTextFile(const types::filesystem::PathString& path, const types::files
  * @param path 文件路径
  * @return 文件大小（字节），获取失败返回0
  */
-types::filesystem::FileSize GetFileSize(const types::filesystem::PathString& path);
+types::filesystem::FileSize GetFileSize(std::string_view path);
 
 /**
  * @brief 获取文件的详细信息
  * @param path 文件路径
  * @return 包含文件信息的FileInfo结构体，获取失败返回默认初始化的结构体
  */
-types::filesystem::FileInfo GetFileInfo(const types::filesystem::PathString& path);
+types::filesystem::FileInfo GetFileInfo(std::string_view path);
 
 /**
  * @brief 判断目录是否存在且为目录
  * @param path 目录路径
  * @return 存在且为目录返回true，否则返回false
  */
-bool DirExists(const types::filesystem::PathString& path);
+bool DirExists(std::string_view path);
 
 /**
  * @brief 创建目录
@@ -224,7 +224,7 @@ bool DirExists(const types::filesystem::PathString& path);
  * @param recursive 是否递归创建父目录（默认为false）
  * @return 创建成功返回true，否则返回false
  */
-bool CreateDir(const types::filesystem::PathString& path, bool recursive = true);
+bool CreateDir(std::string_view path, bool recursive = true);
 
 /**
  * @brief 删除目录
@@ -232,7 +232,7 @@ bool CreateDir(const types::filesystem::PathString& path, bool recursive = true)
  * @param recursive 是否递归删除非空目录（默认为false）
  * @return 删除成功返回true，否则返回false
  */
-bool DeleteDir(const types::filesystem::PathString& path, bool recursive = true);
+bool DeleteDir(std::string_view path, bool recursive = true);
 
 }  // namespace common::utils::filesystem
 #endif  // COMMON_UTILS_FILESYSTEM_UTILS_H
