@@ -24,7 +24,7 @@ public:
             va_end(ap);
         }
         if (m_lastErrcode != ERR_COMM_SUCCESS) {
-            DEBUG_LOG_ERR("Construct cstring failed. errcode: %#lx, msg: %s.", m_lastErrcode, GetCommErrorMsg(m_lastErrcode));
+            DEBUG_LOG_ERR("Construct cstring failed. errcode: %#lx, msg: %s.", m_lastErrcode, get_comm_err_msg(m_lastErrcode));
         }
     }
 

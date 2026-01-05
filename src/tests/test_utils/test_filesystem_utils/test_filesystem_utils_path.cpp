@@ -57,21 +57,21 @@ TEST_F(TestFilesystemUtilsPath, ToAbsolute)
     PathString relPah = std::string(".") + PATH_SEP + baseName;
     EXPECT_FALSE(IsAbsolutePath(relPah));
     auto absFile = ToAbsolutePath(relPah, m_processDir);
-    EXPECT_EQ(GetLastErrcode(), ERR_COMM_SUCCESS);
+    EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
     EXPECT_TRUE(IsAbsolutePath(absFile));
-    EXPECT_EQ(GetLastErrcode(), ERR_COMM_SUCCESS);
+    EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
     EXPECT_EQ(GetEntryType(m_process), EntryType::FILE);
 }
 
 TEST_F(TestFilesystemUtilsPath, BaseName)
 {
     auto fileName = GetFileName(m_process);
-    EXPECT_EQ(GetLastErrcode(), ERR_COMM_SUCCESS);
+    EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
     auto extention = GetExtension(m_process);
-    EXPECT_EQ(GetLastErrcode(), ERR_COMM_SUCCESS);
+    EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
     PathString fileWithExt = fileName + extention;
     auto baseName = GetBaseName(m_process);
-    EXPECT_EQ(GetLastErrcode(), ERR_COMM_SUCCESS);
+    EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
     EXPECT_EQ(baseName, fileWithExt);
 }
 
@@ -80,7 +80,7 @@ TEST_F(TestFilesystemUtilsPath, NormalizePath)
     auto baseName = GetBaseName(m_process);
     auto testPath = m_processDir + PATH_SEP + "." + PATH_SEP + baseName;
     auto rstPath = NormalizePath(testPath);
-    EXPECT_EQ(GetLastErrcode(), ERR_COMM_SUCCESS);
+    EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
     EXPECT_EQ(m_process, rstPath);
     EXPECT_TRUE(IsAbsolutePath(rstPath));
 }
@@ -93,7 +93,7 @@ TEST_F(TestFilesystemUtilsPath, NormalizePath_WithDots)
     expect.resize(static_cast<size_t>(len));
     auto result = NormalizePath(test);
     EXPECT_EQ(result, expect);
-    EXPECT_EQ(GetLastErrcode(), ERR_COMM_SUCCESS) << GetLastErrorStr();
+    EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS) << get_thread_last_err_msg();
 }
 
 TEST_F(TestFilesystemUtilsPath, NormalizePath_EmptyPath)
@@ -101,13 +101,13 @@ TEST_F(TestFilesystemUtilsPath, NormalizePath_EmptyPath)
     PathString result = NormalizePath("");
 
     EXPECT_EQ(result, "");
-    EXPECT_EQ(GetLastErrcode(), ERR_COMM_SUCCESS) << GetLastErrorStr();
+    EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS) << get_thread_last_err_msg();
 }
 
 TEST_F(TestFilesystemUtilsPath, JoinPaths_empty)
 {
     EXPECT_EQ(JoinPaths({}), "");
-    EXPECT_EQ(GetLastErrcode(), ERR_COMM_PATH_INVALID) << GetLastErrorStr();
+    EXPECT_EQ(get_thread_last_err(), ERR_COMM_PATH_INVALID) << get_thread_last_err_msg();
 }
 
 TEST_F(TestFilesystemUtilsPath, JoinPaths_Success)
@@ -117,7 +117,7 @@ TEST_F(TestFilesystemUtilsPath, JoinPaths_Success)
     auto size = snprintf(expect.data(), MAX_PATH_STD, "a%sb%sc", PATH_SEP, PATH_SEP);
     expect.resize(static_cast<size_t>(size));
     EXPECT_EQ(JoinPaths(test), expect);
-    EXPECT_EQ(GetLastErrcode(), ERR_COMM_SUCCESS) << GetLastErrorStr();
+    EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS) << get_thread_last_err_msg();
 }
 
 }  // namespace test::test_utils::test_filesystem_utils

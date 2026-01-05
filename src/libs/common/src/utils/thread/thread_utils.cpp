@@ -49,18 +49,18 @@ ThreadId GetCurrentThreadIdInternal()
 
 extern "C" {
 
-ThreadId GetCurrThreadId()
+ThreadId get_curr_thread_id()
 {
     static thread_local ThreadId tid = GetCurrentThreadIdInternal();
     return tid;
 }
 
-void SetCurrThreadName(const char *name)
+void set_curr_thread_name(const char *name)
 {
     g_threadName = name;
 }
 
-const char *GetCurrThreadName()
+const char *get_curr_thread_name()
 {
     return g_threadName.c_str();
 }

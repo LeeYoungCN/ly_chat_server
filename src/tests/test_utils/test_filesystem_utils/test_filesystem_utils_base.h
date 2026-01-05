@@ -25,11 +25,11 @@ protected:
     void SetUp() override
     {
         m_process = common::utils::filesystem::GetProcessPath();
-        EXPECT_EQ(GetLastErrcode(), ERR_COMM_SUCCESS);
+        EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
         m_processDir = common::utils::filesystem::GetDirName(m_process);
-        EXPECT_EQ(GetLastErrcode(), ERR_COMM_SUCCESS);
+        EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
         m_workDir = common::utils::filesystem::GetCurrentWorkingDirectory();
-        EXPECT_EQ(GetLastErrcode(), ERR_COMM_SUCCESS);
+        EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
     };
     void TearDown() override {};
 

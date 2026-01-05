@@ -24,21 +24,21 @@ extern "C" {
  *
  * @return 当前线程ID
  */
-ThreadId GetCurrThreadId();
+ThreadId get_curr_thread_id();
 
 /**
  * @brief 设置线程名称
  *
  * @param name 线程名称
  */
-void SetCurrThreadName(const char *name);
+void set_curr_thread_name(const char *name);
 
 /**
  * @brief 获取当前线程名称
  *
  * @return 当前线程名称，未设置则为空
  */
-const char *GetCurrThreadName();
+const char *get_curr_thread_name();
 
 #ifdef __cplusplus
 }

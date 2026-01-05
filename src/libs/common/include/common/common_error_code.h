@@ -90,7 +90,7 @@ typedef enum {
 
 #define ERR_COMM_CTN_OVERFLOW MAKE_CONTAINER_ERROR(CTN_ERR_ID_OVERFLOW)
 
-static inline const char *GetCommErrorMsg(ErrorCode errCode)
+static inline const char *get_comm_err_msg(ErrorCode errCode)
 {
     switch (errCode) {
         // Success.

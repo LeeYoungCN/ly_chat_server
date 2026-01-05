@@ -36,7 +36,7 @@ void ConvertGenericCategory(const std::error_code& ec)
         {static_cast<int>(std::errc::io_error), ERR_COMM_IO_ERROR}};
 
     auto it = ERR_MAP.find(ec.value());
-    SetLastErrcode(it != ERR_MAP.end() ? it->second : ERR_COMM_GENERIC_ERROR);
+    set_thread_last_err(it != ERR_MAP.end() ? it->second : ERR_COMM_GENERIC_ERROR);
 }
 
 void ConvertSystemCategory(const std::error_code& ec)
@@ -55,7 +55,7 @@ void ConvertSystemCategory(const std::error_code& ec)
     };
 
     auto it = ERR_MAP.find(ec.value());
-    SetLastErrcode(it != ERR_MAP.end() ? it->second : ERR_COMM_SYSTEM_ERROR);
+    set_thread_last_err(it != ERR_MAP.end() ? it->second : ERR_COMM_SYSTEM_ERROR);
 }
 
 void ConvertExceptionToErrorCode(const std::exception& ex)
@@ -72,7 +72,7 @@ void ConvertExceptionToErrorCode(const std::exception& ex)
         return;
     } catch (const std::exception& other) {
         DEBUG_LOG_EXCEPTION(other, "Non-filesystem exception");
-        SetLastErrcode(ERR_COMM_SYSTEM_ERROR);
+        set_thread_last_err(ERR_COMM_SYSTEM_ERROR);
         return;
     }
 }
@@ -80,7 +80,7 @@ void ConvertExceptionToErrorCode(const std::exception& ex)
 void ConvertSysEcToErrorCode(const std::error_code& ec)
 {
     if (!ec) {
-        SetLastErrcode(ERR_COMM_SUCCESS);
+        set_thread_last_err(ERR_COMM_SUCCESS);
         return;
     }
     // 详细日志便于调试

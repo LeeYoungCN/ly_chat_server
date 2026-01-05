@@ -8,19 +8,19 @@ thread_local volatile ErrorCode g_lastError = ERR_COMM_SUCCESS;
 }
 
 extern "C" {
-void SetLastErrcode(ErrorCode errcode)
+void set_thread_last_err(ErrorCode errcode)
 {
     g_lastError = errcode;
 }
 
-ErrorCode GetLastErrcode()
+ErrorCode get_thread_last_err()
 {
     return g_lastError;
 }
 
-const char* GetLastErrorStr()
+const char* get_thread_last_err_msg()
 {
-    return GetCommErrorMsg(g_lastError);
+    return get_comm_err_msg(g_lastError);
 }
 
 }  // namespace common::utils::error_code

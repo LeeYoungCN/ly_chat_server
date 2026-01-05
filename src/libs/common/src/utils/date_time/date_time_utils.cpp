@@ -29,7 +29,7 @@ bool SafeLocalTime(time_t timer, tm& timeInfo)
     // Windows 使用 localtime_s
     auto err = localtime_s(&timeInfo, &timer);
     if (err != 0) {
-        SetLastErrcode(ERR_COMM_TIMESTAMP_INVALID);
+        set_thread_last_err(ERR_COMM_TIMESTAMP_INVALID);
         // 特别处理负数时间戳的错误提示
         if (timer < 0) {
             DEBUG_LOG_WARN("[FAILED] localtime_s may not support negative. time: %lld, err: %d", timer, err);
@@ -41,12 +41,12 @@ bool SafeLocalTime(time_t timer, tm& timeInfo)
 #else
     // Linux/macOS 使用 localtime_r
     if (localtime_r(&timer, &timeInfo) == nullptr) {
-        SetLastErrcode(ERR_COMM_TIMESTAMP_INVALID);
+        set_thread_last_err(ERR_COMM_TIMESTAMP_INVALID);
         DEBUG_LOG_ERR("[FAILED] localtime_r. time: %lld, errno: %d", timer, errno);
         return false;
     }
 #endif
-    SetLastErrcode(ERR_COMM_SUCCESS);
+    set_thread_last_err(ERR_COMM_SUCCESS);
     return true;
 }
 
@@ -56,7 +56,7 @@ bool SafeGmtime(time_t timer, tm& timeInfo)
     // Windows下使用gmtime_s，增加负数时间戳检查
     errno_t err = gmtime_s(&timeInfo, &timer);
     if (err != 0) {
-        SetLastErrcode(ERR_COMM_TIMESTAMP_INVALID);
+        set_thread_last_err(ERR_COMM_TIMESTAMP_INVALID);
         // 针对负数时间戳的错误做特殊提示
         if (timer < 0) {
             DEBUG_LOG_WARN("[FAILED] gmtime_s may not support negative time: %lld, err: %d", timer, err);
@@ -68,12 +68,12 @@ bool SafeGmtime(time_t timer, tm& timeInfo)
 #else
     // Linux/macOS使用gmtime_r（对负数时间戳支持更完善）
     if (gmtime_r(&timer, &timeInfo) == nullptr) {
-        SetLastErrcode(ERR_COMM_TIMESTAMP_INVALID);
+        set_thread_last_err(ERR_COMM_TIMESTAMP_INVALID);
         DEBUG_LOG_ERR("[FAILED] gmtime_r. time: %lld, errno: %d", timer, errno);
         return false;
     }
 #endif
-    SetLastErrcode(ERR_COMM_SUCCESS);
+    set_thread_last_err(ERR_COMM_SUCCESS);
     return true;
 }
 
@@ -95,7 +95,7 @@ namespace common::date_time {
 
 TimestampMs GetCurrentTimestampMs()
 {
-    SetLastErrcode(ERR_COMM_SUCCESS);
+    set_thread_last_err(ERR_COMM_SUCCESS);
 #if PLATFORM_WINDOWS
     FILETIME ft;
     // 获取当前系统时间，以FILETIME格式存储（从Windows纪元1601-01-01 00:00:00开始的100纳秒间隔数）
@@ -152,12 +152,12 @@ TimeComponent TimeStampMs2Component(TimestampMs timestamp, TimeZone timeZone)
     }
 
     if (!rst) {
-        DEBUG_LOG_ERR("[FAILED] Get time info, zone: %s, message: %s.", GetTimeZoneString(timeZone), GetLastErrorStr());
+        DEBUG_LOG_ERR("[FAILED] Get time info, zone: %s, message: %s.", GetTimeZoneString(timeZone), get_thread_last_err_msg());
     } else {
         ConvertTmToTimeComp(timeInfo, millis, timeComp);
-        SetLastErrcode(ERR_COMM_SUCCESS);
+        set_thread_last_err(ERR_COMM_SUCCESS);
         DEBUG_LOG_DBG(
-            "[SUCCESS] Get time info, zone: %s, message: %s.", GetTimeZoneString(timeZone), GetLastErrorStr());
+            "[SUCCESS] Get time info, zone: %s, message: %s.", GetTimeZoneString(timeZone), get_thread_last_err_msg());
     }
     return timeComp;
 }
@@ -165,7 +165,7 @@ TimeComponent TimeStampMs2Component(TimestampMs timestamp, TimeZone timeZone)
 void SleepMS(common::date_time::DurationMs ms)
 {
 #if PLATFORM_WINDOWS
-    ::Sleep(ms);
+    ::Sleep(static_cast<DWORD>(ms));
 #else
     std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 #endif

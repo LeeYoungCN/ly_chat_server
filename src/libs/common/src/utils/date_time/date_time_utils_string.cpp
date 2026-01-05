@@ -91,44 +91,44 @@ using namespace ::common::date_time;
 std::string_view GetMonthFullName(uint32_t month)
 {
     if (month < MIN_MONTH || month > MAX_MONTH) {
-        SetLastErrcode(ERR_COMM_MONTH_INVALID);
+        set_thread_last_err(ERR_COMM_MONTH_INVALID);
         DEBUG_LOG_ERR("Month invalid out of range [%u, %u]. weekday: %u.", MIN_MONTH, MAX_MONTH, month);
         return "";
     }
-    SetLastErrcode(ERR_COMM_SUCCESS);
+    set_thread_last_err(ERR_COMM_SUCCESS);
     return MONTH_FULL_NAMES.at(month - MIN_MONTH);
 }
 
 std::string_view GetMonthAbbrName(uint32_t month)
 {
     if (month < MIN_MONTH || month > MAX_MONTH) {
-        SetLastErrcode(ERR_COMM_MONTH_INVALID);
+        set_thread_last_err(ERR_COMM_MONTH_INVALID);
         DEBUG_LOG_ERR("Month invalid out of range [%u, %u]. weekday: %u.", MIN_MONTH, MAX_MONTH, month);
         return "";
     }
-    SetLastErrcode(ERR_COMM_SUCCESS);
+    set_thread_last_err(ERR_COMM_SUCCESS);
     return MONTH_ABBR_NAMES.at(month - MIN_MONTH);
 }
 
 std::string_view GetWeekdayFullName(uint32_t weekday)
 {
     if (weekday < MIN_WEEKDAY || weekday > MAX_WEEKDAY) {
-        SetLastErrcode(ERR_COMM_WEEKDAY_INVALID);
+        set_thread_last_err(ERR_COMM_WEEKDAY_INVALID);
         DEBUG_LOG_ERR("Weekday invalid out of range [%u, %u]. weekday: %u.", MIN_WEEKDAY, MAX_WEEKDAY, weekday);
         return "";
     }
-    SetLastErrcode(ERR_COMM_SUCCESS);
+    set_thread_last_err(ERR_COMM_SUCCESS);
     return WEEKDAY_FULL_NAMES.at(weekday);
 }
 
 std::string_view GetWeekdayAbbrName(uint32_t weekday)
 {
     if (weekday < MIN_WEEKDAY || weekday > MAX_WEEKDAY) {
-        SetLastErrcode(ERR_COMM_WEEKDAY_INVALID);
+        set_thread_last_err(ERR_COMM_WEEKDAY_INVALID);
         DEBUG_LOG_ERR("Weekday invalid out of range [%u, %u]. weekday: %u.", MIN_WEEKDAY, MAX_WEEKDAY, weekday);
         return "";
     }
-    SetLastErrcode(ERR_COMM_SUCCESS);
+    set_thread_last_err(ERR_COMM_SUCCESS);
     return WEEKDAY_ABBR_NAMES.at(weekday);
 }
 
@@ -175,7 +175,7 @@ size_t FormatTimeBuffer(char* buffer, size_t bufferSize, const TimeComponent& ti
     auto insertDateTimeNumber = [&](uint32_t number, size_t numberLen) -> bool {
         uint32_t tmp = number;
         if (bufferIdx + numberLen >= bufferSize) {
-            SetLastErrcode(ERR_COMM_BUFFER_OVERFLOW);
+            set_thread_last_err(ERR_COMM_BUFFER_OVERFLOW);
             DEBUG_LOG_ERR("Failed to insert number: %lu", number);
             return false;
         }
@@ -194,7 +194,7 @@ size_t FormatTimeBuffer(char* buffer, size_t bufferSize, const TimeComponent& ti
         std::string_view insertName = name.empty() ? "?" : name;
 
         if (bufferIdx + insertName.length() >= bufferSize) {
-            SetLastErrcode(ERR_COMM_BUFFER_OVERFLOW);
+            set_thread_last_err(ERR_COMM_BUFFER_OVERFLOW);
             DEBUG_LOG_ERR("Failed to insert string: %s", insertName.data());
             return false;
         }
@@ -271,11 +271,11 @@ size_t FormatTimeBuffer(char* buffer, size_t bufferSize, const TimeComponent& ti
     }
     if (formatIdx < format.length() || bufferIdx >= bufferSize) {
         DEBUG_LOG_ERR(
-            "Incomplete format processing (remaining: %s), message: %s", format.data() + formatIdx, GetLastErrorStr());
+            "Incomplete format processing (remaining: %s), message: %s", format.data() + formatIdx, get_thread_last_err_msg());
         bufferIdx = 0;
     } else {
-        SetLastErrcode(ERR_COMM_SUCCESS);
-        DEBUG_LOG_DBG("[SUCCESS] Format time string, message: %s.", GetLastErrorStr());
+        set_thread_last_err(ERR_COMM_SUCCESS);
+        DEBUG_LOG_DBG("[SUCCESS] Format time string, message: %s.", get_thread_last_err_msg());
     }
 
     buffer[bufferIdx] = '\0';

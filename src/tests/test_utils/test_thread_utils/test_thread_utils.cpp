@@ -14,12 +14,12 @@
 
 TEST(TestThreadUtils, ThreadId)
 {
-    EXPECT_NE(GetCurrThreadId(), 0);
+    EXPECT_NE(get_curr_thread_id(), 0);
 }
 
 TEST(TestThreadUtils, ThreadName)
 {
-    EXPECT_STREQ(GetCurrThreadName(), "");
-    SetCurrThreadName("main");
-    EXPECT_STREQ(GetCurrThreadName(), "main");
+    EXPECT_STREQ(get_curr_thread_name(), "");
+    set_curr_thread_name("main");
+    EXPECT_STREQ(get_curr_thread_name(), "main");
 }

@@ -38,7 +38,7 @@ using namespace common::types::filesystem;
 EntryType GetEntryType(std::string_view path)
 {
     if (!fs::exists(path)) {
-        SetLastErrcode(ERR_COMM_NOT_FOUND);
+        set_thread_last_err(ERR_COMM_NOT_FOUND);
         return EntryType::NONEXISTENT;
     }
     // 获取文件状态（使用symlink_status而非status，保留符号链接本身的类型）
@@ -46,10 +46,10 @@ EntryType GetEntryType(std::string_view path)
     fs::file_status status = fs::symlink_status(path, ec);
     if (ec) {
         DEBUG_LOG_ERR("Failed to get symlink status. errCode: %s", ec.value());
-        SetLastErrcode(ERR_COMM_SYSTEM_ERROR);
+        set_thread_last_err(ERR_COMM_SYSTEM_ERROR);
         return EntryType::UNKNOWN;
     }
-    SetLastErrcode(ERR_COMM_SUCCESS);
+    set_thread_last_err(ERR_COMM_SUCCESS);
     switch (status.type()) {
         case fs::file_type::regular:  // 普通文件
             return EntryType::FILE;
