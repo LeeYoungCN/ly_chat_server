@@ -48,6 +48,12 @@ constexpr const char* PATH_SEP = "/";     ///< Unix系统路径分隔符
 constexpr const char* ALT_PATH_SEP = "";  ///< 无替代分隔符
 #endif
 
+#if PLATFORM_WINDOWS
+constexpr size_t LF_LENGTH = 2;
+#else
+constexpr size_t LF_LENGTH = 1;
+#endif
+
 constexpr unsigned int FILE_OPEN_INTERNAL_MS = 10;
 
 }  // namespace common::constants::filesystem

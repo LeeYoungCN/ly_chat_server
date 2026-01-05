@@ -18,6 +18,7 @@ typedef enum {
     COMM_ERR_ID_ENUM_INVALID,
     COMM_ERR_ID_PARAM_NULL,
     COMM_ERR_ID_PARAM_INVALID,
+    COMM_ERR_ID_PARAM_EMPTY,
     COMM_ERR_ID_BUFFER_OVERFLOW,
     COMM_ERR_ID_SYSTEM_ERROR = 100,
     COMM_ERR_ID_GENERIC_ERROR,
@@ -35,6 +36,7 @@ typedef enum {
 #define ERR_COMM_ENUM_INVALID    MAKE_COMMON_ERROR(COMM_ERR_ID_ENUM_INVALID)
 #define ERR_COMM_PARAM_NULL      MAKE_COMMON_ERROR(COMM_ERR_ID_PARAM_NULL)
 #define ERR_COMM_PARAM_INVALID   MAKE_COMMON_ERROR(COMM_ERR_ID_PARAM_INVALID)
+#define ERR_COMM_PARAM_EMPTY     MAKE_COMMON_ERROR(COMM_ERR_ID_PARAM_EMPTY)
 #define ERR_COMM_BUFFER_OVERFLOW MAKE_COMMON_ERROR(COMM_ERR_ID_BUFFER_OVERFLOW)
 #define ERR_COMM_SYSTEM_ERROR    MAKE_COMMON_ERROR(COMM_ERR_ID_SYSTEM_ERROR)
 #define ERR_COMM_GENERIC_ERROR   MAKE_COMMON_ERROR(COMM_ERR_ID_GENERIC_ERROR)
@@ -66,6 +68,7 @@ typedef enum {
     FS_ERR_ID_PATH_INVALID,       ///< 路径不合法
     FS_ERR_ID_SHARING_VIOLATION,  ///< 文件共享冲突
     FS_ERR_ID_IS_A_DIRECTORY,     ///< 目标是文件夹
+    FS_ERR_ID_FILE_NOT_OPEN,      ///< 文件未打开
 } FileSysErrId;
 
 #define MAKE_FILESYS_ERROR(errId) MAKE_ERROR(ERR_SEV_ERROR, COMMON_MODULE_ID, COMM_ERR_TYPE_FILESYSTEM, errId)
@@ -81,6 +84,7 @@ typedef enum {
 #define ERR_COMM_PATH_INVALID      MAKE_FILESYS_ERROR(FS_ERR_ID_PATH_INVALID)
 #define ERR_COMM_SHARING_VIOLATION MAKE_FILESYS_ERROR(FS_ERR_ID_SHARING_VIOLATION)
 #define ERR_COMM_IS_A_DIRECTORY    MAKE_FILESYS_ERROR(FS_ERR_ID_IS_A_DIRECTORY)
+#define ERR_COMM_FILE_NOT_OPEN     MAKE_FILESYS_ERROR(FS_ERR_ID_FILE_NOT_OPEN)
 
 typedef enum {
     CTN_ERR_ID_OVERFLOW = 1,  ///< 路径不存在
@@ -107,6 +111,8 @@ static inline const char *get_comm_err_msg(ErrorCode errCode)
             return "Input param NULL";
         case ERR_COMM_PARAM_INVALID:
             return "Input param invalid";
+        case ERR_COMM_PARAM_EMPTY:
+            return "Param empty";
         case ERR_COMM_BUFFER_OVERFLOW:
             return "Buffer overflow";
         case ERR_COMM_SYSTEM_ERROR:
@@ -147,6 +153,8 @@ static inline const char *get_comm_err_msg(ErrorCode errCode)
             return "Sharing violation";
         case ERR_COMM_IS_A_DIRECTORY:
             return "Target is a directory";
+        case ERR_COMM_FILE_NOT_OPEN:
+            return "File not open";
         // Container error code.
         case ERR_COMM_CTN_OVERFLOW:
             return "Container overflow";
