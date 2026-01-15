@@ -1,23 +1,36 @@
-#include "internal/log_console_sink.h"
+#include "logging/log_console_sink.h"
+
 #include <cstdio>
 
-#include "internal/log_record.h"
+#include "common/common_error_code.h"
+#include "common/types/error_code_types.h"
+#include "logging/log_record.h"
+#include "logging/logging.h"
 
 namespace logging {
-LogConsoleSink::LogConsoleSink(ConsoleType type)
+LogConsoleSink::LogConsoleSink(ConsoleType type) : m_type(type)
 {
-    if (type == ConsoleType::CONSOLE_STDERR) {
+    if (m_type == CONSOLE_STDERR) {
         m_stream = stderr;
     } else {
         m_stream = stdout;
     }
 }
 
-void LogConsoleSink::Init() {}
-void LogConsoleSink::Close() {}
-
-void LogConsoleSink::Log(const LogRecord *logRecord)
+ErrorCode LogConsoleSink::init()
 {
-    fprintf(m_stream, "%s", logRecord->buffer);
+    fflush(m_stream);
+    return ERR_COMM_SUCCESS;
+}
+
+void LogConsoleSink::close()
+{
+    fflush(m_stream);
+}
+
+void LogConsoleSink::log(const LogRecord& logRecord)
+{
+    auto logMsg = format(logRecord);
+    fprintf(m_stream, "%s", logMsg.c_str());
 }
 }  // namespace logging

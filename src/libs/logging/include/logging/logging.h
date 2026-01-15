@@ -5,21 +5,28 @@
 extern "C" {
 #endif  // __cplusplus
 
+#include <stdint.h>
+
+#include "common/types/error_code_types.h"
 #include "common/types/logging_types.h"
 
-typedef struct LogSink LogSink;
+typedef struct LogSinkSt LogSinkSt;
 
 typedef enum {
     CONSOLE_STDOUT = 0,
     CONSOLE_STDERR
 } ConsoleType;
 
-LogSink *logging_get_console_sink(LogLevel level, ConsoleType type);
-LogSink *logging_get_file_sink(LogLevel level, const char *file);
+LogSinkSt *logging_get_console_sink(ConsoleType type);
 
-void logging_register_sink(LogSink *sink);
+LogSinkSt *logging_get_basic_file_sink(const char *file, bool rewrite);
 
-void logging_init();
+void logging_register_sink(LogSinkSt *sink);
+
+void logging_set_level(LogLevel level);
+
+ErrorCode logging_init();
+
 void logging_close();
 
 void logging_log(const char *file, int line, const char *func, LogLevel level, const char *format, ...);
