@@ -1,78 +1,116 @@
 #include "logging/logging.h"
 
-#include <atomic>
 #include <cstdarg>
-#include <vector>
+#include <cstdint>
+#include <cstdio>
+#include <memory>
+#include <stdexcept>
+#include <string>
 
-#include "common/common_error_code.h"
-#include "common/debug/debug_log.h"
-#include "common/types/error_code_types.h"
 #include "common/types/logging_types.h"
-#include "logging/log_basic_file_sink.h"
-#include "logging/log_console_sink.h"
-#include "logging/log_record.h"
-#include "logging/log_sink.h"
+#include "logging/logger.h"
+#include "logging/sinks/basic_file_sink.h"
+#include "logging/sinks/console_sink.h"
 
 namespace {
-std::vector<logging::LogSink *> g_sinkList;
-std::atomic<LogLevel> g_allowedLevel{LOG_LVL_INFO};
+logging::Logger root;
+
+void logging_log(const char *file, int line, const char *func, LogLevel level, const char *format, va_list args)
+{
+    if (!root.should_log(level)) {
+        return;
+    }
+
+    va_list argsCopy;
+
+    va_copy(argsCopy, args);
+    int len = vsnprintf(nullptr, 0, format, argsCopy);
+    va_end(argsCopy);
+
+    if (len < 0) {
+        throw std::runtime_error("vsnprintf failed.");
+    }
+
+    std::string message(static_cast<uint32_t>(len), '\0');
+    vsnprintf(message.data(), static_cast<uint32_t>(len) + 1, format, args);
+    va_end(args);
+
+    root.log(logging::LogSource(file, line, func), level, message);
+}
 }  // namespace
 
 extern "C" {
-LogSinkSt *logging_get_console_sink(ConsoleType type)
+sink_st *logging_get_console_sink(ConsoleType type)
 {
-    return new LogSinkSt(new logging::LogConsoleSink(type));
+    return new sink_st(std::make_shared<logging::ConsoleSink>(type));
 }
 
-LogSinkSt *logging_get_file_sink(const char *file, bool overwrite)
+sink_st *logging_get_basic_file_sink(const char *file, bool overwrite)
 {
-    return new LogSinkSt(new logging::LogBasicFileSink(file, overwrite));
+    std::shared_ptr<logging::BasicFileSink> sink = nullptr;
+
+    if (file == nullptr) {
+        sink = std::make_shared<logging::BasicFileSink>();
+    } else {
+        sink = std::make_shared<logging::BasicFileSink>(file, overwrite);
+    }
+
+    return new sink_st(sink);
 }
 
-void logging_register_sink(LogSinkSt *sink)
+void logging_add_sink(sink_st *sink)
 {
-    g_sinkList.push_back(sink->sinkPtr);
+    root.add_sink(sink->sinkPtr);
     delete sink;
 }
 
 void logging_set_level(LogLevel level)
 {
-    g_allowedLevel = level;
+    root.set_level(level);
 }
 
-ErrorCode logging_init()
+void logging_flush()
 {
-    ErrorCode errcode = ERR_COMM_SUCCESS;
-    for (auto sink : g_sinkList) {
-        errcode = sink->init();
-    }
-    return errcode;
+    root.flush();
 }
 
-void logging_close()
+void logging_debug(const char *file, int line, const char *func, const char *format, ...)
 {
-    for (auto sink : g_sinkList) {
-        sink->close();
-    }
-    while (!g_sinkList.empty()) {
-        auto sink = *(g_sinkList.end() - 1);
-        delete sink;
-        g_sinkList.pop_back();
-    }
+    va_list args;
+    va_start(args, format);
+    logging_log(file, line, func, LogLevel::LOG_LVL_DEBUG, format, args);
+    va_end(args);
 }
 
-void logging_log(const char *file, int line, const char *func, LogLevel level, const char *format, ...)
+void logging_info(const char *file, int line, const char *func, const char *format, ...)
 {
-    if (level < g_allowedLevel) {
-        return;
-    }
-    va_list ap;
-    va_start(ap, format);
-    logging::LogRecord record("Default", level, format, ap, file, line, func);
-    va_end(ap);
+    va_list args;
+    va_start(args, format);
+    logging_log(file, line, func, LogLevel::LOG_LVL_INFO, format, args);
+    va_end(args);
+}
 
-    for (auto sink : g_sinkList) {
-        sink->log(record);
-    }
+void logging_warn(const char *file, int line, const char *func, const char *format, ...)
+{
+    va_list args;
+    va_start(args, format);
+    logging_log(file, line, func, LogLevel::LOG_LVL_WARN, format, args);
+    va_end(args);
+}
+
+void logging_error(const char *file, int line, const char *func, const char *format, ...)
+{
+        va_list args;
+    va_start(args, format);
+    logging_log(file, line, func, LogLevel::LOG_LVL_ERR, format, args);
+    va_end(args);
+}
+
+void logging_fatal(const char *file, int line, const char *func, const char *format, ...)
+{
+    va_list args;
+    va_start(args, format);
+    logging_log(file, line, func, LogLevel::LOG_LVL_FATAL, format, args);
+    va_end(args);
 }
 }

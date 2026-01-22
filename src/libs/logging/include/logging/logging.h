@@ -1,41 +1,44 @@
 #ifndef LOGGING_LOGGING_H
 #define LOGGING_LOGGING_H
 
+#include "common/types/logging_types.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif  // __cplusplus
 
-#include <stdint.h>
-
-#include "common/types/error_code_types.h"
-#include "common/types/logging_types.h"
-
-typedef struct LogSinkSt LogSinkSt;
+typedef struct sink_st sink_st;
 
 typedef enum {
     CONSOLE_STDOUT = 0,
     CONSOLE_STDERR
 } ConsoleType;
 
-LogSinkSt *logging_get_console_sink(ConsoleType type);
+sink_st *logging_get_console_sink(ConsoleType type);
 
-LogSinkSt *logging_get_basic_file_sink(const char *file, bool rewrite);
+sink_st *logging_get_basic_file_sink(const char *file, bool overwrite);
 
-void logging_register_sink(LogSinkSt *sink);
+void logging_add_sink(sink_st *sink);
 
 void logging_set_level(LogLevel level);
 
-ErrorCode logging_init();
+void logging_flush();
 
-void logging_close();
+void logging_debug(const char *file, int line, const char *func, const char *format, ...);
 
-void logging_log(const char *file, int line, const char *func, LogLevel level, const char *format, ...);
+void logging_info(const char *file, int line, const char *func, const char *format, ...);
 
-#define LOGGING_LOG(level, fmt, ...)                                                          \
-    do {                                                                                      \
-        logging_log(__FILE__, __LINE__, __FUNCTION__, level, fmt __VA_OPT__(, ) __VA_ARGS__); \
-    } while (0)
+void logging_warn(const char *file, int line, const char *func, const char *format, ...);
 
+void logging_error(const char *file, int line, const char *func, const char *format, ...);
+
+void logging_fatal(const char *file, int line, const char *func, const char *format, ...);
+
+#define LOGGING_DEBUG(fmt, ...) logging_debug(__FILE__, __LINE__, __FUNCTION__, fmt __VA_OPT__(, ) __VA_ARGS__);
+#define LOGGING_INFO(fmt, ...) logging_debug(__FILE__, __LINE__, __FUNCTION__, fmt __VA_OPT__(, ) __VA_ARGS__);
+#define LOGGING_WARN(fmt, ...) logging_warn(__FILE__, __LINE__, __FUNCTION__, fmt __VA_OPT__(, ) __VA_ARGS__);
+#define LOGGING_ERR(fmt, ...) logging_error(__FILE__, __LINE__, __FUNCTION__, fmt __VA_OPT__(, ) __VA_ARGS__);
+#define LOGGING_FATAL(fmt, ...) logging_fatal(__FILE__, __LINE__, __FUNCTION__, fmt __VA_OPT__(, ) __VA_ARGS__);
 #ifdef __cplusplus
 }
 #endif  // __cplusplus

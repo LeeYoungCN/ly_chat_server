@@ -2,10 +2,9 @@
 #define LOGGINGL_LOG_RECORD_H
 #include <cstdarg>
 #include <cstdint>
-#include <cstdio>
+#include <string>
 #include <string_view>
 
-#include "common/debug/debug_log.h"
 #include "common/types/date_time_types.h"
 #include "common/types/logging_types.h"
 #include "common/types/thread_types.h"
@@ -14,33 +13,21 @@
 #include "logging/log_source.h"
 
 namespace logging {
-constexpr uint32_t LOG_RECORD_BUFFER_LEN = 128;
+constexpr uint32_t LOG_RECORD_BUFFER_LEN = 256;
 
 struct LogRecord {
-    LogSrc source;
     std::string_view loggerName;
     LogLevel level{LOG_LVL_DEBUG};
-    common::date_time::TimestampMs timeStamp{0};
-    ThreadId threadId{0};
-    char buffer[LOG_RECORD_BUFFER_LEN]{'\0'};
+    std::string message;
+    LogSource source;
+    common::date_time::TimestampMs timeStamp = common::date_time::GetCurrentTimestampMs();
+    ThreadId threadId = get_curr_thread_id();
 
-    LogRecord(std::string_view loggerName, LogLevel level, const char *fmt, va_list ap, LogSrc &&source)
-        : source(source), loggerName(loggerName), level(level)
-    {
-        timeStamp = common::date_time::GetCurrentTimestampMs();
-        threadId = get_curr_thread_id();
-        auto len = vsnprintf(buffer, LOG_RECORD_BUFFER_LEN, fmt, ap);
-        if (static_cast<uint32_t>(len) >= LOG_RECORD_BUFFER_LEN) {
-            DEBUG_LOG_ERR("Log message overflow.");
-        }
-        buffer[LOG_RECORD_BUFFER_LEN - 1] = '\0';
-    }
+    LogRecord(std::string_view loggerName, LogLevel level, std::string message, LogSource source)
+        : loggerName(loggerName), level(level), message(std::move(message)), source(source) { }
 
-    LogRecord(std::string_view loggerName, LogLevel level, const char *fmt, va_list ap, const char *file = nullptr,
-              int line = INVALID_LINE_NUM, const char *func = nullptr)
-        : LogRecord(loggerName, level, fmt, ap, LogSrc(file, line, func))
-    {
-    }
+    LogRecord(std::string_view loggerName, LogLevel level, std::string message)
+        : loggerName(loggerName), level(level), message(std::move(message)) { }
 };
 }  // namespace logging
 #endif  // LOGGINGL_LOG_RECORD_H

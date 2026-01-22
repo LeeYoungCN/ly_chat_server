@@ -59,6 +59,13 @@ types::filesystem::PathString GetProcessPath();
 types::filesystem::PathString GetProcessDirName();
 
 /**
+ * @brief Get the Process File Name object
+ *
+ * @return std::string Process file name.
+ */
+std::string GetProcessFileName();
+
+/**
  * @brief 获取当前工作路径。
  *
  * @return 工作路径

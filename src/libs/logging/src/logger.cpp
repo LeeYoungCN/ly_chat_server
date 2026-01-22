@@ -2,23 +2,63 @@
 
 #include <cstdarg>
 
-#include "logging/log_record.h"
-#include "logging/log_source.h"
-
 namespace logging {
 
 Logger::Logger(std::string_view name) : m_name(name) {}
 
-void Logger::log(LogLevel level, const char *format, ...) {}
-void Logger::log(const char *file, int line, const char *func, LogLevel level, const char *format, ...)
+void Logger::set_level(LogLevel level)
 {
-    va_list ap;
-    va_start(ap, format);
-    LogRecord recorder(this->m_name, level, format, ap, LogSrc(file, line, func));
-    va_end(ap);
+    m_level = level;
+}
 
-    for (auto sink : m_sinkList) {
-        sink->log(recorder);
+void Logger::set_name(std::string_view name)
+{
+    this->m_name = name;
+}
+
+std::string_view Logger::get_name() const
+{
+    return this->m_name;
+}
+
+void Logger::add_sink(const std::shared_ptr<Sink>& sink)
+{
+    m_sinkList.emplace_back(sink);
+}
+
+bool Logger::should_log(LogLevel level) const
+{
+    return level >= m_level;
+}
+
+void Logger::log(LogSource source, LogLevel level, std::string message)
+{
+    if (!should_log(level)) {
+        return;
+    }
+
+    LogRecord logRecord(this->m_name, level, std::move(message), source);
+
+    for (const auto& sink : m_sinkList) {
+        sink->log(logRecord);
+    }
+
+    if (level >= LogLevel::LOG_LVL_ERR) {
+        flush();
     }
 }
+
+void Logger::flush()
+{
+    for (const auto& sink : m_sinkList) {
+        sink->flush();
+    }
+}
+
+Logger::~Logger()
+{
+    flush();
+    m_sinkList.clear();
+};
+
 }  // namespace logging

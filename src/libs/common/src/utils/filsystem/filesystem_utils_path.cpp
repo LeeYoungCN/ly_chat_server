@@ -80,6 +80,12 @@ PathString GetProcessDirName()
     return GetDirName(GetProcessPath());
 }
 
+std::string GetProcessFileName()
+{
+    set_thread_last_err(ERR_COMM_SUCCESS);
+    return GetFileName(GetProcessPath());
+}
+
 PathString GetCurrentWorkingDirectory()
 {
     try {
