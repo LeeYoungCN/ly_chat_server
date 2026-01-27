@@ -77,7 +77,7 @@ std::string formatLog(LogLevel level, const char* file, int line, const char* fu
 extern "C" {
 void CommonDebugLog(LogLevel level, const char* file, int line, const char* func, const char* fmt, ...)
 {
-    if (level < g_logLevel) {
+    if (g_logLevel == LOG_LVL_OFF || level < g_logLevel) {
         return;
     }
     static std::mutex mtx;

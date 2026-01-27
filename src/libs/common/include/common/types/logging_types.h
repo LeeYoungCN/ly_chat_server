@@ -22,7 +22,8 @@ typedef enum {
     LOG_LVL_INFO,       ///< 一般信息（正常运行时的流程性信息，如服务启动成功）
     LOG_LVL_WARN,       ///< 警告信息（不影响主流程但需关注的异常，如配置项缺失使用默认值）
     LOG_LVL_ERR,        ///< 错误信息（功能异常但不导致程序退出，如单次接口调用失败）
-    LOG_LVL_FATAL       ///< 致命错误（导致程序无法继续运行的严重异常，如核心资源初始化失败）
+    LOG_LVL_FATAL,      ///< 致命错误（导致程序无法继续运行的严重异常，如核心资源初始化失败）
+    LOG_LVL_OFF
 } LogLevel;
 
 #ifdef __cplusplus
@@ -41,6 +42,8 @@ inline static const char* GetLogLvlStr(LogLevel level)
             return "ERROR";
         case LOG_LVL_FATAL:
             return "FATAL";
+        case LOG_LVL_OFF:
+            return "OFF";
         default:
             return "UNKNOWN";
     }
