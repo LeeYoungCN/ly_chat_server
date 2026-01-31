@@ -11,45 +11,49 @@
 
 namespace common::container {
 
-constexpr uint32_t DEFAULT_CAPACITY = 1024;
+constexpr uint32_t BLOCKING_QUEUE_DEFAULT_CAPACITY = 1024;
 
 template <typename T>
 class BlockingQueue {
 public:
-    BlockingQueue() : _capacity(DEFAULT_CAPACITY), _maxItems(DEFAULT_CAPACITY + 1), _items(_maxItems) {}
+    using allocator_type = std::allocator<T>;
+    using traits_type = std::allocator_traits<allocator_type>;
+
+public:
+    BlockingQueue()
+        : _capacity(BLOCKING_QUEUE_DEFAULT_CAPACITY), _maxItems(BLOCKING_QUEUE_DEFAULT_CAPACITY + 1), _items(_maxItems)
+    {
+    }
 
     explicit BlockingQueue(size_t capacity) : _capacity(capacity), _maxItems(capacity + 1), _items(_maxItems)
     {
         if (capacity == 0) {
-            throw std::invalid_argument("capacity is 0.");
+            auto errmsg = std::format("Capacity invalid. capacity: {}.", capacity);
+            DEBUG_LOGGER_ERR(errmsg);
+            throw std::invalid_argument(errmsg);
         }
     }
 
-    bool enqueue(const T& item)
+    template <typename... Args>
+    bool emplace_back(Args&&... args)
     {
         if (full()) {
             return false;
         }
 
-        _items[_tail] = item;
+        T* elem_ptr = &_items[_tail];
+        // 等价于：new (elem_ptr) T(std::forward<Args>(args)...)（放置 new）
+        traits_type::construct(_alloc, elem_ptr, std::forward<Args>(args)...);
         _tail = (_tail + 1) % _maxItems;
         return true;
     }
 
-    bool enqueue(T&& item)
+    template <typename... Args>
+    void emplace_back_overrun(Args&&... args)
     {
-        if (full()) {
-            return false;
-        }
-
-        _items[_tail] = std::move(item);
-        _tail = (_tail + 1) % _maxItems;
-        return true;
-    }
-
-    void enqueue_overrun(const T& item)
-    {
-        _items[_tail] = item;
+        T* elem_ptr = &_items[_tail];
+        // 等价于：new (elem_ptr) T(std::forward<Args>(args)...)（放置 new）
+        traits_type::construct(_alloc, elem_ptr, std::forward<Args>(args)...);
         _tail = (_tail + 1) % _maxItems;
 
         if (_head == _tail) {
@@ -58,9 +62,24 @@ public:
         }
     }
 
+    bool enqueue(const T& item) { return T(item); }
+
+    bool enqueue(T&& item)
+    {
+        if (full()) {
+            return false;
+        }
+
+        _items[_tail] = std::forward<T>(item);
+        _tail = (_tail + 1) % _maxItems;
+        return true;
+    }
+
+    void enqueue_overrun(const T& item) { enqueue_overrun(T(item)); }
+
     void enqueue_overrun(T&& item)
     {
-        _items[_tail] = std::move(item);
+        _items[_tail] = std::forward<T>(item);
         _tail = (_tail + 1) % _maxItems;
 
         if (_head == _tail) {
@@ -137,12 +156,13 @@ public:
     [[nodiscard]] size_t overrun_counter() const { return _overrun_counter; }
 
 private:
-    const size_t _capacity = DEFAULT_CAPACITY;
-    const size_t _maxItems = DEFAULT_CAPACITY + 1;
+    size_t _capacity = BLOCKING_QUEUE_DEFAULT_CAPACITY;
+    size_t _maxItems = BLOCKING_QUEUE_DEFAULT_CAPACITY + 1;
     std::vector<T> _items;
     size_t _head = 0;
     size_t _tail = 0;
     size_t _overrun_counter = 0;
+    allocator_type _alloc;
 };
 }  // namespace common::container
 

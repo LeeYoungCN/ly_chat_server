@@ -4,7 +4,7 @@
 #include "common/container/blocking_queue.hpp"
 #include "gtest/gtest.h"
 
-namespace test::test_container::test_CString {
+namespace test::test_container::test_blocking_queue {
 using namespace common::container;
 class TestBlockingQueue : public ::testing::Test {
 protected:
@@ -14,7 +14,15 @@ protected:
     void TearDown() override {};
 };
 
-TEST_F(TestBlockingQueue, create)
+TEST_F(TestBlockingQueue, create_default)
+{
+    auto q = BlockingQueue<uint32_t>();
+    EXPECT_EQ(q.size(), 0);
+    EXPECT_EQ(q.capacity(), BLOCKING_QUEUE_DEFAULT_CAPACITY);
+    EXPECT_TRUE(q.empty());
+}
+
+TEST_F(TestBlockingQueue, create_capacity)
 {
     auto q = BlockingQueue<uint32_t>(1024);
     EXPECT_EQ(q.size(), 0);
