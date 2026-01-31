@@ -6,15 +6,19 @@
 #include <stdexcept>
 #include <utility>
 #include <vector>
-#include "common/debug/debug_log.h"
+
+#include "common/debug/debug_logger.h"
 
 namespace common::container {
+
+constexpr uint32_t DEFAULT_CAPACITY = 1024;
+
 template <typename T>
 class BlockingQueue {
 public:
-    BlockingQueue() : _container(_capacity_it) {}
+    BlockingQueue() : _capacity(DEFAULT_CAPACITY), _maxItems(DEFAULT_CAPACITY + 1), _items(_maxItems) {}
 
-    explicit BlockingQueue(size_t capacity) : _capacity(capacity), _capacity_it(capacity + 1), _container(_capacity_it)
+    explicit BlockingQueue(size_t capacity) : _capacity(capacity), _maxItems(capacity + 1), _items(_maxItems)
     {
         if (capacity == 0) {
             throw std::invalid_argument("capacity is 0.");
@@ -27,8 +31,8 @@ public:
             return false;
         }
 
-        _container[_tail] = item;
-        _tail = (_tail + 1) % _capacity_it;
+        _items[_tail] = item;
+        _tail = (_tail + 1) % _maxItems;
         return true;
     }
 
@@ -38,29 +42,29 @@ public:
             return false;
         }
 
-        _container[_tail] = std::move(item);
-        _tail = (_tail + 1) % _capacity_it;
+        _items[_tail] = std::move(item);
+        _tail = (_tail + 1) % _maxItems;
         return true;
     }
 
     void enqueue_overrun(const T& item)
     {
-        _container[_tail] = item;
-        _tail = (_tail + 1) % _capacity_it;
+        _items[_tail] = item;
+        _tail = (_tail + 1) % _maxItems;
 
         if (_head == _tail) {
-            _head = (_head + 1) % _capacity_it;
+            _head = (_head + 1) % _maxItems;
             ++_overrun_counter;
         }
     }
 
     void enqueue_overrun(T&& item)
     {
-        _container[_tail] = std::move(item);
-        _tail = (_tail + 1) % _capacity_it;
+        _items[_tail] = std::move(item);
+        _tail = (_tail + 1) % _maxItems;
 
         if (_head == _tail) {
-            _head = (_head + 1) % _capacity_it;
+            _head = (_head + 1) % _maxItems;
             ++_overrun_counter;
         }
     }
@@ -70,8 +74,8 @@ public:
         if (empty()) {
             return false;
         }
-        item = std::move(_container[_head]);
-        _head = (_head + 1) % _capacity_it;
+        item = std::move(_items[_head]);
+        _head = (_head + 1) % _maxItems;
         return true;
     }
 
@@ -81,7 +85,7 @@ public:
             return false;
         }
 
-        _head = (_head + 1) % _capacity_it;
+        _head = (_head + 1) % _maxItems;
         return true;
     }
 
@@ -90,7 +94,7 @@ public:
         if (empty()) {
             return false;
         }
-        item = _container[_head];
+        item = _items[_head];
 
         return true;
     }
@@ -98,13 +102,13 @@ public:
     const T& operator[](size_t idx) const
     {
         throw_if_out_of_range(idx);
-        return _container.at((_head + idx) % _capacity_it);
+        return _items.at((_head + idx) % _maxItems);
     }
 
     const T& at(size_t idx) const
     {
         throw_if_out_of_range(idx);
-        return _container[(_head + idx) % _capacity_it];
+        return _items[(_head + idx) % _maxItems];
     }
 
     void clear()
@@ -118,24 +122,24 @@ public:
     {
         if (idx >= size()) {
             std::string errmsg = std::format("Out of range. idx: {}, queue size: {}.", idx, size());
-            DEBUG_LOG_ERR(errmsg.c_str());
+            DEBUG_LOGGER_ERR(errmsg);
             throw std::out_of_range(errmsg);
         }
     }
 
-    [[nodiscard]] size_t size() const { return _tail >= _head ? _tail - _head : _capacity_it - (_head - _tail); }
+    [[nodiscard]] size_t size() const { return _tail >= _head ? _tail - _head : _maxItems - (_head - _tail); }
     [[nodiscard]] size_t capacity() const { return _capacity; }
 
     [[nodiscard]] bool empty() const { return _head == _tail; }
 
-    [[nodiscard]] bool full() const { return ((_tail + 1) % _capacity_it) == _head; }
+    [[nodiscard]] bool full() const { return ((_tail + 1) % _maxItems) == _head; }
 
     [[nodiscard]] size_t overrun_counter() const { return _overrun_counter; }
 
 private:
-    const size_t _capacity = 1024;
-    const size_t _capacity_it = _capacity + 1;
-    std::vector<T> _container;
+    const size_t _capacity = DEFAULT_CAPACITY;
+    const size_t _maxItems = DEFAULT_CAPACITY + 1;
+    std::vector<T> _items;
     size_t _head = 0;
     size_t _tail = 0;
     size_t _overrun_counter = 0;
