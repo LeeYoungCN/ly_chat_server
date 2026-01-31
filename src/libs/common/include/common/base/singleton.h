@@ -5,7 +5,7 @@ namespace common::base {
 template <typename T>
 class SingletonBase {
 public:
-    static T& getInstance()
+    static T& instance()
     {
         static T instance;
         return instance;

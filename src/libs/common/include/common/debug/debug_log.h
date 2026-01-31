@@ -12,22 +12,15 @@
 #ifndef COMMON_DEBUG_DEBUG_LOG_H
 #define COMMON_DEBUG_DEBUG_LOG_H
 
+#include "common/debug/debug_level.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif  // __cplusplus
 
-typedef enum {
-    DEBUG_LVL_DEBUG,
-    DEBUG_LVL_INFO,
-    DEBUG_LVL_WARN,
-    DEBUG_LVL_ERR,
-    DEBUG_LVL_FATAL,
-    DEBUG_LVL_OFF
-} DebugLevel;
+void set_debug_log_level(DebugLevel level);
+void common_debug_log_c(DebugLevel level, const char* file, int line, const char* func, const char* format, ...);
 
-void SetDebugLogLevel(DebugLevel level);
-
-void CommonDebugLog(DebugLevel level, const char* file, int line, const char* func, const char* fmt, ...);
 #ifdef __cplusplus
 }
 #endif  // __cplusplus
@@ -37,9 +30,9 @@ void CommonDebugLog(DebugLevel level, const char* file, int line, const char* fu
 #define DEBUG_LOG(level, fmt, ...) (static_cast<void>(0))
 #else
 // Debug模式：实际日志输出，支持所有级别
-#define DEBUG_LOG(level, fmt, ...)                                                               \
-    do {                                                                                         \
-        CommonDebugLog(level, __FILE__, __LINE__, __FUNCTION__, fmt __VA_OPT__(, ) __VA_ARGS__); \
+#define DEBUG_LOG(level, fmt, ...)                                                                   \
+    do {                                                                                             \
+        common_debug_log_c(level, __FILE__, __LINE__, __FUNCTION__, fmt __VA_OPT__(, ) __VA_ARGS__); \
     } while (0)
 #endif
 
@@ -51,10 +44,10 @@ void CommonDebugLog(DebugLevel level, const char* file, int line, const char* fu
 
 #define DEBUG_LOG_ERR(fmt, ...) DEBUG_LOG(DEBUG_LVL_ERR, fmt __VA_OPT__(, ) __VA_ARGS__);
 
-#define DEBUG_LOG_FATAL(fmt, ...)                                 \
-    do {                                                          \
+#define DEBUG_LOG_FATAL(fmt, ...)                                   \
+    do {                                                            \
         DEBUG_LOG(DEBUG_LVL_FATAL, fmt __VA_OPT__(, ) __VA_ARGS__); \
-        std::abort();                                             \
+        std::abort();                                               \
     } while (0)
 
 #define DEBUG_LOG_COND(condition, fmt, ...)                            \

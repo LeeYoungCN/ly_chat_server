@@ -1,119 +1,26 @@
 #include "common/debug/debug_log.h"
 
-#include "common/compiler/macros.h"
-
-#if PLATFORM_WINDOWS
-#include <windows.h>
-#elif PLATFORM_LINUX
-#include <sys/syscall.h>
-#include <unistd.h>
-#elif PLATFORM_MACOS
-#include <pthread.h>
-#else
-#error "Unsupport system"
-#endif
-
-#include <chrono>
 #include <cstdarg>
-#include <cstddef>
-#include <cstdio>
-#include <ctime>
-#include <filesystem>
-#include <format>
-#include <iostream>
-#include <mutex>
 
-namespace {
-DebugLevel g_logLevel = DebugLevel::DEBUG_LVL_INFO;
+#include "common/debug/debug_logger.h"
 
-const char* GetDebugLogLvlStr(DebugLevel level)
-{
-    switch (level) {
-        case DEBUG_LVL_DEBUG:
-            return "DEBUG";
-        case DEBUG_LVL_INFO:
-            return "INFO";
-        case DEBUG_LVL_WARN:
-            return "WARN";
-        case DEBUG_LVL_ERR:
-            return "ERROR";
-        case DEBUG_LVL_FATAL:
-            return "FATAL";
-        case DEBUG_LVL_OFF:
-            return "OFF";
-        default:
-            return "UNKNOWN";
-    }
-}
-
-size_t GetCurrentThreadIdInternal()
-{
-#if PLATFORM_WINDOWS
-    return static_cast<size_t>(GetCurrentThreadId());
-#elif PLATFORM_LINUX
-    return static_cast<size_t>(syscall(SYS_gettid));
-#elif PLATFORM_MACOS
-    uint64_t tid;
-    pthread_threadid_np(nullptr, &tid);
-    return static_cast<size_t>(tid);
-#else
-    return 0;
-#endif
-}
-
-std::string TimeString()
-{
-    const std::time_t now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-    std::tm ltm{};
-#if PLATFORM_WINDOWS
-    // Windows 使用 localtime_s
-    localtime_s(&ltm, &now);
-#else
-    // Linux/macOS 使用 localtime_r
-    localtime_r(&now, &ltm);
-#endif
-    std::stringstream timeSs;
-
-    timeSs << std::put_time(&ltm, "%Y-%m-%d %H:%M:%S");
-
-    return timeSs.str();
-}
-
-std::string formatLog(DebugLevel level, const char* file, int line, const char* func, const std::string& message)
-{
-    return std::format("[{}] [{}] [Tid: {:#x}] [{}:{}] [{}] {}",
-                       TimeString(),
-                       GetDebugLogLvlStr(level),
-                       GetCurrentThreadIdInternal(),
-                       std::filesystem::path(file).filename().string(),
-                       line,
-                       func,
-                       message);
-}
-}  // namespace
+using namespace common::debug;
 
 extern "C" {
-void CommonDebugLog(DebugLevel level, const char* file, int line, const char* func, const char* fmt, ...)
+void common_debug_log_c(DebugLevel level, const char* file, int line, const char* func, const char* format, ...)
 {
-    if (g_logLevel == DEBUG_LVL_OFF || level < g_logLevel) {
+    if (!DebugLogger::instance().should_log(level)) {
         return;
     }
-    static std::mutex mtx;
-    std::unique_lock<std::mutex> lock(mtx);
 
-    constexpr uint32_t BUFFER_LEN = 512;
-    char buffer[BUFFER_LEN];
-    va_list argList;
-    va_start(argList, fmt);
-    vsnprintf(buffer, BUFFER_LEN, fmt, argList);
-    va_end(argList);
-
-    std::string logStr = formatLog(level, file, line, func, buffer);
-    std::cout << logStr << std::endl;
+    va_list args;
+    va_start(args, format);
+    DebugLogger::instance().log_va(level, file, line, func, format, args);
+    va_end(args);
 }
 
-void SetDebugLogLevel(DebugLevel level)
+void set_debug_log_level(DebugLevel level)
 {
-    g_logLevel = level;
+    DebugLogger::instance().set_debug_log_level(level);
 }
 }
