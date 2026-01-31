@@ -1,6 +1,5 @@
 #include "common/debug/debug_logger.h"
 
-
 #include "common/compiler/macros.h"
 #include "common/debug/debug_level.h"
 
