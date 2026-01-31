@@ -2,7 +2,7 @@
 
 int main(int argc, char *argv[])
 {
-    SetDebugLogLevel(LOG_LVL_DEBUG);
+    SetDebugLogLevel(DEBUG_LVL_DEBUG);
     for (int i = 0; i < argc; i++) {
         DEBUG_LOG_INFO("argv[%d]: %s", i, argv[i]);
     }

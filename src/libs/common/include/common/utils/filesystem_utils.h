@@ -56,7 +56,7 @@ types::filesystem::PathString GetProcessPath();
  *
  * @return 目录的绝对路径
  */
-types::filesystem::PathString GetProcessDirName();
+types::filesystem::PathString GetProcessDirectory();
 
 /**
  * @brief Get the Process File Name object
@@ -101,7 +101,7 @@ types::filesystem::PathString ToAbsolutePath(std::string_view relPath,
  * @param path 完整路径
  * @return 父目录路径
  */
-types::filesystem::PathString GetDirName(std::string_view path);
+types::filesystem::PathString GetDirectory(std::string_view path);
 
 /**
  * @brief 获取路径中的文件名（含扩展名）

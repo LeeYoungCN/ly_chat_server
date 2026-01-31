@@ -66,7 +66,7 @@ ErrorCode FileWriter::open(std::string_view file, FileWriteMode mode)
         return m_errcode;
     }
     m_file = ToAbsolutePath(file);
-    m_directory = GetDirName(m_file);
+    m_directory = GetDirectory(m_file);
 
     if (!CreateDir(m_directory)) {
         m_errcode = get_thread_last_err();

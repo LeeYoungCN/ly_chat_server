@@ -12,14 +12,22 @@
 #ifndef COMMON_DEBUG_DEBUG_LOG_H
 #define COMMON_DEBUG_DEBUG_LOG_H
 
-#include "common/types/logging_types.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif  // __cplusplus
-void SetDebugLogLevel(LogLevel level);
 
-void CommonDebugLog(LogLevel level, const char* file, int line, const char* func, const char* fmt, ...);
+typedef enum {
+    DEBUG_LVL_DEBUG,
+    DEBUG_LVL_INFO,
+    DEBUG_LVL_WARN,
+    DEBUG_LVL_ERR,
+    DEBUG_LVL_FATAL,
+    DEBUG_LVL_OFF
+} DebugLevel;
+
+void SetDebugLogLevel(DebugLevel level);
+
+void CommonDebugLog(DebugLevel level, const char* file, int line, const char* func, const char* fmt, ...);
 #ifdef __cplusplus
 }
 #endif  // __cplusplus
@@ -35,17 +43,17 @@ void CommonDebugLog(LogLevel level, const char* file, int line, const char* func
     } while (0)
 #endif
 
-#define DEBUG_LOG_DBG(fmt, ...) DEBUG_LOG(LOG_LVL_DEBUG, fmt __VA_OPT__(, ) __VA_ARGS__);
+#define DEBUG_LOG_DBG(fmt, ...) DEBUG_LOG(DEBUG_LVL_DEBUG, fmt __VA_OPT__(, ) __VA_ARGS__);
 
-#define DEBUG_LOG_INFO(fmt, ...) DEBUG_LOG(LOG_LVL_INFO, fmt __VA_OPT__(, ) __VA_ARGS__);
+#define DEBUG_LOG_INFO(fmt, ...) DEBUG_LOG(DEBUG_LVL_INFO, fmt __VA_OPT__(, ) __VA_ARGS__);
 
-#define DEBUG_LOG_WARN(fmt, ...) DEBUG_LOG(LOG_LVL_WARN, fmt __VA_OPT__(, ) __VA_ARGS__);
+#define DEBUG_LOG_WARN(fmt, ...) DEBUG_LOG(DEBUG_LVL_WARN, fmt __VA_OPT__(, ) __VA_ARGS__);
 
-#define DEBUG_LOG_ERR(fmt, ...) DEBUG_LOG(LOG_LVL_ERR, fmt __VA_OPT__(, ) __VA_ARGS__);
+#define DEBUG_LOG_ERR(fmt, ...) DEBUG_LOG(DEBUG_LVL_ERR, fmt __VA_OPT__(, ) __VA_ARGS__);
 
 #define DEBUG_LOG_FATAL(fmt, ...)                                 \
     do {                                                          \
-        DEBUG_LOG(LOG_LVL_FATAL, fmt __VA_OPT__(, ) __VA_ARGS__); \
+        DEBUG_LOG(DEBUG_LVL_FATAL, fmt __VA_OPT__(, ) __VA_ARGS__); \
         std::abort();                                             \
     } while (0)
 

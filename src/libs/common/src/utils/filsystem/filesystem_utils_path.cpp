@@ -74,10 +74,10 @@ std::string GetProcessPath()
     return path;
 }
 
-PathString GetProcessDirName()
+PathString GetProcessDirectory()
 {
     set_thread_last_err(ERR_COMM_SUCCESS);
-    return GetDirName(GetProcessPath());
+    return GetDirectory(GetProcessPath());
 }
 
 std::string GetProcessFileName()
@@ -163,7 +163,7 @@ PathString ToAbsolutePath(std::string_view relPath, std::string_view baseDir)
     }
 }
 
-PathString GetDirName(std::string_view path)
+PathString GetDirectory(std::string_view path)
 {
     fs::path proc(path);
     set_thread_last_err(ERR_COMM_SUCCESS);

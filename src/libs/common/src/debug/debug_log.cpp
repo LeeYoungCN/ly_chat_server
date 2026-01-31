@@ -23,10 +23,28 @@
 #include <iostream>
 #include <mutex>
 
-#include "common/types/logging_types.h"
-
 namespace {
-LogLevel g_logLevel = LOG_LVL_INFO;
+DebugLevel g_logLevel = DebugLevel::DEBUG_LVL_INFO;
+
+const char* GetDebugLogLvlStr(DebugLevel level)
+{
+    switch (level) {
+        case DEBUG_LVL_DEBUG:
+            return "DEBUG";
+        case DEBUG_LVL_INFO:
+            return "INFO";
+        case DEBUG_LVL_WARN:
+            return "WARN";
+        case DEBUG_LVL_ERR:
+            return "ERROR";
+        case DEBUG_LVL_FATAL:
+            return "FATAL";
+        case DEBUG_LVL_OFF:
+            return "OFF";
+        default:
+            return "UNKNOWN";
+    }
+}
 
 size_t GetCurrentThreadIdInternal()
 {
@@ -61,11 +79,11 @@ std::string TimeString()
     return timeSs.str();
 }
 
-std::string formatLog(LogLevel level, const char* file, int line, const char* func, const std::string& message)
+std::string formatLog(DebugLevel level, const char* file, int line, const char* func, const std::string& message)
 {
     return std::format("[{}] [{}] [Tid: {:#x}] [{}:{}] [{}] {}",
                        TimeString(),
-                       GetLogLvlStr(level),
+                       GetDebugLogLvlStr(level),
                        GetCurrentThreadIdInternal(),
                        std::filesystem::path(file).filename().string(),
                        line,
@@ -75,9 +93,9 @@ std::string formatLog(LogLevel level, const char* file, int line, const char* fu
 }  // namespace
 
 extern "C" {
-void CommonDebugLog(LogLevel level, const char* file, int line, const char* func, const char* fmt, ...)
+void CommonDebugLog(DebugLevel level, const char* file, int line, const char* func, const char* fmt, ...)
 {
-    if (g_logLevel == LOG_LVL_OFF || level < g_logLevel) {
+    if (g_logLevel == DEBUG_LVL_OFF || level < g_logLevel) {
         return;
     }
     static std::mutex mtx;
@@ -94,7 +112,7 @@ void CommonDebugLog(LogLevel level, const char* file, int line, const char* func
     std::cout << logStr << std::endl;
 }
 
-void SetDebugLogLevel(LogLevel level)
+void SetDebugLogLevel(DebugLevel level)
 {
     g_logLevel = level;
 }

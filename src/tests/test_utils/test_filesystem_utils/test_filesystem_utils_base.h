@@ -26,7 +26,7 @@ protected:
     {
         m_process = common::utils::filesystem::GetProcessPath();
         EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
-        m_processDir = common::utils::filesystem::GetDirName(m_process);
+        m_processDir = common::utils::filesystem::GetDirectory(m_process);
         EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
         m_workDir = common::utils::filesystem::GetCurrentWorkingDirectory();
         EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
