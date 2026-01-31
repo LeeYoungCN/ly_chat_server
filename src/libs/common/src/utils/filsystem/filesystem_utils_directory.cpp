@@ -30,12 +30,10 @@
 #include "common/utils/filesystem_utils.h"
 #include "internal/common/utils/filesystem_utils_internal.h"
 
-namespace common::utils::filesystem {
+namespace common::filesystem {
 
 namespace fs = std::filesystem;
-using namespace common::constants::filesystem;
-using namespace common::types::filesystem;
-using namespace common::utils::filesystem::internal;
+using namespace common::filesystem::internal;
 
 bool DirExists(std::string_view path)
 {
@@ -120,4 +118,4 @@ bool DeleteDir(std::string_view path, bool recursive)
     }
 }
 
-}  // namespace common::utils::filesystem
+}  // namespace common::filesystem

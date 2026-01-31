@@ -34,12 +34,9 @@
 #include "common/utils/filesystem_utils.h"
 #include "internal/common/utils/filesystem_utils_internal.h"
 
-namespace common::utils::filesystem {
-
+namespace common::filesystem {
 namespace fs = std::filesystem;
-using namespace common::constants::filesystem;
-using namespace common::types::filesystem;
-using namespace common::utils::filesystem::internal;
+using namespace common::filesystem::internal;
 
 // ------------------------------ 系统路径接口 ------------------------------
 std::string GetProcessPath()
@@ -215,4 +212,4 @@ bool IsPathTooLong(std::string_view path)
     return result;
 }
 
-}  // namespace common::utils::filesystem
+}  // namespace common::filesystem

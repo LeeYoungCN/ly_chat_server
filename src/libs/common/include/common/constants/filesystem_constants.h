@@ -16,7 +16,7 @@
 
 #include "common/compiler/macros.h"
 
-namespace common::constants::filesystem {
+namespace common::filesystem {
 /**
  * @brief 路径长度常量（跨平台自动适配）
  */
@@ -56,6 +56,6 @@ constexpr size_t LF_LENGTH = 1;
 
 constexpr unsigned int FILE_OPEN_INTERNAL_MS = 10;
 
-}  // namespace common::constants::filesystem
+}  // namespace common::filesystem
 
 #endif  // COMMON_CONSTANTS_FILESYSTEM_CONSTANTS_H

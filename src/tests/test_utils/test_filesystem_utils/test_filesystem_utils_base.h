@@ -24,19 +24,19 @@ protected:
     static void TearDownTestSuite() {}
     void SetUp() override
     {
-        m_process = common::utils::filesystem::GetProcessPath();
+        m_process = common::filesystem::GetProcessPath();
         EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
-        m_processDir = common::utils::filesystem::GetDirectory(m_process);
+        m_processDir = common::filesystem::GetDirectory(m_process);
         EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
-        m_workDir = common::utils::filesystem::GetCurrentWorkingDirectory();
+        m_workDir = common::filesystem::GetCurrentWorkingDirectory();
         EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
     };
     void TearDown() override {};
 
 protected:
-    common::types::filesystem::PathString m_process;
-    common::types::filesystem::PathString m_processDir;
-    common::types::filesystem::PathString m_workDir;
+    common::filesystem::PathString m_process;
+    common::filesystem::PathString m_processDir;
+    common::filesystem::PathString m_workDir;
 };
 
 }  // namespace test::test_utils::test_filesystem_utils

@@ -12,9 +12,9 @@
 #include "internal/common/utils/filesystem_utils_internal.h"
 
 namespace {
-const char* FileWriteModeStr(common::utils::filesystem::FileWriteMode mode)
+const char* FileWriteModeStr(common::filesystem::FileWriteMode mode)
 {
-    if (mode == common::utils::filesystem::OVERWRITE) {
+    if (mode == common::filesystem::OVERWRITE) {
         return "overwrite";
     } else {
         return "append";
@@ -22,8 +22,8 @@ const char* FileWriteModeStr(common::utils::filesystem::FileWriteMode mode)
 }
 }  // namespace
 
-namespace common::utils::filesystem {
-using namespace common::utils::filesystem::internal;
+namespace common::filesystem {
+using namespace common::filesystem::internal;
 
 FileWriter::~FileWriter()
 {
@@ -40,7 +40,7 @@ ErrorCode FileWriter::open_(FileWriteMode mode)
     }
 
     m_stream = std::ofstream(m_file, m_mode);
-    date_time::SleepMS(constants::filesystem::FILE_OPEN_INTERNAL_MS);
+    date_time::SleepMS(filesystem::FILE_OPEN_INTERNAL_MS);
     if (!m_stream.is_open()) {
         m_errcode = get_thread_last_err();
         std::error_code ec(errno, std::generic_category());
@@ -110,7 +110,7 @@ void FileWriter::write_line(std::string_view str)
     } else {
         m_errcode = ERR_COMM_SUCCESS;
         m_stream << str << '\n';
-        m_currSize += str.length() + common::constants::filesystem::LF_LENGTH;
+        m_currSize += str.length() + common::filesystem::LF_LENGTH;
     }
 }
 
@@ -149,4 +149,4 @@ ErrorCode FileWriter::get_last_error() const
     return m_errcode;
 }
 
-}  // namespace common::utils::filesystem
+}  // namespace common::filesystem

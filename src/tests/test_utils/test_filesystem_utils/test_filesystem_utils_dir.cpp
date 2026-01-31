@@ -8,9 +8,7 @@
 
 namespace test::test_utils::test_filesystem_utils {
 
-using namespace common::utils::filesystem;
-using namespace common::types::filesystem;
-using namespace common::constants::filesystem;
+using namespace common::filesystem;
 
 class TestFilesystemUtilsDir : public TestFilesystemUtilsBase {
 protected:

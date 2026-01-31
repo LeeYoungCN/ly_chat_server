@@ -14,12 +14,12 @@
 
 #include <system_error>
 
-namespace common::utils::filesystem::internal {
+namespace common::filesystem::internal {
 
 void ConvertSysEcToErrorCode(const std::error_code& ec);
 
 void ConvertExceptionToErrorCode(const std::exception& ex);
 
-}  // namespace common::utils::filesystem::internal
+}  // namespace common::filesystem::internal
 
 #endif  // COMMON_UTILS_FILESYSTEM_UTILS_INTERNAL_H

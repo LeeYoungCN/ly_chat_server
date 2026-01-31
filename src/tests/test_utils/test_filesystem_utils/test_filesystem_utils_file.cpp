@@ -19,9 +19,7 @@
 
 namespace test::test_utils::test_filesystem_utils {
 
-using namespace common::utils::filesystem;
-using namespace common::types::filesystem;
-using namespace common::constants::filesystem;
+using namespace common::filesystem;
 
 class TestFilesystemUtilsFile : public TestFilesystemUtilsBase {
 protected:
@@ -65,26 +63,26 @@ TEST_F(TestFilesystemUtilsFile, FileExists_TypeInvalid)
 
 TEST_F(TestFilesystemUtilsFile, CreateFile_AlreadyExists)
 {
-    EXPECT_TRUE(common::utils::filesystem::CreateFile(m_process));
+    EXPECT_TRUE(common::filesystem::CreateFile(m_process));
     EXPECT_EQ(get_thread_last_err(), ERR_COMM_ALREADY_EXISTS) << get_thread_last_err_msg();
 }
 
 TEST_F(TestFilesystemUtilsFile, CreateFile_TypeInvalid)
 {
-    EXPECT_FALSE(common::utils::filesystem::CreateFile(m_processDir));
+    EXPECT_FALSE(common::filesystem::CreateFile(m_processDir));
     EXPECT_EQ(get_thread_last_err(), ERR_COMM_NOT_FILE) << get_thread_last_err_msg();
 }
 
 TEST_F(TestFilesystemUtilsFile, CreateFile_Success)
 {
-    EXPECT_TRUE(common::utils::filesystem::CreateFile(m_testFile));
+    EXPECT_TRUE(common::filesystem::CreateFile(m_testFile));
     EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS) << get_thread_last_err_msg();
 }
 
 TEST_F(TestFilesystemUtilsFile, CreateFile_DirNotExist)
 {
     auto newFile = ToAbsolutePath(m_testFileName, m_processDir + "/nonexistent");
-    EXPECT_FALSE(common::utils::filesystem::CreateFile(newFile));
+    EXPECT_FALSE(common::filesystem::CreateFile(newFile));
     EXPECT_EQ(get_thread_last_err(), ERR_COMM_NOT_FOUND) << get_thread_last_err_msg();
 }
 
@@ -103,7 +101,7 @@ TEST_F(TestFilesystemUtilsFile, DeleteFile_TypeInvalid)
 
 TEST_F(TestFilesystemUtilsFile, DeleteFile_FileExist)
 {
-    EXPECT_TRUE(common::utils::filesystem::CreateFile(m_testFile));
+    EXPECT_TRUE(common::filesystem::CreateFile(m_testFile));
     EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS) << get_thread_last_err_msg();
     EXPECT_TRUE(DeleteFile(m_testFile));
     EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS) << get_thread_last_err_msg();

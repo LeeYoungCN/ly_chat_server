@@ -29,11 +29,8 @@
 #include "common/utils/error_code_utils.h"
 #include "common/utils/filesystem_utils.h"
 
-namespace common::utils::filesystem {
-
+namespace common::filesystem {
 namespace fs = std::filesystem;
-using namespace common::constants::filesystem;
-using namespace common::types::filesystem;
 
 EntryType GetEntryType(std::string_view path)
 {
@@ -95,4 +92,4 @@ const char* GetEntryTypeString(EntryType type)
     }
 }
 
-}  // namespace common::utils::filesystem
+}  // namespace common::filesystem

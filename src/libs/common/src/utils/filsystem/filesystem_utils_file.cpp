@@ -33,9 +33,8 @@
 
 namespace {
 namespace fs = std::filesystem;
-using namespace common::constants::filesystem;
-using namespace common::types::filesystem;
-using namespace common::utils::filesystem::internal;
+using namespace common::filesystem;
+using namespace common::filesystem::internal;
 
 common::date_time::TimestampMs GetFileModifyTimestampInternal(std::string_view path)
 {
@@ -47,12 +46,10 @@ common::date_time::TimestampMs GetFileModifyTimestampInternal(std::string_view p
 }
 }  // namespace
 
-namespace common::utils::filesystem {
+namespace common::filesystem {
 
 namespace fs = std::filesystem;
-using namespace common::constants::filesystem;
-using namespace common::types::filesystem;
-using namespace common::utils::filesystem::internal;
+using namespace common::filesystem::internal;
 
 bool FileExists(std::string_view path)
 {
@@ -233,7 +230,7 @@ std::string ReadTextFile(std::string_view path)
     return {std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()};
 }
 
-types::filesystem::ByteVector ReadBinaryFile(std::string_view path)
+ByteVector ReadBinaryFile(std::string_view path)
 {
     if (!FileExists(path)) {
         DEBUG_LOGGER_ERR("[FAILED] Read binary file: {}, message: {}", path, get_thread_last_err_msg());
@@ -310,7 +307,7 @@ FileSize GetFileSize(std::string_view path)
     return size;
 }
 
-types::filesystem::FileInfo GetFileInfo(std::string_view path)
+FileInfo GetFileInfo(std::string_view path)
 {
     FileInfo fileInfo{};
     fileInfo.path = path;
@@ -327,4 +324,4 @@ types::filesystem::FileInfo GetFileInfo(std::string_view path)
     return fileInfo;
 }
 
-}  // namespace common::utils::filesystem
+}  // namespace common::filesystem

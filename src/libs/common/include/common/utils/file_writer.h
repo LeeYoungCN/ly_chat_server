@@ -10,7 +10,7 @@
 #include "common/common_error_code.h"
 #include "common/types/error_code_types.h"
 
-namespace common::utils::filesystem {
+namespace common::filesystem {
 
 enum FileWriteMode {
     OVERWRITE,
@@ -46,6 +46,6 @@ private:
     size_t m_currSize{};
 };
 
-}  // namespace common::utils::filesystem
+}  // namespace common::filesystem
 
 #endif  // COMMON_UTILS_FILE_WRITER_H

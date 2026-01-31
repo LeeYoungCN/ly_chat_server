@@ -21,7 +21,7 @@
 #include "common/utils/error_code_utils.h"
 #include "internal/common/utils/filesystem_utils_internal.h"
 
-namespace common::utils::filesystem::internal {
+namespace common::filesystem::internal {
 
 void ConvertGenericCategory(const std::error_code& ec)
 {
@@ -96,4 +96,4 @@ void ConvertSysEcToErrorCode(const std::error_code& ec)
     }
 }
 
-}  // namespace common::utils::filesystem::internal
+}  // namespace common::filesystem::internal

@@ -86,7 +86,6 @@ const std::array<std::string_view, 12> MONTH_ABBR_NAMES = {
 namespace common::date_time {
 
 using namespace ::common::date_time;
-using namespace ::common::date_time;
 
 std::string_view GetMonthFullName(uint32_t month)
 {
@@ -270,8 +269,9 @@ size_t FormatTimeBuffer(char* buffer, size_t bufferSize, const TimeComponent& ti
         }
     }
     if (formatIdx < format.length() || bufferIdx >= bufferSize) {
-        DEBUG_LOGGER_ERR(
-            "Incomplete format processing (remaining: {}), message: {}", format.data() + formatIdx, get_thread_last_err_msg());
+        DEBUG_LOGGER_ERR("Incomplete format processing (remaining: {}), message: {}",
+                         format.data() + formatIdx,
+                         get_thread_last_err_msg());
         bufferIdx = 0;
     } else {
         set_thread_last_err(ERR_COMM_SUCCESS);
