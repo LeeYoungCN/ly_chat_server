@@ -16,7 +16,7 @@
 #include <unordered_map>
 
 #include "common/common_error_code.h"
-#include "common/debug/debug_log.h"
+#include "common/debug/debug_logger.h"
 #include "common/types/error_code_types.h"
 #include "common/utils/error_code_utils.h"
 #include "internal/common/utils/filesystem_utils_internal.h"
@@ -63,15 +63,15 @@ void ConvertExceptionToErrorCode(const std::exception& ex)
     try {
         std::throw_with_nested(ex);
     } catch (const std::filesystem::filesystem_error& fse) {
-        DEBUG_LOG_WARN("File system error: %s (code: %d)", fse.what(), fse.code().value());
+        DEBUG_LOGGER_WARN("File system error: {} (code: {})", fse.what(), fse.code().value());
         ConvertSysEcToErrorCode(fse.code());
         return;
     } catch (const std::system_error& se) {
-        DEBUG_LOG_WARN("System error: %s (code: %d)", se.what(), se.code().value());
+        DEBUG_LOGGER_WARN("System error: {} (code: {})", se.what(), se.code().value());
         ConvertSysEcToErrorCode(se.code());
         return;
     } catch (const std::exception& other) {
-        DEBUG_LOG_EXCEPTION(other, "Non-filesystem exception");
+        DEBUG_LOGGER_ERR("Non-filesystem exception, ex: {}.", other.what());
         set_thread_last_err(ERR_COMM_SYSTEM_ERROR);
         return;
     }
@@ -84,15 +84,15 @@ void ConvertSysEcToErrorCode(const std::error_code& ec)
         return;
     }
     // 详细日志便于调试
-    DEBUG_LOG_WARN(
-        "Convert error: %s (category: %s, value: %d)", ec.message().c_str(), ec.category().name(), ec.value());
+    DEBUG_LOGGER_WARN(
+        "Convert error: {} (category: {}, value: {})", ec.message().c_str(), ec.category().name(), ec.value());
 
     if (ec.category() == std::system_category()) {
         ConvertSystemCategory(ec);
     } else if (ec.category() == std::generic_category()) {
         ConvertGenericCategory(ec);
     } else {
-        DEBUG_LOG_FATAL("Unkown");
+        DEBUG_LOGGER_FATAL("Unkown");
     }
 }
 

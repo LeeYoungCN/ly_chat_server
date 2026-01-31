@@ -27,7 +27,7 @@
 
 #include "common/common_error_code.h"
 #include "common/constants/filesystem_constants.h"
-#include "common/debug/debug_log.h"
+#include "common/debug/debug_logger.h"
 #include "common/types/error_code_types.h"
 #include "common/types/filesystem_types.h"
 #include "common/utils/error_code_utils.h"
@@ -49,14 +49,14 @@ std::string GetProcessPath()
     DWORD length = GetModuleFileNameA(nullptr, path, MAX_PATH_STD);
     if (length == 0 || length >= MAX_PATH_STD) {
         set_thread_last_err(ERR_COMM_SYSTEM_ERROR);
-        DEBUG_LOG_ERR("[FAILED][WIN32] Get process path, length: %d", length);
+        DEBUG_LOGGER_ERR("[FAILED][WIN32] Get process path, length: {}", length);
         length = 0;
     }
 #elif PLATFORM_LINUX
     auto length = readlink("/proc/self/exe", path, MAX_PATH_STD - 1);
     if (length == -1) {
         set_thread_last_err(ERR_COMM_SYSTEM_ERROR);
-        DEBUG_LOG_ERR("[FAILED][Linux]Failed to get process path.");
+        DEBUG_LOGGER_ERR("[FAILED][Linux]Failed to get process path.");
         length = 0;
     }
     path[length] = '\0';
@@ -64,13 +64,13 @@ std::string GetProcessPath()
     uint32_t size = sizeof(path);
     if (_NSGetExecutablePath(path, &size) != 0) {
         set_thread_last_err(ERR_COMM_SYSTEM_ERROR);
-        DEBUG_LOG_ERR("[FAILED][Macos]Failed to get process path.");
+        DEBUG_LOGGER_ERR("[FAILED][Macos]Failed to get process path.");
     }
 #else
 #error "Unsupport system."
 #endif
     set_thread_last_err(ERR_COMM_SUCCESS);
-    DEBUG_LOG_DBG("[SUCCESS] Get process path: %s", path);
+    DEBUG_LOGGER_DBG("[SUCCESS] Get process path: {}", path);
     return path;
 }
 
@@ -90,15 +90,15 @@ PathString GetCurrentWorkingDirectory()
 {
     try {
         auto p = fs::current_path();
-        DEBUG_LOG_DBG("[SUCCESS] Get current working dir: %s.", p.string().c_str());
+        DEBUG_LOGGER_DBG("[SUCCESS] Get current working dir: {}.", p.string().c_str());
         set_thread_last_err(ERR_COMM_SUCCESS);
         return p.string();
     } catch (const fs::filesystem_error& e) {
-        DEBUG_LOG_EXCEPTION(e, "[FAILED] Get current working dir.");
+        DEBUG_LOGGER_ERR("[FAILED] Get current working dir.");
         ConvertSysEcToErrorCode(e.code());
         return "";
     } catch (const std::exception& e) {
-        DEBUG_LOG_EXCEPTION(e, "[FAILED] Get current working dir.");
+        DEBUG_LOGGER_ERR("[FAILED] Get current working dir.");
         ConvertExceptionToErrorCode(e);
         return "";
     }
@@ -109,7 +109,7 @@ PathString JoinPaths(const PathList& parts)
 {
     if (parts.empty()) {
         set_thread_last_err(ERR_COMM_PATH_INVALID);
-        DEBUG_LOG_ERR("[FAILED] Join paths. list empty: %s", get_thread_last_err_msg());
+        DEBUG_LOGGER_ERR("[FAILED] Join paths. list empty: {}", get_thread_last_err_msg());
         return "";
     }
     fs::path result(parts[0]);
@@ -125,15 +125,17 @@ PathString NormalizePath(std::string_view path)
     try {
         auto normalized = fs::path(path).lexically_normal();
         set_thread_last_err(ERR_COMM_SUCCESS);
-        DEBUG_LOG_DBG("[SUCCESS] Normalized path: %s, message: %s", path.data(), get_thread_last_err_msg());
+        DEBUG_LOGGER_DBG("[SUCCESS] Normalized path: {}, message: {}", path, get_thread_last_err_msg());
         return normalized.string();
     } catch (const fs::filesystem_error& e) {
         ConvertSysEcToErrorCode(e.code());
-        DEBUG_LOG_EXCEPTION(e, "[FAILED] Normalized path: %s, message: %s", path.data(), get_thread_last_err_msg());
+        DEBUG_LOGGER_ERR(
+            "[FAILED] Normalized path: {}, message: {}. ex: {}", path, get_thread_last_err_msg(), e.what());
         return "";
     } catch (const std::exception& e) {
         ConvertExceptionToErrorCode(e);
-        DEBUG_LOG_EXCEPTION(e, "[FAILED] Normalized path: %s, message: %s", path.data(), get_thread_last_err_msg());
+        DEBUG_LOGGER_ERR(
+            "[FAILED] Normalized path: {}, message: {}. ex: {}", path, get_thread_last_err_msg(), e.what());
         return "";
     }
 }
@@ -150,15 +152,17 @@ PathString ToAbsolutePath(std::string_view relPath, std::string_view baseDir)
     try {
         auto absPath = fs::absolute(combined).lexically_normal();
         set_thread_last_err(ERR_COMM_SUCCESS);
-        DEBUG_LOG_DBG("[SUCCESS] Absolute path: %s, message: %s", relPath.data(), get_thread_last_err_msg());
+        DEBUG_LOGGER_DBG("[SUCCESS] Absolute path: {}, message: {}", relPath, get_thread_last_err_msg());
         return absPath.string();
     } catch (const fs::filesystem_error& e) {
         ConvertSysEcToErrorCode(e.code());
-        DEBUG_LOG_EXCEPTION(e, "[FAILED] Absolute path: %s, message: %s", relPath.data(), get_thread_last_err_msg());
+        DEBUG_LOGGER_ERR(
+            "[FAILED] Absolute path: {}, message: {}. ex: {}", relPath, get_thread_last_err_msg(), e.what());
         return "";
     } catch (const std::exception& e) {
         ConvertExceptionToErrorCode(e);
-        DEBUG_LOG_EXCEPTION(e, "[FAILED] Absolute path: %s, message: %s", relPath.data(), get_thread_last_err_msg());
+        DEBUG_LOGGER_ERR(
+            "[FAILED] Absolute path: {}, message: {}.ex: {}", relPath, get_thread_last_err_msg(), e.what());
         return "";
     }
 }

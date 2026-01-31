@@ -14,7 +14,7 @@
 
 #include "common/common_error_code.h"
 #include "common/constants/date_time_constants.h"
-#include "common/debug/debug_log.h"
+#include "common/debug/debug_logger.h"
 #include "common/types/date_time_types.h"
 #include "common/types/error_code_types.h"
 #include "common/utils/error_code_utils.h"
@@ -32,9 +32,9 @@ bool SafeLocalTime(time_t timer, tm& timeInfo)
         set_thread_last_err(ERR_COMM_TIMESTAMP_INVALID);
         // 特别处理负数时间戳的错误提示
         if (timer < 0) {
-            DEBUG_LOG_WARN("[FAILED] localtime_s may not support negative. time: %lld, err: %d", timer, err);
+            DEBUG_LOGGER_WARN("[FAILED] localtime_s may not support negative. time: {}, err: {}", timer, err);
         } else {
-            DEBUG_LOG_ERR("[FAILED] localtime_s. time: %lld, err: %d", timer, err);
+            DEBUG_LOGGER_ERR("[FAILED] localtime_s. time: {}, err: {}", timer, err);
         }
         return false;
     }
@@ -42,7 +42,7 @@ bool SafeLocalTime(time_t timer, tm& timeInfo)
     // Linux/macOS 使用 localtime_r
     if (localtime_r(&timer, &timeInfo) == nullptr) {
         set_thread_last_err(ERR_COMM_TIMESTAMP_INVALID);
-        DEBUG_LOG_ERR("[FAILED] localtime_r. time: %lld, errno: %d", timer, errno);
+        DEBUG_LOGGER_ERR("[FAILED] localtime_r. time: {}, errno: {}", timer, errno);
         return false;
     }
 #endif
@@ -59,9 +59,9 @@ bool SafeGmtime(time_t timer, tm& timeInfo)
         set_thread_last_err(ERR_COMM_TIMESTAMP_INVALID);
         // 针对负数时间戳的错误做特殊提示
         if (timer < 0) {
-            DEBUG_LOG_WARN("[FAILED] gmtime_s may not support negative time: %lld, err: %d", timer, err);
+            DEBUG_LOGGER_WARN("[FAILED] gmtime_s may not support negative time: {}, err: {}", timer, err);
         } else {
-            DEBUG_LOG_ERR("[FAILED] gmtime_s time: %lld, err: %d", timer, err);
+            DEBUG_LOGGER_ERR("[FAILED] gmtime_s time: {}, err: {}", timer, err);
         }
         return false;
     }
@@ -69,7 +69,7 @@ bool SafeGmtime(time_t timer, tm& timeInfo)
     // Linux/macOS使用gmtime_r（对负数时间戳支持更完善）
     if (gmtime_r(&timer, &timeInfo) == nullptr) {
         set_thread_last_err(ERR_COMM_TIMESTAMP_INVALID);
-        DEBUG_LOG_ERR("[FAILED] gmtime_r. time: %lld, errno: %d", timer, errno);
+        DEBUG_LOGGER_ERR("[FAILED] gmtime_r. time: {}, errno: {}.", timer, errno);
         return false;
     }
 #endif
@@ -152,12 +152,12 @@ TimeComponent TimeStampMs2Component(TimestampMs timestamp, TimeZone timeZone)
     }
 
     if (!rst) {
-        DEBUG_LOG_ERR("[FAILED] Get time info, zone: %s, message: %s.", GetTimeZoneString(timeZone), get_thread_last_err_msg());
+        DEBUG_LOGGER_ERR("[FAILED] Get time info, zone: {}, message: {}.", GetTimeZoneString(timeZone), get_thread_last_err_msg());
     } else {
         ConvertTmToTimeComp(timeInfo, millis, timeComp);
         set_thread_last_err(ERR_COMM_SUCCESS);
-        DEBUG_LOG_DBG(
-            "[SUCCESS] Get time info, zone: %s, message: %s.", GetTimeZoneString(timeZone), get_thread_last_err_msg());
+        DEBUG_LOGGER_DBG(
+            "[SUCCESS] Get time info, zone: {}, message: {}.", GetTimeZoneString(timeZone), get_thread_last_err_msg());
     }
     return timeComp;
 }

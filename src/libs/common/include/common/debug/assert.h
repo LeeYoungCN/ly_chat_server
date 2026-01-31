@@ -12,7 +12,7 @@
 #ifndef COMMON_DEBUG_ASSERT_H
 #define COMMON_DEBUG_ASSERT_H
 
-#include "common/debug/debug_log.h"
+#include "common/debug/debug_logger.h"
 
 #ifdef NDEBUG
 

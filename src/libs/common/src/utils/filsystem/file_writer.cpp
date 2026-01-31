@@ -5,7 +5,7 @@
 
 #include "common/common_error_code.h"
 #include "common/constants/filesystem_constants.h"
-#include "common/debug/debug_log.h"
+#include "common/debug/debug_logger.h"
 #include "common/utils/date_time_utils.h"
 #include "common/utils/error_code_utils.h"
 #include "common/utils/filesystem_utils.h"
@@ -45,14 +45,14 @@ ErrorCode FileWriter::open_(FileWriteMode mode)
         m_errcode = get_thread_last_err();
         std::error_code ec(errno, std::generic_category());
         ConvertSysEcToErrorCode(ec);
-        DEBUG_LOG_ERR("Open file failed. file: %s, mode: %s, msg: %s",
+        DEBUG_LOGGER_ERR("Open file failed. file: {}, mode: {}, msg: {}",
                       m_file.data(),
                       FileWriteModeStr(mode),
                       get_thread_last_err_msg());
         return m_errcode;
     }
     m_currSize = GetFileSize(m_file);
-    DEBUG_LOG_DBG("Open file success. file: %s, mode: %s", m_file.data(), FileWriteModeStr(mode));
+    DEBUG_LOGGER_DBG("Open file success. file: {}, mode: {}", m_file.data(), FileWriteModeStr(mode));
     m_errcode = ERR_COMM_SUCCESS;
     return m_errcode;
 }
@@ -62,7 +62,7 @@ ErrorCode FileWriter::open(std::string_view file, FileWriteMode mode)
     close();
     if (file.empty()) {
         m_errcode = ERR_COMM_PARAM_EMPTY;
-        DEBUG_LOG_ERR("Open file failed. msg: %s.", get_comm_err_msg(m_errcode));
+        DEBUG_LOGGER_ERR("Open file failed. msg: {}.", get_comm_err_msg(m_errcode));
         return m_errcode;
     }
     m_file = ToAbsolutePath(file);
@@ -94,7 +94,7 @@ void FileWriter::write(std::string_view str)
     if (!m_stream.is_open()) {
         set_thread_last_err(ERR_COMM_FILE_NOT_OPEN);
         m_errcode = ERR_COMM_FILE_NOT_OPEN;
-        DEBUG_LOG_ERR("Append failed. file: %s, msg: %s.", m_file.c_str(), get_comm_err_msg(m_errcode));
+        DEBUG_LOGGER_ERR("Append failed. file: {}, msg: {}.", m_file.c_str(), get_comm_err_msg(m_errcode));
     } else {
         m_errcode = ERR_COMM_SUCCESS;
         m_stream << str;
@@ -106,7 +106,7 @@ void FileWriter::write_line(std::string_view str)
 {
     if (!m_stream.is_open()) {
         m_errcode = ERR_COMM_FILE_NOT_OPEN;
-        DEBUG_LOG_ERR("Append failed. file: %s, msg: %s.", m_file.c_str(), get_comm_err_msg(m_errcode));
+        DEBUG_LOGGER_ERR("Append failed. file: {}, msg: {}.", m_file.c_str(), get_comm_err_msg(m_errcode));
     } else {
         m_errcode = ERR_COMM_SUCCESS;
         m_stream << str << '\n';

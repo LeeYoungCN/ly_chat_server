@@ -7,7 +7,7 @@
 using namespace common::debug;
 
 extern "C" {
-void common_debug_log_c(DebugLevel level, const char* file, int line, const char* func, const char* format, ...)
+void common_debug_log(const char* file, int line, const char* func, DebugLevel level, const char* format, ...)
 {
     if (!DebugLogger::instance().should_log(level)) {
         return;
@@ -15,7 +15,7 @@ void common_debug_log_c(DebugLevel level, const char* file, int line, const char
 
     va_list args;
     va_start(args, format);
-    DebugLogger::instance().log_va(level, file, line, func, format, args);
+    DebugLogger::instance().log_va(file, line, func, level, format, args);
     va_end(args);
 }
 

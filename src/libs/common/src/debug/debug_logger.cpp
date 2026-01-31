@@ -1,6 +1,5 @@
 #include "common/debug/debug_logger.h"
 
-#include <utility>
 
 #include "common/compiler/macros.h"
 #include "common/debug/debug_level.h"
@@ -31,20 +30,19 @@ void DebugLogger::set_debug_log_level(DebugLevel level)
     _logLevel = level;
 }
 
-void DebugLogger::log_va(DebugLevel level, const char* file, int line, const char* func, const char* format,
+void DebugLogger::log_va(const char* file, int line, const char* func, DebugLevel level, const char* format,
                          va_list args)
 {
     log_it(level, va_list_to_string(format, args), file, line, func);
 }
 
-void DebugLogger::log_it(DebugLevel level, std::string&& message, const char* file, int line, const char* func)
+void DebugLogger::log_it(DebugLevel level, const std::string& message, const char* file, int line, const char* func)
 {
     if (!should_log(level)) {
         return;
     }
 
-    std::string logStr = format_log(level, std::move(message), file, line, func);
-    std::cout << logStr << std::endl;
+    std::cout << format_log(level, message, file, line, func) << std::endl;
 }
 
 bool DebugLogger::should_log(DebugLevel level)
@@ -52,7 +50,7 @@ bool DebugLogger::should_log(DebugLevel level)
     return (_logLevel != DebugLevel::DEBUG_LVL_OFF && level >= _logLevel);
 }
 
-std::string DebugLogger::format_log(DebugLevel level, std::string&& message, const char* file, int line,
+std::string DebugLogger::format_log(DebugLevel level, const std::string& message, const char* file, int line,
                                     const char* func)
 {
     if (file != nullptr) {

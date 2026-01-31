@@ -24,7 +24,7 @@
 #include <system_error>
 
 #include "common/common_error_code.h"
-#include "common/debug/debug_log.h"
+#include "common/debug/debug_logger.h"
 #include "common/types/filesystem_types.h"
 #include "common/utils/error_code_utils.h"
 #include "common/utils/filesystem_utils.h"
@@ -45,7 +45,7 @@ EntryType GetEntryType(std::string_view path)
     std::error_code ec;  // 用于非抛出式错误处理
     fs::file_status status = fs::symlink_status(path, ec);
     if (ec) {
-        DEBUG_LOG_ERR("Failed to get symlink status. errCode: %s", ec.value());
+        DEBUG_LOGGER_ERR("Failed to get symlink status. errCode: {}", ec.value());
         set_thread_last_err(ERR_COMM_SYSTEM_ERROR);
         return EntryType::UNKNOWN;
     }
@@ -65,7 +65,7 @@ EntryType GetEntryType(std::string_view path)
             return EntryType::SOCKET;
         case fs::file_type::unknown:
         default:
-            DEBUG_LOG_WARN("Unknown entry type: %s", path.data());
+            DEBUG_LOGGER_WARN("Unknown entry type: {}", path);
             return EntryType::UNKNOWN;
     }
 }
