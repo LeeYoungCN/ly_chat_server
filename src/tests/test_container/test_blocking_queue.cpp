@@ -6,6 +6,18 @@
 
 namespace test::test_container::test_blocking_queue {
 using namespace common::container;
+
+class TestEmplaceEntry {
+public:
+    TestEmplaceEntry() = default;
+    ~TestEmplaceEntry() = default;
+    explicit TestEmplaceEntry(int32_t n) : x(n) {}
+    [[nodiscard]] int32_t get() const { return x; };
+
+private:
+    int32_t x = -1;
+};
+
 class TestBlockingQueue : public ::testing::Test {
 protected:
     static void SetUpTestSuite() {}
@@ -67,6 +79,24 @@ TEST_F(TestBlockingQueue, enqueue)
     EXPECT_TRUE(queue.full());
 }
 
+TEST_F(TestBlockingQueue, emplace_back)
+{
+    uint32_t capacity = 100;
+    auto queue = BlockingQueue<TestEmplaceEntry>(capacity);
+
+    EXPECT_EQ(capacity, queue.capacity());
+    EXPECT_TRUE(queue.empty());
+
+    for (uint32_t i = 0; i < capacity; i++) {
+        EXPECT_TRUE(queue.emplace_back(i)) << "i = " << i;
+        EXPECT_EQ(i + 1, queue.size());
+        EXPECT_EQ(queue[i].get(), i);
+    }
+
+    EXPECT_FALSE(queue.emplace_back(0));
+    EXPECT_TRUE(queue.full());
+}
+
 TEST_F(TestBlockingQueue, clear)
 {
     uint32_t capacity = 100;
@@ -107,6 +137,29 @@ TEST_F(TestBlockingQueue, enqueue_overrun)
 
     for (uint32_t i = 0; i < capacity; ++i) {
         EXPECT_EQ(queue.at(i), capacity + i);
+    }
+}
+
+TEST_F(TestBlockingQueue, emplace_back_overrun)
+{
+    uint32_t capacity = 100;
+    auto queue = BlockingQueue<TestEmplaceEntry>(capacity);
+
+    EXPECT_EQ(capacity, queue.capacity());
+    EXPECT_TRUE(queue.empty());
+
+    for (uint32_t i = 0; i < 2 * capacity; i++) {
+        queue.emplace_back_overrun(i);
+        if (i < capacity) {
+            EXPECT_EQ(i + 1, queue.size());
+        } else {
+            EXPECT_EQ(capacity, queue.size());
+            EXPECT_EQ(queue[0].get(), i - capacity + 1);
+        }
+    }
+
+    for (uint32_t i = 0; i < capacity; ++i) {
+        EXPECT_EQ(queue.at(i).get(), capacity + i);
     }
 }
 
@@ -157,4 +210,4 @@ TEST_F(TestBlockingQueue, queue_and_dequeue)
     }
 }
 
-}  // namespace test::test_container::test_CString
+}  // namespace test::test_container::test_blocking_queue

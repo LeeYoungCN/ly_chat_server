@@ -62,7 +62,7 @@ public:
         }
     }
 
-    bool enqueue(const T& item) { return T(item); }
+    bool enqueue(const T& item) { return enqueue(T(item)); }
 
     bool enqueue(T&& item)
     {
@@ -101,6 +101,7 @@ public:
     bool dequeue()
     {
         if (empty()) {
+            DEBUG_LOGGER_ERR("Queue empty.");
             return false;
         }
 
@@ -111,6 +112,7 @@ public:
     bool front(T& item)
     {
         if (empty()) {
+            DEBUG_LOGGER_ERR("Queue empty.");
             return false;
         }
         item = _items[_head];
