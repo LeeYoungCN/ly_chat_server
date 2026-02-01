@@ -1,4 +1,6 @@
 #include "common/debug/debug_logger.h"
+#include <mutex>
+#include <system_error>
 
 #include "common/compiler/macros.h"
 #include "common/debug/debug_level.h"
@@ -40,8 +42,9 @@ void DebugLogger::log_it(DebugLevel level, const std::string& message, const cha
     if (!should_log(level)) {
         return;
     }
-
-    std::cout << format_log(level, message, file, line, func) << std::endl;
+    auto logmsg = format_log(level, message, file, line, func);
+    std::lock_guard lock(_mtx);
+    std::cout << logmsg << std::endl;
 }
 
 bool DebugLogger::should_log(DebugLevel level)

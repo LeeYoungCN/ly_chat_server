@@ -144,6 +144,7 @@ private:
 
 private:
     DebugLevel _logLevel = DebugLevel::DEBUG_LVL_INFO;
+    std::mutex _mtx;
 };
 
 }  // namespace common::debug
