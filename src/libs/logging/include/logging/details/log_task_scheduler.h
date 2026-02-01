@@ -1,6 +1,7 @@
 #ifndef LOGGING_DETAILS_LOG_TASK_SCHEDULER_H
 #define LOGGING_DETAILS_LOG_TASK_SCHEDULER_H
 
+#include <condition_variable>
 #include <cstdint>
 #include <memory>
 #include <mutex>
