@@ -1,39 +1,40 @@
 #include "logging/sinks/basic_file_sink.h"
+#include <mutex>
 
 #include "common/utils/file_writer.h"
 #include "common/utils/filesystem_utils.h"
 
 namespace logging {
-using namespace common::utils::filesystem;
+using namespace common::filesystem;
 
-BasicFileSink::BasicFileSink()
-{
-    m_file = JoinPaths({
-        GetCurrentWorkingDirectory(),
-        "logs",
-        GetProcessFileName() + ".log"});
-    m_fileWriter.open(m_file, FileWriteMode::OVERWRITE);
-}
+BasicFileSink::BasicFileSink(): logging::BasicFileSink("", true) { }
 
 BasicFileSink::~BasicFileSink()
 {
-    m_fileWriter.close();
+    _fileWriter.close();
 }
 
-BasicFileSink::BasicFileSink(std::string_view file, bool overwrite) : m_file(file), m_overwrite(overwrite)
+BasicFileSink::BasicFileSink(std::string_view file, bool overwrite) : _filePath(file), _overwrite(overwrite)
 {
-    m_fileWriter.open(m_file, (m_overwrite ? FileWriteMode::OVERWRITE : FileWriteMode::APPEND));
+    if (_filePath.empty()) {
+        _filePath = JoinPaths({
+        GetCurrentWorkingDirectory(),
+        "logs",
+        GetProcessFileName() + ".log"});
+    }
+    _fileWriter.open(_filePath, (_overwrite ? FileWriteMode::OVERWRITE : FileWriteMode::APPEND));
 }
 
 void BasicFileSink::write(std::string_view message)
 {
-    m_fileWriter.write_line(message);
-    m_fileWriter.flush();
+    std::lock_guard lock(_mutex);
+    _fileWriter.write_line(message);
 }
 
 void BasicFileSink::flush()
 {
-    m_fileWriter.flush();
+    std::lock_guard lock(_mutex);
+    _fileWriter.flush();
 }
 
 }  // namespace logging

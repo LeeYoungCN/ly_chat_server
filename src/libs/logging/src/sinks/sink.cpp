@@ -7,7 +7,7 @@
 
 namespace logging {
 
-void Sink::format(const LogRecord &logRecord, std::string &content)
+void Sink::format(const details::LogMsg &logRecord, std::string &content)
 {
     auto it = std::back_inserter(content);
 
@@ -18,9 +18,9 @@ void Sink::format(const LogRecord &logRecord, std::string &content)
 
     if (logRecord.source.IsValid()) {
         it = std::format_to(
-            it, "[{}:{}]", common::utils::filesystem::GetFileName(logRecord.source.file), logRecord.source.line);
+            it, "[{}:{}]", common::filesystem::GetFileName(logRecord.source.file), logRecord.source.line);
     }
 
-    it = std::format_to(it, ": {}", logRecord.message);
+    it = std::format_to(it, ": {}", logRecord.data);
 }
 }  // namespace logging

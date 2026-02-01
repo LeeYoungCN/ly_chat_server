@@ -1,34 +1,43 @@
 #include "logging/logger.h"
 
 #include <cstdarg>
+#include <utility>
+#include "common/types/logging_types.h"
 
 namespace logging {
+using namespace details;
 
-Logger::Logger(std::string_view name) : m_name(name) {}
+Logger::Logger(std::string name) : _name(std::move(name)) {}
 
-void Logger::set_level(LogLevel level)
+void Logger::set_log_level(LogLevel level)
 {
-    m_level = level;
+    _logLevel = level;
 }
 
-void Logger::set_name(std::string_view name)
+void Logger::set_flush_level(LogLevel level)
 {
-    this->m_name = name;
+    _autoFlush = true;
+    _flushLevel = level;
+}
+
+void Logger::set_name(std::string name)
+{
+    this->_name = std::move(name);
 }
 
 std::string_view Logger::get_name() const
 {
-    return this->m_name;
+    return this->_name;
 }
 
 void Logger::add_sink(const std::shared_ptr<Sink>& sink)
 {
-    m_sinkList.emplace_back(sink);
+    _sinkList.emplace_back(sink);
 }
 
 bool Logger::should_log(LogLevel level) const
 {
-    return level >= m_level;
+    return (_logLevel != LOG_LVL_OFF && level >= _logLevel);
 }
 
 void Logger::log(LogSource source, LogLevel level, std::string message)
@@ -37,20 +46,28 @@ void Logger::log(LogSource source, LogLevel level, std::string message)
         return;
     }
 
-    LogRecord logRecord(this->m_name, level, std::move(message), source);
+    log_it(LogMsg(this->_name, level, std::move(message), source));
+}
 
-    for (const auto& sink : m_sinkList) {
-        sink->log(logRecord);
+void Logger::log_it(LogMsg&& logMsg)
+{
+    for (const auto& sink : _sinkList) {
+        sink->log(logMsg);
     }
 
-    if (level >= LogLevel::LOG_LVL_ERR) {
+    if (_flushLevel != LogLevel::LOG_LVL_OFF && logMsg.level >= _flushLevel) {
         flush();
     }
 }
 
 void Logger::flush()
 {
-    for (const auto& sink : m_sinkList) {
+    flush_it();
+}
+
+void Logger::flush_it()
+{
+    for (const auto& sink : _sinkList) {
         sink->flush();
     }
 }
@@ -58,7 +75,7 @@ void Logger::flush()
 Logger::~Logger()
 {
     flush();
-    m_sinkList.clear();
+    _sinkList.clear();
 };
 
 }  // namespace logging
