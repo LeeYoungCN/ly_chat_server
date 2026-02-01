@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <mutex>
 #include <queue>
 #include <thread>
 #include <utility>
