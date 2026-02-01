@@ -3,6 +3,7 @@
 
 #include <cstdarg>
 #include <format>
+#include <mutex>
 #include <string>
 
 #include "common/base/singleton.h"
