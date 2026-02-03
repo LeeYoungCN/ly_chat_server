@@ -1,22 +1,20 @@
 #ifndef LOGGING_DETAILS_LOG_TASK_SCHEDULER_H
 #define LOGGING_DETAILS_LOG_TASK_SCHEDULER_H
 
-#include <condition_variable>
 #include <cstdint>
 #include <memory>
-#include <mutex>
-#include <queue>
 #include <thread>
 #include <utility>
 #include <vector>
 
+#include "common/container/concurrent_blocking_queue.hpp"
 #include "logging/async_logger.h"
 #include "logging/details/log_msg.h"
 
 namespace logging {
 class AsyncLogger;
 namespace details {
-using logger_ptr = std::shared_ptr<AsyncLogger>;
+using LoggerPtr = std::shared_ptr<AsyncLogger>;
 enum class TaskType {
     LOG,
     FLUSH,
@@ -26,13 +24,14 @@ enum class TaskType {
 struct LogTask {
     TaskType type = TaskType::SHUTDOWN;
     LogMsg logMsg;
-    logger_ptr logger;
+    LoggerPtr logger;
 
+    LogTask() = default;
     explicit LogTask(TaskType type) : LogTask(type, nullptr, LogMsg()) {}
 
-    LogTask(TaskType type, logger_ptr logger) : LogTask(type, std::move(logger), LogMsg()) {}
+    LogTask(TaskType type, LoggerPtr logger) : LogTask(type, std::move(logger), LogMsg()) {}
 
-    LogTask(TaskType type, logger_ptr logger, LogMsg logMsg)
+    LogTask(TaskType type, LoggerPtr logger, LogMsg logMsg)
         : type(type), logMsg(std::move(logMsg)), logger(std::move(logger))
     {
     }
@@ -44,21 +43,15 @@ public:
     ~LogTaskScheduler();
     LogTaskScheduler(uint32_t threadCnt, uint32_t bufferCapacity);
 
-    void log(logger_ptr&& logger, LogMsg&& logMsg);
-    void flush(logger_ptr&& logger);
+    void log(LoggerPtr&& logger, LogMsg&& logMsg);
+    void flush(LoggerPtr&& logger);
 
 protected:
     void worker_loop();
 
 private:
+    common::container::ConcurrentBlockingQueue<LogTask> _logBuffer;
     std::vector<std::thread> _threadPool;
-    // TODO: 使用无锁队列
-    std::queue<LogTask> _logBuffer;
-    std::mutex _bufferMtx;
-    std::condition_variable _bufferCv;
-
-    uint32_t _threadCnt = 1;
-    uint32_t _bufferCapacity = 1024;
 };
 }  // namespace details
 }  // namespace logging

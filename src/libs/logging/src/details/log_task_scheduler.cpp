@@ -1,10 +1,10 @@
 #include "logging/details/log_task_scheduler.h"
 
 #include <cstdint>
-#include <mutex>
 #include <thread>
 #include <utility>
 
+#include "common/debug/debug_logger.h"
 #include "logging/async_logger.h"
 #include "logging/details/log_msg.h"
 
@@ -12,64 +12,48 @@ namespace logging::details {
 LogTaskScheduler::LogTaskScheduler() : LogTaskScheduler(1, 1024) {}
 
 LogTaskScheduler::LogTaskScheduler(uint32_t threadCnt, uint32_t bufferCapacity)
-    : _threadCnt(threadCnt), _bufferCapacity(bufferCapacity)
+    : _logBuffer(common::container::ConcurrentBlockingQueue<LogTask>(bufferCapacity))
 {
     _threadPool.reserve(threadCnt);
-    for (uint32_t i = 0; i < _threadCnt; i++) {
+    for (uint32_t i = 0; i < threadCnt; i++) {
         _threadPool.emplace_back(&LogTaskScheduler::worker_loop, this);
     }
 }
 
 LogTaskScheduler::~LogTaskScheduler()
 {
-    {
-        std::unique_lock lock(_bufferMtx);
-        for (uint32_t i = 0; i < _threadCnt; i++) {
-            _logBuffer.emplace(TaskType::SHUTDOWN);
-        }
+    for (uint32_t i = 0; i < _threadPool.size(); i++) {
+        _logBuffer.enqueue(LogTask(TaskType::SHUTDOWN));
     }
-    _bufferCv.notify_all();
+
     for (auto& t : _threadPool) {
         t.join();
     }
 }
 
-void LogTaskScheduler::log(logger_ptr&& logger, LogMsg&& logMsg)
+void LogTaskScheduler::log(LoggerPtr&& logger, LogMsg&& logMsg)
 {
-    {
-        std::unique_lock lock(_bufferMtx);
-        _logBuffer.emplace(TaskType::LOG, logger, std::move(logMsg));
-    }
-    _bufferCv.notify_one();
+    _logBuffer.enqueue(LogTask(TaskType::LOG, logger, std::move(logMsg)));
 }
 
-void LogTaskScheduler::flush(logger_ptr&& logger)
+void LogTaskScheduler::flush(LoggerPtr&& logger)
 {
-    {
-        std::unique_lock lock(_bufferMtx);
-        _logBuffer.emplace(TaskType::FLUSH, logger, LogMsg());
-    }
-    _bufferCv.notify_one();
+    _logBuffer.enqueue(LogTask(TaskType::FLUSH, logger, LogMsg()));
 }
 
 void LogTaskScheduler::worker_loop()
 {
     bool isRunning = true;
     while (isRunning) {
-        std::unique_lock lock(_bufferMtx);
-        _bufferCv.wait(lock, [this]() { return !_logBuffer.empty(); });
+        LogTask task;
+        _logBuffer.dequeue_wait(task);
 
-        auto asyncMsg = _logBuffer.front();
-        _logBuffer.pop();
-        lock.unlock();
-
-        switch (asyncMsg.type) {
+        switch (task.type) {
             case TaskType::LOG:
-                asyncMsg.logger->sinks_log(asyncMsg.logMsg);
-
+                task.logger->sinks_log(task.logMsg);
                 break;
             case TaskType::FLUSH:
-                asyncMsg.logger->sinks_flush();
+                task.logger->sinks_flush();
                 break;
             case TaskType::SHUTDOWN:
             default:
@@ -77,5 +61,6 @@ void LogTaskScheduler::worker_loop()
                 break;
         }
     }
+    DEBUG_LOGGER_INFO("Worker shutdown.")
 }
 }  // namespace logging::details
