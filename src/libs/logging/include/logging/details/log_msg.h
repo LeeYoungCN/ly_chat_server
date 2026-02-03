@@ -1,5 +1,5 @@
-#ifndef LOGGINGL_DETAILS_LOG_RECORD_H
-#define LOGGINGL_DETAILS_LOG_RECORD_H
+#ifndef LOGGINGL_DETAILS_LOG_MSG_H
+#define LOGGINGL_DETAILS_LOG_MSG_H
 #include <cstdarg>
 #include <string>
 #include <string_view>
@@ -39,4 +39,4 @@ struct LogMsg {
 };
 
 }  // namespace logging::details
-#endif  // LOGGINGL_DETAILS_LOG_RECORD_H
+#endif  // LOGGINGL_DETAILS_LOG_MSG_H
