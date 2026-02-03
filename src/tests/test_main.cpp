@@ -21,10 +21,8 @@ int main(int argc, char *argv[])
     // logging::AsyncLogger logger(pool);
     auto logger = std::make_shared<logging::AsyncLogger>(pool);
 
-    std::string logFile =
-        common::filesystem::JoinPaths({common::filesystem::GetProcessDirectory(),
-                                              "logs",
-                                              common::filesystem::GetProcessFileName() + ".log"});
+    std::string logFile = common::filesystem::JoinPaths(
+        {common::filesystem::GetProcessDirectory(), "logs", common::filesystem::GetProcessFileName() + ".log"});
     logger->add_sink(std::make_shared<logging::StdoutSink>());
     logger->add_sink(std::make_shared<logging::BasicFileSink>(logFile));
 
