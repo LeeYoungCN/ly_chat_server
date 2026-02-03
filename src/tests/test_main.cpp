@@ -1,10 +1,7 @@
-#include <cmath>
-#include <cstdio>
 #include <memory>
 
 #include "common/debug/debug_log.h"
 #include "common/debug/working_env.h"
-#include "common/types/logging_types.h"
 #include "common/utils/filesystem_utils.h"
 #include "gtest/gtest.h"
 #include "logging/async_logger.h"

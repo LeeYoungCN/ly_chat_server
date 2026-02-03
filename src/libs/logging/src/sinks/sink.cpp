@@ -16,7 +16,7 @@ void Sink::format(const details::LogMsg &logRecord, std::string &content)
                         common::date_time::FormatTimeString(logRecord.timeStamp, "%Y-%m-%d %H:%M:%S.%3f"),
                         GetLogLvlStr(logRecord.level));
 
-    if (logRecord.source.IsValid()) {
+    if (!logRecord.source.empty()) {
         it = std::format_to(
             it, "[{}:{}]", common::filesystem::GetFileName(logRecord.source.file), logRecord.source.line);
     }

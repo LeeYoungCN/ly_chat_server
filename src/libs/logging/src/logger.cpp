@@ -2,7 +2,8 @@
 
 #include <cstdarg>
 #include <utility>
-#include "common/types/logging_types.h"
+
+#include "logging/details/log_level.h"
 
 namespace logging {
 using namespace details;

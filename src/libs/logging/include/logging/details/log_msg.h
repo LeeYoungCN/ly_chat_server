@@ -6,10 +6,10 @@
 #include <utility>
 
 #include "common/types/date_time_types.h"
-#include "common/types/logging_types.h"
 #include "common/types/thread_types.h"
 #include "common/utils/date_time_utils.h"
 #include "common/utils/thread_utils.h"
+#include "logging/details/log_level.h"
 #include "logging/details/log_source.h"
 
 namespace logging::details {
@@ -28,10 +28,14 @@ struct LogMsg {
           data(std::move(message)),
           source(source),
           timeStamp(common::date_time::GetCurrentTimestampMs()),
-          threadId(get_curr_thread_id()) {}
+          threadId(get_curr_thread_id())
+    {
+    }
 
     LogMsg(std::string_view loggerName, LogLevel level, std::string message)
-        : LogMsg(loggerName, level, std::move(message), LogSource()) {}
+        : LogMsg(loggerName, level, std::move(message), LogSource())
+    {
+    }
 };
 
 }  // namespace logging::details

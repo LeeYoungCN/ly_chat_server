@@ -1,7 +1,7 @@
 #ifndef LOGGING_LOGGING_C_H
 #define LOGGING_LOGGING_C_H
 
-#include "common/types/logging_types.h"
+#include "logging/details/log_level.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -31,9 +31,9 @@ void logging_error(const char *file, int line, const char *func, const char *for
 void logging_fatal(const char *file, int line, const char *func, const char *format, ...);
 
 #define LOGGING_DEBUG(fmt, ...) logging_debug(__FILE__, __LINE__, __FUNCTION__, fmt __VA_OPT__(, ) __VA_ARGS__);
-#define LOGGING_INFO(fmt, ...) logging_info(__FILE__, __LINE__, __FUNCTION__, fmt __VA_OPT__(, ) __VA_ARGS__);
-#define LOGGING_WARN(fmt, ...) logging_warn(__FILE__, __LINE__, __FUNCTION__, fmt __VA_OPT__(, ) __VA_ARGS__);
-#define LOGGING_ERR(fmt, ...) logging_error(__FILE__, __LINE__, __FUNCTION__, fmt __VA_OPT__(, ) __VA_ARGS__);
+#define LOGGING_INFO(fmt, ...)  logging_info(__FILE__, __LINE__, __FUNCTION__, fmt __VA_OPT__(, ) __VA_ARGS__);
+#define LOGGING_WARN(fmt, ...)  logging_warn(__FILE__, __LINE__, __FUNCTION__, fmt __VA_OPT__(, ) __VA_ARGS__);
+#define LOGGING_ERR(fmt, ...)   logging_error(__FILE__, __LINE__, __FUNCTION__, fmt __VA_OPT__(, ) __VA_ARGS__);
 #define LOGGING_FATAL(fmt, ...) logging_fatal(__FILE__, __LINE__, __FUNCTION__, fmt __VA_OPT__(, ) __VA_ARGS__);
 #ifdef __cplusplus
 }

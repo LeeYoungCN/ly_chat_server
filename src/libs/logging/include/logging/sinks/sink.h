@@ -6,7 +6,7 @@
 #include <string>
 #include <string_view>
 
-#include "common/types/logging_types.h"
+#include "logging/details/log_level.h"
 #include "logging/details/log_msg.h"
 
 namespace logging {
@@ -26,7 +26,7 @@ public:
 
     virtual void flush() = 0;
 
-    void format(const details::LogMsg &logRecord, std::string& content);
+    void format(const details::LogMsg &logRecord, std::string &content);
     bool should_log(LogLevel level) { return level >= m_level; }
     void set_level(LogLevel level) { m_level = level; };
 

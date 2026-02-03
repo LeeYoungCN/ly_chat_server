@@ -10,15 +10,15 @@
  */
 #pragma once
 
-#ifndef COMMON_TYPES_LOGGING_TYPES_H
-#define COMMON_TYPES_LOGGING_TYPES_H
+#ifndef LOGGING_DETAILS_LOG_LEVEL_H
+#define LOGGING_DETAILS_LOG_LEVEL_H
 
 /**
  * @enum LogLevel
  * @brief 日志级别枚举
  */
 typedef enum {
-    LOG_LVL_DEBUG = 1,  ///< 调试信息（仅开发/测试环境使用，包含详细调试数据）
+    LOG_LVL_DEBUG = 0,  ///< 调试信息（仅开发/测试环境使用，包含详细调试数据）
     LOG_LVL_INFO,       ///< 一般信息（正常运行时的流程性信息，如服务启动成功）
     LOG_LVL_WARN,       ///< 警告信息（不影响主流程但需关注的异常，如配置项缺失使用默认值）
     LOG_LVL_ERR,        ///< 错误信息（功能异常但不导致程序退出，如单次接口调用失败）
@@ -52,4 +52,4 @@ inline static const char* GetLogLvlStr(LogLevel level)
 }
 #endif  // __cplusplus
 
-#endif  // COMMON_TYPES_LOGGING_TYPES_H
+#endif  // LOGGING_DETAILS_LOG_LEVEL_H

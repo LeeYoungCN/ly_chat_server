@@ -5,11 +5,10 @@
 #include <cstdarg>
 #include <format>
 #include <memory>
-
 #include <string_view>
 #include <vector>
 
-#include "common/types/logging_types.h"
+#include "logging/details/log_level.h"
 #include "logging/details/log_msg.h"
 #include "logging/details/log_source.h"
 #include "logging/sinks/sink.h"
@@ -115,6 +114,7 @@ protected:
     void sinks_flush_it();
 
     std::vector<std::shared_ptr<Sink>> _sinkList;
+
 private:
     std::atomic<LogLevel> _logLevel = LogLevel::LOG_LVL_INFO;
     std::string _name{"Default"};

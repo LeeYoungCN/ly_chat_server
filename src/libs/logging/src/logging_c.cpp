@@ -6,10 +6,9 @@
 #include <stdexcept>
 #include <string>
 
-#include "common/types/logging_types.h"
+#include "logging/details/log_level.h"
 #include "logging/logger.h"
 #include "logging/sinks/basic_file_sink.h"
-#include "logging/sinks/sink.h"
 #include "logging/sinks/stdout_sink.h"
 
 namespace {

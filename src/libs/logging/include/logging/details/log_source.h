@@ -14,9 +14,10 @@ struct LogSource {
     std::string_view func;
 
     LogSource() = default;
-    LogSource(std::string_view filePath, int lineNumber, std::string_view funcName);
+    LogSource(std::string_view filePath, int lineNumber, std::string_view funcName)
+        : file(filePath), line(lineNumber), func(funcName) {};
 
-    [[nodiscard]] bool IsValid() const;
+    [[nodiscard]] bool empty() const { return (file.empty() || line == INVALID_LINE_NUM); }
 };
 }  // namespace logging::details
 
