@@ -7,36 +7,29 @@
 
 namespace logging {
 
-AsyncLogger::AsyncLogger(std::weak_ptr<details::LogTaskScheduler> msgPool) : _msgPool(std::move(msgPool)) {}
-
-AsyncLogger::AsyncLogger(std::string name, std::weak_ptr<details::LogTaskScheduler> msgPool)
-    : Logger(std::move(name)), _msgPool(std::move(msgPool))
+AsyncLogger::AsyncLogger(std::string name, std::weak_ptr<details::LogTaskScheduler> scheduler)
+    : Logger(std::move(name)), _scheduler(std::move(scheduler))
 {
 }
 
-void AsyncLogger::log_it(details::LogMsg&& logMsg)
+void AsyncLogger::log_it(const details::LogMsg& logMsg)
 {
-    _msgPool.lock()->log(shared_from_this(), std::move(logMsg));
+    _scheduler.lock()->log(shared_from_this(), logMsg);
 }
 
 void AsyncLogger::flush_it()
 {
-    _msgPool.lock()->flush(shared_from_this());
+    _scheduler.lock()->flush(shared_from_this());
 }
 
-void AsyncLogger::sinks_log(const details::LogMsg& logMsg)
+void AsyncLogger::backend_log(const details::LogMsg& logMsg)
 {
-    for (const auto& sink : _sinkList) {
-        if (sink->should_log(logMsg.level)) {
-            sink->log(logMsg);
-        }
-    }
+    sinks_log_it(logMsg);
 }
-void AsyncLogger::sinks_flush()
+
+void AsyncLogger::backend_flush()
 {
-    for (const auto& sink : _sinkList) {
-        sink->flush();
-    }
+    sinks_flush_it();
 }
 
 }  // namespace logging

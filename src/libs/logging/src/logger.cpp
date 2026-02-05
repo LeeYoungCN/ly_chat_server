@@ -3,12 +3,21 @@
 #include <cstdarg>
 #include <utility>
 
-#include "logging/details/log_level.h"
+#include "logging/log_level.h"
 
 namespace logging {
 using namespace details;
 
 Logger::Logger(std::string name) : _name(std::move(name)) {}
+
+void Logger::log(details::LogSource source, LogLevel level, const char* format, va_list args)
+{
+    if (!should_log(level)) {
+        return;
+    }
+    details::LogMsg logMsg(source, _name, level, common::string::va_list_to_string(format, args));
+    log_it(logMsg);
+}
 
 void Logger::set_log_level(LogLevel level)
 {
@@ -38,25 +47,14 @@ void Logger::add_sink(const std::shared_ptr<Sink>& sink)
 
 bool Logger::should_log(LogLevel level) const
 {
-    return (_logLevel != LOG_LVL_OFF && level >= _logLevel);
+    return (level >= _logLevel);
 }
 
-void Logger::log(LogSource source, LogLevel level, std::string message)
+void Logger::log_it(const details::LogMsg& logMsg)
 {
-    if (!should_log(level)) {
-        return;
-    }
+    sinks_log_it(logMsg);
 
-    log_it(LogMsg(this->_name, level, std::move(message), source));
-}
-
-void Logger::log_it(LogMsg&& logMsg)
-{
-    for (const auto& sink : _sinkList) {
-        sink->log(logMsg);
-    }
-
-    if (_flushLevel != LogLevel::LOG_LVL_OFF && logMsg.level >= _flushLevel) {
+    if (logMsg.level >= _flushLevel) {
         flush();
     }
 }
@@ -67,6 +65,20 @@ void Logger::flush()
 }
 
 void Logger::flush_it()
+{
+    sinks_flush_it();
+}
+
+void Logger::sinks_log_it(const LogMsg& logMsg)
+{
+    for (const auto& sink : _sinkList) {
+        if (sink->should_log(logMsg.level)) {
+            sink->log(logMsg);
+        }
+    }
+}
+
+void Logger::sinks_flush_it()
 {
     for (const auto& sink : _sinkList) {
         sink->flush();

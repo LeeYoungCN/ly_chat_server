@@ -1,12 +1,9 @@
 #include "logging/logging_c.h"
 
 #include <cstdarg>
-#include <cstdint>
 #include <cstdio>
-#include <stdexcept>
-#include <string>
 
-#include "logging/details/log_level.h"
+#include "logging/log_level.h"
 #include "logging/logger.h"
 #include "logging/sinks/basic_file_sink.h"
 #include "logging/sinks/stdout_sink.h"
@@ -14,39 +11,28 @@
 namespace {
 logging::Logger root;
 
-void logging_log(const char *file, int line, const char *func, LogLevel level, const char *format, va_list args)
+void logging_log(const char *file, int line, const char *func, logging::LogLevel level, const char *format,
+                 va_list args)
 {
     if (!root.should_log(level)) {
         return;
     }
 
-    va_list argsCopy;
-
-    va_copy(argsCopy, args);
-    int len = vsnprintf(nullptr, 0, format, argsCopy);
-    va_end(argsCopy);
-
-    if (len < 0) {
-        throw std::runtime_error("vsnprintf failed.");
-    }
-
-    std::string message(static_cast<uint32_t>(len), '\0');
-    vsnprintf(message.data(), static_cast<uint32_t>(len) + 1, format, args);
-    va_end(args);
-
-    root.log(logging::details::LogSource(file, line, func), level, message);
+    root.log(logging::details::LogSource(file, line, func), level, format, args);
 }
 }  // namespace
+
+using namespace logging;
 
 extern "C" {
 sink_st *logging_get_stdout_sink(FILE *file)
 {
-    return new sink_st(std::make_shared<logging::StdoutSink>(file));
+    return new sink_st(std::make_shared<StdoutSink>(file));
 }
 
 sink_st *logging_get_basic_file_sink(const char *file, bool overwrite)
 {
-    return new sink_st(std::make_shared<logging::BasicFileSink>((file == nullptr ? "" : file), overwrite));
+    return new sink_st(std::make_shared<BasicFileSink>((file == nullptr ? "" : file), overwrite));
 }
 
 void logging_add_sink(sink_st *sink)
@@ -55,9 +41,9 @@ void logging_add_sink(sink_st *sink)
     delete sink;
 }
 
-void logging_set_level(LogLevel level)
+void logging_set_level(LoggingLogLevel level)
 {
-    root.set_log_level(level);
+    root.set_log_level(static_cast<LogLevel>(level));
 }
 
 void logging_flush()
@@ -69,7 +55,7 @@ void logging_debug(const char *file, int line, const char *func, const char *for
 {
     va_list args;
     va_start(args, format);
-    logging_log(file, line, func, LogLevel::LOG_LVL_DEBUG, format, args);
+    logging_log(file, line, func, LogLevel::DEBUG, format, args);
     va_end(args);
 }
 
@@ -77,7 +63,7 @@ void logging_info(const char *file, int line, const char *func, const char *form
 {
     va_list args;
     va_start(args, format);
-    logging_log(file, line, func, LogLevel::LOG_LVL_INFO, format, args);
+    logging_log(file, line, func, LogLevel::INFO, format, args);
     va_end(args);
 }
 
@@ -85,7 +71,7 @@ void logging_warn(const char *file, int line, const char *func, const char *form
 {
     va_list args;
     va_start(args, format);
-    logging_log(file, line, func, LogLevel::LOG_LVL_WARN, format, args);
+    logging_log(file, line, func, LogLevel::WARN, format, args);
     va_end(args);
 }
 
@@ -93,7 +79,7 @@ void logging_error(const char *file, int line, const char *func, const char *for
 {
     va_list args;
     va_start(args, format);
-    logging_log(file, line, func, LogLevel::LOG_LVL_ERR, format, args);
+    logging_log(file, line, func, LogLevel::ERROR, format, args);
     va_end(args);
 }
 
@@ -101,7 +87,7 @@ void logging_fatal(const char *file, int line, const char *func, const char *for
 {
     va_list args;
     va_start(args, format);
-    logging_log(file, line, func, LogLevel::LOG_LVL_FATAL, format, args);
+    logging_log(file, line, func, LogLevel::FATAL, format, args);
     va_end(args);
 }
 }

@@ -7,12 +7,21 @@
 #include "common/debug/debug_logger.h"
 #include "logging/async_logger.h"
 #include "logging/details/log_msg.h"
+#include "logging/details/log_task.h"
+
+namespace {
+constexpr uint32_t DEFAULT_CAPACITY = 4096;
+}
 
 namespace logging::details {
-LogTaskScheduler::LogTaskScheduler() : LogTaskScheduler(1, 1024) {}
+using namespace common::container;
+LogTaskScheduler::LogTaskScheduler() : _logBuffer(ConcurrentBlockingQueue<LogTask>(DEFAULT_CAPACITY))
+{
+    _threadPool.emplace_back(&LogTaskScheduler::worker_loop, this);
+}
 
 LogTaskScheduler::LogTaskScheduler(uint32_t threadCnt, uint32_t bufferCapacity)
-    : _logBuffer(common::container::ConcurrentBlockingQueue<LogTask>(bufferCapacity))
+    : _logBuffer(ConcurrentBlockingQueue<LogTask>(bufferCapacity))
 {
     _threadPool.reserve(threadCnt);
     for (uint32_t i = 0; i < threadCnt; i++) {
@@ -29,16 +38,17 @@ LogTaskScheduler::~LogTaskScheduler()
     for (auto& t : _threadPool) {
         t.join();
     }
+    DEBUG_LOGGER_INFO("Log task scheduler release.");
 }
 
-void LogTaskScheduler::log(LoggerPtr&& logger, LogMsg&& logMsg)
+void LogTaskScheduler::log(std::shared_ptr<AsyncLogger> logger, const LogMsg& logMsg)
 {
-    _logBuffer.enqueue(LogTask(TaskType::LOG, logger, std::move(logMsg)));
+    _logBuffer.enqueue_wait(LogTask(TaskType::LOG, std::move(logger), logMsg));
 }
 
-void LogTaskScheduler::flush(LoggerPtr&& logger)
+void LogTaskScheduler::flush(std::shared_ptr<AsyncLogger> logger)
 {
-    _logBuffer.enqueue(LogTask(TaskType::FLUSH, logger, LogMsg()));
+    _logBuffer.enqueue_wait(LogTask(TaskType::FLUSH, std::move(logger), LogMsg()));
 }
 
 void LogTaskScheduler::worker_loop()
@@ -50,10 +60,10 @@ void LogTaskScheduler::worker_loop()
 
         switch (task.type) {
             case TaskType::LOG:
-                task.logger->sinks_log(task.logMsg);
+                task.logger->backend_log(task.logMsg);
                 break;
             case TaskType::FLUSH:
-                task.logger->sinks_flush();
+                task.logger->backend_flush();
                 break;
             case TaskType::SHUTDOWN:
             default:
@@ -61,6 +71,6 @@ void LogTaskScheduler::worker_loop()
                 break;
         }
     }
-    DEBUG_LOGGER_INFO("Worker shutdown.")
+    DEBUG_LOGGER_INFO("Log task scheduler worker loop shutdown.");
 }
 }  // namespace logging::details

@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
 
     std::shared_ptr pool = std::make_shared<logging::details::LogTaskScheduler>(1, 1024);
     // logging::AsyncLogger logger(pool);
-    auto logger = std::make_shared<logging::AsyncLogger>(pool);
+    auto logger = std::make_shared<logging::AsyncLogger>("AsyncLogger", pool);
 
     std::string logFile = common::filesystem::JoinPaths(
         {common::process::GetProcessDirectory(), "logs", common::process::GetProcessFileName() + ".log"});

@@ -1,7 +1,7 @@
 #ifndef LOGGING_LOGGING_H
 #define LOGGING_LOGGING_H
 
-#include "logging/details/log_level.h"
+#include "logging/log_level.h"
 
 #ifdef __cplusplus
 extern "C" {

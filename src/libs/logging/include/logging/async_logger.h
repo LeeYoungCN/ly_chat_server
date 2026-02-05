@@ -19,17 +19,18 @@ public:
     AsyncLogger() = default;
     ~AsyncLogger() override = default;
 
-    explicit AsyncLogger(std::weak_ptr<details::LogTaskScheduler> msgPool);
-    AsyncLogger(std::string name, std::weak_ptr<details::LogTaskScheduler> msgPool);
+    AsyncLogger(std::string name, std::weak_ptr<details::LogTaskScheduler> scheduler);
 
 protected:
-    void sinks_log(const details::LogMsg& logMsg);
-    void sinks_flush();
-    void log_it(details::LogMsg&& logMsg) override;
+    void log_it(const details::LogMsg& logMsg) override;
     void flush_it() override;
 
+protected: // friend
+    void backend_log(const details::LogMsg& logMsg);
+    void backend_flush();
+
 private:
-    std::weak_ptr<details::LogTaskScheduler> _msgPool;
+    std::weak_ptr<details::LogTaskScheduler> _scheduler;
 };
 }  // namespace logging
 

@@ -1,7 +1,7 @@
 #ifndef LOGGING_LOGGING_C_H
 #define LOGGING_LOGGING_C_H
 
-#include "logging/details/log_level.h"
+#include "logging/log_level.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -10,13 +10,22 @@ extern "C" {
 
 typedef struct sink_st sink_st;
 
+typedef enum {
+    LOG_LEVEL_DEBUG,
+    LOG_LEVEL_INFO,
+    LOG_LEVEL_WARN,
+    LOG_LEVEL_ERROR,
+    LOG_LEVEL_FATAL,
+    LOG_LEVEL_OFF
+} LoggingLogLevel;
+
 sink_st *logging_get_stdout_sink(FILE *file);
 
 sink_st *logging_get_basic_file_sink(const char *file, bool overwrite);
 
 void logging_add_sink(sink_st *sink);
 
-void logging_set_level(LogLevel level);
+void logging_set_level(LoggingLogLevel level);
 
 void logging_flush();
 

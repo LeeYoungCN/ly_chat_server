@@ -3,11 +3,12 @@
 
 #include <atomic>
 #include <memory>
-#include <string>
 #include <string_view>
 
-#include "logging/details/log_level.h"
 #include "logging/details/log_msg.h"
+#include "logging/formatters/formatter.h"
+#include "logging/formatters/pattern_formatter.h"
+#include "logging/log_level.h"
 
 namespace logging {
 class Sink {
@@ -15,27 +16,19 @@ public:
     Sink() = default;
     virtual ~Sink() = default;
 
-    void log(const details::LogMsg &logRecord)
-    {
-        constexpr uint32_t LOG_CONTENT_DEFAULT_LEN = 256;
-        std::string content;
-        content.reserve(LOG_CONTENT_DEFAULT_LEN);
-        format(logRecord, content);
-        write(content);
-    }
+    void log(const details::LogMsg &logMsg);
 
     virtual void flush() = 0;
 
-    void format(const details::LogMsg &logRecord, std::string &content);
-    bool should_log(LogLevel level) { return level >= m_level; }
-    void set_level(LogLevel level) { m_level = level; };
+    bool should_log(LogLevel level) const { return level >= _level; }
+    void set_level(LogLevel level) { _level = level; };
 
 protected:
     virtual void write(std::string_view message) = 0;
-    LogLevel level = LogLevel::LOG_LVL_INFO;
 
 private:
-    std::atomic<LogLevel> m_level = LogLevel::LOG_LVL_INFO;
+    std::atomic<LogLevel> _level = LogLevel::INFO;
+    std::unique_ptr<Formatter> _formatter = std::make_unique<PatternFormatter>();
 };
 }  // namespace logging
 
