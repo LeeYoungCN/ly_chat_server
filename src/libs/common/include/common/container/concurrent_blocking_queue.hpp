@@ -26,118 +26,12 @@ public:
     ~ConcurrentBlockingQueue() = default;
 
     /**
-     * @brief 阻塞单个入队。
-     *        队列不满时立即入队；
-     *        队列满时，阻塞当前线程，直到队列有空闲。
-     *
-     * @param item 待入队的元素
-     */
-    void enqueue_wait(const T& item) { enqueue_wait(T(item)); }
-
-    /**
-     * @brief 阻塞单个入队。
-     *        队列不满时立即入队；
-     *        队列满时，阻塞当前线程，直到队列有空闲。
-     *
-     * @param item 待入队的元素
-     */
-    void enqueue_wait(T&& item)
-    {
-        {
-            std::unique_lock<std::mutex> lock(_queueMtx);
-            _pushCv.wait(lock, [this]() -> bool { return !_queue.full(); });
-            _queue.enqueue(std::move(item));
-        }
-        _popCv.notify_one();
-    }
-
-    /**
-     * @brief 超时单个入队。
-     *        队列不满时立即入队；
-     *        队列满时，阻塞线程直到「队列空闲」或「超时时间到」。
-     *
-     * @param item 待入队的元素。
-     * @param durationMs 最大阻塞时间。
-     * @return true 入队成功。
-     * @return false 超时入队失败。
-     */
-    bool enqueue_wait_for(const T& item, uint32_t durationMs = CONCURRENT_BLOCKING_QUEUE_DEFAULT_TIMEOUT)
-    {
-        return enqueue_wait_for(T(item), durationMs);
-    }
-
-    /**
-     * @brief 超时单个入队。
-     *        队列不满时立即入队；
-     *        队列满时，阻塞线程直到「队列空闲」或「超时时间到」。
-     *
-     * @param item 待入队的元素。
-     * @param durationMs 最大阻塞时间。
-     * @return true 入队成功。
-     * @return false 超时入队失败。
-     */
-    bool enqueue_wait_for(T&& item, uint32_t durationMs = CONCURRENT_BLOCKING_QUEUE_DEFAULT_TIMEOUT)
-    {
-        {
-            std::unique_lock<std::mutex> lock(_queueMtx);
-
-            if (!_pushCv.wait_for(
-                    lock, std::chrono::milliseconds(durationMs), [this]() -> bool { return !_queue.full(); })) {
-                return false;
-            }
-            _queue.enqueue(std::move(item));
-        }
-        _popCv.notify_one();
-        return true;
-    }
-
-    /**
-     * @brief 尝试入队。
-     *
-     * @param item 待入队元素。
-     * @return true 入队成功。
-     * @return false 入队失败。(抢锁失败或队列已满)
-     */
-    bool enqueue_try(const T& item) { return enqueue_try(T(item)); }
-
-    /**
-     * @brief 尝试入队。
-     *
-     * @param item 待入队元素。
-     * @return true 入队成功。
-     * @return false 入队失败。(抢锁失败或队列已满)
-     */
-    bool enqueue_try(T&& item)
-    {
-        bool rst = false;
-        {
-            std::unique_lock<std::mutex> lock(_queueMtx, std::try_to_lock);
-            if (!lock.owns_lock()) {
-                return false;
-            }
-            rst = _queue.enqueue(std::move(item));
-        }
-        if (rst) {
-            _popCv.notify_one();
-        }
-        return rst;
-    }
-
-    /**
      * @brief 非阻塞单个入队。
      *        队列满，则覆盖队首的元素。
      *
      * @param item 等待入队的元素
      */
-    void enqueue_overrun(const T& item) { enqueue_overrun(T(item)); }
-
-    /**
-     * @brief 非阻塞单个入队。
-     *        队列满，则覆盖队首的元素。
-     *
-     * @param item 等待入队的元素
-     */
-    void enqueue_overrun(T&& item)
+    void enqueue_overrun(T item)
     {
         {
             std::lock_guard<std::mutex> lock(_queueMtx);
@@ -154,17 +48,7 @@ public:
      * @return true 元素入队成功。
      * @return false 元素入队失败。
      */
-    bool enqueue(const T& item) { return enqueue(T(item)); }
-
-    /**
-     * @brief 单个入队。
-     *        队列满，则放弃入队。
-     *
-     * @param item 等待入队的元素。
-     * @return true 元素入队成功。
-     * @return false 元素入队失败。
-     */
-    bool enqueue(T&& item)
+    bool enqueue(T item)
     {
         bool isPushed = false;
         {
@@ -178,6 +62,44 @@ public:
             ++_discardCounter;
         }
         return isPushed;
+    }
+
+    /**
+     * @brief 单个出队，并移除队首元素。
+     *
+     * @param  待出队的元素。
+     * @return true 出队成功。
+     * @return false 队列为空。
+     */
+    bool dequeue(T& item)
+    {
+        {
+            std::unique_lock<std::mutex> lock(_queueMtx, std::try_to_lock);
+
+            if (_queue.empty()) {
+                return false;
+            }
+            _queue.dequeue(item);
+        }
+
+        return true;
+    }
+
+    /**
+     * @brief 阻塞单个入队。
+     *        队列不满时立即入队；
+     *        队列满时，阻塞当前线程，直到队列有空闲。
+     *
+     * @param item 待入队的元素
+     */
+    void enqueue_wait(T item)
+    {
+        {
+            std::unique_lock<std::mutex> lock(_queueMtx);
+            _pushCv.wait(lock, [this]() -> bool { return !_queue.full(); });
+            _queue.enqueue(std::move(item));
+        }
+        _popCv.notify_one();
     }
 
     /**
@@ -195,6 +117,31 @@ public:
             _queue.dequeue(item);
         }
         _pushCv.notify_one();
+    }
+
+    /**
+     * @brief 超时单个入队。
+     *        队列不满时立即入队；
+     *        队列满时，阻塞线程直到「队列空闲」或「超时时间到」。
+     *
+     * @param item 待入队的元素。
+     * @param durationMs 最大阻塞时间。
+     * @return true 入队成功。
+     * @return false 超时入队失败。
+     */
+    bool enqueue_wait_for(T item, uint32_t durationMs = CONCURRENT_BLOCKING_QUEUE_DEFAULT_TIMEOUT)
+    {
+        {
+            std::unique_lock<std::mutex> lock(_queueMtx);
+
+            if (!_pushCv.wait_for(
+                    lock, std::chrono::milliseconds(durationMs), [this]() -> bool { return !_queue.full(); })) {
+                return false;
+            }
+            _queue.enqueue(std::move(item));
+        }
+        _popCv.notify_one();
+        return true;
     }
 
     /**
@@ -225,6 +172,29 @@ public:
     }
 
     /**
+     * @brief 尝试入队。
+     *
+     * @param item 待入队元素。
+     * @return true 入队成功。
+     * @return false 入队失败。(抢锁失败或队列已满)
+     */
+    bool enqueue_try(T item)
+    {
+        bool rst = false;
+        {
+            std::unique_lock<std::mutex> lock(_queueMtx, std::try_to_lock);
+            if (!lock.owns_lock()) {
+                return false;
+            }
+            rst = _queue.enqueue(std::move(item));
+        }
+        if (rst) {
+            _popCv.notify_one();
+        }
+        return rst;
+    }
+
+    /**
      * @brief 单个出队，并移除队首元素。
      *
      * @param  待出队的元素。
@@ -245,27 +215,6 @@ public:
             _queue.dequeue(item);
         }
         _queue.pop_front();
-        return true;
-    }
-
-    /**
-     * @brief 单个出队，并移除队首元素。
-     *
-     * @param  待出队的元素。
-     * @return true 出队成功。
-     * @return false 队列为空。
-     */
-    bool dequeue(T& item)
-    {
-        {
-            std::unique_lock<std::mutex> lock(_queueMtx, std::try_to_lock);
-
-            if (_queue.empty()) {
-                return false;
-            }
-            _queue.dequeue(item);
-        }
-
         return true;
     }
 

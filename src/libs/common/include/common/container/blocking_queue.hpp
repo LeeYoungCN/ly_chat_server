@@ -62,9 +62,7 @@ public:
         }
     }
 
-    bool enqueue(const T& item) { return enqueue(T(item)); }
-
-    bool enqueue(T&& item)
+    bool enqueue(T item)
     {
         if (full()) {
             return false;
@@ -75,9 +73,7 @@ public:
         return true;
     }
 
-    void enqueue_overrun(const T& item) { enqueue_overrun(T(item)); }
-
-    void enqueue_overrun(T&& item)
+    void enqueue_overrun(T item)
     {
         _items[_tail] = std::forward<T>(item);
         _tail = (_tail + 1) % _maxItems;
