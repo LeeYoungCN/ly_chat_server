@@ -12,7 +12,6 @@
 #ifndef COMMON_UTILS_FILESYSTEM_UTILS_H
 #define COMMON_UTILS_FILESYSTEM_UTILS_H
 
-#include "common/constants/filesystem_constants.h"
 #include "common/types/filesystem_types.h"
 
 namespace common::filesystem {
@@ -42,35 +41,13 @@ namespace common::filesystem {
 EntryType GetEntryType(std::string_view path);
 
 const char* GetEntryTypeString(EntryType type);
-/**
- * @brief 获取当前进程的可执行文件路径
- * @return 可执行文件的绝对路径
- * @note 不同平台实现方式不同：
- *       - Windows: 通过GetModuleFileName获取
- *       - Linux/macOS: 通过/proc/self/exe符号链接获取
- */
-PathString GetProcessPath();
-
-/**
- * @brief 获取当前进程所在目录
- *
- * @return 目录的绝对路径
- */
-PathString GetProcessDirectory();
-
-/**
- * @brief Get the Process File Name object
- *
- * @return std::string Process file name.
- */
-std::string GetProcessFileName();
 
 /**
  * @brief 获取当前工作路径。
  *
  * @return 工作路径
  */
-PathString GetCurrentWorkingDirectory();
+std::string GetCurrentWorkingDirectory();
 
 /**
  * @brief 拼接多个路径片段为完整路径
@@ -78,14 +55,14 @@ PathString GetCurrentWorkingDirectory();
  * @return 拼接后的完整路径字符串
  * @note 自动处理不同平台的路径分隔符
  */
-PathString JoinPaths(const PathList& parts);
+std::string JoinPaths(const PathList& parts);
 
 /**
  * @brief 规范化路径，去除其中的./和../等冗余部分
  * @param path 原始路径
  * @return 规范化后的路径
  */
-PathString NormalizePath(std::string_view path);
+std::string NormalizePath(std::string_view path);
 
 /**
  * @brief 将相对路径转换为绝对路径
@@ -93,35 +70,35 @@ PathString NormalizePath(std::string_view path);
  * @param baseDir 基准目录（默认为当前工作目录）
  * @return 转换后的绝对路径
  */
-PathString ToAbsolutePath(std::string_view relPath, std::string_view baseDir = "");
+std::string ToAbsolutePath(std::string_view relPath, std::string_view baseDir = "");
 
 /**
  * @brief 获取路径中的目录部分（父目录路径）
  * @param path 完整路径
  * @return 父目录路径
  */
-PathString GetDirectory(std::string_view path);
+std::string GetDirectory(std::string_view path);
 
 /**
  * @brief 获取路径中的文件名（含扩展名）
  * @param path 完整路径
  * @return 带扩展名的文件名
  */
-PathString GetBaseName(std::string_view path);
+std::string GetBaseName(std::string_view path);
 
 /**
  * @brief 获取路径中的文件名（不含扩展名）
  * @param path 完整路径
  * @return 不带扩展名的文件名
  */
-PathString GetFileName(std::string_view path);
+std::string GetFileName(std::string_view path);
 
 /**
  * @brief 获取文件的扩展名（含.）
  * @param path 完整路径或文件名
  * @return 文件扩展名（如".txt"），无扩展名则返回空字符串
  */
-PathString GetExtension(std::string_view path);
+std::string GetExtension(std::string_view path);
 
 /**
  * @brief 判断路径是否为绝对路径

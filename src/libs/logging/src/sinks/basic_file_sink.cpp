@@ -1,13 +1,16 @@
 #include "logging/sinks/basic_file_sink.h"
+
 #include <mutex>
 
 #include "common/utils/file_writer.h"
 #include "common/utils/filesystem_utils.h"
+#include "common/utils/process_utils.h"
 
 namespace logging {
 using namespace common::filesystem;
+using namespace common::process;
 
-BasicFileSink::BasicFileSink(): logging::BasicFileSink("", true) { }
+BasicFileSink::BasicFileSink() : logging::BasicFileSink("", true) {}
 
 BasicFileSink::~BasicFileSink()
 {
@@ -17,10 +20,7 @@ BasicFileSink::~BasicFileSink()
 BasicFileSink::BasicFileSink(std::string_view file, bool overwrite) : _filePath(file), _overwrite(overwrite)
 {
     if (_filePath.empty()) {
-        _filePath = JoinPaths({
-        GetCurrentWorkingDirectory(),
-        "logs",
-        GetProcessFileName() + ".log"});
+        _filePath = JoinPaths({GetCurrentWorkingDirectory(), "logs", GetProcessFileName() + ".log"});
     }
     _fileWriter.open(_filePath, (_overwrite ? FileWriteMode::OVERWRITE : FileWriteMode::APPEND));
 }

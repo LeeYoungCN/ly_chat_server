@@ -39,51 +39,11 @@ namespace fs = std::filesystem;
 using namespace common::filesystem::internal;
 
 // ------------------------------ 系统路径接口 ------------------------------
-std::string GetProcessPath()
-{
-    char path[MAX_PATH_STD] = {'\0'};
-#if PLATFORM_WINDOWS
-    DWORD length = GetModuleFileNameA(nullptr, path, MAX_PATH_STD);
-    if (length == 0 || length >= MAX_PATH_STD) {
-        set_thread_last_err(ERR_COMM_SYSTEM_ERROR);
-        DEBUG_LOGGER_ERR("[FAILED][WIN32] Get process path, length: {}", length);
-        length = 0;
-    }
-#elif PLATFORM_LINUX
-    auto length = readlink("/proc/self/exe", path, MAX_PATH_STD - 1);
-    if (length == -1) {
-        set_thread_last_err(ERR_COMM_SYSTEM_ERROR);
-        DEBUG_LOGGER_ERR("[FAILED][Linux]Failed to get process path.");
-        length = 0;
-    }
-    path[length] = '\0';
-#elif PLATFORM_MACOS
-    uint32_t size = sizeof(path);
-    if (_NSGetExecutablePath(path, &size) != 0) {
-        set_thread_last_err(ERR_COMM_SYSTEM_ERROR);
-        DEBUG_LOGGER_ERR("[FAILED][Macos]Failed to get process path.");
-    }
-#else
-#error "Unsupport system."
-#endif
-    set_thread_last_err(ERR_COMM_SUCCESS);
-    DEBUG_LOGGER_DBG("[SUCCESS] Get process path: {}", path);
-    return path;
-}
 
-PathString GetProcessDirectory()
-{
-    set_thread_last_err(ERR_COMM_SUCCESS);
-    return GetDirectory(GetProcessPath());
-}
 
-std::string GetProcessFileName()
-{
-    set_thread_last_err(ERR_COMM_SUCCESS);
-    return GetFileName(GetProcessPath());
-}
 
-PathString GetCurrentWorkingDirectory()
+
+std::string GetCurrentWorkingDirectory()
 {
     try {
         auto p = fs::current_path();
@@ -102,7 +62,7 @@ PathString GetCurrentWorkingDirectory()
 }
 
 // ------------------------------ 路径处理接口 ------------------------------
-PathString JoinPaths(const PathList& parts)
+std::string JoinPaths(const PathList& parts)
 {
     if (parts.empty()) {
         set_thread_last_err(ERR_COMM_PATH_INVALID);
@@ -117,7 +77,7 @@ PathString JoinPaths(const PathList& parts)
     return result.string();
 }
 
-PathString NormalizePath(std::string_view path)
+std::string NormalizePath(std::string_view path)
 {
     try {
         auto normalized = fs::path(path).lexically_normal();
@@ -137,7 +97,7 @@ PathString NormalizePath(std::string_view path)
     }
 }
 
-PathString ToAbsolutePath(std::string_view relPath, std::string_view baseDir)
+std::string ToAbsolutePath(std::string_view relPath, std::string_view baseDir)
 {
     if (relPath.empty()) {
         return GetCurrentWorkingDirectory();
@@ -164,28 +124,28 @@ PathString ToAbsolutePath(std::string_view relPath, std::string_view baseDir)
     }
 }
 
-PathString GetDirectory(std::string_view path)
+std::string GetDirectory(std::string_view path)
 {
     fs::path proc(path);
     set_thread_last_err(ERR_COMM_SUCCESS);
     return proc.parent_path().string();
 }
 
-PathString GetBaseName(std::string_view path)
+std::string GetBaseName(std::string_view path)
 {
     fs::path p(path);
     set_thread_last_err(ERR_COMM_SUCCESS);
     return p.filename().string();
 }
 
-PathString GetFileName(std::string_view path)
+std::string GetFileName(std::string_view path)
 {
     fs::path p(path);
     set_thread_last_err(ERR_COMM_SUCCESS);
     return p.stem().string();
 }
 
-PathString GetExtension(std::string_view path)
+std::string GetExtension(std::string_view path)
 {
     fs::path p(path);
     set_thread_last_err(ERR_COMM_SUCCESS);

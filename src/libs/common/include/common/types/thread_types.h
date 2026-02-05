@@ -13,7 +13,17 @@
 #ifndef COMMON_TYPES_THREAD_TYPES_H
 #define COMMON_TYPES_THREAD_TYPES_H
 
-#include <stddef.h>
-typedef size_t ThreadId;
+#include "common/compiler/macros.h"
+
+#if PALTFORM_WINDOWS
+#include <windows.h>
+typedef DWORD ThreadId;
+#elif PLATFORM_LINUX || PLATFORM_MACOS
+#include <stdint.h>
+typedef uint64_t ThreadId;
+#else
+#include <stdint.h>
+typedef uint64_t ThreadId;
+#endif
 
 #endif  // COMMON_TYPES_THREAD_TYPES_H

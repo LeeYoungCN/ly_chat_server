@@ -56,7 +56,7 @@ std::string DebugLogger::format_log(DebugLevel level, const std::string& message
                                     const char* func)
 {
     if (file != nullptr) {
-        return std::format("[{}] [{}] [Tid: {:#x}] [{}:{}] [{}] {}",
+        return std::format("[{}][{}][Tid: {:#x}][{}:{}][{}] {}",
                            time_string(),
                            get_debug_log_lvl_str(level),
                            get_current_tid(),

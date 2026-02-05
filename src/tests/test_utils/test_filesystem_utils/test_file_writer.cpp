@@ -6,10 +6,12 @@
 #include "common/constants/filesystem_constants.h"
 #include "common/utils/file_writer.h"
 #include "common/utils/filesystem_utils.h"
+#include "common/utils/process_utils.h"
 #include "gtest/gtest.h"
 
 namespace test::test_utils::test_file_writer {
 using namespace common::filesystem;
+using namespace common::process;
 
 class TestFileAppender : public ::testing::Test {
 protected:
@@ -128,4 +130,4 @@ TEST_F(TestFileAppender, append_mode)
     EXPECT_EQ(m_appender.size(), GetFileSize(m_testFile));
 }
 
-}  // namespace test::test_utils::test_file_appender
+}  // namespace test::test_utils::test_file_writer

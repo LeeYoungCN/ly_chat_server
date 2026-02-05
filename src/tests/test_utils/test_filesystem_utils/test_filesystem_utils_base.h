@@ -14,6 +14,7 @@
 #include "common/types/filesystem_types.h"
 #include "common/utils/error_code_utils.h"
 #include "common/utils/filesystem_utils.h"
+#include "common/utils/process_utils.h"
 #include "gtest/gtest.h"
 
 namespace test::test_utils::test_filesystem_utils {
@@ -24,7 +25,7 @@ protected:
     static void TearDownTestSuite() {}
     void SetUp() override
     {
-        m_process = common::filesystem::GetProcessPath();
+        m_process = common::process::GetProcessPath();
         EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
         m_processDir = common::filesystem::GetDirectory(m_process);
         EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
