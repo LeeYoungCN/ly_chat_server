@@ -12,9 +12,10 @@ public:
     StdoutSink() = default;
     ~StdoutSink() override = default;
     explicit StdoutSink(FILE *file);
-    void flush() override;
+
 private:
-    void write(std::string_view message) override;
+    void flush_it() override;
+    void sink_it(std::string_view message) override;
 
 private:
     FILE *m_stream = stdout;

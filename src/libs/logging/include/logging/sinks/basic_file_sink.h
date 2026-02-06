@@ -14,10 +14,10 @@ public:
     ~BasicFileSink() override;
     explicit BasicFileSink(std::string_view file, bool overwrite = true);
 
-    void flush() override;
-
+    
 protected:
-    void write(std::string_view message) override;
+    void flush_it() override;
+    void sink_it(std::string_view message) override;
 
 private:
     std::string _filePath;

@@ -84,8 +84,10 @@ void ConvertSysEcToErrorCode(const std::error_code& ec)
         return;
     }
     // 详细日志便于调试
-    DEBUG_LOGGER_WARN(
-        "Convert error: {} (category: {}, value: {})", ec.message().c_str(), ec.category().name(), ec.value());
+    DEBUG_LOGGER_WARN("Convert error: {} (category: {}, value: {})",
+                      ec.message().c_str(),
+                      ec.category().name(),
+                      ec.value());
 
     if (ec.category() == std::system_category()) {
         ConvertSystemCategory(ec);

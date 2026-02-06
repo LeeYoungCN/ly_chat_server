@@ -1,16 +1,14 @@
 #include "logging/formatters/pattern_formatter.h"
 
+#include <memory>
 #include <string>
 #include <string_view>
+#include <utility>
 
 #include "common/utils/date_time_utils.h"
 #include "common/utils/filesystem_utils.h"
 #include "common/utils/process_utils.h"
 #include "logging/log_level.h"
-
-namespace {
-constexpr std::string_view DEFAULT_TIME_PATTERN = "%Y-%m-%d %H:%M:%S.%3f";
-}
 
 namespace logging {
 using namespace common::process;
@@ -18,6 +16,11 @@ using namespace common::date_time;
 using namespace common::filesystem;
 
 PatternFormatter::PatternFormatter(std::string pattern) : _pattern(std::move(pattern)) {}
+
+PatternFormatter::PatternFormatter(std::string pattern, std::string timePattern)
+    : _pattern(std::move(pattern)), _timePattern(std::move(timePattern))
+{
+}
 
 void PatternFormatter::format(const details::LogMsg& logMsg, std::string& content)
 {
@@ -34,11 +37,12 @@ void PatternFormatter::format(const details::LogMsg& logMsg, std::string& conten
     }
 }
 
-void PatternFormatter::log_msg_to_content(char symbol, const details::LogMsg& logMsg, std::string& content)
+void PatternFormatter::log_msg_to_content(char symbol, const details::LogMsg& logMsg,
+                                          std::string& content)
 {
     switch (symbol) {
         case 'd':  // datetime
-            content.append(FormatTimeString(logMsg.timeStamp, DEFAULT_TIME_PATTERN));
+            content.append(FormatTimeString(logMsg.timeStamp, _timePattern));
             break;
         case 'n':  // logger name
             content.append(logMsg.loggerName);
@@ -78,6 +82,11 @@ void PatternFormatter::log_msg_to_content(char symbol, const details::LogMsg& lo
             content.push_back(symbol);
             break;
     }
+}
+
+std::unique_ptr<Formatter> PatternFormatter::clone() const
+{
+    return std::make_unique<PatternFormatter>(_pattern, _timePattern);
 }
 
 }  // namespace logging

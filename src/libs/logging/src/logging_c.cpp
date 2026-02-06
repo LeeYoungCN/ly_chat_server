@@ -35,15 +35,9 @@ sink_st *logging_get_basic_file_sink(const char *file, bool overwrite)
     return new sink_st(std::make_shared<BasicFileSink>((file == nullptr ? "" : file), overwrite));
 }
 
-void logging_add_sink(sink_st *sink)
-{
-    root.add_sink(sink->sinkPtr);
-    delete sink;
-}
-
 void logging_set_level(LoggingLogLevel level)
 {
-    root.set_log_level(static_cast<LogLevel>(level));
+    root.set_level(static_cast<LogLevel>(level));
 }
 
 void logging_flush()

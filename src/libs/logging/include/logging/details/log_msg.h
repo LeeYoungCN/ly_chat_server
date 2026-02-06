@@ -1,3 +1,4 @@
+#pragma once
 #ifndef LOGGINGL_DETAILS_LOG_MSG_H
 #define LOGGINGL_DETAILS_LOG_MSG_H
 #include <cstdarg>
