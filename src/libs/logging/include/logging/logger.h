@@ -12,6 +12,7 @@
 
 #include "common/types/type_traits.h"
 #include "common/utils/string_utils.h"
+#include "logging/details//inner_macros.h"
 #include "logging/details/common.h"
 #include "logging/details/log_msg.h"
 #include "logging/details/log_source.h"
@@ -22,7 +23,7 @@ namespace logging {
 class Logger {
 public:
     Logger() = default;
-    virtual ~Logger() = default;
+    virtual ~Logger();
 
     explicit Logger(std::string name);
 

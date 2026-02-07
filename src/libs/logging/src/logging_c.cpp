@@ -3,22 +3,21 @@
 #include <cstdarg>
 #include <cstdio>
 
+#include "common/utils/string_utils.h"
+#include "logging/details/registry.h"
 #include "logging/log_level.h"
-#include "logging/logger.h"
+#include "logging/logging.h"
 #include "logging/sinks/basic_file_sink.h"
 #include "logging/sinks/stdout_sink.h"
 
 namespace {
-logging::Logger root;
 
-void logging_log(const char *file, int line, const char *func, logging::LogLevel level, const char *format,
-                 va_list args)
+void logging_log(const char *file, int line, const char *func, logging::LogLevel level,
+                 const char *format, va_list args)
 {
-    if (!root.should_log(level)) {
-        return;
-    }
-
-    root.log(logging::details::LogSource(file, line, func), level, format, args);
+    logging::log(logging::details::LogSource(file, line, func),
+                 level,
+                 common::string::va_list_to_string(format, args));
 }
 }  // namespace
 
@@ -37,12 +36,12 @@ sink_st *logging_get_basic_file_sink(const char *file, bool overwrite)
 
 void logging_set_level(LoggingLogLevel level)
 {
-    root.set_level(static_cast<LogLevel>(level));
+    INST(details::Registry).root_logger_raw()->set_level(static_cast<LogLevel>(level));
 }
 
 void logging_flush()
 {
-    root.flush();
+    INST(details::Registry).root_logger_raw()->flush();
 }
 
 void logging_debug(const char *file, int line, const char *func, const char *format, ...)

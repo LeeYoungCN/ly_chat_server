@@ -1,4 +1,4 @@
-#include "logging/details/log_task_scheduler.h"
+#include "logging/details/log_thread_pool.h"
 
 #include <cstdint>
 #include <thread>
@@ -6,30 +6,28 @@
 
 #include "common/debug/debug_logger.h"
 #include "logging/async_logger.h"
+#include "logging/details/common.h"
 #include "logging/details/log_msg.h"
 #include "logging/details/log_task.h"
 
-namespace {
-constexpr uint32_t DEFAULT_CAPACITY = 4096;
-}
-
 namespace logging::details {
 using namespace common::container;
-LogTaskScheduler::LogTaskScheduler() : _logBuffer(ConcurrentBlockingQueue<LogTask>(DEFAULT_CAPACITY))
+
+LogThreadPool::LogThreadPool()
+    : LogThreadPool(THREAD_POOL_DEFAULT_CAPACITY, THREAD_POOL_DEFAULT_THREAD_CNT)
 {
-    _threadPool.emplace_back(&LogTaskScheduler::worker_loop, this);
 }
 
-LogTaskScheduler::LogTaskScheduler(uint32_t threadCnt, uint32_t bufferCapacity)
-    : _logBuffer(ConcurrentBlockingQueue<LogTask>(bufferCapacity))
+LogThreadPool::LogThreadPool(uint32_t capacity, uint32_t threadCnt)
+    : _logBuffer(ConcurrentBlockingQueue<LogTask>(capacity)), _threadCnt(threadCnt)
 {
-    _threadPool.reserve(threadCnt);
-    for (uint32_t i = 0; i < threadCnt; i++) {
-        _threadPool.emplace_back(&LogTaskScheduler::worker_loop, this);
+    _threadPool.reserve(_threadCnt);
+    for (uint32_t i = 0; i < _threadCnt; i++) {
+        _threadPool.emplace_back(&LogThreadPool::worker_loop, this, i + 1);
     }
 }
 
-LogTaskScheduler::~LogTaskScheduler()
+LogThreadPool::~LogThreadPool()
 {
     for (uint32_t i = 0; i < _threadPool.size(); i++) {
         _logBuffer.enqueue(LogTask(TaskType::SHUTDOWN));
@@ -38,20 +36,20 @@ LogTaskScheduler::~LogTaskScheduler()
     for (auto& t : _threadPool) {
         t.join();
     }
-    DEBUG_LOGGER_INFO("Log task scheduler release.");
+    DEBUG_LOGGER_INFO("Log thread pool release.");
 }
 
-void LogTaskScheduler::log(std::shared_ptr<AsyncLogger> logger, const LogMsg& logMsg)
+void LogThreadPool::log(std::shared_ptr<AsyncLogger> logger, const LogMsg& logMsg)
 {
     _logBuffer.enqueue_wait(LogTask(TaskType::LOG, std::move(logger), logMsg));
 }
 
-void LogTaskScheduler::flush(std::shared_ptr<AsyncLogger> logger)
+void LogThreadPool::flush(std::shared_ptr<AsyncLogger> logger)
 {
     _logBuffer.enqueue_wait(LogTask(TaskType::FLUSH, std::move(logger), LogMsg()));
 }
 
-void LogTaskScheduler::worker_loop()
+void LogThreadPool::worker_loop(uint32_t idx)
 {
     bool isRunning = true;
     while (isRunning) {
@@ -71,6 +69,6 @@ void LogTaskScheduler::worker_loop()
                 break;
         }
     }
-    DEBUG_LOGGER_INFO("Log task scheduler worker loop shutdown.");
+    DEBUG_LOGGER_INFO("Log thread pool worker loop shutdown. [{}/{}]", idx, _threadCnt);
 }
 }  // namespace logging::details

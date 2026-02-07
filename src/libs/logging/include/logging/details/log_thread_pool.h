@@ -1,6 +1,6 @@
 #pragma once
-#ifndef LOGGING_DETAILS_LOG_TASK_SCHEDULER_H
-#define LOGGING_DETAILS_LOG_TASK_SCHEDULER_H
+#ifndef LOGGING_DETAILS_LOG_THREAD_POOL_H
+#define LOGGING_DETAILS_LOG_THREAD_POOL_H
 
 #include <cstdint>
 #include <memory>
@@ -16,23 +16,24 @@ class AsyncLogger;
 
 namespace details {
 
-class LogTaskScheduler {
+class LogThreadPool {
 public:
-    LogTaskScheduler();
-    ~LogTaskScheduler();
-    LogTaskScheduler(uint32_t threadCnt, uint32_t bufferCapacity);
+    LogThreadPool();
+    ~LogThreadPool();
+    LogThreadPool(uint32_t capacity, uint32_t threadCnt);
 
     void log(std::shared_ptr<AsyncLogger> logger, const LogMsg& logMsg);
     void flush(std::shared_ptr<AsyncLogger> logger);
 
 protected:
-    void worker_loop();
+    void worker_loop(uint32_t idx);
 
 private:
     common::container::ConcurrentBlockingQueue<LogTask> _logBuffer;
     std::vector<std::thread> _threadPool;
+    uint32_t _threadCnt = 0;
 };
 }  // namespace details
 }  // namespace logging
 
-#endif  // LOGGING_DETAILS_LOG_TASK_SCHEDULER_H
+#endif  // LOGGING_DETAILS_LOG_THREAD_POOL_H

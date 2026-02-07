@@ -3,10 +3,16 @@
 #include <cstdarg>
 #include <utility>
 
+#include "common/debug/debug_logger.h"
 #include "logging/log_level.h"
 
 namespace logging {
 using namespace details;
+
+Logger::~Logger()
+{
+    DEBUG_LOGGER_INFO("Logger release. [{}]", name());
+}
 
 Logger::Logger(std::string name) : _name(std::move(name)) {}
 

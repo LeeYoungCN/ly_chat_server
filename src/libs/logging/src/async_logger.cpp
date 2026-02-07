@@ -2,37 +2,44 @@
 
 #include <utility>
 
-#include "logging/details/log_task_scheduler.h"
+#include "common/debug/debug_logger.h"
+#include "logging/details/log_thread_pool.h"
 #include "logging/logger.h"
 
 namespace logging {
 
+AsyncLogger::~AsyncLogger()
+{
+    _threadPool.reset();
+    DEBUG_LOGGER_INFO("Async logger release. [{}].", name());
+}
+
 AsyncLogger::AsyncLogger(std::string name, std::shared_ptr<Sink> sink,
-                         std::weak_ptr<details::LogTaskScheduler> scheduler)
-    : Logger(std::move(name), {std::move(sink)}), _scheduler(std::move(scheduler))
+                         std::weak_ptr<details::LogThreadPool> pool)
+    : Logger(std::move(name), {std::move(sink)}), _threadPool(std::move(pool))
 {
 }
 
 AsyncLogger::AsyncLogger(std::string name, std::vector<std::shared_ptr<Sink>> sinks,
-                         std::weak_ptr<details::LogTaskScheduler> scheduler)
-    : Logger(std::move(name), std::move(sinks)), _scheduler(std::move(scheduler))
+                         std::weak_ptr<details::LogThreadPool> pool)
+    : Logger(std::move(name), std::move(sinks)), _threadPool(std::move(pool))
 {
 }
 
 AsyncLogger::AsyncLogger(std::string name, std::initializer_list<std::shared_ptr<Sink>> sinks,
-                         std::weak_ptr<details::LogTaskScheduler> scheduler)
-    : Logger(std::move(name), sinks), _scheduler(std::move(scheduler))
+                         std::weak_ptr<details::LogThreadPool> pool)
+    : Logger(std::move(name), sinks), _threadPool(std::move(pool))
 {
 }
 
 void AsyncLogger::sink_it(const details::LogMsg& logMsg)
 {
-    _scheduler.lock()->log(shared_from_this(), logMsg);
+    _threadPool.lock()->log(shared_from_this(), logMsg);
 }
 
 void AsyncLogger::flush_it()
 {
-    _scheduler.lock()->flush(shared_from_this());
+    _threadPool.lock()->flush(shared_from_this());
 }
 
 void AsyncLogger::backend_log(const details::LogMsg& logMsg)

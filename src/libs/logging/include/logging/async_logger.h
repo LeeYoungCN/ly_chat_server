@@ -5,35 +5,34 @@
 #include <utility>
 #include <vector>
 
-#include "logging/details/log_task_scheduler.h"
+#include "logging/details/log_thread_pool.h"
 #include "logging/logger.h"
 
 namespace logging {
 
 namespace details {
-class LogTaskScheduler;
+class LogThreadPool;
 }
 
 class AsyncLogger : public Logger, public std::enable_shared_from_this<AsyncLogger> {
-    friend class details::LogTaskScheduler;
+    friend class details::LogThreadPool;
 
 public:
     AsyncLogger() = default;
-    ~AsyncLogger() override = default;
+    ~AsyncLogger() override;
 
     AsyncLogger(std::string name, std::shared_ptr<Sink> sink,
-                std::weak_ptr<details::LogTaskScheduler> scheduler);
+                std::weak_ptr<details::LogThreadPool> pool);
 
     AsyncLogger(std::string name, std::vector<std::shared_ptr<Sink>> sinks,
-                std::weak_ptr<details::LogTaskScheduler> scheduler);
+                std::weak_ptr<details::LogThreadPool> pool);
 
     AsyncLogger(std::string name, std::initializer_list<std::shared_ptr<Sink>> sinks,
-                std::weak_ptr<details::LogTaskScheduler> scheduler);
+                std::weak_ptr<details::LogThreadPool> pool);
 
     template <typename It>
-    AsyncLogger(std::string name, It begin, It end,
-                std::weak_ptr<details::LogTaskScheduler> scheduler)
-        : Logger(std::move(name), begin, end), _scheduler(std::move(scheduler))
+    AsyncLogger(std::string name, It begin, It end, std::weak_ptr<details::LogThreadPool> pool)
+        : Logger(std::move(name), begin, end), _threadPool(std::move(pool))
     {
     }
 
@@ -46,7 +45,7 @@ protected:  // friend
     void backend_flush();
 
 private:
-    std::weak_ptr<details::LogTaskScheduler> _scheduler;
+    std::weak_ptr<details::LogThreadPool> _threadPool;
 };
 }  // namespace logging
 
