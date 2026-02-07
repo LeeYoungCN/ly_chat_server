@@ -99,7 +99,7 @@ protected:
 private:
     std::string _name;
     std::vector<std::shared_ptr<Sink>> _sinks;
-    std::atomic<LogLevel> _logLevel{LogLevel::INFO};
+    std::atomic<LogLevel> _level{LogLevel::INFO};
     std::atomic<LogLevel> _flushLevel{LogLevel::OFF};
 };
 }  // namespace logging

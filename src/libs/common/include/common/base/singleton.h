@@ -1,6 +1,10 @@
 #ifndef COMMON_BASE_SINGLETON_H
 #define COMMON_BASE_SINGLETON_H
 
+#ifndef INST
+#define INST(CLASS_NAME) CLASS_NAME::instance()
+#endif  // INST
+
 namespace common::base {
 template <typename T>
 class SingletonBase {

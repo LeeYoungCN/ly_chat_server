@@ -3,9 +3,6 @@
 
 #include <string_view>
 
-#define LOG_SRC_LOCAL logging::details::LogSource(__FILE__, __LINE__, __FUNCTION__)
-#define LOG_SRC_EMPTY logging::details::LogSource()
-
 namespace logging::details {
 constexpr int INVALID_LINE_NUM = -1;
 

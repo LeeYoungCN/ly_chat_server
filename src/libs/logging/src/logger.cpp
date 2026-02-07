@@ -27,17 +27,17 @@ Logger::Logger(std::string name, std::initializer_list<std::shared_ptr<Sink>> si
 
 void Logger::set_level(LogLevel level)
 {
-    _logLevel = level;
+    _level = level;
 }
 
 LogLevel Logger::level() const
 {
-    return _logLevel;
+    return _level;
 }
 
 bool Logger::should_log(LogLevel level) const
 {
-    return (level != LogLevel::OFF && level >= _logLevel);
+    return (level != LogLevel::OFF && level >= _level);
 }
 
 void Logger::flush_on(LogLevel level)
