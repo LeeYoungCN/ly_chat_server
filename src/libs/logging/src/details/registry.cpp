@@ -13,8 +13,8 @@
 namespace logging::details {
 Registry::Registry() : _globalFormatter(new PatternFormatter())
 {
-    _root = std::make_shared<Logger>(DEFAULT_LOGGER_NAME, std::make_shared<StdoutSink>());
-    _loggers[DEFAULT_LOGGER_NAME] = _root;
+    _root = std::make_shared<Logger>(LOGGER_DEFAULT_NAME, std::make_shared<StdoutSink>());
+    _loggers[LOGGER_DEFAULT_NAME] = _root;
 }
 
 #pragma region root
@@ -139,7 +139,6 @@ void Registry::register_or_replace_logger(std::shared_ptr<Logger> logger)
     std::lock_guard<std::mutex> lock(_loggerMapMtx);
     register_or_replace_logger_it(std::move(logger));
 }
-
 
 void Registry::remove_logger(const std::string& name)
 {

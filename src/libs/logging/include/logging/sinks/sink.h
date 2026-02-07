@@ -25,8 +25,8 @@ public:
     [[nodiscard]] bool should_log(LogLevel level) const;
     void set_level(LogLevel level);
 
-    void set_pattern(const std::string& pattern = DEFAULT_PATTERN,
-                     const std::string& timePattern = DEFAULT_TIME_PATTERN);
+    void set_pattern(const std::string& pattern = FORMATTER_DEFAULT_PATTERN,
+                     const std::string& timePattern = FORMATTER_DEFAULT_TIME_PATTERN);
 
     void set_formatter(std::unique_ptr<Formatter> formatter);
 
@@ -40,10 +40,5 @@ private:
     std::mutex _mtx;
 };
 }  // namespace logging
-
-struct sink_st {
-    std::shared_ptr<logging::Sink> sinkPtr;
-    explicit sink_st(std::shared_ptr<logging::Sink> sink) : sinkPtr(std::move(sink)) {}
-};
 
 #endif  // LOGGINGL_LOG_SINK_H

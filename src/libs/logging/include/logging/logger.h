@@ -19,6 +19,10 @@
 #include "logging/log_level.h"
 #include "logging/sinks/sink.h"
 
+#define LOG_SRC_LOCAL logging::details::LogSource(__FILE__, __LINE__, __FUNCTION__)
+#define LOG_SRC_EMPTY logging::details::LogSource()
+#define LOG_SRC_INST(file, line, func) logging::details::LogSource(file, line, func)
+
 namespace logging {
 class Logger {
 public:
@@ -48,8 +52,8 @@ public:
 
     const std::string& name() const;
 
-    void set_pattern(const std::string& pattern = DEFAULT_PATTERN,
-                     const std::string& timePattern = DEFAULT_TIME_PATTERN);
+    void set_pattern(const std::string& pattern = FORMATTER_DEFAULT_PATTERN,
+                     const std::string& timePattern = FORMATTER_DEFAULT_TIME_PATTERN);
     void sef_formatter(std::unique_ptr<Formatter> formatter);
 
     void flush();

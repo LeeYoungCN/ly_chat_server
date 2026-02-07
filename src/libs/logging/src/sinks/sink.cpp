@@ -2,7 +2,6 @@
 
 #include <mutex>
 
-#include "logging/details/common.h"
 #include "logging/formatters/formatter.h"
 
 namespace logging {
@@ -10,7 +9,6 @@ void Sink::log(const details::LogMsg& logMsg)
 {
     std::lock_guard lock(_mtx);
     std::string content;
-    content.reserve(LOG_CONTENT_DEFAULT_LEN);
     _formatter->format(logMsg, content);
     sink_it(content);
 }

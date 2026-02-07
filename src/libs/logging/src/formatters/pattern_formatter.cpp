@@ -24,6 +24,8 @@ PatternFormatter::PatternFormatter(std::string pattern, std::string timePattern)
 
 void PatternFormatter::format(const details::LogMsg& logMsg, std::string& content)
 {
+    constexpr uint32_t LOG_CONTENT_DEFAULT_LEN = 256;
+    content.reserve(LOG_CONTENT_DEFAULT_LEN);
     bool needTrans = false;
     for (const char& c : _pattern) {
         if (needTrans) {

@@ -23,8 +23,8 @@ private:
     void log_msg_to_content(char symbol, const details::LogMsg& logMsg, std::string& logContent);
 
 private:
-    std::string _pattern = DEFAULT_PATTERN;
-    std::string _timePattern = DEFAULT_TIME_PATTERN;
+    std::string _pattern = FORMATTER_DEFAULT_PATTERN;
+    std::string _timePattern = FORMATTER_DEFAULT_TIME_PATTERN;
 };
 }  // namespace logging
 
