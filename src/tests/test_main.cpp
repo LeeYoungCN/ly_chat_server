@@ -17,13 +17,13 @@
 void init_logging_module()
 {
     std::shared_ptr<logging::details::LogThreadPool> pool =
-        std::make_shared<logging::details::LogThreadPool>(THREAD_POOL_DEFAULT_CAPACITY, 5);
+        std::make_shared<logging::details::LogThreadPool>(logging::THREAD_POOL_DEFAULT_CAPACITY, 5);
     logging::set_thread_pool(pool);
     std::shared_ptr<logging::Sink> stdoutSink = std::make_shared<logging::StdoutSink>();
     std::shared_ptr<logging::Sink> fileSink = std::make_shared<logging::BasicFileSink>();
 
     std::shared_ptr<logging::Logger> logger = std::make_shared<logging::AsyncLogger>(
-        LOGGER_DEFAULT_NAME,
+        logging::LOGGER_DEFAULT_NAME,
         std::vector{std::move(stdoutSink), std::move(fileSink)},
         std::move(pool));
 
