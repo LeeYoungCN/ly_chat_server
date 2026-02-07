@@ -13,10 +13,10 @@
 namespace logging {
 
 template <typename SinkType, typename... SinkArgs>
-std::shared_ptr<Logger> create(std::string name, SinkArgs&&... sinkArgs)
+std::shared_ptr<Logger> create_logger(std::string name, SinkArgs&&... sinkArgs)
 {
-    return std::shared_ptr<Logger>(std::move(name),
-                                   std::shared_ptr<SinkType>(std::forward(sinkArgs)...));
+    auto sink = std::make_shared<SinkType>(std::forward<SinkArgs>(sinkArgs)...);
+    return std::make_shared<Logger>(std::move(name), std::move(sink));
 }
 
 // global options

@@ -19,8 +19,8 @@
 #include "logging/log_level.h"
 #include "logging/sinks/sink.h"
 
-#define LOG_SRC_LOCAL logging::details::LogSource(__FILE__, __LINE__, __FUNCTION__)
-#define LOG_SRC_EMPTY logging::details::LogSource()
+#define LOG_SRC_LOCAL                  logging::details::LogSource(__FILE__, __LINE__, __FUNCTION__)
+#define LOG_SRC_EMPTY                  logging::details::LogSource()
 #define LOG_SRC_INST(file, line, func) logging::details::LogSource(file, line, func)
 
 namespace logging {
@@ -56,9 +56,11 @@ public:
                      const std::string& timePattern = FORMATTER_DEFAULT_TIME_PATTERN);
     void sef_formatter(std::unique_ptr<Formatter> formatter);
 
+    const std::vector<std::shared_ptr<Sink>>& sinks() const;
+
     void flush();
 
-    // log function
+#pragma region log function
     void log(details::LogSource source, LogLevel level, const char* format, va_list args);
 
     template <class T,
@@ -93,6 +95,7 @@ public:
     DEFINE_LOGGER_LOG_FUNCTION(error, logging::LogLevel::ERROR)
 
     DEFINE_LOGGER_LOG_FUNCTION(fatal, logging::LogLevel::FATAL)
+#pragma endregion
 
 protected:
     virtual void sink_it(const details::LogMsg& logMsg);

@@ -84,6 +84,11 @@ void Logger::sef_formatter(std::unique_ptr<Formatter> formatter)
     }
 }
 
+const std::vector<std::shared_ptr<Sink>>& Logger::sinks() const
+{
+    return _sinks;
+}
+
 void Logger::flush()
 {
     flush_it();
