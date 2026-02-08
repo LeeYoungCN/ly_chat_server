@@ -73,7 +73,7 @@ void Registry::flush_on_all(LogLevel level)
     }
 }
 
-void Registry::set_pattern_all(const std::string& pattern, const std::string& timePattern)
+void Registry::set_pattern_all(std::string_view pattern, std::string_view timePattern)
 {
     std::lock_guard<std::mutex> lock(_loggerMapMtx);
     set_formatter_all(std::make_unique<PatternFormatter>(pattern, timePattern));
@@ -122,7 +122,7 @@ void Registry::shut_down()
 #pragma endregion control all
 
 #pragma region container
-bool Registry::exist(const std::string& name)
+bool Registry::exist(std::string_view name)
 {
     std::lock_guard<std::mutex> lock(_loggerMapMtx);
     return exist_it(name);
@@ -140,7 +140,7 @@ void Registry::register_or_replace_logger(std::shared_ptr<Logger> logger)
     register_or_replace_logger_it(std::move(logger));
 }
 
-void Registry::remove_logger(const std::string& name)
+void Registry::remove_logger(std::string_view name)
 {
     std::lock_guard<std::mutex> lock(_loggerMapMtx);
     bool isDefaultLogger = (_root != nullptr && _root->name() == name);
@@ -162,7 +162,7 @@ void Registry::remove_all()
     DEBUG_LOG_INFO("Remove all loggers.");
 }
 
-std::shared_ptr<Logger> Registry::get(const std::string& name)
+std::shared_ptr<Logger> Registry::get(std::string_view name)
 {
     std::lock_guard<std::mutex> lock(_loggerMapMtx);
     auto it = _loggers.find(name);
@@ -186,7 +186,7 @@ void Registry::register_or_replace_logger_it(std::shared_ptr<Logger> logger)
     _loggers[logger->name()] = std::move(logger);
 }
 
-bool Registry::exist_it(const std::string& name)
+bool Registry::exist_it(std::string_view name)
 {
     return (_loggers.find(name) != _loggers.end());
 }

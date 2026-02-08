@@ -14,21 +14,22 @@ AsyncLogger::~AsyncLogger()
     DEBUG_LOGGER_INFO("Async logger release. [{}].", name());
 }
 
-AsyncLogger::AsyncLogger(std::string name, std::shared_ptr<Sink> sink,
+AsyncLogger::AsyncLogger(std::string_view name, const std::shared_ptr<Sink>& sink,
                          std::weak_ptr<details::LogThreadPool> pool)
-    : Logger(std::move(name), {std::move(sink)}), _threadPool(std::move(pool))
+    : Logger(name, {sink}), _threadPool(std::move(pool))
 {
 }
 
-AsyncLogger::AsyncLogger(std::string name, std::vector<std::shared_ptr<Sink>> sinks,
+AsyncLogger::AsyncLogger(std::string_view name, const std::vector<std::shared_ptr<Sink>>& sinks,
                          std::weak_ptr<details::LogThreadPool> pool)
-    : Logger(std::move(name), std::move(sinks)), _threadPool(std::move(pool))
+    : Logger(name, sinks), _threadPool(std::move(pool))
 {
 }
 
-AsyncLogger::AsyncLogger(std::string name, std::initializer_list<std::shared_ptr<Sink>> sinks,
+AsyncLogger::AsyncLogger(std::string_view name,
+                         const std::initializer_list<std::shared_ptr<Sink>>& sinks,
                          std::weak_ptr<details::LogThreadPool> pool)
-    : Logger(std::move(name), sinks), _threadPool(std::move(pool))
+    : Logger(name, sinks), _threadPool(std::move(pool))
 {
 }
 

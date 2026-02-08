@@ -25,10 +25,12 @@ struct LogTask {
     LogTask() = default;
     explicit LogTask(TaskType type) : type(type) {}
 
-    LogTask(TaskType type, std::shared_ptr<AsyncLogger> logger) : type(type), logger(std::move(logger)) {}
+    LogTask(TaskType type, const std::shared_ptr<AsyncLogger>& logger) : type(type), logger(logger)
+    {
+    }
 
-    LogTask(TaskType type, std::shared_ptr<AsyncLogger> logger, LogMsg logMsg)
-        : type(type), logMsg(std::move(logMsg)), logger(std::move(logger))
+    LogTask(TaskType type, const std::shared_ptr<AsyncLogger>& logger, LogMsg logMsg)
+        : type(type), logMsg(std::move(logMsg)), logger(logger)
     {
     }
 };

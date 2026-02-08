@@ -20,6 +20,7 @@ class LogThreadPool {
 public:
     LogThreadPool();
     ~LogThreadPool();
+    explicit LogThreadPool(uint32_t capacity);
     LogThreadPool(uint32_t capacity, uint32_t threadCnt);
 
     void log(std::shared_ptr<AsyncLogger> logger, const LogMsg& logMsg);

@@ -5,7 +5,7 @@
 
 #include <memory>
 #include <mutex>
-#include <string>
+#include <string_view>
 #include <unordered_map>
 
 #include "common/base/singleton.h"
@@ -30,8 +30,8 @@ public:
     void initialize_logger(const std::shared_ptr<Logger>& logger, bool autoRegister = true);
     void set_level_all(LogLevel level);
     void flush_on_all(LogLevel level);
-    void set_pattern_all(const std::string& pattern = FORMATTER_DEFAULT_PATTERN,
-                         const std::string& timePattern = FORMATTER_DEFAULT_TIME_PATTERN);
+    void set_pattern_all(std::string_view pattern = FORMATTER_DEFAULT_PATTERN,
+                         std::string_view timePattern = FORMATTER_DEFAULT_TIME_PATTERN);
     void set_formatter_all(std::unique_ptr<Formatter> formatter);
     void set_thread_pool(std::shared_ptr<LogThreadPool> threadPool);
     std::shared_ptr<LogThreadPool> get_thread_pool();
@@ -40,18 +40,18 @@ public:
 #pragma endregion control all
 
 #pragma region container
-    bool exist(const std::string& loggerName);
+    bool exist(std::string_view loggerName);
     bool register_logger(std::shared_ptr<Logger> logger);
     void register_or_replace_logger(std::shared_ptr<Logger> logger);
-    void remove_logger(const std::string& name);
+    void remove_logger(std::string_view name);
     void remove_all();
-    std::shared_ptr<Logger> get(const std::string& loggerName);
+    std::shared_ptr<Logger> get(std::string_view loggerName);
 #pragma endregion container
 
 private:
     bool register_logger_it(std::shared_ptr<Logger> logger);
     void register_or_replace_logger_it(std::shared_ptr<Logger> logger);
-    bool exist_it(const std::string& name);
+    bool exist_it(std::string_view name);
 
 protected:
     Registry();
@@ -62,7 +62,7 @@ private:
     std::shared_ptr<Logger> _root;
 
     // container
-    std::unordered_map<std::string, std::shared_ptr<Logger>> _loggers;
+    std::unordered_map<std::string_view, std::shared_ptr<Logger>> _loggers;
     std::mutex _loggerMapMtx;
 
     // global options

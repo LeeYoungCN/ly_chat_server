@@ -3,11 +3,11 @@
 #include <memory>
 #include <string>
 #include <string_view>
-#include <utility>
 
 #include "common/utils/date_time_utils.h"
 #include "common/utils/filesystem_utils.h"
 #include "common/utils/process_utils.h"
+#include "logging/details/common.h"
 #include "logging/log_level.h"
 
 namespace logging {
@@ -15,10 +15,18 @@ using namespace common::process;
 using namespace common::date_time;
 using namespace common::filesystem;
 
-PatternFormatter::PatternFormatter(std::string pattern) : _pattern(std::move(pattern)) {}
+PatternFormatter::PatternFormatter()
+    : PatternFormatter(FORMATTER_DEFAULT_PATTERN, FORMATTER_DEFAULT_TIME_PATTERN)
+{
+}
 
-PatternFormatter::PatternFormatter(std::string pattern, std::string timePattern)
-    : _pattern(std::move(pattern)), _timePattern(std::move(timePattern))
+PatternFormatter::PatternFormatter(std::string_view pattern)
+    : PatternFormatter(pattern, FORMATTER_DEFAULT_TIME_PATTERN)
+{
+}
+
+PatternFormatter::PatternFormatter(std::string_view pattern, std::string_view timePattern)
+    : _pattern(pattern), _timePattern(timePattern)
 {
 }
 

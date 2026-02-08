@@ -18,6 +18,11 @@ LogThreadPool::LogThreadPool()
 {
 }
 
+LogThreadPool::LogThreadPool(uint32_t capacity)
+    : LogThreadPool(capacity, THREAD_POOL_DEFAULT_THREAD_CNT)
+{
+}
+
 LogThreadPool::LogThreadPool(uint32_t capacity, uint32_t threadCnt)
     : _logBuffer(ConcurrentBlockingQueue<LogTask>(capacity)), _threadCnt(threadCnt)
 {

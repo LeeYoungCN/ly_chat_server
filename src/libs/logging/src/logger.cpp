@@ -14,20 +14,17 @@ Logger::~Logger()
     DEBUG_LOGGER_INFO("Logger release. [{}]", name());
 }
 
-Logger::Logger(std::string name) : _name(std::move(name)) {}
+Logger::Logger(std::string_view name) : _name(name) {}
 
-Logger::Logger(std::string name, std::shared_ptr<Sink> sink)
-    : Logger(std::move(name), {std::move(sink)})
+Logger::Logger(std::string_view name, const std::shared_ptr<Sink>& sink) : Logger(name, {sink}) {}
+
+Logger::Logger(std::string_view name, const std::vector<std::shared_ptr<Sink>>& sinks)
+    : Logger(name, sinks.begin(), sinks.end())
 {
 }
 
-Logger::Logger(std::string name, std::vector<std::shared_ptr<Sink>> sinks)
-    : Logger(std::move(name), sinks.begin(), sinks.end())
-{
-}
-
-Logger::Logger(std::string name, std::initializer_list<std::shared_ptr<Sink>> sinks)
-    : Logger(std::move(name), sinks.begin(), sinks.end())
+Logger::Logger(std::string_view name, const std::initializer_list<std::shared_ptr<Sink>>& sinks)
+    : Logger(name, sinks.begin(), sinks.end())
 {
 }
 
@@ -61,12 +58,12 @@ bool Logger::should_flush(LogLevel level) const
     return (level != LogLevel::OFF && level >= _flushLevel);
 }
 
-const std::string& Logger::name() const
+std::string_view Logger::name() const
 {
     return this->_name;
 }
 
-void Logger::set_pattern(const std::string& pattern, const std::string& timePattern)
+void Logger::set_pattern(std::string_view pattern, std::string_view timePattern)
 {
     for (const auto& sink : _sinks) {
         sink->set_pattern(pattern, timePattern);

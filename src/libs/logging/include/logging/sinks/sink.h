@@ -25,8 +25,8 @@ public:
     [[nodiscard]] bool should_log(LogLevel level) const;
     void set_level(LogLevel level);
 
-    void set_pattern(const std::string& pattern = FORMATTER_DEFAULT_PATTERN,
-                     const std::string& timePattern = FORMATTER_DEFAULT_TIME_PATTERN);
+    void set_pattern(std::string_view pattern = FORMATTER_DEFAULT_PATTERN,
+                     std::string_view timePattern = FORMATTER_DEFAULT_TIME_PATTERN);
 
     void set_formatter(std::unique_ptr<Formatter> formatter);
 

@@ -9,12 +9,12 @@ namespace logging {
 
 class PatternFormatter : public Formatter {
 public:
-    PatternFormatter() = default;
+    PatternFormatter();
     ~PatternFormatter() override = default;
 
-    explicit PatternFormatter(std::string pattern);
+    explicit PatternFormatter(std::string_view pattern);
 
-    PatternFormatter(std::string pattern, std::string timePattern);
+    PatternFormatter(std::string_view pattern, std::string_view timePattern);
 
     void format(const details::LogMsg& logMsg, std::string& logContent) override;
     [[nodiscard]] std::unique_ptr<Formatter> clone() const override;
@@ -23,8 +23,8 @@ private:
     void log_msg_to_content(char symbol, const details::LogMsg& logMsg, std::string& logContent);
 
 private:
-    std::string _pattern = FORMATTER_DEFAULT_PATTERN;
-    std::string _timePattern = FORMATTER_DEFAULT_TIME_PATTERN;
+    std::string _pattern;
+    std::string _timePattern;
 };
 }  // namespace logging
 

@@ -21,17 +21,17 @@ public:
     AsyncLogger() = default;
     ~AsyncLogger() override;
 
-    AsyncLogger(std::string name, std::shared_ptr<Sink> sink,
+    AsyncLogger(std::string_view name, const std::shared_ptr<Sink>& sink,
                 std::weak_ptr<details::LogThreadPool> pool);
 
-    AsyncLogger(std::string name, std::vector<std::shared_ptr<Sink>> sinks,
+    AsyncLogger(std::string_view name, const std::vector<std::shared_ptr<Sink>>& sinks,
                 std::weak_ptr<details::LogThreadPool> pool);
 
-    AsyncLogger(std::string name, std::initializer_list<std::shared_ptr<Sink>> sinks,
+    AsyncLogger(std::string_view name, const std::initializer_list<std::shared_ptr<Sink>>& sinks,
                 std::weak_ptr<details::LogThreadPool> pool);
 
     template <typename It>
-    AsyncLogger(std::string name, It begin, It end, std::weak_ptr<details::LogThreadPool> pool)
+    AsyncLogger(std::string_view name, It begin, It end, std::weak_ptr<details::LogThreadPool> pool)
         : Logger(std::move(name), begin, end), _threadPool(std::move(pool))
     {
     }

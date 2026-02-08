@@ -1,6 +1,7 @@
 #include "logging/sinks/sink.h"
 
 #include <mutex>
+#include <string_view>
 
 #include "logging/formatters/formatter.h"
 
@@ -29,7 +30,7 @@ void Sink::set_level(LogLevel level)
     _level.store(level);
 };
 
-void Sink::set_pattern(const std::string& pattern, const std::string& timePattern)
+void Sink::set_pattern(std::string_view pattern, std::string_view timePattern)
 {
     set_formatter(std::make_unique<PatternFormatter>(pattern, timePattern));
 }

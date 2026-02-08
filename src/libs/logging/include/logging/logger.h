@@ -7,6 +7,7 @@
 #include <initializer_list>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -29,16 +30,16 @@ public:
     Logger() = default;
     virtual ~Logger();
 
-    explicit Logger(std::string name);
+    explicit Logger(std::string_view name);
 
-    Logger(std::string name, std::shared_ptr<Sink> sink);
+    Logger(std::string_view name, const std::shared_ptr<Sink>& sink);
 
-    Logger(std::string name, std::vector<std::shared_ptr<Sink>> sinks);
+    Logger(std::string_view name, const std::vector<std::shared_ptr<Sink>>& sinks);
 
-    Logger(std::string name, std::initializer_list<std::shared_ptr<Sink>> sinks);
+    Logger(std::string_view name, const std::initializer_list<std::shared_ptr<Sink>>& sinks);
 
     template <typename It>
-    Logger(std::string name, It begin, It end) : _name(std::move(name)), _sinks(begin, end)
+    Logger(std::string_view name, It begin, It end) : _name(name), _sinks(begin, end)
     {
     }
 
@@ -50,10 +51,10 @@ public:
     LogLevel flush_level() const;
     bool should_flush(LogLevel level) const;
 
-    const std::string& name() const;
+    std::string_view name() const;
 
-    void set_pattern(const std::string& pattern = FORMATTER_DEFAULT_PATTERN,
-                     const std::string& timePattern = FORMATTER_DEFAULT_TIME_PATTERN);
+    void set_pattern(std::string_view pattern = FORMATTER_DEFAULT_PATTERN,
+                     std::string_view timePattern = FORMATTER_DEFAULT_TIME_PATTERN);
     void sef_formatter(std::unique_ptr<Formatter> formatter);
 
     const std::vector<std::shared_ptr<Sink>>& sinks() const;

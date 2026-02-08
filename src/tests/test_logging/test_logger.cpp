@@ -1,4 +1,5 @@
 #include <cstdint>
+#include <initializer_list>
 #include <memory>
 #include <vector>
 
@@ -28,31 +29,57 @@ protected:
     static void TearDownTestSuite() {}
     void SetUp() override {};
     void TearDown() override {};
+
+protected:
+    uint32_t _capacity = 1024;
+    std::shared_ptr<Logger> _logger;
+    std::shared_ptr<Sink> _sink = std::make_shared<MockSink>(_capacity);
 };
 
-TEST_F(TestLogger, create)
+TEST_F(TestLogger, create_single_sink)
 {
-    const std::string name = "create_test";
-    const uint32_t capacity = 1024;
-    Logger logger = Logger(name, std::make_shared<MockSink>(capacity));
-    EXPECT_EQ(logger.name(), name);
-    EXPECT_EQ(logger.sinks().size(), 1);
-    auto *sink = reinterpret_cast<MockSink *>(logger.sinks()[0].get());
-    EXPECT_EQ(sink->capacity(), capacity);
+    const std::string name = "create_single";
+    _logger = std::make_shared<Logger>(name, _sink);
+    EXPECT_EQ(_sink.use_count(), 2);
+    EXPECT_EQ(_logger->name(), name);
+    EXPECT_EQ(_logger->sinks().size(), 1);
+    auto *sinkPtr = reinterpret_cast<MockSink *>(_logger->sinks()[0].get());
+    EXPECT_EQ(sinkPtr->capacity(), _capacity);
+}
+
+TEST_F(TestLogger, create_initializer_list)
+{
+    const std::string name = "create_initializer_list";
+    auto sinks = std::initializer_list<std::shared_ptr<Sink>>{_sink, _sink, _sink};
+    _logger = std::make_shared<Logger>(name, sinks);
+    EXPECT_EQ(_logger->name(), name);
+    EXPECT_EQ(_logger->sinks().size(), sinks.size());
+    EXPECT_EQ(_sink.use_count(), 2 * sinks.size() + 1);
+}
+
+TEST_F(TestLogger, create_vector)
+{
+    const std::string name = "create_vector";
+    auto sinks = std::vector<std::shared_ptr<Sink>>{_sink, _sink};
+    sinks.push_back(_sink);
+    _logger = std::make_shared<Logger>(name, sinks);
+    EXPECT_EQ(_logger->name(), name);
+    EXPECT_EQ(_logger->sinks().size(), sinks.size());
+    EXPECT_EQ(_sink.use_count(), 2 * sinks.size() + 1);
 }
 
 TEST_F(TestLogger, set_level)
 {
     const std::string name = "set_level";
-    Logger logger = Logger(name, std::make_shared<MockSink>());
+    _logger = std::make_shared<Logger>(name, _sink);
 
     for (LogLevel level : LEVELS) {
-        logger.set_level(level);
-        EXPECT_EQ(logger.level(), level);
+        _logger->set_level(level);
+        EXPECT_EQ(_logger->level(), level);
         if (level != LogLevel::OFF) {
-            EXPECT_TRUE(logger.should_log(level));
+            EXPECT_TRUE(_logger->should_log(level));
         } else {
-            EXPECT_FALSE(logger.should_log(level));
+            EXPECT_FALSE(_logger->should_log(level));
         }
     }
 }
@@ -60,17 +87,23 @@ TEST_F(TestLogger, set_level)
 TEST_F(TestLogger, flush_on)
 {
     const std::string name = "set_level";
-    Logger logger = Logger(name, std::make_shared<MockSink>());
+    _logger = std::make_shared<Logger>(name, _sink);
 
     for (LogLevel level : LEVELS) {
-        logger.flush_on(level);
-        EXPECT_EQ(logger.flush_level(), level);
+        _logger->flush_on(level);
+        EXPECT_EQ(_logger->flush_level(), level);
         if (level != LogLevel::OFF) {
-            EXPECT_TRUE(logger.should_flush(level));
+            EXPECT_TRUE(_logger->should_flush(level));
         } else {
-            EXPECT_FALSE(logger.should_flush(level));
+            EXPECT_FALSE(_logger->should_flush(level));
         }
     }
+}
+
+TEST_F(TestLogger, log)
+{
+    const std::string name = "set_level";
+    _logger = std::make_shared<Logger>(name, _sink);
 }
 
 }  // namespace test::test_logging

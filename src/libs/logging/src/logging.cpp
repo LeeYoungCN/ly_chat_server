@@ -22,7 +22,7 @@ void flush_on_all(LogLevel level)
     INST(details::Registry).flush_on_all(level);
 }
 
-void set_pattern_all(const std::string& pattern, const std::string& timePattern)
+void set_pattern_all(std::string_view pattern, std::string_view timePattern)
 {
     INST(details::Registry).set_pattern_all(pattern, timePattern);
 }
@@ -63,7 +63,7 @@ void register_or_replace_logger(std::shared_ptr<Logger> logger)
     INST(details::Registry).register_or_replace_logger(std::move(logger));
 }
 
-void remove_logger(const std::string& name)
+void remove_logger(std::string_view name)
 {
     INST(details::Registry).remove_logger(name);
 }
@@ -103,7 +103,7 @@ void flush_on(LogLevel level)
     root_logger_raw()->flush_on(level);
 }
 
-void set_pattern(const std::string& pattern, const std::string& timePattern)
+void set_pattern(std::string_view pattern, std::string_view timePattern)
 {
     root_logger_raw()->set_pattern(pattern, timePattern);
 }
