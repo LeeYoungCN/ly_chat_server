@@ -1,13 +1,14 @@
+#pragma once
 #ifndef LOGGINGL_LOG_STDOUT_SINK_H
 #define LOGGINGL_LOG_STDOUT_SINK_H
 
 #include <cstdio>
 #include <string_view>
 
-#include "logging/sinks/sink.h"
+#include "logging/sinks/base_sink.h"
 
 namespace logging {
-class StdoutSink : public Sink {
+class StdoutSink : public BaseSink {
 public:
     StdoutSink() = default;
     ~StdoutSink() override = default;

@@ -6,7 +6,7 @@
 #include "gtest/gtest.h"
 #include "logging/log_level.h"
 #include "logging/logger.h"
-#include "mock_sink.h"
+#include "log_msg_container_sink.h"
 
 using namespace test::test_logging;
 using namespace logging;
@@ -31,9 +31,8 @@ protected:
     void TearDown() override {};
 
 protected:
-    uint32_t _capacity = 1024;
     std::shared_ptr<Logger> _logger;
-    std::shared_ptr<Sink> _sink = std::make_shared<MockSink>(_capacity);
+    std::shared_ptr<Sink> _sink = std::make_shared<LogMsgContainer>();
 };
 
 TEST_F(TestLogger, create_single_sink)
@@ -43,8 +42,8 @@ TEST_F(TestLogger, create_single_sink)
     EXPECT_EQ(_sink.use_count(), 2);
     EXPECT_EQ(_logger->name(), name);
     EXPECT_EQ(_logger->sinks().size(), 1);
-    auto *sinkPtr = reinterpret_cast<MockSink *>(_logger->sinks()[0].get());
-    EXPECT_EQ(sinkPtr->capacity(), _capacity);
+    auto *sinkPtr = reinterpret_cast<LogMsgContainer *>(_logger->sinks()[0].get());
+    EXPECT_EQ(sinkPtr->buffer().size(), 0);
 }
 
 TEST_F(TestLogger, create_initializer_list)

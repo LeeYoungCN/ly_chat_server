@@ -1,3 +1,4 @@
+#pragma once
 #ifndef LOGGINGL_LOG_SINK_H
 #define LOGGINGL_LOG_SINK_H
 
@@ -6,7 +7,6 @@
 #include <mutex>
 #include <string_view>
 
-#include "logging/details/common.h"
 #include "logging/details/log_msg.h"
 #include "logging/formatters/formatter.h"
 #include "logging/formatters/pattern_formatter.h"
@@ -18,26 +18,20 @@ public:
     Sink() = default;
     virtual ~Sink() = default;
 
-    void log(const details::LogMsg& logMsg);
+    virtual void log(const details::LogMsg& logMsg) = 0;
+    virtual void flush() = 0;
 
-    void flush();
+    void set_pattern(std::string_view pattern, std::string_view timePattern);
+    void set_formatter(std::unique_ptr<Formatter> formatter);
 
     [[nodiscard]] bool should_log(LogLevel level) const;
     void set_level(LogLevel level);
-
-    void set_pattern(std::string_view pattern = FORMATTER_DEFAULT_PATTERN,
-                     std::string_view timePattern = FORMATTER_DEFAULT_TIME_PATTERN);
-
-    void set_formatter(std::unique_ptr<Formatter> formatter);
+    [[nodiscard]] LogLevel level() const;
 
 protected:
-    virtual void sink_it(std::string_view message) = 0;
-    virtual void flush_it() = 0;
-
-private:
     std::atomic<LogLevel> _level = LogLevel::INFO;
-    std::unique_ptr<Formatter> _formatter = std::make_unique<PatternFormatter>();
-    std::mutex _mtx;
+    std::unique_ptr<Formatter> _formatter{std::make_unique<PatternFormatter>()};
+    std::mutex _sinkMtx;
 };
 }  // namespace logging
 

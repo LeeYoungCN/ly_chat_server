@@ -1,20 +1,19 @@
+#pragma once
 #ifndef LOGGINGL_LOG_BASIC_SINK_H
 #define LOGGINGL_LOG_BASIC_SINK_H
 
-#include <mutex>
 #include <string_view>
 
 #include "common/utils/file_writer.h"
-#include "logging/sinks/sink.h"
+#include "logging/sinks/base_sink.h"
 
 namespace logging {
-class BasicFileSink : public Sink {
+class BasicFileSink : public BaseSink {
 public:
     BasicFileSink();
     ~BasicFileSink() override;
     explicit BasicFileSink(std::string_view file, bool overwrite = true);
 
-    
 protected:
     void flush_it() override;
     void sink_it(std::string_view message) override;
@@ -23,9 +22,7 @@ private:
     std::string _filePath;
     bool _overwrite{true};
     common::filesystem::FileWriter _fileWriter;
-    std::mutex _mutex;
 };
-
 
 }  // namespace logging
 
