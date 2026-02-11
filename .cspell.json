@@ -4,6 +4,7 @@
         "appender",
         "constexpr",
         "ctest",
+        "endforeach",
         "getopt",
         "GNUCXX",
         "gtest",
@@ -25,7 +26,7 @@
         "^--?[a-zA-Z0-9-]+$",
         // 忽略带等号的参数（如 --std=c++17）
         "^--?[a-zA-Z0-9-]+=.*$",
-         // cmake 选项
+        // cmake 选项
         "-D[A-Z_]+=.*",
         // 宏定义
         "^#[a-z_]+.*"

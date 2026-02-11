@@ -15,6 +15,7 @@
     "terminal.integrated.defaultProfile.windows": "git_bash",
     "terminal.integrated.fontSize": 16,
     "window.zoomLevel": 1,
+    "editor.defaultFoldingRangeProvider": "ms-vscode.cpptools",
     "editor.mouseWheelZoom": true,
     "editor.fontFamily": "'JetBrains Mono', Consolas, monospace",
     "editor.fontSize": 18,
