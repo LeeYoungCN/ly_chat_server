@@ -1,15 +1,15 @@
 #ifndef LOGGING_DETAILS_LOG_SOURCE_H
 #define LOGGING_DETAILS_LOG_SOURCE_H
 
-#include <string_view>
+#include <string>
 
 namespace logging::details {
 constexpr int INVALID_LINE_NUM = -1;
 
 struct LogSource {
-    std::string_view file;
+    std::string file;
     int line{INVALID_LINE_NUM};
-    std::string_view func;
+    std::string func;
 
     LogSource() = default;
     LogSource(std::string_view filePath, int lineNumber, std::string_view funcName)

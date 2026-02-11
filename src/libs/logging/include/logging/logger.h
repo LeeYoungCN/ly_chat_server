@@ -20,10 +20,6 @@
 #include "logging/log_level.h"
 #include "logging/sinks/sink.h"
 
-#define LOG_SRC_LOCAL                  logging::details::LogSource(__FILE__, __LINE__, __FUNCTION__)
-#define LOG_SRC_EMPTY                  logging::details::LogSource()
-#define LOG_SRC_INST(file, line, func) logging::details::LogSource(file, line, func)
-
 namespace logging {
 class Logger {
 public:
@@ -62,11 +58,10 @@ public:
     void flush();
 
 #pragma region log function
-    void log(details::LogSource source, LogLevel level, const char* format, va_list args);
 
     template <class T,
               std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
-    void log(details::LogSource source, LogLevel level, const T& message)
+    void log(logging::details::LogSource source, LogLevel level, const T& message)
     {
         if (!should_log(level)) {
             return;
@@ -76,7 +71,7 @@ public:
     }
 
     template <typename... Args>
-    void log(details::LogSource source, LogLevel level, std::format_string<Args...> format,
+    void log(logging::details::LogSource source, LogLevel level, std::format_string<Args...> format,
              Args&&... args)
     {
         if (!should_log(level)) {

@@ -16,12 +16,12 @@ class AsyncLogger;
 
 namespace details {
 
-class LogThreadPool {
+class TaskPool {
 public:
-    LogThreadPool();
-    ~LogThreadPool();
-    explicit LogThreadPool(uint32_t capacity);
-    LogThreadPool(uint32_t capacity, uint32_t threadCnt);
+    TaskPool();
+    ~TaskPool();
+    explicit TaskPool(uint32_t capacity);
+    TaskPool(uint32_t capacity, uint32_t threadCnt);
 
     void log(std::shared_ptr<AsyncLogger> logger, const LogMsg& logMsg);
     void flush(std::shared_ptr<AsyncLogger> logger);

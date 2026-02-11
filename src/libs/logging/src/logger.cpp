@@ -91,15 +91,6 @@ void Logger::flush()
     flush_it();
 }
 
-void Logger::log(details::LogSource source, LogLevel level, const char* format, va_list args)
-{
-    if (!should_log(level)) {
-        return;
-    }
-    details::LogMsg logMsg(source, _name, level, common::string::va_list_to_string(format, args));
-    sink_it(logMsg);
-}
-
 void Logger::sink_it(const details::LogMsg& logMsg)
 {
     sinks_log_it(logMsg);

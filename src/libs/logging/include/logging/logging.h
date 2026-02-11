@@ -3,10 +3,11 @@
 
 #include <format>
 #include <memory>
+#include <string_view>
 #include <utility>
 
 #include "logging/details/log_source.h"
-#include "logging/details/log_thread_pool.h"
+#include "logging/details/task_pool.h"
 #include "logging/log_level.h"
 #include "logging/logger.h"
 
@@ -19,25 +20,7 @@ std::shared_ptr<Logger> create_logger(std::string name, SinkArgs&&... sinkArgs)
     return std::make_shared<Logger>(std::move(name), std::move(sink));
 }
 
-// global options
-void initialize_logger(const std::shared_ptr<Logger>& logger);
-void set_level_all(LogLevel level);
-void flush_on_all(LogLevel level);
-void set_pattern_all(std::string_view pattern = FORMATTER_DEFAULT_PATTERN,
-                     std::string_view timePattern = FORMATTER_DEFAULT_TIME_PATTERN);
-void set_formatter_all(std::unique_ptr<Formatter> formatter);
-void set_thread_pool(std::shared_ptr<details::LogThreadPool> threadPool);
-std::shared_ptr<details::LogThreadPool> get_thread_pool();
-void flush_all();
-void shut_down();
-
-// logger manager
-bool register_logger(std::shared_ptr<Logger> logger);
-void register_or_replace_logger(std::shared_ptr<Logger> logger);
-void remove_logger(std::string_view name);
-void remove_all();
-
-// root logger
+#pragma region Root logger
 std::shared_ptr<Logger> root_logger();
 Logger* root_logger_raw();
 void set_root_logger(std::shared_ptr<Logger> logger);
@@ -206,6 +189,28 @@ void fatal(logging::details::LogSource source, const T& message)
 {
     root_logger_raw()->fatal(source, message);
 }
+#pragma endregion
+
+#pragma region Module manager
+void initialize_logger(const std::shared_ptr<Logger>& logger);
+void set_level_all(LogLevel level);
+void flush_on_all(LogLevel level);
+void set_pattern_all(std::string_view pattern = FORMATTER_DEFAULT_PATTERN,
+                     std::string_view timePattern = FORMATTER_DEFAULT_TIME_PATTERN);
+void set_formatter_all(std::unique_ptr<Formatter> formatter);
+void flush_all();
+void shut_down();
+#pragma endregion
+
+#pragma region Container
+bool register_logger(std::shared_ptr<Logger> logger);
+void register_or_replace_logger(std::shared_ptr<Logger> logger);
+void remove_logger(std::string_view name);
+void remove_all();
+std::shared_ptr<Logger> get_logger(std::string_view name);
+void register_task_pool(std::shared_ptr<details::TaskPool> taskPool);
+std::shared_ptr<details::TaskPool> get_task_pool();
+#pragma endregion
 
 }  // namespace logging
 
