@@ -1,5 +1,5 @@
-#ifndef TEST_LOGGING_LOG_MSG_CONTAINER_SINK_H
-#define TEST_LOGGING_LOG_MSG_CONTAINER_SINK_H
+#ifndef TEST_LOGGING_TEST_UTILS_TID_MSG_SINK_H
+#define TEST_LOGGING_TEST_UTILS_TID_MSG_SINK_H
 
 #include <map>
 
@@ -8,10 +8,10 @@
 #include "logging/sinks/sink.h"
 
 namespace test::test_logging {
-class LogMsgContainer : public logging::Sink {
+class TidMsgMapSink : public logging::Sink {
 public:
-    LogMsgContainer() = default;
-    ~LogMsgContainer() override = default;
+    TidMsgMapSink() = default;
+    ~TidMsgMapSink() override = default;
 
     void log(const logging::details::LogMsg& logMsg) override;
     void flush() override {}
@@ -22,4 +22,4 @@ private:
     std::map<ThreadId, logging::details::LogMsg> _buffer;
 };
 }  // namespace test::test_logging
-#endif  // TEST_LOGGING_LOG_MSG_CONTAINER_SINK_H
+#endif  // TEST_LOGGING_TEST_UTILS_TID_MSG_SINK_H

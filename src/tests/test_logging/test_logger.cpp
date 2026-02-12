@@ -1,25 +1,17 @@
-#include <cstdint>
 #include <initializer_list>
 #include <memory>
 #include <vector>
 
 #include "gtest/gtest.h"
+#include "logging/details/common.h"
 #include "logging/log_level.h"
 #include "logging/logger.h"
-#include "log_msg_container_sink.h"
+#include "test_utils/common.h"
+#include "test_utils/log_content_buffer_sink.h"
 
 using namespace test::test_logging;
 using namespace logging;
 using namespace logging::details;
-
-namespace {
-const std::vector<LogLevel> LEVELS = {LogLevel::DEBUG,
-                                      LogLevel::INFO,
-                                      LogLevel::WARN,
-                                      LogLevel::ERROR,
-                                      LogLevel::FATAL,
-                                      LogLevel::OFF};
-}
 
 namespace test::test_logging {
 
@@ -32,23 +24,23 @@ protected:
 
 protected:
     std::shared_ptr<Logger> _logger;
-    std::shared_ptr<Sink> _sink = std::make_shared<LogMsgContainer>();
+    std::shared_ptr<LogContentBuffer> _sink = std::make_shared<LogContentBuffer>();
 };
 
 TEST_F(TestLogger, create_single_sink)
 {
-    const std::string name = "create_single";
+    const std::string name = test_info_->name();
     _logger = std::make_shared<Logger>(name, _sink);
     EXPECT_EQ(_sink.use_count(), 2);
     EXPECT_EQ(_logger->name(), name);
     EXPECT_EQ(_logger->sinks().size(), 1);
-    auto *sinkPtr = reinterpret_cast<LogMsgContainer *>(_logger->sinks()[0].get());
+    auto *sinkPtr = reinterpret_cast<LogContentBuffer *>(_logger->sinks()[0].get());
     EXPECT_EQ(sinkPtr->buffer().size(), 0);
 }
 
 TEST_F(TestLogger, create_initializer_list)
 {
-    const std::string name = "create_initializer_list";
+    const std::string name = test_info_->name();
     auto sinks = std::initializer_list<std::shared_ptr<Sink>>{_sink, _sink, _sink};
     _logger = std::make_shared<Logger>(name, sinks);
     EXPECT_EQ(_logger->name(), name);
@@ -58,7 +50,7 @@ TEST_F(TestLogger, create_initializer_list)
 
 TEST_F(TestLogger, create_vector)
 {
-    const std::string name = "create_vector";
+    const std::string name = test_info_->name();
     auto sinks = std::vector<std::shared_ptr<Sink>>{_sink, _sink};
     sinks.push_back(_sink);
     _logger = std::make_shared<Logger>(name, sinks);
@@ -67,12 +59,12 @@ TEST_F(TestLogger, create_vector)
     EXPECT_EQ(_sink.use_count(), 2 * sinks.size() + 1);
 }
 
-TEST_F(TestLogger, set_level)
+TEST_F(TestLogger, log_level)
 {
-    const std::string name = "set_level";
+    const std::string name = test_info_->name();
     _logger = std::make_shared<Logger>(name, _sink);
 
-    for (LogLevel level : LEVELS) {
+    for (LogLevel level : LOG_LEVELS) {
         _logger->set_level(level);
         EXPECT_EQ(_logger->level(), level);
         if (level != LogLevel::OFF) {
@@ -83,12 +75,12 @@ TEST_F(TestLogger, set_level)
     }
 }
 
-TEST_F(TestLogger, flush_on)
+TEST_F(TestLogger, flush_level)
 {
-    const std::string name = "set_level";
+    const std::string name = test_info_->name();
     _logger = std::make_shared<Logger>(name, _sink);
 
-    for (LogLevel level : LEVELS) {
+    for (LogLevel level : LOG_LEVELS) {
         _logger->flush_on(level);
         EXPECT_EQ(_logger->flush_level(), level);
         if (level != LogLevel::OFF) {
@@ -99,10 +91,24 @@ TEST_F(TestLogger, flush_on)
     }
 }
 
-TEST_F(TestLogger, log)
+TEST_F(TestLogger, log_level_filter)
 {
-    const std::string name = "set_level";
+    const std::string name = test_info_->name();
+    _sink->set_level(LogLevel::DEBUG);
     _logger = std::make_shared<Logger>(name, _sink);
+    for (auto filterLevel : LOG_LEVELS) {
+        _logger->set_level(filterLevel);
+        for (auto logLevel : LOG_LEVELS) {
+            _logger->log(LOG_SRC_LOCAL, logLevel, "test");
+        }
+        if (filterLevel != LogLevel::OFF) {
+            EXPECT_EQ(_sink->buffer().size(), LogLevel::FATAL - _logger->level() + 1)
+                << log_level_to_string(filterLevel);
+        } else {
+            EXPECT_EQ(_sink->buffer().size(), 0);
+        }
+        _sink->clear();
+    }
 }
 
 }  // namespace test::test_logging

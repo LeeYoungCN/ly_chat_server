@@ -1,9 +1,9 @@
 #include <memory>
 
 #include "gtest/gtest.h"
-#include "log_msg_container_sink.h"
 #include "logging/logger.h"
 #include "logging/logging.h"
+#include "test_utils/log_content_buffer_sink.h"
 
 using namespace test::test_logging;
 using namespace logging;
@@ -21,11 +21,11 @@ protected:
 TEST_F(TestLoggingAPI, create_logger)
 {
     const std::string name = "create_test";
-    std::shared_ptr<Logger> logger = create_logger<LogMsgContainer>(name);
+    std::shared_ptr<Logger> logger = create_logger<LogContentBuffer>(name);
     EXPECT_NE(logger, nullptr);
     EXPECT_EQ(logger->name(), name);
     EXPECT_EQ(logger->sinks().size(), 1);
-    auto *sink = reinterpret_cast<LogMsgContainer *>(logger->sinks()[0].get());
+    auto *sink = reinterpret_cast<LogContentBuffer *>(logger->sinks()[0].get());
     EXPECT_EQ(sink->buffer().size(), 0);
 }
 
