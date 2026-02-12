@@ -1,7 +1,7 @@
 #include <memory>
 
 #include "c/common_c.h"
-#include "logging/logging_c.h"
+#include "logging/c/logging_c.h"
 
 using namespace logging;
 using namespace logging::c;

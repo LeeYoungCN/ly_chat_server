@@ -4,8 +4,8 @@
 #include <memory>
 #include <vector>
 
+#include "logging/c/logging_c.h"
 #include "logging/log_level.h"
-#include "logging/logging_c.h"
 
 namespace logging::c {
 LogLevel logging_to_log_level(LoggingLevel level)

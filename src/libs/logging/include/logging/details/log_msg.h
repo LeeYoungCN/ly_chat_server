@@ -4,6 +4,7 @@
 #include <cstdarg>
 #include <string>
 #include <string_view>
+#include <utility>
 
 #include "common/types/date_time_types.h"
 #include "common/types/thread_types.h"
@@ -14,7 +15,7 @@
 
 namespace logging::details {
 struct LogMsg {
-    std::string_view loggerName;
+    std::string loggerName;
     LogLevel level{LogLevel::DEBUG};
     std::string data;
     LogSource source;
@@ -26,7 +27,7 @@ struct LogMsg {
         : loggerName(loggerName),
           level(level),
           data(message),
-          source(source),
+          source(std::move(source)),
           timeStamp(common::date_time::GetCurrentTimestampMs()),
           threadId(get_curr_thread_id())
     {

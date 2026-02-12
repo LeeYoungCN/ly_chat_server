@@ -39,6 +39,9 @@ public:
     {
     }
 
+    std::string_view name() const;
+    const std::vector<std::shared_ptr<Sink>>& sinks() const;
+
     void set_level(LogLevel level);
     LogLevel level() const;
     bool should_log(LogLevel level) const;
@@ -47,13 +50,9 @@ public:
     LogLevel flush_level() const;
     bool should_flush(LogLevel level) const;
 
-    std::string_view name() const;
-
     void set_pattern(std::string_view pattern = FORMATTER_DEFAULT_PATTERN,
                      std::string_view timePattern = FORMATTER_DEFAULT_TIME_PATTERN);
     void sef_formatter(std::unique_ptr<Formatter> formatter);
-
-    const std::vector<std::shared_ptr<Sink>>& sinks() const;
 
     void flush();
 

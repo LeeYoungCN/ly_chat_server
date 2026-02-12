@@ -26,7 +26,8 @@ PatternFormatter::PatternFormatter(std::string_view pattern)
 }
 
 PatternFormatter::PatternFormatter(std::string_view pattern, std::string_view timePattern)
-    : _pattern(pattern), _timePattern(timePattern)
+    : _pattern(pattern.empty() ? FORMATTER_DEFAULT_PATTERN : pattern),
+      _timePattern(timePattern.empty() ? FORMATTER_DEFAULT_TIME_PATTERN : timePattern)
 {
 }
 

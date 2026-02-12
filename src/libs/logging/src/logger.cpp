@@ -28,6 +28,16 @@ Logger::Logger(std::string_view name, const std::initializer_list<std::shared_pt
 {
 }
 
+std::string_view Logger::name() const
+{
+    return this->_name;
+}
+
+const std::vector<std::shared_ptr<Sink>>& Logger::sinks() const
+{
+    return _sinks;
+}
+
 void Logger::set_level(LogLevel level)
 {
     _level = level;
@@ -58,11 +68,6 @@ bool Logger::should_flush(LogLevel level) const
     return (level != LogLevel::OFF && level >= _flushLevel);
 }
 
-std::string_view Logger::name() const
-{
-    return this->_name;
-}
-
 void Logger::set_pattern(std::string_view pattern, std::string_view timePattern)
 {
     for (const auto& sink : _sinks) {
@@ -79,11 +84,6 @@ void Logger::sef_formatter(std::unique_ptr<Formatter> formatter)
             _sinks[i]->set_formatter(formatter->clone());
         }
     }
-}
-
-const std::vector<std::shared_ptr<Sink>>& Logger::sinks() const
-{
-    return _sinks;
 }
 
 void Logger::flush()

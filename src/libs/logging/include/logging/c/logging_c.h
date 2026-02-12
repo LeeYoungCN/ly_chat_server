@@ -1,5 +1,5 @@
-#ifndef LOGGING_LOGGING_C_H
-#define LOGGING_LOGGING_C_H
+#ifndef LOGGING_C_LOGGING_C_H
+#define LOGGING_C_LOGGING_C_H
 
 #include <cstdint>
 #ifdef __cplusplus
@@ -64,6 +64,7 @@ COMMON_API void logging_detroy_sink(SinkSt *sink);
 
 COMMON_API void logging_sink_set_level(SinkSt *sink, LoggingLevel level);
 COMMON_API bool logging_sink_should_log(SinkSt *sink, LoggingLevel level);
+COMMON_API LoggingLevel logging_sink_level(SinkSt* sink);
 
 COMMON_API void logging_sink_set_pattern(SinkSt *sink, const char *pattern,
                                          const char *timePattern);
@@ -102,6 +103,14 @@ COMMON_API void logging_log(const char *file, int line, const char *func, Loggin
                             const char *format, ...);
 #pragma endregion
 
+#pragma region Container
+
+#pragma endregion
+
+#pragma region Module manager
+
+#pragma endregion
+
 #ifdef __cplusplus
 }
 #endif  // __cplusplus
@@ -117,4 +126,4 @@ COMMON_API void logging_log(const char *file, int line, const char *func, Loggin
 #define LOGGING_FATAL(fmt, ...) \
     logging_fatal(__FILE__, __LINE__, __FUNCTION__, fmt __VA_OPT__(, ) __VA_ARGS__);
 
-#endif  // LOGGING_LOGGING_C_H
+#endif  // LOGGING_C_LOGGING_C_H

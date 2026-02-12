@@ -1,4 +1,4 @@
-#include "logging/logging_c.h"
+#include "logging/c/logging_c.h"
 
 #include <cstdarg>
 #include <memory>
