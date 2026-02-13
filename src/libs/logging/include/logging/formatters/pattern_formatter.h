@@ -1,13 +1,13 @@
 #ifndef LOGGING_FORMATTERS_PATTERN_FORMATTER_H
 #define LOGGING_FORMATTERS_PATTERN_FORMATTER_H
 
-#include "logging/details/common.h"
+#include "common/compiler/macros.h"
 #include "logging/details/log_msg.h"
 #include "logging/formatters/formatter.h"
 
 namespace logging {
 
-class PatternFormatter : public Formatter {
+class COMMON_API PatternFormatter : public Formatter {
 public:
     PatternFormatter();
     ~PatternFormatter() override = default;

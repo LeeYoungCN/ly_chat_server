@@ -6,6 +6,7 @@
 #include <string_view>
 #include <utility>
 
+#include "common/compiler/macros.h"
 #include "logging/details/log_source.h"
 #include "logging/details/task_pool.h"
 #include "logging/log_level.h"
@@ -21,9 +22,9 @@ std::shared_ptr<Logger> create_logger(std::string name, SinkArgs&&... sinkArgs)
 }
 
 #pragma region Root logger
-std::shared_ptr<Logger> root_logger();
-Logger* root_logger_raw();
-void set_root_logger(std::shared_ptr<Logger> logger);
+COMMON_API std::shared_ptr<Logger> root_logger();
+COMMON_API Logger* root_logger_raw();
+COMMON_API void set_root_logger(std::shared_ptr<Logger> logger);
 
 bool should_log(LogLevel level);
 void set_level(LogLevel level);
@@ -199,7 +200,7 @@ void set_pattern_all(std::string_view pattern = FORMATTER_DEFAULT_PATTERN,
                      std::string_view timePattern = FORMATTER_DEFAULT_TIME_PATTERN);
 void set_formatter_all(std::unique_ptr<Formatter> formatter);
 void flush_all();
-void shut_down();
+COMMON_API void shut_down();
 #pragma endregion
 
 #pragma region Container
@@ -208,7 +209,7 @@ void register_or_replace_logger(std::shared_ptr<Logger> logger);
 void remove_logger(std::string_view name);
 void remove_all();
 std::shared_ptr<Logger> get_logger(std::string_view name);
-void register_task_pool(std::shared_ptr<details::TaskPool> taskPool);
+COMMON_API void register_task_pool(std::shared_ptr<details::TaskPool> taskPool);
 std::shared_ptr<details::TaskPool> get_task_pool();
 #pragma endregion
 

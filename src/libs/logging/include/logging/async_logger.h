@@ -5,6 +5,7 @@
 #include <utility>
 #include <vector>
 
+#include "common/compiler/macros.h"
 #include "logging/details/task_pool.h"
 #include "logging/logger.h"
 
@@ -14,7 +15,7 @@ namespace details {
 class TaskPool;
 }
 
-class AsyncLogger : public Logger, public std::enable_shared_from_this<AsyncLogger> {
+class COMMON_API AsyncLogger : public Logger, public std::enable_shared_from_this<AsyncLogger> {
     friend class logging::details::TaskPool;
 
 public:

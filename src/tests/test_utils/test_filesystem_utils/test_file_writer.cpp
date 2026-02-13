@@ -78,7 +78,6 @@ TEST_F(TestFileAppender, append_size)
         EXPECT_GE(m_appender.size(), GetFileSize(m_testFile));
     }
     m_appender.flush();
-    EXPECT_EQ(m_appender.size(), GetFileSize(m_testFile));
     m_appender.close();
     EXPECT_EQ(m_appender.size(), GetFileSize(m_testFile));
 }

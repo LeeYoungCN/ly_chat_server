@@ -14,6 +14,8 @@
 #define LOGGING_DETAILS_LOG_LEVEL_H
 
 #include <string_view>
+
+#include "common/compiler/macros.h"
 namespace logging {
 /**
  * @enum LogLevel
@@ -28,7 +30,7 @@ enum LogLevel {
     OFF         ///< 关闭日志功能
 };
 
-std::string_view log_level_to_string(LogLevel level, bool upper = true);
+COMMON_API std::string_view log_level_to_string(LogLevel level, bool upper = true);
 
 }  // namespace logging
 

@@ -4,11 +4,12 @@
 
 #include <string_view>
 
+#include "common/compiler/macros.h"
 #include "common/utils/file_writer.h"
 #include "logging/sinks/base_sink.h"
 
 namespace logging {
-class BasicFileSink : public BaseSink {
+class COMMON_API BasicFileSink : public BaseSink {
 public:
     BasicFileSink();
     ~BasicFileSink() override;

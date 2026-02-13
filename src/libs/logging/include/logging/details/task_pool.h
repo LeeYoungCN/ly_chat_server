@@ -7,6 +7,7 @@
 #include <thread>
 #include <vector>
 
+#include "common/compiler/macros.h"
 #include "common/container/concurrent_blocking_queue.hpp"
 #include "logging/details/log_msg.h"
 #include "logging/details/log_task.h"
@@ -16,7 +17,7 @@ class AsyncLogger;
 
 namespace details {
 
-class TaskPool {
+class COMMON_API TaskPool {
 public:
     TaskPool();
     ~TaskPool();

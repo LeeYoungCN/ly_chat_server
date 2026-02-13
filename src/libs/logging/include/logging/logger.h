@@ -2,7 +2,6 @@
 #define LOGGING_LOGGER_H
 
 #include <atomic>
-#include <cstdarg>
 #include <format>
 #include <initializer_list>
 #include <memory>
@@ -11,6 +10,7 @@
 #include <utility>
 #include <vector>
 
+#include "common/compiler/macros.h"
 #include "common/types/type_traits.h"
 #include "common/utils/string_utils.h"
 #include "logging/details//inner_macros.h"
@@ -21,7 +21,7 @@
 #include "logging/sinks/sink.h"
 
 namespace logging {
-class Logger {
+class COMMON_API Logger {
 public:
     Logger() = default;
     virtual ~Logger();
