@@ -64,7 +64,7 @@ COMMON_API void logging_detroy_sink(SinkSt *sink);
 
 COMMON_API void logging_sink_set_level(SinkSt *sink, LoggingLevel level);
 COMMON_API bool logging_sink_should_log(SinkSt *sink, LoggingLevel level);
-COMMON_API LoggingLevel logging_sink_level(SinkSt* sink);
+COMMON_API LoggingLevel logging_sink_level(SinkSt *sink);
 
 COMMON_API void logging_sink_set_pattern(SinkSt *sink, const char *pattern,
                                          const char *timePattern);

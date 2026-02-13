@@ -77,7 +77,7 @@ std::string GetProcessFileName()
 ProcessId GetCurrProcessId()
 {
     ProcessId pid = 0;
-#if PLATFORM_WINDWOS
+#if PLATFORM_WINDOWS
     pid = GetCurrentProcessId();
 #else
     pid = getpid();
