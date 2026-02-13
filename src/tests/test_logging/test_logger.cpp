@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <initializer_list>
 #include <memory>
 #include <vector>
@@ -91,7 +92,7 @@ TEST_F(TestLogger, flush_level)
     }
 }
 
-TEST_F(TestLogger, log_level_filter)
+TEST_F(TestLogger, log_log)
 {
     const std::string name = test_info_->name();
     _sink->set_level(LogLevel::DEBUG);
@@ -108,6 +109,85 @@ TEST_F(TestLogger, log_level_filter)
             EXPECT_EQ(_sink->buffer().size(), 0);
         }
         _sink->clear();
+    }
+}
+
+TEST_F(TestLogger, log_flush)
+{
+    const std::string name = test_info_->name();
+    _sink->set_level(LogLevel::DEBUG);
+    _logger = std::make_shared<Logger>(name, _sink);
+    constexpr uint32_t MAX_ITEM_CNT = 100;
+    for (uint32_t i = 0; i < MAX_ITEM_CNT; ++i) {
+        _logger->error(LOG_SRC_LOCAL, i);
+        EXPECT_EQ(_sink->buffer().size(), i + 1);
+        EXPECT_EQ(_sink->disk().size(), 0);
+    }
+    _logger->flush();
+    EXPECT_EQ(_sink->buffer().size(), 0);
+    EXPECT_EQ(_sink->disk().size(), MAX_ITEM_CNT);
+}
+
+TEST_F(TestLogger, log_flush_on)
+{
+    const std::string name = test_info_->name();
+    _sink->set_level(LogLevel::DEBUG);
+    _logger = std::make_shared<Logger>(name, _sink);
+    _logger->set_level(LogLevel::DEBUG);
+
+    for (auto flushLevel : LOG_LEVELS) {
+        // 设施刷新等级
+        _logger->flush_on(flushLevel);
+        for (uint32_t i = 0; i < LOG_LEVELS.size(); ++i) {
+            LogLevel level = LOG_LEVELS[i];
+            if (level == LogLevel::OFF) {
+                break;
+            }
+            _logger->log(LOG_SRC_LOCAL, level, i);
+            if (_logger->flush_level() == LogLevel::OFF || level < _logger->flush_level()) {
+                EXPECT_EQ(_sink->buffer().size(), i + 1);
+                EXPECT_EQ(_sink->disk().size(), 0);
+            } else {
+                EXPECT_EQ(_sink->buffer().size(), 0);
+                EXPECT_EQ(_sink->disk().size(), i + 1);
+            }
+        }
+        _sink->clear();
+    }
+}
+
+TEST_F(TestLogger, log_function)
+{
+    const std::string name = test_info_->name();
+    _sink->set_level(LogLevel::DEBUG);
+    _logger = std::make_shared<Logger>(name, _sink);
+    _logger->set_level(LogLevel::DEBUG);
+    for (uint32_t i = 0; i < 100; ++i) {
+        // debug
+        _logger->debug(LOG_SRC_LOCAL, "{}", i);
+        _logger->debug("{}", i);
+        _logger->debug(LOG_SRC_LOCAL, i);
+        _logger->debug(i);
+        // info
+        _logger->info(LOG_SRC_LOCAL, "{}", i);
+        _logger->info("{}", i);
+        _logger->info(LOG_SRC_LOCAL, i);
+        _logger->info(i);
+        // warn
+        _logger->warn(LOG_SRC_LOCAL, "{}", i);
+        _logger->warn("{}", i);
+        _logger->warn(LOG_SRC_LOCAL, i);
+        _logger->warn(i);
+        // error
+        _logger->warn(LOG_SRC_LOCAL, "{}", i);
+        _logger->warn("{}", i);
+        _logger->warn(LOG_SRC_LOCAL, i);
+        _logger->warn(i);
+        // fatal
+        _logger->fatal(LOG_SRC_LOCAL, "{}", i);
+        _logger->fatal("{}", i);
+        _logger->fatal(LOG_SRC_LOCAL, i);
+        _logger->fatal(i);
     }
 }
 

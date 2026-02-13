@@ -18,6 +18,7 @@ public:
 
     uint32_t capacity() const;
     const std::vector<std::string>& buffer();
+    const std::vector<std::string>& disk();
     void clear();
 
 protected:

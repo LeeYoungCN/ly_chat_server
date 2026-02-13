@@ -65,16 +65,17 @@ void PatternFormatter::log_msg_to_content(char symbol, const details::LogMsg& lo
             content.append(log_level_to_string(logMsg.level));
             break;
         case 's':  // file name
-            content.append(GetBaseName(logMsg.source.file));
+            content.append(
+                (logMsg.source.file.empty() ? "FileName" : GetBaseName(logMsg.source.file)));
             break;
         case 'g':  // file path
-            content.append(logMsg.source.file);
+            content.append(logMsg.source.file.empty() ? "FilePath" :logMsg.source.file);
             break;
         case '#':  // lineNumber
             content.append(std::to_string(logMsg.source.line));
             break;
         case '!':  // function name
-            content.append(logMsg.source.func);
+            content.append(logMsg.source.func.empty() ? "Function" :logMsg.source.func);
             break;
         case 't':  // thread id
             content.append(std::to_string(logMsg.threadId));
