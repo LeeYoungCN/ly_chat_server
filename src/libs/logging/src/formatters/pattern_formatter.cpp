@@ -15,6 +15,22 @@ using namespace common::process;
 using namespace common::date_time;
 using namespace common::filesystem;
 
+struct PatternFormatter::Impl {
+    std::string pattern;
+    std::string timePattern;
+
+    Impl(std::string_view pattern, std::string_view timePattern)
+        : pattern(pattern.empty() ? FORMATTER_DEFAULT_PATTERN : pattern),
+          timePattern(timePattern.empty() ? FORMATTER_DEFAULT_TIME_PATTERN : timePattern)
+    {
+    }
+};
+
+PatternFormatter::~PatternFormatter()
+{
+    _pimpl.reset();
+}
+
 PatternFormatter::PatternFormatter()
     : PatternFormatter(FORMATTER_DEFAULT_PATTERN, FORMATTER_DEFAULT_TIME_PATTERN)
 {
@@ -26,8 +42,7 @@ PatternFormatter::PatternFormatter(std::string_view pattern)
 }
 
 PatternFormatter::PatternFormatter(std::string_view pattern, std::string_view timePattern)
-    : _pattern(pattern.empty() ? FORMATTER_DEFAULT_PATTERN : pattern),
-      _timePattern(timePattern.empty() ? FORMATTER_DEFAULT_TIME_PATTERN : timePattern)
+    :  _pimpl(std::make_unique<Impl>(pattern, timePattern))
 {
 }
 
@@ -36,7 +51,7 @@ void PatternFormatter::format(const details::LogMsg& logMsg, std::string& conten
     constexpr uint32_t LOG_CONTENT_DEFAULT_LEN = 256;
     content.reserve(LOG_CONTENT_DEFAULT_LEN);
     bool needTrans = false;
-    for (const char& c : _pattern) {
+    for (const char& c : _pimpl->pattern) {
         if (needTrans) {
             log_msg_to_content(c, logMsg, content);
             needTrans = false;
@@ -53,7 +68,7 @@ void PatternFormatter::log_msg_to_content(char symbol, const details::LogMsg& lo
 {
     switch (symbol) {
         case 'd':  // datetime
-            content.append(FormatTimeString(logMsg.timeStamp, _timePattern));
+            content.append(FormatTimeString(logMsg.timeStamp, _pimpl->timePattern));
             break;
         case 'n':  // logger name
             content.append(logMsg.loggerName);
@@ -69,13 +84,13 @@ void PatternFormatter::log_msg_to_content(char symbol, const details::LogMsg& lo
                 (logMsg.source.file.empty() ? "FileName" : GetBaseName(logMsg.source.file)));
             break;
         case 'g':  // file path
-            content.append(logMsg.source.file.empty() ? "FilePath" :logMsg.source.file);
+            content.append(logMsg.source.file.empty() ? "FilePath" : logMsg.source.file);
             break;
         case '#':  // lineNumber
             content.append(std::to_string(logMsg.source.line));
             break;
         case '!':  // function name
-            content.append(logMsg.source.func.empty() ? "Function" :logMsg.source.func);
+            content.append(logMsg.source.func.empty() ? "Function" : logMsg.source.func);
             break;
         case 't':  // thread id
             content.append(std::to_string(logMsg.threadId));
@@ -98,7 +113,7 @@ void PatternFormatter::log_msg_to_content(char symbol, const details::LogMsg& lo
 
 std::unique_ptr<Formatter> PatternFormatter::clone() const
 {
-    return std::make_unique<PatternFormatter>(_pattern, _timePattern);
+    return std::make_unique<PatternFormatter>(_pimpl->pattern, _pimpl->timePattern);
 }
 
 }  // namespace logging

@@ -16,6 +16,7 @@
 #include <string_view>
 
 #include "common/compiler/macros.h"
+
 namespace logging {
 /**
  * @enum LogLevel

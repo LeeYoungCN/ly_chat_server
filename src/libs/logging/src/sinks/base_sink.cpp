@@ -9,15 +9,15 @@ using namespace logging::details;
 namespace logging {
 void BaseSink::log(const LogMsg& logMsg)
 {
-    std::lock_guard lock(_sinkMtx);
+    std::lock_guard lock(sink_mutex());
     std::string content;
-    _formatter->format(logMsg, content);
+    formatter()->format(logMsg, content);
     sink_it(content);
 }
 
 void BaseSink::flush()
 {
-    std::lock_guard lock(_sinkMtx);
+    std::lock_guard lock(sink_mutex());
     flush_it();
 }
 

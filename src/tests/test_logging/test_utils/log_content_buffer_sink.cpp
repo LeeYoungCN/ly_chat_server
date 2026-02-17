@@ -18,13 +18,13 @@ uint32_t LogContentBuffer::capacity() const
 
 const std::vector<std::string>& LogContentBuffer::buffer()
 {
-    std::lock_guard<std::mutex> lock(_sinkMtx);
+    std::lock_guard<std::mutex> lock(sink_mutex());
     return _buffer;
 }
 
 const std::vector<std::string>& LogContentBuffer::disk()
 {
-    std::lock_guard<std::mutex> lock(_sinkMtx);
+    std::lock_guard<std::mutex> lock(sink_mutex());
     return _disk;
 }
 

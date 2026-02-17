@@ -24,16 +24,16 @@ public:
     explicit TaskPool(uint32_t capacity);
     TaskPool(uint32_t capacity, uint32_t threadCnt);
 
-    void log(std::shared_ptr<AsyncLogger> logger, const LogMsg& logMsg);
-    void flush(std::shared_ptr<AsyncLogger> logger);
+    void log(const std::shared_ptr<AsyncLogger>& logger, const LogMsg& logMsg);
+    void flush(const std::shared_ptr<AsyncLogger>& logger);
 
 protected:
     void worker_loop(uint32_t idx);
 
 private:
-    common::container::ConcurrentBlockingQueue<LogTask> _logBuffer;
-    std::vector<std::thread> _threadPool;
+    std::unique_ptr<common::container::ConcurrentBlockingQueue<LogTask>> _logBuffer;
     uint32_t _threadCnt = 0;
+    std::unique_ptr<std::vector<std::thread>> _threadPool;
 };
 }  // namespace details
 }  // namespace logging

@@ -1,6 +1,8 @@
 #ifndef LOGGING_FORMATTERS_PATTERN_FORMATTER_H
 #define LOGGING_FORMATTERS_PATTERN_FORMATTER_H
 
+#include <memory>
+
 #include "common/compiler/macros.h"
 #include "logging/details/log_msg.h"
 #include "logging/formatters/formatter.h"
@@ -10,7 +12,7 @@ namespace logging {
 class COMMON_API PatternFormatter : public Formatter {
 public:
     PatternFormatter();
-    ~PatternFormatter() override = default;
+    ~PatternFormatter() override;
 
     explicit PatternFormatter(std::string_view pattern);
 
@@ -23,8 +25,8 @@ private:
     void log_msg_to_content(char symbol, const details::LogMsg& logMsg, std::string& logContent);
 
 private:
-    std::string _pattern;
-    std::string _timePattern;
+    struct Impl;
+    std::unique_ptr<Impl> _pimpl;
 };
 }  // namespace logging
 

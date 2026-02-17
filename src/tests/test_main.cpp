@@ -30,7 +30,7 @@ void init_logging_module()
 
 int main(int argc, char *argv[])
 {
-    set_debug_log_level(DebugLevel::DEBUG_LVL_OFF);
+    set_debug_log_level(DebugLevel::DEBUG_LVL_INFO);
     init_logging_module();
 
     logging::info(LOG_SRC_LOCAL, "Running main() from {}", __FILE__);

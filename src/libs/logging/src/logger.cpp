@@ -1,7 +1,8 @@
 #include "logging/logger.h"
 
+#include <atomic>
 #include <cstdarg>
-#include <utility>
+#include <memory>
 
 #include "common/debug/debug_logger.h"
 #include "logging/log_level.h"
@@ -9,12 +10,33 @@
 namespace logging {
 using namespace details;
 
+struct Logger::Impl {
+    std::string name;
+    std::vector<std::shared_ptr<Sink>> sinks;
+    std::atomic<LogLevel> level{LogLevel::INFO};
+    std::atomic<LogLevel> flushLevel{LogLevel::OFF};
+
+    explicit Impl(std::string_view name) : name(name) {}
+
+    template <typename It>
+    Impl(std::string_view name, It begin, It end) : name(name), sinks(begin, end)
+    {
+    }
+};
+
+template <typename It>
+Logger::Logger(std::string_view name, It begin, It end)
+    : _pimpl(std::make_unique<Impl>(name, begin, end))
+{
+}
+
 Logger::~Logger()
 {
     DEBUG_LOGGER_INFO("Logger release. [{}]", name());
+    _pimpl.reset();
 }
 
-Logger::Logger(std::string_view name) : _name(name) {}
+Logger::Logger(std::string_view name) : _pimpl(std::make_unique<Impl>(name)) {}
 
 Logger::Logger(std::string_view name, const std::shared_ptr<Sink>& sink) : Logger(name, {sink}) {}
 
@@ -30,59 +52,55 @@ Logger::Logger(std::string_view name, const std::initializer_list<std::shared_pt
 
 std::string_view Logger::name() const
 {
-    return this->_name;
+    return _pimpl->name;
 }
 
 const std::vector<std::shared_ptr<Sink>>& Logger::sinks() const
 {
-    return _sinks;
+    return _pimpl->sinks;
 }
 
 void Logger::set_level(LogLevel level)
 {
-    _level = level;
+    _pimpl->level.store(level, std::memory_order_relaxed);
 }
 
 LogLevel Logger::level() const
 {
-    return _level;
+    return _pimpl->level.load(std::memory_order_relaxed);
 }
 
 bool Logger::should_log(LogLevel level) const
 {
-    return (level != LogLevel::OFF && level >= _level);
+    return (level != LogLevel::OFF && level >= this->level());
 }
 
 void Logger::flush_on(LogLevel level)
 {
-    _flushLevel = level;
+    _pimpl->flushLevel.store(level, std::memory_order_relaxed);
 }
 
 LogLevel Logger::flush_level() const
 {
-    return _flushLevel;
+    return _pimpl->flushLevel.load(std::memory_order_relaxed);
 }
 
 bool Logger::should_flush(LogLevel level) const
 {
-    return (level != LogLevel::OFF && level >= _flushLevel);
+    return (level != LogLevel::OFF && level >= this->flush_level());
 }
 
 void Logger::set_pattern(std::string_view pattern, std::string_view timePattern)
 {
-    for (const auto& sink : _sinks) {
+    for (const auto& sink : _pimpl->sinks) {
         sink->set_pattern(pattern, timePattern);
     }
 }
 
-void Logger::sef_formatter(std::unique_ptr<Formatter> formatter)
+void Logger::sef_formatter(const std::unique_ptr<Formatter>& formatter)
 {
-    for (uint32_t i = 0; i < _sinks.size(); i++) {
-        if (i == _sinks.size() - 1) {
-            _sinks[i]->set_formatter(std::move(formatter));
-        } else {
-            _sinks[i]->set_formatter(formatter->clone());
-        }
+    for (auto& sink : _pimpl->sinks) {
+        sink->set_formatter(formatter->clone());
     }
 }
 
@@ -107,7 +125,7 @@ void Logger::flush_it()
 
 void Logger::sinks_log_it(const LogMsg& logMsg)
 {
-    for (const auto& sink : _sinks) {
+    for (const auto& sink : _pimpl->sinks) {
         if (sink->should_log(logMsg.level)) {
             sink->log(logMsg);
         }
@@ -116,7 +134,7 @@ void Logger::sinks_log_it(const LogMsg& logMsg)
 
 void Logger::sinks_flush_it()
 {
-    for (const auto& sink : _sinks) {
+    for (const auto& sink : _pimpl->sinks) {
         sink->flush();
     }
 }

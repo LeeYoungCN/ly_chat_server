@@ -1,11 +1,9 @@
 #ifndef LOGGING_LOGGER_H
 #define LOGGING_LOGGER_H
 
-#include <atomic>
 #include <format>
 #include <initializer_list>
 #include <memory>
-#include <string>
 #include <string_view>
 #include <utility>
 #include <vector>
@@ -17,42 +15,42 @@
 #include "logging/details/common.h"
 #include "logging/details/log_msg.h"
 #include "logging/details/log_source.h"
+#include "logging/formatters/formatter.h"
 #include "logging/log_level.h"
 #include "logging/sinks/sink.h"
 
 namespace logging {
 class COMMON_API Logger {
 public:
-    Logger() = default;
+    Logger() = delete;
     virtual ~Logger();
 
     explicit Logger(std::string_view name);
 
-    Logger(std::string_view name, const std::shared_ptr<Sink>& sink);
+    Logger(std::string_view name, const std::shared_ptr<logging::Sink>& sink);
 
-    Logger(std::string_view name, const std::vector<std::shared_ptr<Sink>>& sinks);
+    Logger(std::string_view name, const std::vector<std::shared_ptr<logging::Sink>>& sinks);
 
-    Logger(std::string_view name, const std::initializer_list<std::shared_ptr<Sink>>& sinks);
+    Logger(std::string_view name,
+           const std::initializer_list<std::shared_ptr<logging::Sink>>& sinks);
 
     template <typename It>
-    Logger(std::string_view name, It begin, It end) : _name(name), _sinks(begin, end)
-    {
-    }
+    Logger(std::string_view name, It begin, It end);
 
-    std::string_view name() const;
-    const std::vector<std::shared_ptr<Sink>>& sinks() const;
+    [[nodiscard]] std::string_view name() const;
+    [[nodiscard]] const std::vector<std::shared_ptr<logging::Sink>>& sinks() const;
 
     void set_level(LogLevel level);
-    LogLevel level() const;
-    bool should_log(LogLevel level) const;
+    [[nodiscard]] LogLevel level() const;
+    [[nodiscard]] bool should_log(LogLevel level) const;
 
     void flush_on(LogLevel level);
-    LogLevel flush_level() const;
-    bool should_flush(LogLevel level) const;
+    [[nodiscard]] LogLevel flush_level() const;
+    [[nodiscard]] bool should_flush(LogLevel level) const;
 
     void set_pattern(std::string_view pattern = FORMATTER_DEFAULT_PATTERN,
                      std::string_view timePattern = FORMATTER_DEFAULT_TIME_PATTERN);
-    void sef_formatter(std::unique_ptr<Formatter> formatter);
+    void sef_formatter(const std::unique_ptr<logging::Formatter>& formatter);
 
     void flush();
 
@@ -65,7 +63,7 @@ public:
         if (!should_log(level)) {
             return;
         }
-        details::LogMsg logMsg(source, _name, level, common::string::type_to_string(message));
+        details::LogMsg logMsg(source, name(), level, common::string::type_to_string(message));
         sink_it(logMsg);
     }
 
@@ -77,7 +75,7 @@ public:
             return;
         }
         details::LogMsg logMsg(
-            source, _name, level, std::format(format, std::forward<Args>(args)...));
+            source, name(), level, std::format(format, std::forward<Args>(args)...));
         sink_it(logMsg);
     }
 
@@ -100,10 +98,8 @@ protected:
     void sinks_flush_it();
 
 private:
-    std::string _name;
-    std::vector<std::shared_ptr<Sink>> _sinks;
-    std::atomic<LogLevel> _level{LogLevel::INFO};
-    std::atomic<LogLevel> _flushLevel{LogLevel::OFF};
+    struct Impl;
+    std::unique_ptr<Impl> _pimpl;
 };
 }  // namespace logging
 

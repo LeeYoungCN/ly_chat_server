@@ -8,13 +8,13 @@ using namespace logging::details;
 namespace test::test_logging {
 void TidMsgMapSink::log(const LogMsg& logMsg)
 {
-    std::lock_guard<std::mutex> lock(_sinkMtx);
+    std::lock_guard<std::mutex> lock(sink_mutex());
     _buffer[logMsg.threadId] = logMsg;
 }
 
 const std::map<ThreadId, LogMsg>& TidMsgMapSink::buffer()
 {
-    std::lock_guard<std::mutex> lock(_sinkMtx);
+    std::lock_guard<std::mutex> lock(sink_mutex());
     return _buffer;
 }
 }  // namespace test::test_logging

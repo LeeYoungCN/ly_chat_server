@@ -19,7 +19,7 @@ class COMMON_API AsyncLogger : public Logger, public std::enable_shared_from_thi
     friend class logging::details::TaskPool;
 
 public:
-    AsyncLogger() = default;
+    AsyncLogger() = delete;
     ~AsyncLogger() override;
 
     AsyncLogger(std::string_view name, const std::shared_ptr<Sink>& sink,
