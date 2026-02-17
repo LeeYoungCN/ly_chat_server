@@ -5,6 +5,8 @@
 #include <memory>
 
 #include "common/debug/debug_logger.h"
+#include "logging/formatters/formatter.h"
+#include "logging/formatters/pattern_formatter.h"
 #include "logging/log_level.h"
 
 namespace logging {
@@ -92,12 +94,10 @@ bool Logger::should_flush(LogLevel level) const
 
 void Logger::set_pattern(std::string_view pattern, std::string_view timePattern)
 {
-    for (const auto& sink : _pimpl->sinks) {
-        sink->set_pattern(pattern, timePattern);
-    }
+    set_formatter(std::make_unique<PatternFormatter>(pattern, timePattern));
 }
 
-void Logger::sef_formatter(const std::unique_ptr<Formatter>& formatter)
+void Logger::set_formatter(const std::unique_ptr<Formatter>& formatter)
 {
     for (auto& sink : _pimpl->sinks) {
         sink->set_formatter(formatter->clone());

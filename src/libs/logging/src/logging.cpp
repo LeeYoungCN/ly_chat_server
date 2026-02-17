@@ -45,9 +45,9 @@ void set_pattern(std::string_view pattern, std::string_view timePattern)
     root_logger_raw()->set_pattern(pattern, timePattern);
 }
 
-void set_formatter(std::unique_ptr<Formatter> formatter)
+void set_formatter(const std::unique_ptr<Formatter>& formatter)
 {
-    root_logger_raw()->sef_formatter(std::move(formatter));
+    root_logger_raw()->set_formatter(formatter);
 }
 
 void flush()

@@ -31,7 +31,7 @@ void set_level(LogLevel level);
 void flush_on(LogLevel level);
 void set_pattern(std::string_view pattern = FORMATTER_DEFAULT_PATTERN,
                  std::string_view timePattern = FORMATTER_DEFAULT_TIME_PATTERN);
-void set_formatter(std::unique_ptr<Formatter> formatter);
+void set_formatter(const std::unique_ptr<Formatter>& formatter);
 void flush();
 
 template <typename... Args>

@@ -50,7 +50,7 @@ public:
 
     void set_pattern(std::string_view pattern = FORMATTER_DEFAULT_PATTERN,
                      std::string_view timePattern = FORMATTER_DEFAULT_TIME_PATTERN);
-    void sef_formatter(const std::unique_ptr<logging::Formatter>& formatter);
+    void set_formatter(const std::unique_ptr<logging::Formatter>& formatter);
 
     void flush();
 

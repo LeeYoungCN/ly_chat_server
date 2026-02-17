@@ -1,10 +1,13 @@
 #include <cstdint>
 #include <initializer_list>
 #include <memory>
+#include <string>
 #include <vector>
 
 #include "gtest/gtest.h"
 #include "logging/details/common.h"
+#include "logging/formatters/formatter.h"
+#include "logging/formatters/pattern_formatter.h"
 #include "logging/log_level.h"
 #include "logging/logger.h"
 #include "test_utils/common.h"
@@ -188,6 +191,31 @@ TEST_F(TestLogger, log_function)
         _logger->fatal("{}", i);
         _logger->fatal(LOG_SRC_LOCAL, i);
         _logger->fatal(i);
+    }
+}
+
+TEST_F(TestLogger, set_pattern)
+{
+    const std::string name = test_info_->name();
+    _logger = std::make_shared<Logger>(name, _sink);
+    _logger->set_pattern("%v");
+    for (uint32_t i = 0; i < 100; i++) {
+        _logger->error(i);
+        EXPECT_EQ(std::to_string(i), _sink->buffer()[i]);
+    }
+}
+
+TEST_F(TestLogger, set_formatter)
+{
+    const std::string name = test_info_->name();
+    _sink->set_level(LogLevel::DEBUG);
+    _logger = std::make_shared<Logger>(name, _sink);
+    _logger->set_level(LogLevel::DEBUG);
+    std::unique_ptr<Formatter> formatter = std::make_unique<PatternFormatter>("%v");
+    _logger->set_formatter(formatter);
+    for (uint32_t i = 0; i < 100; i++) {
+        _logger->error(i);
+        EXPECT_EQ(std::to_string(i), _sink->buffer()[i]);
     }
 }
 

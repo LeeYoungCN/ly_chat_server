@@ -16,7 +16,7 @@ public:
     ~LogContentBuffer() override = default;
     explicit LogContentBuffer(uint32_t capacity);
 
-    uint32_t capacity() const;
+    [[nodiscard]] uint32_t capacity() const;
     const std::vector<std::string>& buffer();
     const std::vector<std::string>& disk();
     void clear();

@@ -44,7 +44,7 @@ void Registry::set_root_logger(std::shared_ptr<Logger> newLogger)
 void Registry::initialize_logger(const std::shared_ptr<Logger>& logger, bool autoRegister)
 {
     std::lock_guard<std::mutex> lock(_loggerMapMtx);
-    logger->sef_formatter(_globalFormatter->clone());
+    logger->set_formatter(_globalFormatter->clone());
     logger->set_level(_globalLevel);
     logger->flush_on(_globalFlushLevel);
 
@@ -84,7 +84,7 @@ void Registry::set_formatter_all(std::unique_ptr<Formatter> formatter)
     std::lock_guard<std::mutex> lock(_loggerMapMtx);
     _globalFormatter = std::move(formatter);
     for (auto& [_, logger] : _loggers) {
-        logger->sef_formatter(_globalFormatter->clone());
+        logger->set_formatter(_globalFormatter->clone());
     }
 }
 

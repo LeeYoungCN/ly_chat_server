@@ -1,6 +1,5 @@
 #include "log_content_buffer_sink.h"
 
-#include <iostream>
 #include <mutex>
 
 namespace test::test_logging {
@@ -36,7 +35,6 @@ void LogContentBuffer::clear()
 
 void LogContentBuffer::sink_it(std::string_view message)
 {
-    std::cout << message << std::endl;
     _buffer.emplace_back(message);
     if (_buffer.size() >= _capacity) {
         flush_it();
