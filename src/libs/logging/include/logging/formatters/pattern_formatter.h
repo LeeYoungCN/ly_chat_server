@@ -8,7 +8,21 @@
 #include "logging/formatters/formatter.h"
 
 namespace logging {
-
+/**
+ * @brief Format log message by pattern.
+ *
+ * d: Date time;
+ * n: Logger name;
+ * l: Log level short name;
+ * L: Log level full name;
+ * s: File name;
+ * g: File path;
+ * #: Line number;
+ * !: Function name;
+ * t: Thread ID;
+ * P: Process ID;
+ * v: Log message;
+ */
 class COMMON_API PatternFormatter : public Formatter {
 public:
     PatternFormatter();

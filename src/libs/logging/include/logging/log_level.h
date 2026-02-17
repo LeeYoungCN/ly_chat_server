@@ -31,7 +31,7 @@ enum LogLevel {
     OFF         ///< 关闭日志功能
 };
 
-COMMON_API std::string_view log_level_to_string(LogLevel level, bool upper = true);
+COMMON_API std::string_view log_level_to_string(LogLevel level, bool full = true);
 
 }  // namespace logging
 

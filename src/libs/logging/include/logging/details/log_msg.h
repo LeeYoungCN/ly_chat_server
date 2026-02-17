@@ -1,15 +1,13 @@
 #pragma once
 #ifndef LOGGINGL_DETAILS_LOG_MSG_H
 #define LOGGINGL_DETAILS_LOG_MSG_H
-#include <cstdarg>
+
 #include <string>
 #include <string_view>
-#include <utility>
 
 #include "common/types/date_time_types.h"
+#include "common/types/process_types.h"
 #include "common/types/thread_types.h"
-#include "common/utils/date_time_utils.h"
-#include "common/utils/thread_utils.h"
 #include "logging/details/log_source.h"
 #include "logging/log_level.h"
 
@@ -21,17 +19,10 @@ struct LogMsg {
     LogSource source;
     common::date_time::TimestampMs timeStamp = 0;
     ThreadId threadId = 0;
+    ProcessId procId = 0;
 
     LogMsg() = default;
-    LogMsg(LogSource source, std::string_view loggerName, LogLevel level, std::string_view message)
-        : loggerName(loggerName),
-          level(level),
-          data(message),
-          source(std::move(source)),
-          timeStamp(common::date_time::GetCurrentTimestampMs()),
-          threadId(get_curr_thread_id())
-    {
-    }
+    LogMsg(LogSource source, std::string_view loggerName, LogLevel level, std::string_view message);
 };
 
 }  // namespace logging::details

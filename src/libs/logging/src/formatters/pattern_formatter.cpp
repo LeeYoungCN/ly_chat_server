@@ -6,12 +6,11 @@
 
 #include "common/utils/date_time_utils.h"
 #include "common/utils/filesystem_utils.h"
-#include "common/utils/process_utils.h"
 #include "logging/details/common.h"
 #include "logging/log_level.h"
 
 namespace logging {
-using namespace common::process;
+
 using namespace common::date_time;
 using namespace common::filesystem;
 
@@ -42,7 +41,7 @@ PatternFormatter::PatternFormatter(std::string_view pattern)
 }
 
 PatternFormatter::PatternFormatter(std::string_view pattern, std::string_view timePattern)
-    :  _pimpl(std::make_unique<Impl>(pattern, timePattern))
+    : _pimpl(std::make_unique<Impl>(pattern, timePattern))
 {
 }
 
@@ -96,7 +95,7 @@ void PatternFormatter::log_msg_to_content(char symbol, const details::LogMsg& lo
             content.append(std::to_string(logMsg.threadId));
             break;
         case 'P':  // process id
-            content.append(std::to_string(get_curr_proc_id()));
+            content.append(std::to_string(logMsg.procId));
             break;
         case 'v':  // message
             content.append(logMsg.data);
