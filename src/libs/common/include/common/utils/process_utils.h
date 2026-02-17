@@ -26,28 +26,28 @@ namespace common::process {
  *       - Windows: 通过GetModuleFileName获取
  *       - Linux/macOS: 通过/proc/self/exe符号链接获取
  */
-std::string GetProcessPath();
+std::string get_proc_path();
 
 /**
  * @brief 获取当前进程所在目录
  *
  * @return 目录的绝对路径
  */
-std::string GetProcessDirectory();
+std::string get_proc_directory();
 
 /**
  * @brief 获取当前进程名称
  *
  * @return std::string Process file name.
  */
-std::string GetProcessFileName();
+std::string get_proc_file_name();
 
 /**
  * @brief 获取当前进程ID
- * 
+ *
  * @return ProcessId 当前进程ID。
  */
-ProcessId GetCurrProcessId();
+ProcessId get_curr_proc_id();
 
 }  // namespace common::process
 #endif  // COMMON_UTILS_PROCESS_H

@@ -96,7 +96,7 @@ void PatternFormatter::log_msg_to_content(char symbol, const details::LogMsg& lo
             content.append(std::to_string(logMsg.threadId));
             break;
         case 'P':  // process id
-            content.append(std::to_string(GetCurrProcessId()));
+            content.append(std::to_string(get_curr_proc_id()));
             break;
         case 'v':  // message
             content.append(logMsg.data);

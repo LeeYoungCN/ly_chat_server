@@ -10,7 +10,7 @@ using namespace common::process;
 
 BasicFileSink::BasicFileSink()
 {
-    std::string process = GetProcessPath();
+    std::string process = get_proc_path();
     _filePath = JoinPaths({GetDirectory(process), "logs", GetFileName(process) + ".log"});
     _fileWriter.open(_filePath, FileWriteMode::OVERWRITE);
 }

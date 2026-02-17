@@ -30,7 +30,7 @@ protected:
 
 void TestFileAppender::SetUp()
 {
-    m_directory = JoinPaths({GetProcessDirectory(), "file_writer"});
+    m_directory = JoinPaths({get_proc_directory(), "file_writer"});
     m_testFile = JoinPaths({m_directory, m_fileName + m_suffix});
 }
 

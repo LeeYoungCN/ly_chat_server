@@ -30,7 +30,7 @@
 namespace common::process {
 using namespace common::filesystem;
 
-std::string GetProcessPath()
+std::string get_proc_path()
 {
     char path[MAX_PATH_STD] = {'\0'};
 #if PLATFORM_WINDOWS
@@ -62,19 +62,19 @@ std::string GetProcessPath()
     return path;
 }
 
-std::string GetProcessDirectory()
+std::string get_proc_directory()
 {
     set_thread_last_err(ERR_COMM_SUCCESS);
-    return GetDirectory(GetProcessPath());
+    return GetDirectory(get_proc_path());
 }
 
-std::string GetProcessFileName()
+std::string get_proc_file_name()
 {
     set_thread_last_err(ERR_COMM_SUCCESS);
-    return GetFileName(GetProcessPath());
+    return GetFileName(get_proc_path());
 }
 
-ProcessId GetCurrProcessId()
+ProcessId get_curr_proc_id()
 {
     ProcessId pid = 0;
 #if PLATFORM_WINDOWS
