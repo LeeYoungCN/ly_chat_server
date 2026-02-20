@@ -4,11 +4,8 @@
 
 #include <cstdint>
 #include <memory>
-#include <thread>
-#include <vector>
 
 #include "common/compiler/macros.h"
-#include "common/container/concurrent_blocking_queue.hpp"
 #include "logging/details/log_msg.h"
 #include "logging/details/log_task.h"
 
@@ -31,9 +28,8 @@ protected:
     void worker_loop(uint32_t idx);
 
 private:
-    std::unique_ptr<common::container::ConcurrentBlockingQueue<LogTask>> _logBuffer;
-    uint32_t _threadCnt = 0;
-    std::unique_ptr<std::vector<std::thread>> _threadPool;
+    struct Impl;
+    std::unique_ptr<Impl> _pimpl;
 };
 }  // namespace details
 }  // namespace logging

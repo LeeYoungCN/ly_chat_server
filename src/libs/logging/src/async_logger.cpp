@@ -1,5 +1,6 @@
 #include "logging/async_logger.h"
 
+#include <memory>
 #include <utility>
 
 #include "common/debug/debug_logger.h"
@@ -8,42 +9,58 @@
 
 namespace logging {
 
+using namespace logging::details;
+
+struct AsyncLogger::Impl {
+    std::weak_ptr<logging::TaskPool> taskPool;
+
+    explicit Impl(std::weak_ptr<TaskPool> pool) : taskPool(std::move(pool)) {}
+};
+
 AsyncLogger::~AsyncLogger()
 {
-    _taskPool.reset();
+    _pimpl->taskPool.reset();
+    delete _pimpl;
     DEBUG_LOGGER_INFO("Async logger release. [{}].", name());
 }
 
 AsyncLogger::AsyncLogger(std::string_view name, const std::shared_ptr<Sink>& sink,
-                         std::weak_ptr<details::TaskPool> pool)
-    : Logger(name, {sink}), _taskPool(std::move(pool))
+                         const std::weak_ptr<TaskPool>& pool)
+    : AsyncLogger(name, {sink}, pool)
 {
 }
 
 AsyncLogger::AsyncLogger(std::string_view name, const std::vector<std::shared_ptr<Sink>>& sinks,
-                         std::weak_ptr<details::TaskPool> pool)
-    : Logger(name, sinks), _taskPool(std::move(pool))
+                         const std::weak_ptr<TaskPool>& pool)
+    : AsyncLogger(name, sinks.begin(), sinks.end(), pool)
 {
 }
 
 AsyncLogger::AsyncLogger(std::string_view name,
                          const std::initializer_list<std::shared_ptr<Sink>>& sinks,
-                         std::weak_ptr<details::TaskPool> pool)
-    : Logger(name, sinks), _taskPool(std::move(pool))
+                         const std::weak_ptr<TaskPool>& pool)
+    : AsyncLogger(name, sinks.begin(), sinks.end(), pool)
 {
 }
 
-void AsyncLogger::sink_it(const details::LogMsg& logMsg)
+template <typename It>
+AsyncLogger::AsyncLogger(std::string_view name, It begin, It end,
+                         const std::weak_ptr<logging::TaskPool>& pool)
+    : Logger(std::move(name), begin, end), _pimpl(new Impl(pool))
 {
-    _taskPool.lock()->log(shared_from_this(), logMsg);
+}
+
+void AsyncLogger::sink_it(const LogMsg& logMsg)
+{
+    _pimpl->taskPool.lock()->log(shared_from_this(), logMsg);
 }
 
 void AsyncLogger::flush_it()
 {
-    _taskPool.lock()->flush(shared_from_this());
+    _pimpl->taskPool.lock()->flush(shared_from_this());
 }
 
-void AsyncLogger::backend_log(const details::LogMsg& logMsg)
+void AsyncLogger::backend_log(const LogMsg& logMsg)
 {
     sinks_log_it(logMsg);
 

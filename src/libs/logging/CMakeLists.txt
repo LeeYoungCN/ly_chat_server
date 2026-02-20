@@ -19,12 +19,10 @@ if (MINGW)
     target_link_libraries(${LIB_NAME} PRIVATE pthread)
 endif()
 
-if(MSVC)
-    set_target_properties(${LIB_NAME} PROPERTIES
-        PREFIX "lib"          # 给输出文件名加前缀
-        IMPORT_PREFIX "lib"   # 给导入库(.lib)加前缀
-    )
-endif()
+set_target_properties(${LIB_NAME} PROPERTIES
+    PREFIX "lib"          # 给输出文件名加前缀
+    IMPORT_PREFIX "lib"   # 给导入库(.lib)加前缀
+)
 
 target_link_libraries(${LIB_NAME} PRIVATE common)
 target_compile_definitions(${LIB_NAME} PRIVATE COMMON_BUILD_SHARED)

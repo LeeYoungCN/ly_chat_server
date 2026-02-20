@@ -28,17 +28,17 @@ struct Logger::Impl {
 
 template <typename It>
 Logger::Logger(std::string_view name, It begin, It end)
-    : _pimpl(std::make_unique<Impl>(name, begin, end))
+    : _pimpl(new Impl(name, begin, end))
 {
 }
 
 Logger::~Logger()
 {
     DEBUG_LOGGER_INFO("Logger release. [{}]", name());
-    _pimpl.reset();
+    delete _pimpl;
 }
 
-Logger::Logger(std::string_view name) : _pimpl(std::make_unique<Impl>(name)) {}
+Logger::Logger(std::string_view name) : _pimpl(new Impl(name)) {}
 
 Logger::Logger(std::string_view name, const std::shared_ptr<Sink>& sink) : Logger(name, {sink}) {}
 

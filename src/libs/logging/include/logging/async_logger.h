@@ -2,7 +2,6 @@
 #define LOGGING_ASYNC_LOGGER_H
 
 #include <memory>
-#include <utility>
 #include <vector>
 
 #include "common/compiler/macros.h"
@@ -23,19 +22,17 @@ public:
     ~AsyncLogger() override;
 
     AsyncLogger(std::string_view name, const std::shared_ptr<Sink>& sink,
-                std::weak_ptr<logging::details::TaskPool> pool);
+                const std::weak_ptr<logging::details::TaskPool>& pool);
 
     AsyncLogger(std::string_view name, const std::vector<std::shared_ptr<Sink>>& sinks,
-                std::weak_ptr<logging::details::TaskPool> pool);
+                const std::weak_ptr<logging::details::TaskPool>& pool);
 
     AsyncLogger(std::string_view name, const std::initializer_list<std::shared_ptr<Sink>>& sinks,
-                std::weak_ptr<logging::details::TaskPool> pool);
+                const std::weak_ptr<logging::details::TaskPool>& pool);
 
     template <typename It>
-    AsyncLogger(std::string_view name, It begin, It end, std::weak_ptr<logging::details::TaskPool> pool)
-        : Logger(std::move(name), begin, end), _taskPool(std::move(pool))
-    {
-    }
+    AsyncLogger(std::string_view name, It begin, It end,
+                const std::weak_ptr<logging::details::TaskPool>& pool);
 
 protected:
     void sink_it(const logging::details::LogMsg& logMsg) override;
@@ -46,7 +43,8 @@ protected:  // friend
     void backend_flush();
 
 private:
-    std::weak_ptr<logging::details::TaskPool> _taskPool;
+    struct Impl;
+    Impl* _pimpl;
 };
 }  // namespace logging
 

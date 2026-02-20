@@ -2,9 +2,11 @@
 
 #include <cstdint>
 #include <exception>
+#include <memory>
 #include <thread>
 #include <vector>
 
+#include "common/container/concurrent_blocking_queue.hpp"
 #include "common/debug/debug_logger.h"
 #include "logging/async_logger.h"
 #include "logging/details/common.h"
@@ -14,28 +16,37 @@
 namespace logging::details {
 using namespace common::container;
 
+struct TaskPool::Impl {
+    ConcurrentBlockingQueue<LogTask> buffer;
+    uint32_t threadCnt = 0;
+    std::vector<std::thread> threadPool;
+
+    Impl(uint32_t capacity, uint32_t threadCnt)
+        : buffer(capacity), threadCnt(threadCnt), threadPool(threadCnt)
+    {
+    }
+};
+
 TaskPool::TaskPool() : TaskPool(THREAD_POOL_DEFAULT_CAPACITY, THREAD_POOL_DEFAULT_THREAD_CNT) {}
 
 TaskPool::TaskPool(uint32_t capacity) : TaskPool(capacity, THREAD_POOL_DEFAULT_THREAD_CNT) {}
 
 TaskPool::TaskPool(uint32_t capacity, uint32_t threadCnt)
-    : _logBuffer(new ConcurrentBlockingQueue<LogTask>(capacity)),
-      _threadCnt(threadCnt),
-      _threadPool(new std::vector<std::thread>(_threadCnt))
+    : _pimpl(std::make_unique<Impl>(capacity, threadCnt))
 {
-    _threadPool->reserve(_threadCnt);
-    for (uint32_t i = 0; i < _threadCnt; i++) {
-        _threadPool->emplace_back(&TaskPool::worker_loop, this, i + 1);
+    _pimpl->threadPool.reserve(_pimpl->threadCnt);
+    for (uint32_t i = 0; i < _pimpl->threadCnt; i++) {
+        _pimpl->threadPool.emplace_back(&TaskPool::worker_loop, this, i + 1);
     }
 }
 
 TaskPool::~TaskPool()
 {
-    for (uint32_t i = 0; i < _threadPool->size(); i++) {
-        _logBuffer->enqueue(LogTask(TaskType::SHUTDOWN));
+    for (uint32_t i = 0; i < _pimpl->threadPool.size(); i++) {
+        _pimpl->buffer.enqueue(LogTask(TaskType::SHUTDOWN));
     }
 
-    for (auto& t : *_threadPool) {
+    for (auto& t : _pimpl->threadPool) {
         if (t.joinable()) {
             t.join();
         }
@@ -45,12 +56,12 @@ TaskPool::~TaskPool()
 
 void TaskPool::log(const std::shared_ptr<AsyncLogger>& logger, const LogMsg& logMsg)
 {
-    _logBuffer->enqueue_wait(LogTask(TaskType::LOG, logger, logMsg));
+    _pimpl->buffer.enqueue_wait(LogTask(TaskType::LOG, logger, logMsg));
 }
 
 void TaskPool::flush(const std::shared_ptr<AsyncLogger>& logger)
 {
-    _logBuffer->enqueue_wait(LogTask(TaskType::FLUSH, logger, LogMsg()));
+    _pimpl->buffer.enqueue_wait(LogTask(TaskType::FLUSH, logger, LogMsg()));
 }
 
 void TaskPool::worker_loop(uint32_t idx)
@@ -58,7 +69,7 @@ void TaskPool::worker_loop(uint32_t idx)
     bool isRunning = true;
     while (isRunning) {
         LogTask task;
-        _logBuffer->dequeue_wait(task);
+        _pimpl->buffer.dequeue_wait(task);
         try {
             switch (task.type) {
                 case TaskType::LOG:
@@ -76,6 +87,6 @@ void TaskPool::worker_loop(uint32_t idx)
             DEBUG_LOGGER_ERR("[Exception]: {}.", ex.what());
         }
     }
-    DEBUG_LOGGER_INFO("Log thread pool worker loop shutdown. [{}/{}]", idx, _threadCnt);
+    DEBUG_LOGGER_INFO("Log thread pool worker loop shutdown. [{}/{}]", idx, _pimpl->threadCnt);
 }
 }  // namespace logging::details
