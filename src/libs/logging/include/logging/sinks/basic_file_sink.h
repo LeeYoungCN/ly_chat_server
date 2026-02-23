@@ -5,8 +5,8 @@
 #include <string_view>
 
 #include "common/compiler/macros.h"
-#include "common/utils/file_writer.h"
 #include "logging/sinks/base_sink.h"
+
 
 namespace logging {
 class COMMON_API BasicFileSink : public BaseSink {
@@ -20,9 +20,8 @@ protected:
     void sink_it(std::string_view message) override;
 
 private:
-    std::string _filePath;
-    bool _overwrite{true};
-    common::filesystem::FileWriter _fileWriter;
+    struct Impl;
+    Impl* _pimpl;
 };
 
 }  // namespace logging

@@ -32,7 +32,7 @@ TaskPool::TaskPool() : TaskPool(THREAD_POOL_DEFAULT_CAPACITY, THREAD_POOL_DEFAUL
 TaskPool::TaskPool(uint32_t capacity) : TaskPool(capacity, THREAD_POOL_DEFAULT_THREAD_CNT) {}
 
 TaskPool::TaskPool(uint32_t capacity, uint32_t threadCnt)
-    : _pimpl(std::make_unique<Impl>(capacity, threadCnt))
+    : _pimpl(new Impl(capacity, threadCnt))
 {
     _pimpl->threadPool.reserve(_pimpl->threadCnt);
     for (uint32_t i = 0; i < _pimpl->threadCnt; i++) {
@@ -51,6 +51,7 @@ TaskPool::~TaskPool()
             t.join();
         }
     }
+    delete _pimpl;
     DEBUG_LOGGER_INFO("Log thread pool release.");
 }
 

@@ -29,7 +29,7 @@ protected:
 
 private:
     struct Impl;
-    std::unique_ptr<Impl> _pimpl;
+    Impl* _pimpl;
 };
 }  // namespace details
 }  // namespace logging

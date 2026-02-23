@@ -30,10 +30,6 @@ public:
     AsyncLogger(std::string_view name, const std::initializer_list<std::shared_ptr<Sink>>& sinks,
                 const std::weak_ptr<logging::details::TaskPool>& pool);
 
-    template <typename It>
-    AsyncLogger(std::string_view name, It begin, It end,
-                const std::weak_ptr<logging::details::TaskPool>& pool);
-
 protected:
     void sink_it(const logging::details::LogMsg& logMsg) override;
     void flush_it() override;

@@ -7,12 +7,7 @@
     "cmake.allowCommentsInPresetsFile": true,
     "cmake.allowUnsupportedPresetsVersions": true,
     "workbench.editor.wrapTabs": true,
-    "terminal.integrated.profiles.windows": {
-        "git_bash": {
-            "path": "D:\\Programs\\Git\\bin\\bash.exe"
-        }
-    },
-    "terminal.integrated.defaultProfile.windows": "git_bash",
+    "terminal.integrated.defaultProfile.windows": "Git Bash",
     "terminal.integrated.fontSize": 16,
     "window.zoomLevel": 1,
     "editor.defaultFoldingRangeProvider": "ms-vscode.cpptools",

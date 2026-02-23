@@ -8,33 +8,46 @@ namespace logging {
 using namespace common::filesystem;
 using namespace common::process;
 
+struct BasicFileSink::Impl {
+    Impl(std::string_view file, bool overwrite) : _filePath(file), _overwrite(overwrite)
+    {
+        _fileWriter.open(_filePath,
+                         (_overwrite ? FileWriteMode::OVERWRITE : FileWriteMode::APPEND));
+    }
+
+    std::string _filePath;
+    bool _overwrite{true};
+    common::filesystem::FileWriter _fileWriter;
+};
+
 BasicFileSink::BasicFileSink()
 {
     std::string process = get_proc_path();
-    _filePath = JoinPaths({GetDirectory(process), "logs", GetFileName(process) + ".log"});
-    _fileWriter.open(_filePath, FileWriteMode::OVERWRITE);
+
+    _pimpl =
+        new Impl(JoinPaths({GetDirectory(process), "logs", GetFileName(process) + ".log"}), true);
 }
 
 BasicFileSink::~BasicFileSink()
 {
-    _fileWriter.flush();
-    _fileWriter.close();
+    _pimpl->_fileWriter.flush();
+    _pimpl->_fileWriter.close();
+    delete _pimpl;
 }
 
 BasicFileSink::BasicFileSink(std::string_view file, bool overwrite)
-    : _filePath(ToAbsolutePath(file)), _overwrite(overwrite)
+    : _pimpl(new Impl(ToAbsolutePath(file), overwrite))
 {
-    _fileWriter.open(_filePath, (_overwrite ? FileWriteMode::OVERWRITE : FileWriteMode::APPEND));
 }
 
 void BasicFileSink::sink_it(std::string_view message)
 {
-    _fileWriter.write_line(message);
+    _pimpl->_fileWriter.write_line(message);
 }
 
 void BasicFileSink::flush_it()
 {
-    _fileWriter.flush();
+    _pimpl->_fileWriter.flush();
 }
 
 }  // namespace logging

@@ -27,7 +27,7 @@ struct PatternFormatter::Impl {
 
 PatternFormatter::~PatternFormatter()
 {
-    _pimpl.reset();
+    delete _pimpl;
 }
 
 PatternFormatter::PatternFormatter()
@@ -41,7 +41,7 @@ PatternFormatter::PatternFormatter(std::string_view pattern)
 }
 
 PatternFormatter::PatternFormatter(std::string_view pattern, std::string_view timePattern)
-    : _pimpl(std::make_unique<Impl>(pattern, timePattern))
+    : _pimpl(new Impl(pattern, timePattern))
 {
 }
 

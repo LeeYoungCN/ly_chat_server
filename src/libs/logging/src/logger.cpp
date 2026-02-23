@@ -1,8 +1,9 @@
 #include "logging/logger.h"
 
 #include <atomic>
-#include <cstdarg>
 #include <memory>
+#include <utility>
+#include <vector>
 
 #include "common/debug/debug_logger.h"
 #include "logging/formatters/formatter.h"
@@ -20,17 +21,11 @@ struct Logger::Impl {
 
     explicit Impl(std::string_view name) : name(name) {}
 
-    template <typename It>
-    Impl(std::string_view name, It begin, It end) : name(name), sinks(begin, end)
+    Impl(std::string_view name, std::vector<std::shared_ptr<Sink>> sinks)
+        : name(name), sinks(std::move(sinks))
     {
     }
 };
-
-template <typename It>
-Logger::Logger(std::string_view name, It begin, It end)
-    : _pimpl(new Impl(name, begin, end))
-{
-}
 
 Logger::~Logger()
 {
@@ -40,15 +35,18 @@ Logger::~Logger()
 
 Logger::Logger(std::string_view name) : _pimpl(new Impl(name)) {}
 
-Logger::Logger(std::string_view name, const std::shared_ptr<Sink>& sink) : Logger(name, {sink}) {}
+Logger::Logger(std::string_view name, const std::shared_ptr<Sink>& sink)
+    : _pimpl(new Impl(name, {sink}))
+{
+}
 
 Logger::Logger(std::string_view name, const std::vector<std::shared_ptr<Sink>>& sinks)
-    : Logger(name, sinks.begin(), sinks.end())
+    : _pimpl(new Impl(name, sinks))
 {
 }
 
 Logger::Logger(std::string_view name, const std::initializer_list<std::shared_ptr<Sink>>& sinks)
-    : Logger(name, sinks.begin(), sinks.end())
+    : _pimpl(new Impl(name, std::vector<std::shared_ptr<Sink>>(sinks)))
 {
 }
 

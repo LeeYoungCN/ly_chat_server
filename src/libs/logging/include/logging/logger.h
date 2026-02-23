@@ -34,9 +34,6 @@ public:
     Logger(std::string_view name,
            const std::initializer_list<std::shared_ptr<logging::Sink>>& sinks);
 
-    template <typename It>
-    Logger(std::string_view name, It begin, It end);
-
     [[nodiscard]] std::string_view name() const;
     [[nodiscard]] const std::vector<std::shared_ptr<logging::Sink>>& sinks() const;
 

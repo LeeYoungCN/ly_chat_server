@@ -13,11 +13,11 @@ struct Sink::Impl {
     std::mutex sinkMtx;
 };
 
-Sink::Sink() : _pimpl(std::make_unique<Impl>()) {}
+Sink::Sink() : _pimpl(new Impl()) {}
 
 Sink::~Sink()
 {
-    _pimpl.reset();
+    delete _pimpl;
 }
 
 bool Sink::should_log(LogLevel level) const

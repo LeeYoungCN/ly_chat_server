@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <utility>
+#include <vector>
 
 #include "common/debug/debug_logger.h"
 #include "logging/details/task_pool.h"
@@ -26,27 +27,20 @@ AsyncLogger::~AsyncLogger()
 
 AsyncLogger::AsyncLogger(std::string_view name, const std::shared_ptr<Sink>& sink,
                          const std::weak_ptr<TaskPool>& pool)
-    : AsyncLogger(name, {sink}, pool)
+    : Logger(name, sink), _pimpl(new Impl(pool))
 {
 }
 
 AsyncLogger::AsyncLogger(std::string_view name, const std::vector<std::shared_ptr<Sink>>& sinks,
                          const std::weak_ptr<TaskPool>& pool)
-    : AsyncLogger(name, sinks.begin(), sinks.end(), pool)
+    : Logger(name, sinks), _pimpl(new Impl(pool))
 {
 }
 
 AsyncLogger::AsyncLogger(std::string_view name,
                          const std::initializer_list<std::shared_ptr<Sink>>& sinks,
                          const std::weak_ptr<TaskPool>& pool)
-    : AsyncLogger(name, sinks.begin(), sinks.end(), pool)
-{
-}
-
-template <typename It>
-AsyncLogger::AsyncLogger(std::string_view name, It begin, It end,
-                         const std::weak_ptr<logging::TaskPool>& pool)
-    : Logger(std::move(name), begin, end), _pimpl(new Impl(pool))
+    : Logger(name, sinks), _pimpl(new Impl(pool))
 {
 }
 
