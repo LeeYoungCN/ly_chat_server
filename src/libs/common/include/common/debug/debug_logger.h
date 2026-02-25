@@ -20,7 +20,8 @@ public:
 
     bool should_log(DebugLevel level);
 
-    void log_va(const char* file, int line, const char* func, DebugLevel level, const char* format, va_list args);
+    void log_va(const char* file, int line, const char* func, DebugLevel level, const char* format,
+                va_list args);
 
     template <class T, std::enable_if_t<type_traits::is_convertible_to_string_v<T>, int> = 0>
     void log(DebugLevel level, const T& message)
@@ -41,10 +42,11 @@ public:
     }
 
     template <typename... Args>
-    void log(const char* file, int line, const char* func, DebugLevel level, std::format_string<Args...> format,
-             Args&&... args)
+    void log(const char* file, int line, const char* func, DebugLevel level,
+             std::format_string<Args...> format, Args&&... args)
     {
-        log_it(level, std::move(std::format(format, std::forward<Args>(args)...)), file, line, func);
+        log_it(
+            level, std::move(std::format(format, std::forward<Args>(args)...)), file, line, func);
     }
 
     template <class T>
@@ -56,7 +58,8 @@ public:
     template <typename... Args>
     void debug(std::format_string<Args...> format, Args&&... args)
     {
-        log_it(DebugLevel::DEBUG_LVL_DEBUG, std::move(std::format(format, std::forward<Args>(args)...)));
+        log_it(DebugLevel::DEBUG_LVL_DEBUG,
+               std::move(std::format(format, std::forward<Args>(args)...)));
     }
 
     template <class T>
@@ -68,53 +71,73 @@ public:
     template <typename... Args>
     void info(std::format_string<Args...> format, Args&&... args)
     {
-        log_it(DebugLevel::DEBUG_LVL_INFO, std::move(std::format(format, std::forward<Args>(args)...)));
+        log_it(DebugLevel::DEBUG_LVL_INFO,
+               std::move(std::format(format, std::forward<Args>(args)...)));
     }
 
     template <typename... Args>
-    void info(const char* file, int line, const char* func, std::format_string<Args...> format, Args&&... args)
+    void info(const char* file, int line, const char* func, std::format_string<Args...> format,
+              Args&&... args)
     {
-        log_it(
-            DebugLevel::DEBUG_LVL_INFO, std::move(std::format(format, std::forward<Args>(args)...)), file, line, func);
+        log_it(DebugLevel::DEBUG_LVL_INFO,
+               std::move(std::format(format, std::forward<Args>(args)...)),
+               file,
+               line,
+               func);
     }
 
     template <typename... Args>
     void warn(std::format_string<Args...> format, Args&&... args)
     {
-        log_it(DebugLevel::DEBUG_LVL_WARN, std::move(std::format(format, std::forward<Args>(args)...)));
+        log_it(DebugLevel::DEBUG_LVL_WARN,
+               std::move(std::format(format, std::forward<Args>(args)...)));
     }
 
     template <typename... Args>
-    void warn(const char* file, int line, const char* func, std::format_string<Args...> format, Args&&... args)
+    void warn(const char* file, int line, const char* func, std::format_string<Args...> format,
+              Args&&... args)
     {
-        log_it(
-            DebugLevel::DEBUG_LVL_WARN, std::move(std::format(format, std::forward<Args>(args)...)), file, line, func);
+        log_it(DebugLevel::DEBUG_LVL_WARN,
+               std::move(std::format(format, std::forward<Args>(args)...)),
+               file,
+               line,
+               func);
     }
 
     template <typename... Args>
     void error(std::format_string<Args...> format, Args&&... args)
     {
-        log_it(DebugLevel::DEBUG_LVL_ERR, std::move(std::format(format, std::forward<Args>(args)...)));
+        log_it(DebugLevel::DEBUG_LVL_ERR,
+               std::move(std::format(format, std::forward<Args>(args)...)));
     }
 
     template <typename... Args>
-    void error(const char* file, int line, const char* func, std::format_string<Args...> format, Args&&... args)
+    void error(const char* file, int line, const char* func, std::format_string<Args...> format,
+               Args&&... args)
     {
-        log_it(
-            DebugLevel::DEBUG_LVL_ERR, std::move(std::format(format, std::forward<Args>(args)...)), file, line, func);
+        log_it(DebugLevel::DEBUG_LVL_ERR,
+               std::move(std::format(format, std::forward<Args>(args)...)),
+               file,
+               line,
+               func);
     }
 
     template <typename... Args>
     void fatal(std::format_string<Args...> format, Args&&... args)
     {
-        log_it(DebugLevel::DEBUG_LVL_FATAL, std::move(std::format(format, std::forward<Args>(args)...)));
+        log_it(DebugLevel::DEBUG_LVL_FATAL,
+               std::move(std::format(format, std::forward<Args>(args)...)));
     }
 
     template <typename... Args>
-    void fatal(const char* file, int line, const char* func, std::format_string<Args...> format, Args&&... args)
+    void fatal(const char* file, int line, const char* func, std::format_string<Args...> format,
+               Args&&... args)
     {
-        log_it(
-            DebugLevel::DEBUG_LVL_FATAL, std::move(std::format(format, std::forward<Args>(args)...)), file, line, func);
+        log_it(DebugLevel::DEBUG_LVL_FATAL,
+               std::move(std::format(format, std::forward<Args>(args)...)),
+               file,
+               line,
+               func);
     }
 
 private:
@@ -122,10 +145,10 @@ private:
     ~DebugLogger() override = default;
 
 private:
-    void log_it(DebugLevel level, const std::string& message, const char* file = nullptr, int line = 0,
-                const char* func = nullptr);
-    std::string format_log(DebugLevel level, const std::string& message, const char* file = nullptr, int line = 0,
-                           const char* func = nullptr);
+    void log_it(DebugLevel level, const std::string& message, const char* file = nullptr,
+                int line = 0, const char* func = nullptr);
+    std::string format_log(DebugLevel level, const std::string& message, const char* file = nullptr,
+                           int line = 0, const char* func = nullptr);
 
     size_t get_current_tid();
     std::string time_string();
@@ -162,13 +185,17 @@ private:
     } while (0)
 #endif
 
-#define DEBUG_LOGGER_DBG(format, ...) DEBUG_LOGGER(DEBUG_LVL_DEBUG, format __VA_OPT__(, ) __VA_ARGS__);
+#define DEBUG_LOGGER_DBG(format, ...) \
+    DEBUG_LOGGER(DEBUG_LVL_DEBUG, format __VA_OPT__(, ) __VA_ARGS__);
 
-#define DEBUG_LOGGER_INFO(format, ...) DEBUG_LOGGER(DEBUG_LVL_INFO, format __VA_OPT__(, ) __VA_ARGS__);
+#define DEBUG_LOGGER_INFO(format, ...) \
+    DEBUG_LOGGER(DEBUG_LVL_INFO, format __VA_OPT__(, ) __VA_ARGS__);
 
-#define DEBUG_LOGGER_WARN(format, ...) DEBUG_LOGGER(DEBUG_LVL_WARN, format __VA_OPT__(, ) __VA_ARGS__);
+#define DEBUG_LOGGER_WARN(format, ...) \
+    DEBUG_LOGGER(DEBUG_LVL_WARN, format __VA_OPT__(, ) __VA_ARGS__);
 
-#define DEBUG_LOGGER_ERR(format, ...) DEBUG_LOGGER(DEBUG_LVL_ERR, format __VA_OPT__(, ) __VA_ARGS__);
+#define DEBUG_LOGGER_ERR(format, ...) \
+    DEBUG_LOGGER(DEBUG_LVL_ERR, format __VA_OPT__(, ) __VA_ARGS__);
 
 #define DEBUG_LOGGER_FATAL(format, ...)                                   \
     do {                                                                  \

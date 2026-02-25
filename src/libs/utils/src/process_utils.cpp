@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2026
  *
  */
-#include "common/utils/process_utils.h"
+#include "utils/process_utils.h"
 
 #if PLATFORM_WINDOWS
 #include <windows.h>
@@ -19,16 +19,17 @@
 #include <unistd.h>
 #endif
 
-#include "common/common_error_code.h"
 #include "common/compiler/macros.h"
 #include "common/constants/filesystem_constants.h"
 #include "common/debug/debug_logger.h"
 #include "common/types/process_types.h"
-#include "common/utils/error_code_utils.h"
-#include "common/utils/filesystem_utils.h"
+#include "utils/filesystem_utils.h"
+#include "utils/thread_utils.h"
+#include "utils/utils_error_code.h"
 
-namespace common::process {
-using namespace common::filesystem;
+namespace utils::process {
+using namespace utils::filesystem;
+using namespace constants::filesystem;
 
 std::string get_proc_path()
 {
@@ -84,4 +85,4 @@ ProcessId get_curr_proc_id()
 #endif
     return pid;
 }
-}  // namespace common::process
+}  // namespace utils::process

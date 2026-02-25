@@ -82,10 +82,10 @@ namespace common::types::date_time {
 /**
  * @brief 获取当前系统时间的毫秒级时间戳
  * 
- * @return common::types::date_time::TimestampMs 
+ * @return common::types::date_timeTimestampMs 
  *         当前时间戳（Unix纪元基准，如1722057600000表示2024-07-27 00:00:00）
  */
-common::types::date_time::TimestampMs GetCurrentTimestampMs();
+common::types::date_timeTimestampMs GetCurrentTimestampMs();
 ```
 
 
@@ -110,12 +110,12 @@ common::types::date_time::TimeComponent GetCurrentTimeComponent();
 /**
  * @brief 将毫秒级时间戳转换为本地时间的时间组件
  * 
- * @param timestamp 待转换的时间戳（`common::types::date_time::TimestampMs` 类型）
+ * @param timestamp 待转换的时间戳（`common::types::date_timeTimestampMs` 类型）
  * @return common::types::date_time::TimeComponent 
  *         转换后的时间组件（失败时返回字段全为0的结构）
  */
 common::types::date_time::TimeComponent LocalTimeComponent(
-    const common::types::date_time::TimestampMs& timestamp
+    const common::types::date_timeTimestampMs& timestamp
 );
 ```
 
@@ -126,12 +126,12 @@ common::types::date_time::TimeComponent LocalTimeComponent(
 /**
  * @brief 将毫秒级时间戳转换为UTC时间的时间组件
  * 
- * @param timestamp 待转换的时间戳（`common::types::date_time::TimestampMs` 类型）
+ * @param timestamp 待转换的时间戳（`common::types::date_timeTimestampMs` 类型）
  * @return common::types::date_time::TimeComponent 
  *         转换后的时间组件（失败时返回字段全为0的结构）
  */
 common::types::date_time::TimeComponent UtcTimeComponent(
-    const common::types::date_time::TimestampMs& timestamp
+    const common::types::date_timeTimestampMs& timestamp
 );
 ```
 
@@ -154,12 +154,12 @@ common::types::date_time::TimeComponent UtcTimeComponent(
 /**
  * @brief 按指定格式将时间戳转换为字符串
  * 
- * @param timestamp 待格式化的时间戳（`common::types::date_time::TimestampMs` 类型）
+ * @param timestamp 待格式化的时间戳（`common::types::date_timeTimestampMs` 类型）
  * @param format 格式字符串（支持占位符，见3.4.3节）
  * @return std::string 格式化后的字符串（失败返回空字符串）
  */
 std::string FormatTimeString(
-    common::types::date_time::TimestampMs timestamp, 
+    common::types::date_timeTimestampMs timestamp, 
     const std::string_view& format
 );
 
@@ -192,7 +192,7 @@ std::string FormatTimeString(
 size_t FormatTimeBuffer(
     char* buffer, 
     size_t bufferSize, 
-    common::types::date_time::TimestampMs timestamp, 
+    common::types::date_timeTimestampMs timestamp, 
     const std::string_view& format
 );
 
@@ -231,14 +231,14 @@ size_t FormatTimeBuffer(
 | 需求 | 必须引用的头文件 |
 |------|------------------|
 | 使用 `TimestampMs`/`TimeComponent` 类型 | `#include "common/types/date_time_types.h"` |
-| 调用所有工具接口（获取、转换、格式化等） | `#include "common/utils/date_time_utils.h"` |
+| 调用所有工具接口（获取、转换、格式化等） | `#include "utils/date_time_utils.h"` |
 
 
 ### 4.2 命名空间
 
 | 命名空间 | 包含内容 | 示例 |
 |----------|----------|------|
-| `common::types::date_time` | `TimestampMs`、`TimeComponent` 类型定义 | `common::types::date_time::TimestampMs` |
+| `common::types::date_time` | `TimestampMs`、`TimeComponent` 类型定义 | `common::types::date_timeTimestampMs` |
 | `common::constants::date_time` | 时间相关常量（如 `MILLIS_PER_SECOND`） | `common::constants::date_time::MAX_TIME_STR_LEN` |
 | `common::utils::date_time` | 所有工具接口（`GetCurrentTimestampMs` 等） | `common::utils::date_time::FormatTimeString` |
 
@@ -252,7 +252,7 @@ size_t FormatTimeBuffer(
   using namespace common::utils::date_time;    // 工具接口
   ```
 
-- 在头文件中，避免使用 `using namespace`，需使用完整命名空间（如 `common::types::date_time::TimestampMs`）。
+- 在头文件中，避免使用 `using namespace`，需使用完整命名空间（如 `common::types::date_timeTimestampMs`）。
 
 
 ## 五、使用示例
@@ -262,7 +262,7 @@ size_t FormatTimeBuffer(
 ```cpp
 // 头文件引用
 #include "common/types/date_time_types.h"
-#include "common/utils/date_time_utils.h"
+#include "utils/date_time_utils.h"
 #include <iostream>
 
 int main() {

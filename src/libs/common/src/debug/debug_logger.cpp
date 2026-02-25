@@ -1,4 +1,5 @@
 #include "common/debug/debug_logger.h"
+
 #include <mutex>
 #include <system_error>
 
@@ -31,13 +32,14 @@ void DebugLogger::set_debug_log_level(DebugLevel level)
     _logLevel = level;
 }
 
-void DebugLogger::log_va(const char* file, int line, const char* func, DebugLevel level, const char* format,
-                         va_list args)
+void DebugLogger::log_va(const char* file, int line, const char* func, DebugLevel level,
+                         const char* format, va_list args)
 {
     log_it(level, va_list_to_string(format, args), file, line, func);
 }
 
-void DebugLogger::log_it(DebugLevel level, const std::string& message, const char* file, int line, const char* func)
+void DebugLogger::log_it(DebugLevel level, const std::string& message, const char* file, int line,
+                         const char* func)
 {
     if (!should_log(level)) {
         return;
@@ -52,8 +54,8 @@ bool DebugLogger::should_log(DebugLevel level)
     return (_logLevel != DebugLevel::DEBUG_LVL_OFF && level >= _logLevel);
 }
 
-std::string DebugLogger::format_log(DebugLevel level, const std::string& message, const char* file, int line,
-                                    const char* func)
+std::string DebugLogger::format_log(DebugLevel level, const std::string& message, const char* file,
+                                    int line, const char* func)
 {
     if (file != nullptr) {
         return std::format("[{}][{}][Tid: {:#x}][{}:{}][{}] {}",
@@ -65,8 +67,11 @@ std::string DebugLogger::format_log(DebugLevel level, const std::string& message
                            func,
                            message);
     } else {
-        return std::format(
-            "[{}] [{}] [Tid: {:#x}]: {}", time_string(), get_debug_log_lvl_str(level), get_current_tid(), message);
+        return std::format("[{}] [{}] [Tid: {:#x}]: {}",
+                           time_string(),
+                           get_debug_log_lvl_str(level),
+                           get_current_tid(),
+                           message);
     }
 }
 

@@ -1,5 +1,5 @@
-#ifndef COMMON_UTILS_FILE_WRITER_H
-#define COMMON_UTILS_FILE_WRITER_H
+#ifndef UTILS_FILE_WRITER_H
+#define UTILS_FILE_WRITER_H
 
 #include <cstddef>
 #include <cstdio>
@@ -7,10 +7,10 @@
 #include <string>
 #include <string_view>
 
-#include "common/common_error_code.h"
 #include "common/types/error_code_types.h"
+#include "utils/utils_error_code.h"
 
-namespace common::filesystem {
+namespace utils::filesystem {
 
 enum FileWriteMode {
     OVERWRITE,
@@ -46,6 +46,6 @@ private:
     size_t m_currSize{};
 };
 
-}  // namespace common::filesystem
+}  // namespace utils::filesystem
 
-#endif  // COMMON_UTILS_FILE_WRITER_H
+#endif  // UTILS_FILE_WRITER_H

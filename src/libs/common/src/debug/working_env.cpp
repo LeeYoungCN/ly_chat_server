@@ -124,7 +124,8 @@ std::string GetArchitecture()
 
 void PrintEnvParams()
 {
-    const std::array<const char*, 5> ENV_NAMES{"PATH", "LD_LIBRARY_PATH", "LIBPATH", "LIB", "INCLUDE"};
+    const std::array<const char*, 5> ENV_NAMES{
+        "PATH", "LD_LIBRARY_PATH", "LIBPATH", "LIB", "INCLUDE"};
 
     for (const auto& name : ENV_NAMES) {
         char* value = nullptr;

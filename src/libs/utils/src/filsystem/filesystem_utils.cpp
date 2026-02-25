@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2025
  *
  */
-#include "common/utils/filesystem_utils.h"
+#include "utils/filesystem_utils.h"
 
 #include "common/compiler/macros.h"
 
@@ -23,19 +23,19 @@
 #include <filesystem>
 #include <system_error>
 
-#include "common/common_error_code.h"
 #include "common/debug/debug_logger.h"
 #include "common/types/filesystem_types.h"
-#include "common/utils/error_code_utils.h"
-#include "common/utils/filesystem_utils.h"
+#include "utils/filesystem_utils.h"
+#include "utils/thread_utils.h"
+#include "utils/utils_error_code.h"
 
-namespace common::filesystem {
+namespace utils::filesystem {
 namespace fs = std::filesystem;
 
 EntryType GetEntryType(std::string_view path)
 {
     if (!fs::exists(path)) {
-        set_thread_last_err(ERR_COMM_NOT_FOUND);
+        set_thread_last_err(ERR_UTILS_NOT_FOUND);
         return EntryType::NONEXISTENT;
     }
     // 获取文件状态（使用symlink_status而非status，保留符号链接本身的类型）
@@ -92,4 +92,4 @@ const char* GetEntryTypeString(EntryType type)
     }
 }
 
-}  // namespace common::filesystem
+}  // namespace utils::filesystem

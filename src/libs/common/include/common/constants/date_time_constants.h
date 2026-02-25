@@ -17,13 +17,13 @@
 
 #include "common/types/date_time_types.h"
 
-namespace common::date_time {
+namespace constants::date_time {
 
 constexpr int32_t TIME_COMP_START_YEAR = 1900;
 constexpr int32_t TIME_COMP_START_MONTH = 1;
 
 // 1970-01-01 00:00:00 UTC对应的时间戳（毫秒）
-constexpr common::date_time::TimestampMs UNIX_EPOCH_MS = 0;
+constexpr TimestampMs UNIX_EPOCH_MS = 0;
 
 // 纪元年份（Unix时间戳起始年份）
 // EPOCH（通常译为 “纪元” 或 “时间起点”）指的是时间戳计数的起始点，是用于统一时间计算的基准时间。
@@ -87,6 +87,6 @@ enum DateTimeErrId {
     TIMESTAMP_INVALID
 };
 
-}  // namespace common::date_time
+}  // namespace constants::date_time
 
 #endif  // COMMON_CONSTANTS_DATE_TIME_CONSTANTS_H

@@ -7,7 +7,6 @@
 #include "common/compiler/macros.h"
 #include "logging/sinks/base_sink.h"
 
-
 namespace logging {
 class COMMON_API BasicFileSink : public BaseSink {
 public:

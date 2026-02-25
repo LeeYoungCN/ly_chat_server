@@ -1,11 +1,11 @@
-#include "common/utils/string_utils.h"
+#include "utils/string_utils.h"
 
 #include <cstdint>
 #include <cstring>
 #include <stdexcept>
 #include <string>
 
-namespace common::string {
+namespace utils::string {
 
 bool string_is_null_or_empty(const char *str)
 {
@@ -28,4 +28,4 @@ std::string va_list_to_string(const char *format, va_list args)
     vsnprintf(message.data(), static_cast<uint32_t>(len) + 1, format, args);
     return message;
 }
-}  // namespace common::string
+}  // namespace utils::string

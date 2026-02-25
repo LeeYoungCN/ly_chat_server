@@ -2,11 +2,11 @@
 
 ## 一、模块概述
 
-**common::filesystem** 模块是跨平台文件系统操作工具集，采用分层命名空间设计：
+**utils::filesystem** 模块是跨平台文件系统操作工具集，采用分层命名空间设计：
 
-- **类型定义**：`common::filesystem`（包含枚举、结构体等类型）
-- **常量定义**：`common::filesystem`（包含路径长度、分隔符等常量）
-- **工具接口**：`common::filesystem`（提供文件系统操作实现）
+- **类型定义**：`utils::filesystem`（包含枚举、结构体等类型）
+- **常量定义**：`utils::filesystem`（包含路径长度、分隔符等常量）
+- **工具接口**：`utils::filesystem`（提供文件系统操作实现）
 
 模块适配 Windows、Linux、macOS 平台，接口设计遵循：
 
@@ -15,7 +15,7 @@
 - 接口和结构体成员采用大驼峰命名
 - 无任何匈牙利命名前缀
 
-## 二、类型定义（`common::filesystem`）
+## 二、类型定义（`utils::filesystem`）
 
 ### 2.1 基础类型别名
 
@@ -84,7 +84,7 @@ namespace filesystem {
         PathString path;                                 ///< 文件的完整路径
         FileSize size;                                   ///< 文件大小（字节）
         EntryType type;                                  ///< 条目类型（文件/目录等）
-        common::types::date_time::TimestampMs modifyTime;  ///< 最后修改时间戳）
+        common::types::date_timeTimestampMs modifyTime;  ///< 最后修改时间戳）
     };
 } // namespace filesystem
 } // namespace types
@@ -93,7 +93,7 @@ namespace filesystem {
 
 ## 三、常量与枚举值
 
-### 3.1 路径与尺寸常量（`common::filesystem`）
+### 3.1 路径与尺寸常量（`utils::filesystem`）
 
 ```cpp
 namespace common {
@@ -157,7 +157,7 @@ namespace filesystem {
 } // namespace common
 ```
 
-## 四、工具接口（`common::filesystem`）
+## 四、工具接口（`utils::filesystem`）
 
 ### 4.1 路径处理接口（大驼峰命名）
 
@@ -225,7 +225,7 @@ auto configPath = utils::filesystem::JoinPaths(parts);
 ```cpp
 #include "common/types/filesystem.h"
 #include "common/constants/filesystem.h"
-#include "common/utils/filesystem.h"
+#include "utils/filesystem.h"
 #include <iostream>
 
 int main() {
@@ -277,8 +277,8 @@ int main() {
    - 结构体成员：大驼峰（如 `FileInfo::Path`、`FileInfo::Size`）
 
 4. **命名空间结构**：
-   - `common::filesystem`：仅包含类型定义
-   - `common::filesystem`：仅包含常量和错误码
-   - `common::filesystem`：仅包含操作接口
+   - `utils::filesystem`：仅包含类型定义
+   - `utils::filesystem`：仅包含常量和错误码
+   - `utils::filesystem`：仅包含操作接口
 
 该命名规范保持了代码的清晰性和一致性，避免了冗余前缀，同时通过命名空间明确区分了不同类型的组件，适合大型项目开发使用。

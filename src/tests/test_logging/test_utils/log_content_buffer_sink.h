@@ -2,6 +2,7 @@
 #define TEST_LOGGING_TEST_UTILS_LOG_CONTENT_BUFFER_SINK_G
 
 #include <sys/types.h>
+
 #include <cstdint>
 #include <vector>
 

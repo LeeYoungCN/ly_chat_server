@@ -9,13 +9,13 @@
  *
  */
 
-#include "common/common_error_code.h"
 #include "common/types/error_code_types.h"
 #include "common/types/filesystem_types.h"
-#include "common/utils/error_code_utils.h"
-#include "common/utils/filesystem_utils.h"
-#include "common/utils/process_utils.h"
 #include "gtest/gtest.h"
+#include "utils/filesystem_utils.h"
+#include "utils/process_utils.h"
+#include "utils/thread_utils.h"
+#include "utils/utils_error_code.h"
 
 namespace test::test_utils::test_filesystem_utils {
 
@@ -25,19 +25,19 @@ protected:
     static void TearDownTestSuite() {}
     void SetUp() override
     {
-        m_process = common::process::get_proc_path();
+        m_process = utils::process::get_proc_path();
         EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
-        m_processDir = common::filesystem::GetDirectory(m_process);
+        m_processDir = utils::filesystem::GetDirectory(m_process);
         EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
-        m_workDir = common::filesystem::GetCurrentWorkingDirectory();
+        m_workDir = utils::filesystem::GetCurrentWorkingDirectory();
         EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
     };
     void TearDown() override {};
 
 protected:
-    common::filesystem::PathString m_process;
-    common::filesystem::PathString m_processDir;
-    common::filesystem::PathString m_workDir;
+    utils::filesystem::PathString m_process;
+    utils::filesystem::PathString m_processDir;
+    utils::filesystem::PathString m_workDir;
 };
 
 }  // namespace test::test_utils::test_filesystem_utils

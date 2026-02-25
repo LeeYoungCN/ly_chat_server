@@ -19,7 +19,7 @@ struct COMMON_API LogMsg {
     LogLevel level{LogLevel::DEBUG};
     std::string data;
     LogSource source;
-    common::date_time::TimestampMs timeStamp = 0;
+    TimestampMs timeStamp = 0;
     ThreadId threadId = 0;
     ProcessId procId = 0;
 

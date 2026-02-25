@@ -4,10 +4,10 @@
 #include <memory>
 
 #include "c/common_c.h"
-#include "common/utils/string_utils.h"
 #include "logging/details/common.h"
 #include "logging/details/registry.h"
 #include "logging/log_level.h"
+#include "utils/string_utils.h"
 
 using namespace logging;
 using namespace logging::details;
@@ -21,7 +21,7 @@ void logging_log_it(const std::shared_ptr<Logger> &logger, const char *file, int
 {
     if (logger->should_log(level)) {
         logger->log(
-            LogSource(file, line, func), level, common::string::va_list_to_string(format, args));
+            LogSource(file, line, func), level, utils::string::va_list_to_string(format, args));
     }
 }
 }  // namespace

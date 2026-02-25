@@ -10,7 +10,6 @@
 
 #include "common/compiler/macros.h"
 #include "common/types/type_traits.h"
-#include "common/utils/string_utils.h"
 #include "logging/details//inner_macros.h"
 #include "logging/details/common.h"
 #include "logging/details/log_msg.h"
@@ -18,6 +17,7 @@
 #include "logging/formatters/formatter.h"
 #include "logging/log_level.h"
 #include "logging/sinks/sink.h"
+#include "utils/string_utils.h"
 
 namespace logging {
 class COMMON_API Logger {
@@ -60,7 +60,7 @@ public:
         if (!should_log(level)) {
             return;
         }
-        details::LogMsg logMsg(source, name(), level, common::string::type_to_string(message));
+        details::LogMsg logMsg(source, name(), level, utils::string::type_to_string(message));
         sink_it(logMsg);
     }
 

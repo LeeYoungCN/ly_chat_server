@@ -2,16 +2,16 @@
 #include <cstdint>
 #include <string>
 
-#include "common/common_error_code.h"
 #include "common/constants/filesystem_constants.h"
-#include "common/utils/file_writer.h"
-#include "common/utils/filesystem_utils.h"
-#include "common/utils/process_utils.h"
 #include "gtest/gtest.h"
+#include "utils/file_writer.h"
+#include "utils/filesystem_utils.h"
+#include "utils/process_utils.h"
+#include "utils/utils_error_code.h"
 
 namespace test::test_utils::test_file_writer {
-using namespace common::filesystem;
-using namespace common::process;
+using namespace utils::filesystem;
+using namespace utils::process;
 
 class TestFileAppender : public ::testing::Test {
 protected:
@@ -92,7 +92,7 @@ TEST_F(TestFileAppender, append_line_size)
     size_t expectSize = 0;
     for (uint32_t i = 0; i < 1024; i++) {
         std::string line = "line" + std::to_string(i);
-        expectSize += line.length() + common::filesystem::LF_LENGTH;
+        expectSize += line.length() + constants::filesystem::LF_LENGTH;
         m_appender.write_line(line);
         EXPECT_EQ(m_appender.get_last_error(), ERR_COMM_SUCCESS);
         EXPECT_EQ(m_appender.size(), expectSize);
@@ -114,7 +114,7 @@ TEST_F(TestFileAppender, append_mode)
     size_t expectSize = 0;
     for (uint32_t i = 0; i < 64; i++) {
         std::string line = "line" + std::to_string(i);
-        expectSize += line.length() + common::filesystem::LF_LENGTH;
+        expectSize += line.length() + constants::filesystem::LF_LENGTH;
         m_appender.write_line(line);
         EXPECT_EQ(m_appender.get_last_error(), ERR_COMM_SUCCESS);
         m_appender.close();

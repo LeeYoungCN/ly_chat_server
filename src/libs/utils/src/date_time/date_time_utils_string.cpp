@@ -15,12 +15,12 @@
 #include <string>
 #include <string_view>
 
-#include "common/common_error_code.h"
 #include "common/constants/date_time_constants.h"
 #include "common/debug/debug_logger.h"
 #include "common/types/error_code_types.h"
-#include "common/utils/date_time_utils.h"
-#include "common/utils/error_code_utils.h"
+#include "utils/date_time_utils.h"
+#include "utils/thread_utils.h"
+#include "utils/utils_error_code.h"
 
 namespace {
 // 星期英文名称（全程）
@@ -83,15 +83,16 @@ const std::array<std::string_view, 12> MONTH_ABBR_NAMES = {
 
 }  // namespace
 
-namespace common::date_time {
+namespace utils::date_time {
 
-using namespace ::common::date_time;
+using namespace ::constants::date_time;
 
 std::string_view GetMonthFullName(uint32_t month)
 {
     if (month < MIN_MONTH || month > MAX_MONTH) {
-        set_thread_last_err(ERR_COMM_MONTH_INVALID);
-        DEBUG_LOGGER_ERR("Month invalid out of range [{}, {}]. weekday: {}.", MIN_MONTH, MAX_MONTH, month);
+        set_thread_last_err(ERR_UTILS_MONTH_INVALID);
+        DEBUG_LOGGER_ERR(
+            "Month invalid out of range [{}, {}]. weekday: {}.", MIN_MONTH, MAX_MONTH, month);
         return "";
     }
     set_thread_last_err(ERR_COMM_SUCCESS);
@@ -101,8 +102,9 @@ std::string_view GetMonthFullName(uint32_t month)
 std::string_view GetMonthAbbrName(uint32_t month)
 {
     if (month < MIN_MONTH || month > MAX_MONTH) {
-        set_thread_last_err(ERR_COMM_MONTH_INVALID);
-        DEBUG_LOGGER_ERR("Month invalid out of range [{}, {}]. weekday: {}.", MIN_MONTH, MAX_MONTH, month);
+        set_thread_last_err(ERR_UTILS_MONTH_INVALID);
+        DEBUG_LOGGER_ERR(
+            "Month invalid out of range [{}, {}]. weekday: {}.", MIN_MONTH, MAX_MONTH, month);
         return "";
     }
     set_thread_last_err(ERR_COMM_SUCCESS);
@@ -112,8 +114,11 @@ std::string_view GetMonthAbbrName(uint32_t month)
 std::string_view GetWeekdayFullName(uint32_t weekday)
 {
     if (weekday < MIN_WEEKDAY || weekday > MAX_WEEKDAY) {
-        set_thread_last_err(ERR_COMM_WEEKDAY_INVALID);
-        DEBUG_LOGGER_ERR("Weekday invalid out of range [{}, {}]. weekday: {}.", MIN_WEEKDAY, MAX_WEEKDAY, weekday);
+        set_thread_last_err(ERR_UTILS_WEEKDAY_INVALID);
+        DEBUG_LOGGER_ERR("Weekday invalid out of range [{}, {}]. weekday: {}.",
+                         MIN_WEEKDAY,
+                         MAX_WEEKDAY,
+                         weekday);
         return "";
     }
     set_thread_last_err(ERR_COMM_SUCCESS);
@@ -123,15 +128,19 @@ std::string_view GetWeekdayFullName(uint32_t weekday)
 std::string_view GetWeekdayAbbrName(uint32_t weekday)
 {
     if (weekday < MIN_WEEKDAY || weekday > MAX_WEEKDAY) {
-        set_thread_last_err(ERR_COMM_WEEKDAY_INVALID);
-        DEBUG_LOGGER_ERR("Weekday invalid out of range [{}, {}]. weekday: {}.", MIN_WEEKDAY, MAX_WEEKDAY, weekday);
+        set_thread_last_err(ERR_UTILS_WEEKDAY_INVALID);
+        DEBUG_LOGGER_ERR("Weekday invalid out of range [{}, {}]. weekday: {}.",
+                         MIN_WEEKDAY,
+                         MAX_WEEKDAY,
+                         weekday);
         return "";
     }
     set_thread_last_err(ERR_COMM_SUCCESS);
     return WEEKDAY_ABBR_NAMES.at(weekday);
 }
 
-std::string FormatTimeString(TimestampMs timestamp, const std::string_view& format, TimeZone timeZone)
+std::string FormatTimeString(TimestampMs timestamp, const std::string_view& format,
+                             TimeZone timeZone)
 {
     auto timeComp = TimeStampMs2Component(timestamp, timeZone);
     return FormatTimeString(timeComp, format);
@@ -151,14 +160,15 @@ std::string FormatTimeString(const TimeComponent& timeComp, const std::string_vi
     return timeString;
 }
 
-size_t FormatTimeBuffer(char* buffer, size_t bufferSize, TimestampMs timestamp, const std::string_view& format,
-                        TimeZone timeZone)
+size_t FormatTimeBuffer(char* buffer, size_t bufferSize, TimestampMs timestamp,
+                        const std::string_view& format, TimeZone timeZone)
 {
     auto timeComp = TimeStampMs2Component(timestamp, timeZone);
     return FormatTimeBuffer(buffer, bufferSize, timeComp, format);
 }
 
-size_t FormatTimeBuffer(char* buffer, size_t bufferSize, const TimeComponent& timeComp, const std::string_view& format)
+size_t FormatTimeBuffer(char* buffer, size_t bufferSize, const TimeComponent& timeComp,
+                        const std::string_view& format)
 {
     if (buffer == nullptr || bufferSize == 0) {
         DEBUG_LOGGER_ERR("Invalid param!");
@@ -282,4 +292,4 @@ size_t FormatTimeBuffer(char* buffer, size_t bufferSize, const TimeComponent& ti
 
     return bufferIdx;
 }
-}  // namespace common::date_time
+}  // namespace utils::date_time

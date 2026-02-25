@@ -1,12 +1,12 @@
 #include "logging/sinks/basic_file_sink.h"
 
-#include "common/utils/file_writer.h"
-#include "common/utils/filesystem_utils.h"
-#include "common/utils/process_utils.h"
+#include "utils/file_writer.h"
+#include "utils/filesystem_utils.h"
+#include "utils/process_utils.h"
 
 namespace logging {
-using namespace common::filesystem;
-using namespace common::process;
+using namespace utils::filesystem;
+using namespace utils::process;
 
 struct BasicFileSink::Impl {
     Impl(std::string_view file, bool overwrite) : _filePath(file), _overwrite(overwrite)
@@ -17,7 +17,7 @@ struct BasicFileSink::Impl {
 
     std::string _filePath;
     bool _overwrite{true};
-    common::filesystem::FileWriter _fileWriter;
+    utils::filesystem::FileWriter _fileWriter;
 };
 
 BasicFileSink::BasicFileSink()

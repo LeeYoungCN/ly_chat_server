@@ -13,19 +13,17 @@
 #ifndef COMMON_TYPES_DATE_TIME_TYPES_H
 #define COMMON_TYPES_DATE_TIME_TYPES_H
 
-#include <cstdint>
-
-namespace common::date_time {
+#include <stdint.h>
 
 // 时间戳(ms)
-using TimestampSec = int64_t;  // 秒级时间戳（自UTC epoch）
-using TimestampMs = int64_t;   // 毫秒级时间戳
+typedef int64_t TimestampSec;  // 秒级时间戳（自UTC epoch）
+typedef int64_t TimestampMs;   // 毫秒级时间戳
 
 /**
  * @brief 时间间隔类型（不同精度）
  */
-using DurationSec = int64_t;  // 秒级间隔
-using DurationMs = int64_t;   // 毫秒级间隔
+typedef int64_t DurationSec;  // 秒级间隔
+typedef int64_t DurationMs;   // 毫秒级间隔
 
 /**
  * @brief 时间分量结构体，用于表示分解后的日期和时间信息（含毫秒）
@@ -48,10 +46,10 @@ struct TimeComponent {
 /**
  * @brief 时区类型（预定义常用时区）
  */
-enum class TimeZone {
+typedef enum {
     UTC,    // 世界协调时间
     LOCAL,  // 本地时区（跟随系统）
-};
+} TimeZone;
 
 inline const char *GetTimeZoneString(TimeZone zone)
 {
@@ -64,5 +62,4 @@ inline const char *GetTimeZoneString(TimeZone zone)
     }
 }
 
-}  // namespace common::date_time
 #endif  // COMMON_TYPES_DATE_TIME_TYPES_H

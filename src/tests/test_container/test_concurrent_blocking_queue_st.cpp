@@ -3,8 +3,8 @@
 
 #include "common/container/concurrent_blocking_queue.hpp"
 #include "common/types/thread_types.h"
-#include "common/utils/thread_utils.h"
 #include "gtest/gtest.h"
+#include "utils/thread_utils.h"
 
 namespace test::test_container::test_concurrent_queue {
 using namespace common::container;

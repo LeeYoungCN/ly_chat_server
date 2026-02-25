@@ -10,7 +10,7 @@
  */
 
 #include "common/compiler/macros.h"
-#include "common/utils/filesystem_utils.h"
+#include "utils/filesystem_utils.h"
 
 #if PLATFORM_WINDOWS
 #include <windows.h>
@@ -25,23 +25,21 @@
 #include <filesystem>
 #include <string>
 
-#include "common/common_error_code.h"
 #include "common/constants/filesystem_constants.h"
 #include "common/debug/debug_logger.h"
 #include "common/types/error_code_types.h"
 #include "common/types/filesystem_types.h"
-#include "common/utils/error_code_utils.h"
-#include "common/utils/filesystem_utils.h"
-#include "internal/common/utils/filesystem_utils_internal.h"
+#include "internal/utils/filesystem_utils_internal.h"
+#include "utils/filesystem_utils.h"
+#include "utils/thread_utils.h"
+#include "utils/utils_error_code.h"
 
-namespace common::filesystem {
+namespace utils::filesystem {
 namespace fs = std::filesystem;
-using namespace common::filesystem::internal;
+using namespace utils::filesystem::internal;
+using namespace constants::filesystem;
 
 // ------------------------------ 系统路径接口 ------------------------------
-
-
-
 
 std::string GetCurrentWorkingDirectory()
 {
@@ -65,7 +63,7 @@ std::string GetCurrentWorkingDirectory()
 std::string JoinPaths(const PathList& parts)
 {
     if (parts.empty()) {
-        set_thread_last_err(ERR_COMM_PATH_INVALID);
+        set_thread_last_err(ERR_UTILS_PATH_INVALID);
         DEBUG_LOGGER_ERR("[FAILED] Join paths. list empty: {}", get_thread_last_err_msg());
         return "";
     }
@@ -82,17 +80,22 @@ std::string NormalizePath(std::string_view path)
     try {
         auto normalized = fs::path(path).lexically_normal();
         set_thread_last_err(ERR_COMM_SUCCESS);
-        DEBUG_LOGGER_DBG("[SUCCESS] Normalized path: {}, message: {}", path, get_thread_last_err_msg());
+        DEBUG_LOGGER_DBG(
+            "[SUCCESS] Normalized path: {}, message: {}", path, get_thread_last_err_msg());
         return normalized.string();
     } catch (const fs::filesystem_error& e) {
         ConvertSysEcToErrorCode(e.code());
-        DEBUG_LOGGER_ERR(
-            "[FAILED] Normalized path: {}, message: {}. ex: {}", path, get_thread_last_err_msg(), e.what());
+        DEBUG_LOGGER_ERR("[FAILED] Normalized path: {}, message: {}. ex: {}",
+                         path,
+                         get_thread_last_err_msg(),
+                         e.what());
         return "";
     } catch (const std::exception& e) {
         ConvertExceptionToErrorCode(e);
-        DEBUG_LOGGER_ERR(
-            "[FAILED] Normalized path: {}, message: {}. ex: {}", path, get_thread_last_err_msg(), e.what());
+        DEBUG_LOGGER_ERR("[FAILED] Normalized path: {}, message: {}. ex: {}",
+                         path,
+                         get_thread_last_err_msg(),
+                         e.what());
         return "";
     }
 }
@@ -109,17 +112,22 @@ std::string ToAbsolutePath(std::string_view relPath, std::string_view baseDir)
     try {
         auto absPath = fs::absolute(combined).lexically_normal();
         set_thread_last_err(ERR_COMM_SUCCESS);
-        DEBUG_LOGGER_DBG("[SUCCESS] Absolute path: {}, message: {}", relPath, get_thread_last_err_msg());
+        DEBUG_LOGGER_DBG(
+            "[SUCCESS] Absolute path: {}, message: {}", relPath, get_thread_last_err_msg());
         return absPath.string();
     } catch (const fs::filesystem_error& e) {
         ConvertSysEcToErrorCode(e.code());
-        DEBUG_LOGGER_ERR(
-            "[FAILED] Absolute path: {}, message: {}. ex: {}", relPath, get_thread_last_err_msg(), e.what());
+        DEBUG_LOGGER_ERR("[FAILED] Absolute path: {}, message: {}. ex: {}",
+                         relPath,
+                         get_thread_last_err_msg(),
+                         e.what());
         return "";
     } catch (const std::exception& e) {
         ConvertExceptionToErrorCode(e);
-        DEBUG_LOGGER_ERR(
-            "[FAILED] Absolute path: {}, message: {}.ex: {}", relPath, get_thread_last_err_msg(), e.what());
+        DEBUG_LOGGER_ERR("[FAILED] Absolute path: {}, message: {}.ex: {}",
+                         relPath,
+                         get_thread_last_err_msg(),
+                         e.what());
         return "";
     }
 }
@@ -172,4 +180,4 @@ bool IsPathTooLong(std::string_view path)
     return result;
 }
 
-}  // namespace common::filesystem
+}  // namespace utils::filesystem

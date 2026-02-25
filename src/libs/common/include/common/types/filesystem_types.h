@@ -18,7 +18,7 @@
 
 #include "common/types/date_time_types.h"
 
-namespace common::filesystem {
+namespace utils::filesystem {
 enum class PathType {
     Nonexistent,  // 不存在
     File,         // 是文件
@@ -85,12 +85,12 @@ enum class FileAttribute {
  * @brief 文件信息结构体，包含文件的元数据
  */
 struct FileInfo {
-    PathString path;                                   ///< 文件的完整路径
-    FileSize size;                                     ///< 文件大小（字节）
-    EntryType type;                                    ///< 条目类型（文件/目录等）
-    common::date_time::TimestampMs modifyTime;  ///< 最后修改时间戳）
+    PathString path;         ///< 文件的完整路径
+    FileSize size;           ///< 文件大小（字节）
+    EntryType type;          ///< 条目类型（文件/目录等）
+    TimestampMs modifyTime;  ///< 最后修改时间戳）
 };
 
-}  // namespace common::filesystem
+}  // namespace utils::filesystem
 
 #endif  // COMMON_TYPES_FILESYSTEM_TYPES_H

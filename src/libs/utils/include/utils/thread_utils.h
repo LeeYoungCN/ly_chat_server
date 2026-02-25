@@ -10,9 +10,10 @@
  */
 #pragma once
 
-#ifndef COMMON_UTILS_THREAD_UTILS_H
-#define COMMON_UTILS_THREAD_UTILS_H
+#ifndef UTILS_THREAD_UTILS_H
+#define UTILS_THREAD_UTILS_H
 
+#include "common/types/error_code_types.h"
 #include "common/types/thread_types.h"
 
 #ifdef __cplusplus
@@ -40,8 +41,12 @@ void set_curr_thread_name(const char *name);
  */
 const char *get_curr_thread_name();
 
+void set_thread_last_err(ErrorCode errcode);
+ErrorCode get_thread_last_err();
+const char *get_thread_last_err_msg();
+
 #ifdef __cplusplus
 }
 #endif  // __cplusplus
 
-#endif  // COMMON_UTILS_THREAD_UTILS_H
+#endif  // UTILS_THREAD_UTILS_H

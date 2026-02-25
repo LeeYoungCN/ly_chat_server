@@ -1,20 +1,20 @@
-#include "common/utils/file_writer.h"
+#include "utils/file_writer.h"
 
 #include <fstream>
 #include <string_view>
 
-#include "common/common_error_code.h"
 #include "common/constants/filesystem_constants.h"
 #include "common/debug/debug_logger.h"
-#include "common/utils/date_time_utils.h"
-#include "common/utils/error_code_utils.h"
-#include "common/utils/filesystem_utils.h"
-#include "internal/common/utils/filesystem_utils_internal.h"
+#include "internal/utils/filesystem_utils_internal.h"
+#include "utils/date_time_utils.h"
+#include "utils/filesystem_utils.h"
+#include "utils/thread_utils.h"
+#include "utils/utils_error_code.h"
 
 namespace {
-const char* FileWriteModeStr(common::filesystem::FileWriteMode mode)
+const char* FileWriteModeStr(utils::filesystem::FileWriteMode mode)
 {
-    if (mode == common::filesystem::OVERWRITE) {
+    if (mode == utils::filesystem::OVERWRITE) {
         return "overwrite";
     } else {
         return "append";
@@ -22,8 +22,8 @@ const char* FileWriteModeStr(common::filesystem::FileWriteMode mode)
 }
 }  // namespace
 
-namespace common::filesystem {
-using namespace common::filesystem::internal;
+namespace utils::filesystem {
+using namespace utils::filesystem::internal;
 
 FileWriter::~FileWriter()
 {
@@ -40,7 +40,7 @@ ErrorCode FileWriter::open_(FileWriteMode mode)
     }
 
     m_stream = std::ofstream(m_file, m_mode);
-    date_time::SleepMS(filesystem::FILE_OPEN_INTERNAL_MS);
+    date_time::SleepMS(constants::filesystem::FILE_OPEN_INTERNAL_MS);
     if (!m_stream.is_open()) {
         m_errcode = get_thread_last_err();
         std::error_code ec(errno, std::generic_category());
@@ -63,7 +63,7 @@ ErrorCode FileWriter::open(std::string_view file, FileWriteMode mode)
     close();
     if (file.empty()) {
         m_errcode = ERR_COMM_PARAM_EMPTY;
-        DEBUG_LOGGER_ERR("Open file failed. msg: {}.", get_comm_err_msg(m_errcode));
+        DEBUG_LOGGER_ERR("Open file failed. msg: {}.", get_utils_err_msg(m_errcode));
         return m_errcode;
     }
     m_file = ToAbsolutePath(file);
@@ -94,10 +94,10 @@ void FileWriter::close()
 void FileWriter::write(std::string_view str)
 {
     if (!m_stream.is_open()) {
-        set_thread_last_err(ERR_COMM_FILE_NOT_OPEN);
-        m_errcode = ERR_COMM_FILE_NOT_OPEN;
+        set_thread_last_err(ERR_UTILS_FILE_NOT_OPEN);
+        m_errcode = ERR_UTILS_FILE_NOT_OPEN;
         DEBUG_LOGGER_ERR(
-            "Append failed. file: {}, msg: {}.", m_file.c_str(), get_comm_err_msg(m_errcode));
+            "Append failed. file: {}, msg: {}.", m_file.c_str(), get_utils_err_msg(m_errcode));
     } else {
         m_errcode = ERR_COMM_SUCCESS;
         m_stream << str;
@@ -108,13 +108,13 @@ void FileWriter::write(std::string_view str)
 void FileWriter::write_line(std::string_view str)
 {
     if (!m_stream.is_open()) {
-        m_errcode = ERR_COMM_FILE_NOT_OPEN;
+        m_errcode = ERR_UTILS_FILE_NOT_OPEN;
         DEBUG_LOGGER_ERR(
-            "Append failed. file: {}, msg: {}.", m_file.c_str(), get_comm_err_msg(m_errcode));
+            "Append failed. file: {}, msg: {}.", m_file.c_str(), get_utils_err_msg(m_errcode));
     } else {
         m_errcode = ERR_COMM_SUCCESS;
         m_stream << str << '\n';
-        m_currSize += str.length() + common::filesystem::LF_LENGTH;
+        m_currSize += str.length() + constants::filesystem::LF_LENGTH;
     }
 }
 
@@ -154,4 +154,4 @@ ErrorCode FileWriter::get_last_error() const
     return m_errcode;
 }
 
-}  // namespace common::filesystem
+}  // namespace utils::filesystem

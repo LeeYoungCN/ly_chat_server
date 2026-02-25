@@ -1,4 +1,4 @@
-set(LIB_NAME logging)
+set(LIB_NAME utils)
 list(APPEND LIB_LIST ${LIB_NAME})
 set(LIB_LIST "${LIB_LIST}" CACHE STRING "" FORCE)
 
@@ -24,7 +24,7 @@ set_target_properties(${LIB_NAME} PROPERTIES
     IMPORT_PREFIX "lib"   # 给导入库(.lib)加前缀
 )
 
-target_link_libraries(${LIB_NAME} PRIVATE common utils)
+target_link_libraries(${LIB_NAME} PRIVATE common)
 target_compile_definitions(${LIB_NAME} PRIVATE COMMON_BUILD_SHARED)
 
 set_target_properties(${LIB_NAME} PROPERTIES

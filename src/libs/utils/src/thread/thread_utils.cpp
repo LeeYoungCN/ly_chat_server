@@ -9,7 +9,7 @@
  *
  */
 
-#include "common/utils/thread_utils.h"
+#include "utils/thread_utils.h"
 
 #include <string>
 
@@ -27,9 +27,12 @@
 #error "Unsupport system"
 #endif
 
+#include "utils/utils_error_code.h"
+
 namespace {
 
 thread_local std::string g_threadName;
+thread_local volatile ErrorCode g_lastError = ERR_COMM_SUCCESS;
 
 ThreadId GetCurrentThreadIdInternal()
 {
@@ -63,6 +66,21 @@ void set_curr_thread_name(const char *name)
 const char *get_curr_thread_name()
 {
     return g_threadName.c_str();
+}
+
+void set_thread_last_err(ErrorCode errcode)
+{
+    g_lastError = errcode;
+}
+
+ErrorCode get_thread_last_err()
+{
+    return g_lastError;
+}
+
+const char *get_thread_last_err_msg()
+{
+    return get_utils_err_msg(g_lastError);
 }
 
 }  // namespace common::utils::thread

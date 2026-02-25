@@ -9,9 +9,9 @@
 #include "common/container/concurrent_blocking_queue.hpp"
 #include "common/debug/debug_logger.h"
 #include "common/types/thread_types.h"
-#include "common/utils/date_time_utils.h"
-#include "common/utils/thread_utils.h"
 #include "gtest/gtest.h"
+#include "utils/date_time_utils.h"
+#include "utils/thread_utils.h"
 
 namespace {
 constexpr uint32_t MAX_NUM = 2048;
@@ -66,17 +66,22 @@ void TestConcurrentBlockingQueueMt::TearDown()
 
 void TestConcurrentBlockingQueueMt::ProducerLoop()
 {
-    DEBUG_LOGGER_INFO("Producer thread start. curr: {}, max: {}.", _totalConsumeItemCnt.load(), _totalProduceItemCnt);
+    DEBUG_LOGGER_INFO("Producer thread start. curr: {}, max: {}.",
+                      _totalConsumeItemCnt.load(),
+                      _totalProduceItemCnt);
     for (uint32_t i = 0; i < MAX_NUM; ++i) {
         _queue->enqueue_wait(TestEntry(i));
     }
-    DEBUG_LOGGER_INFO("Producer thread finish. curr: {}, max: {}.", _totalConsumeItemCnt.load(), _totalProduceItemCnt);
+    DEBUG_LOGGER_INFO("Producer thread finish. curr: {}, max: {}.",
+                      _totalConsumeItemCnt.load(),
+                      _totalProduceItemCnt);
 }
 
 void TestConcurrentBlockingQueueMt::ConsumerLoopWait()
 {
-    DEBUG_LOGGER_INFO(
-        "Consumer thread start. Curr total consume: {}, max: {}.", _totalConsumeItemCnt.load(), _totalProduceItemCnt);
+    DEBUG_LOGGER_INFO("Consumer thread start. Curr total consume: {}, max: {}.",
+                      _totalConsumeItemCnt.load(),
+                      _totalProduceItemCnt);
     uint32_t dequeueItemCnt = 0;
     while (_totalConsumeItemCnt < _totalProduceItemCnt) {
         std::lock_guard lock(_mapMtx);
@@ -86,13 +91,16 @@ void TestConcurrentBlockingQueueMt::ConsumerLoopWait()
         ++_totalConsumeItemCnt;
         ++dequeueItemCnt;
     }
-    DEBUG_LOGGER_INFO("Consumer thread finish. thread consume: {}, max: {}.", dequeueItemCnt, _totalProduceItemCnt);
+    DEBUG_LOGGER_INFO("Consumer thread finish. thread consume: {}, max: {}.",
+                      dequeueItemCnt,
+                      _totalProduceItemCnt);
 }
 
 void TestConcurrentBlockingQueueMt::ConsumerLoopWaitFor()
 {
-    DEBUG_LOGGER_INFO(
-        "Consumer thread start. curr total consume: {}, max: {}.", _totalConsumeItemCnt.load(), _totalProduceItemCnt);
+    DEBUG_LOGGER_INFO("Consumer thread start. curr total consume: {}, max: {}.",
+                      _totalConsumeItemCnt.load(),
+                      _totalProduceItemCnt);
     uint32_t threadConsumeItemCnt = 0;
     while (_isRunning) {
         std::lock_guard lock(_mapMtx);
@@ -103,8 +111,9 @@ void TestConcurrentBlockingQueueMt::ConsumerLoopWaitFor()
             ++threadConsumeItemCnt;
         }
     }
-    DEBUG_LOGGER_INFO(
-        "Consumer thread finish. thread consume: {}, max: {}.", threadConsumeItemCnt, _totalProduceItemCnt);
+    DEBUG_LOGGER_INFO("Consumer thread finish. thread consume: {}, max: {}.",
+                      threadConsumeItemCnt,
+                      _totalProduceItemCnt);
 }
 
 void TestConcurrentBlockingQueueMt::StartThread(uint32_t producerCnt, uint32_t consumerCnt)
@@ -125,7 +134,7 @@ void TestConcurrentBlockingQueueMt::StartThread(uint32_t producerCnt, uint32_t c
 void TestConcurrentBlockingQueueMt::WaitFinish()
 {
     while (_totalConsumeItemCnt < _totalProduceItemCnt) {
-        common::date_time::SleepMS(100);
+        utils::date_time::SleepMS(100);
     }
     _isRunning = false;
 }
@@ -142,7 +151,8 @@ void TestConcurrentBlockingQueueMt::TestResult()
     }
 }
 
-void TestConcurrentBlockingQueueMt::RunTest(uint32_t producerCnt, uint32_t consumerCnt, uint32_t capacity)
+void TestConcurrentBlockingQueueMt::RunTest(uint32_t producerCnt, uint32_t consumerCnt,
+                                            uint32_t capacity)
 {
     _producerCnt = producerCnt;
     _totalProduceItemCnt = producerCnt * MAX_NUM;

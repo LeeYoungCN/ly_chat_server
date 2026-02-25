@@ -1,24 +1,24 @@
 #include <format>
 #include <string>
 
-#include "common/utils/date_time_utils.h"
-#include "common/utils/filesystem_utils.h"
-#include "common/utils/process_utils.h"
-#include "common/utils/thread_utils.h"
 #include "gtest/gtest.h"
 #include "logging/details/common.h"
 #include "logging/details/log_msg.h"
 #include "logging/formatters/pattern_formatter.h"
 #include "logging/log_level.h"
 #include "test_utils/common.h"
+#include "utils/date_time_utils.h"
+#include "utils/filesystem_utils.h"
+#include "utils/process_utils.h"
+#include "utils/thread_utils.h"
 
 namespace test::test_logging {
 
 using namespace logging;
 using namespace logging::details;
-using namespace common::date_time;
-using namespace common::process;
-using namespace common::filesystem;
+using namespace utils::date_time;
+using namespace utils::process;
+using namespace utils::filesystem;
 
 class TestPatternFormatter : public ::testing::Test {
 protected:

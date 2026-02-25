@@ -10,14 +10,14 @@
  */
 #pragma once
 
-#ifndef COMMON_UTILS_PROCESS_H
-#define COMMON_UTILS_PROCESS_H
+#ifndef UTILS_PROCESS_H
+#define UTILS_PROCESS_H
 
 #include <string>
 
 #include "common/types/process_types.h"
 
-namespace common::process {
+namespace utils::process {
 
 /**
  * @brief 获取当前进程的可执行文件路径
@@ -49,5 +49,5 @@ std::string get_proc_file_name();
  */
 ProcessId get_curr_proc_id();
 
-}  // namespace common::process
-#endif  // COMMON_UTILS_PROCESS_H
+}  // namespace utils::process
+#endif  // UTILS_PROCESS_H

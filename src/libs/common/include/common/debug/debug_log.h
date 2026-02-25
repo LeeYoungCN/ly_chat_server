@@ -19,7 +19,8 @@ extern "C" {
 #endif  // __cplusplus
 
 void set_debug_log_level(DebugLevel level);
-void common_debug_log(const char* file, int line, const char* func, DebugLevel level, const char* format, ...);
+void common_debug_log(const char* file, int line, const char* func, DebugLevel level,
+                      const char* format, ...);
 
 #ifdef __cplusplus
 }
@@ -30,8 +31,8 @@ void common_debug_log(const char* file, int line, const char* func, DebugLevel l
 #define DEBUG_LOG(level, fmt, ...) (static_cast<void>(0))
 #else
 // Debug模式：实际日志输出，支持所有级别
-#define DEBUG_LOG(level, fmt, ...)                                                                   \
-    do {                                                                                             \
+#define DEBUG_LOG(level, fmt, ...)                                                                 \
+    do {                                                                                           \
         common_debug_log(__FILE__, __LINE__, __FUNCTION__, level, fmt __VA_OPT__(, ) __VA_ARGS__); \
     } while (0)
 #endif

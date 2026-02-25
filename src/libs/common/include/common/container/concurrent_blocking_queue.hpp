@@ -19,7 +19,9 @@ constexpr uint32_t CONCURRENT_BLOCKING_QUEUE_DEFAULT_CAPACITY = 1024;
 template <typename T>
 class ConcurrentBlockingQueue {
 public:
-    ConcurrentBlockingQueue() : _queue(BlockingQueue<T>(CONCURRENT_BLOCKING_QUEUE_DEFAULT_CAPACITY)) {}
+    ConcurrentBlockingQueue() : _queue(BlockingQueue<T>(CONCURRENT_BLOCKING_QUEUE_DEFAULT_CAPACITY))
+    {
+    }
 
     explicit ConcurrentBlockingQueue(size_t capacity) : _queue(capacity) {}
 
@@ -134,8 +136,9 @@ public:
         {
             std::unique_lock<std::mutex> lock(_queueMtx);
 
-            if (!_pushCv.wait_for(
-                    lock, std::chrono::milliseconds(durationMs), [this]() -> bool { return !_queue.full(); })) {
+            if (!_pushCv.wait_for(lock, std::chrono::milliseconds(durationMs), [this]() -> bool {
+                    return !_queue.full();
+                })) {
                 return false;
             }
             _queue.enqueue(std::move(item));
@@ -159,8 +162,9 @@ public:
         {
             std::unique_lock<std::mutex> lock(_queueMtx);
 
-            if (!_popCv.wait_for(
-                    lock, std::chrono::milliseconds(durationMs), [this]() -> bool { return !_queue.empty(); })) {
+            if (!_popCv.wait_for(lock, std::chrono::milliseconds(durationMs), [this]() -> bool {
+                    return !_queue.empty();
+                })) {
                 DEBUG_LOGGER_DBG("Dequeue timeout.");
                 return false;
             }
@@ -264,7 +268,8 @@ private:
     void throw_if_out_of_range(size_t idx) const
     {
         if (idx >= _queue.size()) {
-            std::string errmsg = std::format("Out of range. idx: {}, queue size: {}.", idx, _queue.size());
+            std::string errmsg =
+                std::format("Out of range. idx: {}, queue size: {}.", idx, _queue.size());
             DEBUG_LOGGER_ERR(errmsg);
             throw std::out_of_range(errmsg);
         }

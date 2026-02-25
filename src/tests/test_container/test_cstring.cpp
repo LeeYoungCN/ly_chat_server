@@ -12,7 +12,6 @@ protected:
     void TearDown() override {};
 };
 
-
 TEST_F(TestCString, append)
 {
     constexpr uint32_t capacity = 128;
@@ -55,4 +54,4 @@ TEST_F(TestCString, overflow)
     EXPECT_EQ(testString.length(), 0);
 }
 
-}  // namespace test::test_container::test_CBuffer
+}  // namespace test::test_container::test_CString

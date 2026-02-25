@@ -9,8 +9,8 @@
  *
  */
 
-#include "common/utils/thread_utils.h"
 #include "gtest/gtest.h"
+#include "utils/thread_utils.h"
 
 TEST(TestThreadUtils, ThreadId)
 {

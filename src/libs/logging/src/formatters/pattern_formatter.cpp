@@ -4,15 +4,15 @@
 #include <string>
 #include <string_view>
 
-#include "common/utils/date_time_utils.h"
-#include "common/utils/filesystem_utils.h"
 #include "logging/details/common.h"
 #include "logging/log_level.h"
+#include "utils/date_time_utils.h"
+#include "utils/filesystem_utils.h"
 
 namespace logging {
 
-using namespace common::date_time;
-using namespace common::filesystem;
+using namespace utils::date_time;
+using namespace utils::filesystem;
 
 struct PatternFormatter::Impl {
     std::string pattern;

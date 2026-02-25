@@ -21,11 +21,14 @@ public:
 
 public:
     BlockingQueue()
-        : _capacity(BLOCKING_QUEUE_DEFAULT_CAPACITY), _maxItems(BLOCKING_QUEUE_DEFAULT_CAPACITY + 1), _items(_maxItems)
+        : _capacity(BLOCKING_QUEUE_DEFAULT_CAPACITY),
+          _maxItems(BLOCKING_QUEUE_DEFAULT_CAPACITY + 1),
+          _items(_maxItems)
     {
     }
 
-    explicit BlockingQueue(size_t capacity) : _capacity(capacity), _maxItems(capacity + 1), _items(_maxItems)
+    explicit BlockingQueue(size_t capacity)
+        : _capacity(capacity), _maxItems(capacity + 1), _items(_maxItems)
     {
         if (capacity == 0) {
             auto errmsg = std::format("Capacity invalid. capacity: {}.", capacity);
@@ -144,7 +147,10 @@ public:
         }
     }
 
-    [[nodiscard]] size_t size() const { return _tail >= _head ? _tail - _head : _maxItems - (_head - _tail); }
+    [[nodiscard]] size_t size() const
+    {
+        return _tail >= _head ? _tail - _head : _maxItems - (_head - _tail);
+    }
     [[nodiscard]] size_t capacity() const { return _capacity; }
 
     [[nodiscard]] bool empty() const { return _head == _tail; }

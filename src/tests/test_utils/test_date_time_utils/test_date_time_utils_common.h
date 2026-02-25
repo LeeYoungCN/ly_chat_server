@@ -10,16 +10,16 @@
 
 namespace test::test_utils::test_date_time_utils {
 
-std::tm TimestampToTimeInfo(::common::date_time::TimestampMs ts);
+std::tm TimestampToTimeInfo(TimestampMs ts);
 
-void TestTimeBuffer(const std::string_view& format, uint32_t length, common::date_time::TimestampMs timestamp);
+void TestTimeBuffer(const std::string_view& format, uint32_t length, TimestampMs timestamp);
 
 void TestTimeBuffer(const std::string_view& format, uint32_t length, std::tm timeInfo,
-                    const common::date_time::TimeComponent& timeComp);
+                    const TimeComponent& timeComp);
 
-void TestTimeString(const std::string_view& format, common::date_time::TimestampMs timestamp);
+void TestTimeString(const std::string_view& format, TimestampMs timestamp);
 
 void TestTimeString(const std::string_view& format, std::tm timeInfo,
-                    const common::date_time::TimeComponent& timeComp);
+                    const TimeComponent& timeComp);
 }  // namespace test::test_utils::test_date_time_utils
 #endif  // TEST_UTILS_TEST_DATE_TIME_UTILS_COMMON_H

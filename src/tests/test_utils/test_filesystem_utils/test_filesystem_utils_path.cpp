@@ -10,17 +10,18 @@
  */
 #include <cstddef>
 
-#include "common/common_error_code.h"
 #include "common/constants/filesystem_constants.h"
 #include "common/types/filesystem_types.h"
-#include "common/utils/error_code_utils.h"
-#include "common/utils/filesystem_utils.h"
 #include "gtest/gtest.h"
 #include "test_filesystem_utils_base.h"
+#include "utils/filesystem_utils.h"
+#include "utils/thread_utils.h"
+#include "utils/utils_error_code.h"
 
 namespace test::test_utils::test_filesystem_utils {
 
-using namespace common::filesystem;
+using namespace utils::filesystem;
+using namespace constants::filesystem;
 
 class TestFilesystemUtilsPath : public TestFilesystemUtilsBase {};
 
@@ -105,7 +106,7 @@ TEST_F(TestFilesystemUtilsPath, NormalizePath_EmptyPath)
 TEST_F(TestFilesystemUtilsPath, JoinPaths_empty)
 {
     EXPECT_EQ(JoinPaths({}), "");
-    EXPECT_EQ(get_thread_last_err(), ERR_COMM_PATH_INVALID) << get_thread_last_err_msg();
+    EXPECT_EQ(get_thread_last_err(), ERR_UTILS_PATH_INVALID) << get_thread_last_err_msg();
 }
 
 TEST_F(TestFilesystemUtilsPath, JoinPaths_Success)

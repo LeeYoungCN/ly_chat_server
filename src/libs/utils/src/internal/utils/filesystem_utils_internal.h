@@ -9,17 +9,17 @@
  *
  */
 #pragma once
-#ifndef COMMON_UTILS_FILESYSTEM_UTILS_INTERNAL_H
-#define COMMON_UTILS_FILESYSTEM_UTILS_INTERNAL_H
+#ifndef UTILS_FILESYSTEM_UTILS_INTERNAL_H
+#define UTILS_FILESYSTEM_UTILS_INTERNAL_H
 
 #include <system_error>
 
-namespace common::filesystem::internal {
+namespace utils::filesystem::internal {
 
 void ConvertSysEcToErrorCode(const std::error_code& ec);
 
 void ConvertExceptionToErrorCode(const std::exception& ex);
 
-}  // namespace common::filesystem::internal
+}  // namespace utils::filesystem::internal
 
-#endif  // COMMON_UTILS_FILESYSTEM_UTILS_INTERNAL_H
+#endif  // UTILS_FILESYSTEM_UTILS_INTERNAL_H

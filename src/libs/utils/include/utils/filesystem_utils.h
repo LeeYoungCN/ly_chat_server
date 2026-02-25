@@ -9,12 +9,12 @@
  *
  */
 #pragma once
-#ifndef COMMON_UTILS_FILESYSTEM_UTILS_H
-#define COMMON_UTILS_FILESYSTEM_UTILS_H
+#ifndef UTILS_FILESYSTEM_UTILS_H
+#define UTILS_FILESYSTEM_UTILS_H
 
 #include "common/types/filesystem_types.h"
 
-namespace common::filesystem {
+namespace utils::filesystem {
 
 /**
  * @brief 判断指定路径的文件系统条目类型
@@ -214,5 +214,5 @@ bool CreateDir(std::string_view path, bool recursive = true);
  */
 bool DeleteDir(std::string_view path, bool recursive = true);
 
-}  // namespace common::filesystem
-#endif  // COMMON_UTILS_FILESYSTEM_UTILS_H
+}  // namespace utils::filesystem
+#endif  // UTILS_FILESYSTEM_UTILS_H
