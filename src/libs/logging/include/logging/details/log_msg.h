@@ -1,10 +1,12 @@
 #pragma once
+#include "common/compiler/macros.h"
 #ifndef LOGGINGL_DETAILS_LOG_MSG_H
 #define LOGGINGL_DETAILS_LOG_MSG_H
 
 #include <string>
 #include <string_view>
 
+#include "common/compiler/macros.h"
 #include "common/types/date_time_types.h"
 #include "common/types/process_types.h"
 #include "common/types/thread_types.h"
@@ -12,7 +14,7 @@
 #include "logging/log_level.h"
 
 namespace logging::details {
-struct LogMsg {
+struct COMMON_API LogMsg {
     std::string loggerName;
     LogLevel level{LogLevel::DEBUG};
     std::string data;
