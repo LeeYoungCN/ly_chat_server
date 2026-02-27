@@ -79,14 +79,6 @@ constexpr uint32_t DAYS_PER_WEEK = 7;
 constexpr uint32_t MIN_WEEKDAY = 0;
 constexpr uint32_t MAX_WEEKDAY = 6;
 
-enum DateTimeErrId {
-    SUCCESS = 0,
-    MONTH_INVALID,
-    WEEKDAY_INVALID,
-    TIMEZONE_INVALID,
-    TIMESTAMP_INVALID
-};
-
 }  // namespace constants::date_time
 
 #endif  // COMMON_CONSTANTS_DATE_TIME_CONSTANTS_H

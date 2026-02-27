@@ -18,7 +18,7 @@ typedef enum {
 } DateTimeErrId;
 
 #define MAKE_DATE_TIME_ERROR(errId) \
-    MAKE_ERROR(ERR_SEV_ERROR, UTILS_MODULE_ID, COMM_ERR_TYPE_DATE_TIME, errId)
+    MAKE_ERROR(ERR_SEV_ERROR, UTILS_MODULE_ID, COMM_ERR_TYPE_DATE_TIME, DateTimeErrId::errId)
 // datetime
 #define ERR_UTILS_MONTH_INVALID     MAKE_DATE_TIME_ERROR(DT_ERR_ID_MONTH_INVALID)
 #define ERR_UTILS_WEEKDAY_INVALID   MAKE_DATE_TIME_ERROR(DT_ERR_ID_WEEKDAY_INVALID)
@@ -41,7 +41,7 @@ typedef enum {
 } FileSysErrId;
 
 #define MAKE_FILESYS_ERROR(errId) \
-    MAKE_ERROR(ERR_SEV_ERROR, UTILS_MODULE_ID, COMM_ERR_TYPE_FILESYSTEM, errId)
+    MAKE_ERROR(ERR_SEV_ERROR, UTILS_MODULE_ID, COMM_ERR_TYPE_FILESYSTEM, FileSysErrId::errId)
 
 #define ERR_UTILS_NOT_FOUND         MAKE_FILESYS_ERROR(FS_ERR_ID_NOT_FOUND)
 #define ERR_UTILS_PERMISSION_DENIED MAKE_FILESYS_ERROR(FS_ERR_ID_PERMISSION_DENIED)
@@ -93,12 +93,8 @@ static inline const char *get_utils_err_msg(ErrorCode errCode)
             return "Target is a directory";
         case ERR_UTILS_FILE_NOT_OPEN:
             return "File not open";
-        // Container error code.
-        case ERR_COMM_CTN_OVERFLOW:
-            return "Container overflow";
-        // Unknown error code.
         default:
-            return "Unkown error code";
+            return get_comm_err_msg(errCode);
     };
 }
 
