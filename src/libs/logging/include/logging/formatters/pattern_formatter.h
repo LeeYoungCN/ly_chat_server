@@ -3,7 +3,6 @@
 
 #include <memory>
 
-#include "common/compiler/macros.h"
 #include "logging/details/log_msg.h"
 #include "logging/formatters/formatter.h"
 
@@ -23,7 +22,7 @@ namespace logging {
  * P: Process ID;
  * v: Log message;
  */
-class COMMON_API PatternFormatter : public Formatter {
+class PatternFormatter : public Formatter {
 public:
     PatternFormatter();
     ~PatternFormatter() override;

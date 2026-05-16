@@ -8,6 +8,7 @@
 #define REGISTRY INST(logging::details::Registry)
 
 namespace logging {
+using namespace logging::details;
 
 #pragma region Root logger
 std::shared_ptr<Logger> root_logger()
@@ -54,6 +55,7 @@ void flush()
 {
     root_logger_raw()->flush();
 }
+
 #pragma endregion
 
 #pragma region Module manager

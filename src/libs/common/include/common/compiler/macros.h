@@ -82,7 +82,7 @@
 #endif
 
 // common模块导出宏
-#if PLATFORM_WINDOWS
+#if PLATFORM_WINDOWS && COMPILER_MSVC
 #ifdef COMMON_BUILD_SHARED
 #define COMMON_API __declspec(dllexport)
 #else

@@ -8,7 +8,6 @@
 #include <utility>
 #include <vector>
 
-#include "common/compiler/macros.h"
 #include "common/types/type_traits.h"
 #include "logging/details//inner_macros.h"
 #include "logging/details/common.h"
@@ -20,7 +19,7 @@
 #include "utils/string_utils.h"
 
 namespace logging {
-class COMMON_API Logger {
+class Logger {
 public:
     Logger() = delete;
     virtual ~Logger();

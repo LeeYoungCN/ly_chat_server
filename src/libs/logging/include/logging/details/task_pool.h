@@ -5,7 +5,6 @@
 #include <cstdint>
 #include <memory>
 
-#include "common/compiler/macros.h"
 #include "logging/details/log_msg.h"
 #include "logging/details/log_task.h"
 
@@ -14,7 +13,7 @@ class AsyncLogger;
 
 namespace details {
 
-class COMMON_API TaskPool {
+class TaskPool {
 public:
     TaskPool();
     ~TaskPool();

@@ -5,11 +5,10 @@
 #include <cstdio>
 #include <string_view>
 
-#include "common/compiler/macros.h"
 #include "logging/sinks/base_sink.h"
 
 namespace logging {
-class COMMON_API StdoutSink : public BaseSink {
+class StdoutSink : public BaseSink {
 public:
     StdoutSink() = default;
     ~StdoutSink() override = default;

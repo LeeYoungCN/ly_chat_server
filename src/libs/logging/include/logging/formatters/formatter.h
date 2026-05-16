@@ -3,11 +3,10 @@
 
 #include <memory>
 
-#include "common/compiler/macros.h"
 #include "logging/details/log_msg.h"
 
 namespace logging {
-class COMMON_API Formatter {
+class Formatter {
 public:
     Formatter() = default;
     virtual ~Formatter() = default;

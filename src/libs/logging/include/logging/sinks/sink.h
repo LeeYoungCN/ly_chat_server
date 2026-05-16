@@ -6,13 +6,12 @@
 #include <mutex>
 #include <string_view>
 
-#include "common/compiler/macros.h"
 #include "logging/details/log_msg.h"
 #include "logging/formatters/formatter.h"
 #include "logging/log_level.h"
 
 namespace logging {
-class COMMON_API Sink {
+class Sink {
 public:
     Sink();
     virtual ~Sink();
