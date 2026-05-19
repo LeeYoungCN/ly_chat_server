@@ -44,8 +44,8 @@ public:
     [[nodiscard]] LogLevel flush_level() const;
     [[nodiscard]] bool should_flush(LogLevel level) const;
 
-    void set_pattern(std::string_view pattern = FORMATTER_DEFAULT_PATTERN,
-                     std::string_view timePattern = FORMATTER_DEFAULT_TIME_PATTERN);
+    void set_pattern(std::string_view pattern = details::FORMATTER_DEFAULT_PATTERN,
+                     std::string_view timePattern = details::FORMATTER_DEFAULT_TIME_PATTERN);
     void set_formatter(const std::unique_ptr<logging::Formatter>& formatter);
 
     void flush();
@@ -54,7 +54,7 @@ public:
 
     template <class T,
               std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
-    void log(logging::details::LogSource source, LogLevel level, const T& message)
+    void log(details::LogSource source, LogLevel level, const T& message)
     {
         if (!should_log(level)) {
             return;
@@ -64,7 +64,7 @@ public:
     }
 
     template <typename... Args>
-    void log(logging::details::LogSource source, LogLevel level, std::format_string<Args...> format,
+    void log(details::LogSource source, LogLevel level, std::format_string<Args...> format,
              Args&&... args)
     {
         if (!should_log(level)) {

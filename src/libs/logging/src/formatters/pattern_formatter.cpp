@@ -19,8 +19,8 @@ struct PatternFormatter::Impl {
     std::string timePattern;
 
     Impl(std::string_view pattern, std::string_view timePattern)
-        : pattern(pattern.empty() ? FORMATTER_DEFAULT_PATTERN : pattern),
-          timePattern(timePattern.empty() ? FORMATTER_DEFAULT_TIME_PATTERN : timePattern)
+        : pattern(pattern.empty() ? details::FORMATTER_DEFAULT_PATTERN : pattern),
+          timePattern(timePattern.empty() ? details::FORMATTER_DEFAULT_TIME_PATTERN : timePattern)
     {
     }
 };
@@ -31,12 +31,12 @@ PatternFormatter::~PatternFormatter()
 }
 
 PatternFormatter::PatternFormatter()
-    : PatternFormatter(FORMATTER_DEFAULT_PATTERN, FORMATTER_DEFAULT_TIME_PATTERN)
+    : PatternFormatter(details::FORMATTER_DEFAULT_PATTERN, details::FORMATTER_DEFAULT_TIME_PATTERN)
 {
 }
 
 PatternFormatter::PatternFormatter(std::string_view pattern)
-    : PatternFormatter(pattern, FORMATTER_DEFAULT_TIME_PATTERN)
+    : PatternFormatter(pattern, details::FORMATTER_DEFAULT_TIME_PATTERN)
 {
 }
 

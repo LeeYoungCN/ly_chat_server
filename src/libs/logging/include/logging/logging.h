@@ -28,8 +28,8 @@ void set_root_logger(std::shared_ptr<Logger> logger);
 bool should_log(LogLevel level);
 void set_level(LogLevel level);
 void flush_on(LogLevel level);
-void set_pattern(std::string_view pattern = FORMATTER_DEFAULT_PATTERN,
-                 std::string_view timePattern = FORMATTER_DEFAULT_TIME_PATTERN);
+void set_pattern(std::string_view pattern = details::FORMATTER_DEFAULT_PATTERN,
+                 std::string_view timePattern = details::FORMATTER_DEFAULT_TIME_PATTERN);
 void set_formatter(const std::unique_ptr<Formatter>& formatter);
 void flush();
 
@@ -194,8 +194,8 @@ void fatal(const logging::details::LogSource& source, const T& message)
 void initialize_logger(const std::shared_ptr<Logger>& logger);
 void set_level_all(LogLevel level);
 void flush_on_all(LogLevel level);
-void set_pattern_all(std::string_view pattern = FORMATTER_DEFAULT_PATTERN,
-                     std::string_view timePattern = FORMATTER_DEFAULT_TIME_PATTERN);
+void set_pattern_all(std::string_view pattern = details::FORMATTER_DEFAULT_PATTERN,
+                     std::string_view timePattern = details::FORMATTER_DEFAULT_TIME_PATTERN);
 void set_formatter_all(std::unique_ptr<Formatter> formatter);
 void flush_all();
 void shut_down();
