@@ -17,9 +17,9 @@ struct LogMsg {
     LogLevel level{LogLevel::DEBUG};
     std::string data;
     LogSource source;
-    TimestampMs timeStamp = 0;
-    ThreadId threadId = 0;
-    ProcessId procId = 0;
+    TimestampMs timeStamp{0};
+    ThreadId threadId{0};
+    ProcessId procId{0};
 
     LogMsg() = default;
     LogMsg(LogSource source, std::string_view loggerName, LogLevel level, std::string_view message);

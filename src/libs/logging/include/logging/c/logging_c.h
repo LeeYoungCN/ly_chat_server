@@ -19,6 +19,7 @@ typedef struct TaskPoolSt TaskPoolSt;
 #define LOGGING_THREAD_POOL_DEFAULT_THREAD_CNT (1)
 
 typedef enum {
+    LOGGING_LEVEL_TRACE = 0,
     LOGGING_LEVEL_DEBUG,
     LOGGING_LEVEL_INFO,
     LOGGING_LEVEL_WARN,
@@ -109,15 +110,23 @@ void logging_log(const char *file, int line, const char *func, LoggingLevel leve
 }
 #endif  // __cplusplus
 
+#define LOGGING_TRACE(fmt, ...) \
+    logging_log(                \
+        __FILE__, __LINE__, __FUNCTION__, LOGGING_LEVEL_TRACE, fmt __VA_OPT__(, ) __VA_ARGS__);
 #define LOGGING_DEBUG(fmt, ...) \
-    logging_debug(__FILE__, __LINE__, __FUNCTION__, fmt __VA_OPT__(, ) __VA_ARGS__);
+    logging_log(                \
+        __FILE__, __LINE__, __FUNCTION__, LOGGING_LEVEL_DEBUG, fmt __VA_OPT__(, ) __VA_ARGS__);
 #define LOGGING_INFO(fmt, ...) \
-    logging_info(__FILE__, __LINE__, __FUNCTION__, fmt __VA_OPT__(, ) __VA_ARGS__);
+    logging_log(               \
+        __FILE__, __LINE__, __FUNCTION__, LOGGING_LEVEL_INFO, fmt __VA_OPT__(, ) __VA_ARGS__);
 #define LOGGING_WARN(fmt, ...) \
-    logging_warn(__FILE__, __LINE__, __FUNCTION__, fmt __VA_OPT__(, ) __VA_ARGS__);
+    logging_log(               \
+        __FILE__, __LINE__, __FUNCTION__, LOGGING_LEVEL_WARN, fmt __VA_OPT__(, ) __VA_ARGS__);
 #define LOGGING_ERR(fmt, ...) \
-    logging_error(__FILE__, __LINE__, __FUNCTION__, fmt __VA_OPT__(, ) __VA_ARGS__);
+    logging_log(              \
+        __FILE__, __LINE__, __FUNCTION__, LOGGING_LEVEL_ERROR, fmt __VA_OPT__(, ) __VA_ARGS__);
 #define LOGGING_FATAL(fmt, ...) \
-    logging_fatal(__FILE__, __LINE__, __FUNCTION__, fmt __VA_OPT__(, ) __VA_ARGS__);
+    logging_log(                \
+        __FILE__, __LINE__, __FUNCTION__, LOGGING_LEVEL_FATAL, fmt __VA_OPT__(, ) __VA_ARGS__);
 
 #endif  // LOGGING_C_LOGGING_C_H

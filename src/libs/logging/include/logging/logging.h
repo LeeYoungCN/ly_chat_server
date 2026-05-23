@@ -59,6 +59,37 @@ void log(LogLevel level, const T& msg)
 }
 
 template <class T, std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+void trace(const logging::details::LogSource& source, LogLevel level, const T& message)
+{
+    root_logger()->trace(source, level, message);
+}
+
+template <typename... Args>
+void trace(std::format_string<Args...> format, Args&&... args)
+{
+    root_logger()->trace(format, std::forward<Args>(args)...);
+}
+
+template <typename... Args>
+void trace(const logging::details::LogSource& source, std::format_string<Args...> format,
+           Args&&... args)
+{
+    root_logger()->trace(source, format, std::forward<Args>(args)...);
+}
+
+template <class T, std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+void trace(const T& message)
+{
+    root_logger()->trace(message);
+}
+
+template <class T, std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+void trace(const logging::details::LogSource& source, const T& message)
+{
+    root_logger()->trace(source, message);
+}
+
+template <class T, std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
 void debug(const logging::details::LogSource& source, LogLevel level, const T& message)
 {
     root_logger()->debug(source, level, message);

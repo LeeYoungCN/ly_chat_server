@@ -13,6 +13,7 @@ struct LogLvlStrInfo {
 std::string_view log_level_to_string(LogLevel level, bool full)
 {
     static std::unordered_map<LogLevel, LogLvlStrInfo> LOG_STR_MAP = {
+        {LogLevel::TRACE, {"TRACE", "T"}},
         {LogLevel::DEBUG, {"DEBUG", "D"}},
         {LogLevel::INFO, {"INFO", "I"}},
         {LogLevel::WARN, {"WARN", "W"}},

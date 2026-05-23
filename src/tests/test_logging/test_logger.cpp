@@ -33,7 +33,7 @@ protected:
 
 TEST_F(TestLogger, create_single_sink)
 {
-    const std::string name = test_info_->name();
+    const std::string name = get_logger_name(test_info_);
     _logger = std::make_shared<Logger>(name, _sink);
     EXPECT_EQ(_sink.use_count(), 2);
     EXPECT_EQ(_logger->name(), name);
@@ -44,7 +44,7 @@ TEST_F(TestLogger, create_single_sink)
 
 TEST_F(TestLogger, create_initializer_list)
 {
-    const std::string name = test_info_->name();
+    const std::string name = get_logger_name(test_info_);
     auto sinks = std::initializer_list<std::shared_ptr<Sink>>{_sink, _sink, _sink};
     _logger = std::make_shared<Logger>(name, sinks);
     EXPECT_EQ(_logger->name(), name);
@@ -54,7 +54,7 @@ TEST_F(TestLogger, create_initializer_list)
 
 TEST_F(TestLogger, create_vector)
 {
-    const std::string name = test_info_->name();
+    const std::string name = get_logger_name(test_info_);
     auto sinks = std::vector<std::shared_ptr<Sink>>{_sink, _sink};
     sinks.push_back(_sink);
     _logger = std::make_shared<Logger>(name, sinks);
@@ -65,7 +65,7 @@ TEST_F(TestLogger, create_vector)
 
 TEST_F(TestLogger, log_level)
 {
-    const std::string name = test_info_->name();
+    const std::string name = get_logger_name(test_info_);
     _logger = std::make_shared<Logger>(name, _sink);
 
     for (LogLevel level : LOG_LEVELS) {
@@ -81,7 +81,7 @@ TEST_F(TestLogger, log_level)
 
 TEST_F(TestLogger, flush_level)
 {
-    const std::string name = test_info_->name();
+    const std::string name = get_logger_name(test_info_);
     _logger = std::make_shared<Logger>(name, _sink);
 
     for (LogLevel level : LOG_LEVELS) {
@@ -97,8 +97,8 @@ TEST_F(TestLogger, flush_level)
 
 TEST_F(TestLogger, log_log)
 {
-    const std::string name = test_info_->name();
-    _sink->set_level(LogLevel::DEBUG);
+    const std::string name = get_logger_name(test_info_);
+    _sink->set_level(LOG_LEVELS.at(0));
     _logger = std::make_shared<Logger>(name, _sink);
     for (auto filterLevel : LOG_LEVELS) {
         _logger->set_level(filterLevel);
@@ -117,8 +117,8 @@ TEST_F(TestLogger, log_log)
 
 TEST_F(TestLogger, log_flush)
 {
-    const std::string name = test_info_->name();
-    _sink->set_level(LogLevel::DEBUG);
+    const std::string name = get_logger_name(test_info_);
+    _sink->set_level(LOG_LEVELS.at(0));
     _logger = std::make_shared<Logger>(name, _sink);
     constexpr uint32_t MAX_ITEM_CNT = 100;
     for (uint32_t i = 0; i < MAX_ITEM_CNT; ++i) {
@@ -133,13 +133,13 @@ TEST_F(TestLogger, log_flush)
 
 TEST_F(TestLogger, log_flush_on)
 {
-    const std::string name = test_info_->name();
-    _sink->set_level(LogLevel::DEBUG);
+    const std::string name = get_logger_name(test_info_);
+    _sink->set_level(LOG_LEVELS.at(0));
     _logger = std::make_shared<Logger>(name, _sink);
-    _logger->set_level(LogLevel::DEBUG);
+    _logger->set_level(LOG_LEVELS.at(0));
 
     for (auto flushLevel : LOG_LEVELS) {
-        // 设施刷新等级
+        // 设置刷新等级
         _logger->flush_on(flushLevel);
         for (uint32_t i = 0; i < LOG_LEVELS.size(); ++i) {
             LogLevel level = LOG_LEVELS[i];
@@ -161,11 +161,17 @@ TEST_F(TestLogger, log_flush_on)
 
 TEST_F(TestLogger, log_function)
 {
-    const std::string name = test_info_->name();
-    _sink->set_level(LogLevel::DEBUG);
+    const std::string name = get_logger_name(test_info_);
+    _sink->set_level(LOG_LEVELS.at(0));
     _logger = std::make_shared<Logger>(name, _sink);
-    _logger->set_level(LogLevel::DEBUG);
-    for (uint32_t i = 0; i < 100; ++i) {
+    _logger->set_level(LOG_LEVELS.at(0));
+    uint32_t logCount = 100;
+    for (uint32_t i = 0; i < logCount; ++i) {
+        // trace
+        _logger->trace(LOG_SRC_LOCAL, "{}", i);
+        _logger->trace("{}", i);
+        _logger->trace(LOG_SRC_LOCAL, i);
+        _logger->trace(i);
         // debug
         _logger->debug(LOG_SRC_LOCAL, "{}", i);
         _logger->debug("{}", i);
@@ -192,11 +198,15 @@ TEST_F(TestLogger, log_function)
         _logger->fatal(LOG_SRC_LOCAL, i);
         _logger->fatal(i);
     }
+
+    _sink->flush();
+    EXPECT_EQ(_sink->buffer().size(), 0);
+    EXPECT_EQ(_sink->disk().size(), logCount * (LOG_LEVELS.size() - 1) * 4);
 }
 
 TEST_F(TestLogger, set_pattern)
 {
-    const std::string name = test_info_->name();
+    const std::string name = get_logger_name(test_info_);
     _logger = std::make_shared<Logger>(name, _sink);
     _logger->set_pattern("%v");
     for (uint32_t i = 0; i < 100; i++) {
@@ -207,10 +217,10 @@ TEST_F(TestLogger, set_pattern)
 
 TEST_F(TestLogger, set_formatter)
 {
-    const std::string name = test_info_->name();
-    _sink->set_level(LogLevel::DEBUG);
+    const std::string name = get_logger_name(test_info_);
+    _sink->set_level(LOG_LEVELS.at(0));
     _logger = std::make_shared<Logger>(name, _sink);
-    _logger->set_level(LogLevel::DEBUG);
+    _logger->set_level(LOG_LEVELS.at(0));
     std::unique_ptr<Formatter> formatter = std::make_unique<PatternFormatter>("%v");
     _logger->set_formatter(formatter);
     for (uint32_t i = 0; i < 100; i++) {

@@ -37,6 +37,8 @@ void common_debug_log(const char* file, int line, const char* func, DebugLevel l
     } while (0)
 #endif
 
+#define DEBUG_LOG_TRACE(fmt, ...) DEBUG_LOG(DEBUG_LVL_TRACE, fmt __VA_OPT__(, ) __VA_ARGS__);
+
 #define DEBUG_LOG_DBG(fmt, ...) DEBUG_LOG(DEBUG_LVL_DEBUG, fmt __VA_OPT__(, ) __VA_ARGS__);
 
 #define DEBUG_LOG_INFO(fmt, ...) DEBUG_LOG(DEBUG_LVL_INFO, fmt __VA_OPT__(, ) __VA_ARGS__);

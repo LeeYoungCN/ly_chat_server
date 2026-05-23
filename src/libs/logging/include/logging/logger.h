@@ -75,6 +75,8 @@ public:
         sink_it(logMsg);
     }
 
+    DEFINE_LOGGER_LOG_FUNCTION(trace, logging::LogLevel::TRACE)
+
     DEFINE_LOGGER_LOG_FUNCTION(debug, logging::LogLevel::DEBUG)
 
     DEFINE_LOGGER_LOG_FUNCTION(info, logging::LogLevel::INFO)

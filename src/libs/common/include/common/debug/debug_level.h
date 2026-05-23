@@ -5,6 +5,7 @@
 extern "C" {
 #endif
 typedef enum {
+    DEBUG_LVL_TRACE = 0,
     DEBUG_LVL_DEBUG,
     DEBUG_LVL_INFO,
     DEBUG_LVL_WARN,
@@ -16,6 +17,8 @@ typedef enum {
 static inline const char* get_debug_log_lvl_str(DebugLevel level)
 {
     switch (level) {
+        case DEBUG_LVL_TRACE:
+            return "TRACE";
         case DEBUG_LVL_DEBUG:
             return "DEBUG";
         case DEBUG_LVL_INFO:
