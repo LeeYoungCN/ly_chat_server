@@ -151,7 +151,6 @@ private:
                            int line = 0, const char* func = nullptr);
 
     size_t get_current_tid();
-    std::string time_string();
     std::string va_list_to_string(const char* format, va_list args);
 
     template <class T, std::enable_if_t<type_traits::is_convertible_to_string_v<T>, int> = 0>
