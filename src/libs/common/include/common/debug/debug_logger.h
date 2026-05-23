@@ -3,172 +3,23 @@
 
 #include <cstdarg>
 #include <format>
-#include <mutex>
-#include <string>
 
-#include "common/base/singleton.h"
 #include "common/debug/debug_level.h"
-#include "common/types/type_traits.h"
 
 namespace common::debug {
 
-class DebugLogger : public base::SingletonBase<DebugLogger> {
-    friend class base::SingletonBase<DebugLogger>;
+void set_common_debug_logger_level(DebugLevel level);
 
-public:
-    void set_debug_log_level(DebugLevel level);
+void common_debug_logger_log(const char* file, int line, const char* func, DebugLevel level,
+                             const std::string& message);
 
-    bool should_log(DebugLevel level);
-
-    void log_va(const char* file, int line, const char* func, DebugLevel level, const char* format,
-                va_list args);
-
-    template <class T, std::enable_if_t<type_traits::is_convertible_to_string_v<T>, int> = 0>
-    void log(DebugLevel level, const T& message)
-    {
-        log_it(level, std::move(type_to_string(message)));
-    }
-
-    template <typename T, std::enable_if_t<type_traits::is_convertible_to_string_v<T>, int> = 0>
-    void log(const char* file, int line, const char* func, DebugLevel level, const T& message)
-    {
-        log_it(level, std::move(type_to_string(message)), file, line, func);
-    }
-
-    template <typename... Args>
-    void log(DebugLevel level, std::format_string<Args...> format, Args&&... args)
-    {
-        log_it(level, std::move(std::format(format, std::forward<Args>(args)...)));
-    }
-
-    template <typename... Args>
-    void log(const char* file, int line, const char* func, DebugLevel level,
-             std::format_string<Args...> format, Args&&... args)
-    {
-        log_it(
-            level, std::move(std::format(format, std::forward<Args>(args)...)), file, line, func);
-    }
-
-    template <class T>
-    void debug(const T& message)
-    {
-        log_it(DebugLevel::DEBUG_LVL_DEBUG, std::move(type_to_string(message)));
-    }
-
-    template <typename... Args>
-    void debug(std::format_string<Args...> format, Args&&... args)
-    {
-        log_it(DebugLevel::DEBUG_LVL_DEBUG,
-               std::move(std::format(format, std::forward<Args>(args)...)));
-    }
-
-    template <class T>
-    void info(const T& message)
-    {
-        log_it(DebugLevel::DEBUG_LVL_INFO, std::move(std::format(type_to_string(message))));
-    }
-
-    template <typename... Args>
-    void info(std::format_string<Args...> format, Args&&... args)
-    {
-        log_it(DebugLevel::DEBUG_LVL_INFO,
-               std::move(std::format(format, std::forward<Args>(args)...)));
-    }
-
-    template <typename... Args>
-    void info(const char* file, int line, const char* func, std::format_string<Args...> format,
-              Args&&... args)
-    {
-        log_it(DebugLevel::DEBUG_LVL_INFO,
-               std::move(std::format(format, std::forward<Args>(args)...)),
-               file,
-               line,
-               func);
-    }
-
-    template <typename... Args>
-    void warn(std::format_string<Args...> format, Args&&... args)
-    {
-        log_it(DebugLevel::DEBUG_LVL_WARN,
-               std::move(std::format(format, std::forward<Args>(args)...)));
-    }
-
-    template <typename... Args>
-    void warn(const char* file, int line, const char* func, std::format_string<Args...> format,
-              Args&&... args)
-    {
-        log_it(DebugLevel::DEBUG_LVL_WARN,
-               std::move(std::format(format, std::forward<Args>(args)...)),
-               file,
-               line,
-               func);
-    }
-
-    template <typename... Args>
-    void error(std::format_string<Args...> format, Args&&... args)
-    {
-        log_it(DebugLevel::DEBUG_LVL_ERR,
-               std::move(std::format(format, std::forward<Args>(args)...)));
-    }
-
-    template <typename... Args>
-    void error(const char* file, int line, const char* func, std::format_string<Args...> format,
-               Args&&... args)
-    {
-        log_it(DebugLevel::DEBUG_LVL_ERR,
-               std::move(std::format(format, std::forward<Args>(args)...)),
-               file,
-               line,
-               func);
-    }
-
-    template <typename... Args>
-    void fatal(std::format_string<Args...> format, Args&&... args)
-    {
-        log_it(DebugLevel::DEBUG_LVL_FATAL,
-               std::move(std::format(format, std::forward<Args>(args)...)));
-    }
-
-    template <typename... Args>
-    void fatal(const char* file, int line, const char* func, std::format_string<Args...> format,
-               Args&&... args)
-    {
-        log_it(DebugLevel::DEBUG_LVL_FATAL,
-               std::move(std::format(format, std::forward<Args>(args)...)),
-               file,
-               line,
-               func);
-    }
-
-private:
-    DebugLogger() = default;
-    ~DebugLogger() override = default;
-
-private:
-    void log_it(DebugLevel level, const std::string& message, const char* file = nullptr,
-                int line = 0, const char* func = nullptr);
-    std::string format_log(DebugLevel level, const std::string& message, const char* file = nullptr,
-                           int line = 0, const char* func = nullptr);
-
-    size_t get_current_tid();
-    std::string va_list_to_string(const char* format, va_list args);
-
-    template <class T, std::enable_if_t<type_traits::is_convertible_to_string_v<T>, int> = 0>
-    std::string type_to_string(const T& message)
-    {
-        std::string str;
-        if constexpr (type_traits::is_direct_string_type_v<T>) {
-            str = std::string(message);
-        } else if constexpr (type_traits::is_numeric_type_v<T>) {
-            str = std::to_string(message);
-        }
-        return str;
-    }
-
-private:
-    DebugLevel _logLevel = DebugLevel::DEBUG_LVL_INFO;
-    std::mutex _mtx;
-};
+template <typename... Args>
+void common_debug_logger_log(const char* file, int line, const char* func, DebugLevel level,
+                             std::format_string<Args...> format, Args&&... args)
+{
+    common_debug_logger_log(
+        file, line, func, level, std::move(std::format(format, std::forward<Args>(args)...)));
+}
 
 }  // namespace common::debug
 
@@ -179,7 +30,7 @@ private:
 // Debug模式：实际日志输出，支持所有级别
 #define DEBUG_LOGGER(level, format, ...)                                                 \
     do {                                                                                 \
-        common::debug::DebugLogger::instance().log(                                      \
+        common::debug::common_debug_logger_log(                                          \
             __FILE__, __LINE__, __FUNCTION__, level, format __VA_OPT__(, ) __VA_ARGS__); \
     } while (0)
 #endif
