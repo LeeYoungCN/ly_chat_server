@@ -69,6 +69,10 @@ if (NOT CMAKE_THIRD_PARTY_PATH)
     set(CMAKE_THIRD_PARTY_PATH "${CMAKE_SOURCE_DIR}/third_party/${CMAKE_PRESET}" CACHE STRING "Default CMAKE_THIRD_PARTY_PATH third_party" FORCE)
 endif()
 
+if (NOT EXISTS ${CMAKE_THIRD_PARTY_PATH})
+    message(WARNING "CMAKE_THIRD_PARTY_PATH does not exist: ${CMAKE_THIRD_PARTY_PATH}")
+endif()
+
 include(${CMAKE_SOURCE_DIR}/cmake/cmake_configure_info.cmake)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)

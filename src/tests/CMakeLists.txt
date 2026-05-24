@@ -10,6 +10,7 @@ set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};${CMAKE_THIRD_PARTY_PATH}/googletest
 find_package(GTest QUIET)
 
 if (NOT GTest_FOUND)
+    message(STATUS "GTest not found, fetching with FetchContent")
     include(${CMAKE_SOURCE_DIR}/cmake/fetch_content.cmake)
 endif()
 
