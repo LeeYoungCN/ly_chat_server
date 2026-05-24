@@ -35,12 +35,6 @@ if (MINGW OR CMAKE_COMPILER_IS_GNUCXX OR
     add_compile_options("-Wall" "-Wconversion" "-Wextra" "-pedantic")
 endif()
 
-if (ENABLE_ASAN)
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address -fno-omit-frame-pointer")
-    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fsanitize=address -fno-omit-frame-pointer")
-    set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} -fsanitize=address")
-endif()
-
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug CACHE STRING "Default CMAKE_BUILD_TYPE Debug" FORCE)
 endif()
@@ -49,13 +43,6 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_compile_definitions(DEBUG_MODE)
 else()
     add_compile_definitions(NDEBUG_MODE)
-endif()
-
-if (ENABLE_ASAN)
-    # 启用 ASan 内存检测
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address -fno-omit-frame-pointer")
-    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fsanitize=address -fno-omit-frame-pointer")
-    set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} -fsanitize=address")
 endif()
 
 include(${CMAKE_SOURCE_DIR}/cmake/get_cmake_preset.cmake)
@@ -67,6 +54,30 @@ endif()
 
 if (NOT CMAKE_THIRD_PARTY_PATH)
     set(CMAKE_THIRD_PARTY_PATH "${CMAKE_SOURCE_DIR}/third_party/${CMAKE_PRESET}" CACHE STRING "Default CMAKE_THIRD_PARTY_PATH third_party" FORCE)
+endif()
+
+if (ENABLE_ASAN)
+    if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+        if(MSVC)
+            add_compile_options(/fsanitize=address)
+            add_link_options(/fsanitize=address)
+            # 关闭不兼容项
+            string(REGEX REPLACE "/RTC(su|[1su])" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+            string(REGEX REPLACE "/RTC(su|[1su])" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+            set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /INCREMENTAL:NO")
+            set(CMAKE_THIRD_PARTY_PATH "")
+        else()
+            message(WARNING "ASan is not supported on this platform/compiler.")
+        endif()
+    else()
+        if (CMAKE_COMPILER_IS_GNUCXX OR
+            (${CMAKE_CXX_COMPILER_ID} MATCHES "(Apple)?Clang"))
+            add_compile_options(-fsanitize=address -fno-omit-frame-pointer)
+            add_link_options(-fsanitize=address)
+        else()
+            message(WARNING "ASan is not supported on this platform/compiler.")
+        endif()
+    endif()
 endif()
 
 if (NOT EXISTS ${CMAKE_THIRD_PARTY_PATH})

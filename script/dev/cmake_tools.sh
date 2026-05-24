@@ -84,9 +84,13 @@ function print_help() {
     echo "                                       List all clean type: --clean=list"
     echo ""
     echo "    -s, --preset[=<preset-name>]       CMake configure preset."
-    echo "                                       Linux:   linux_clang_debug(default), linux_clang_release"
-    echo "                                                linux_gnu_debug,            linux_gnu_release"
-    echo "                                       Darwin:  darwin_clang_debug(default), darwin_clang_release"
+    echo "                                       Windows: msvc_x64_debug(default),      msvc_x64_release,"
+    echo "                                                msvc_x86_debug,               msvc_x86_release,"
+    echo "                                                win_mingw_debug,              win_mingw_release," 
+    echo "                                                win_clang_msvc_debug,         win_clang_msvc_release,"
+    echo "                                       Linux:   linux_clang_debug(default),   linux_clang_release"
+    echo "                                                linux_gnu_debug,              linux_gnu_release"
+    echo "                                       Darwin:  darwin_clang_debug(default),  darwin_clang_release"
     echo ""
     echo "        --configure                    Run CMake configure by preset and problems."
     echo ""
@@ -175,8 +179,8 @@ function list_cmake_configure_param() {
 function init_cmake_preset() {
     case ${OS} in
     Windows)
-        cmake_preset="win_clang_msvc_debug"
-        preset_array=("win_mingw_debug" "win_mingw_release" "win_clang_msvc_debug" "win_clang_msvc_release")
+        cmake_preset="msvc_x64_debug"
+        preset_array=("msvc_x64_debug" "msvc_x64_release" "msvc_x86_debug" "msvc_x86_release" "win_mingw_debug" "win_mingw_release" "win_clang_msvc_debug" "win_clang_msvc_release")
         ;;
     Linux)
         cmake_preset="linux_clang_debug"
