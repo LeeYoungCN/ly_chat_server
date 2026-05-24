@@ -12,7 +12,7 @@ set(CMAKE_VERBOSE_MAKEFILE          OFF)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 option(BUILD_TESTS "Build and run tests."   ON)
-option(ENABLE_ASAN "Enable asan."           OFF)
+option(ENABLE_ASAN "Enable asan."           ON)
 
 if (MSVC)
     set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /MDd")
@@ -59,7 +59,7 @@ endif()
 if (ENABLE_ASAN)
     if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
         if(MSVC)
-            add_compile_options(/fsanitize=address)
+            add_compile_options(/fsanitize=address /Zi)
             add_link_options(/fsanitize=address)
             # 关闭不兼容项
             string(REGEX REPLACE "/RTC(su|[1su])" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")

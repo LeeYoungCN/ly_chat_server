@@ -95,13 +95,14 @@ jobs:
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
       run: >
         cmake -B ${{ steps.strings.outputs.build-output-dir }}
+        -S ${{ github.workspace }}
         -G "${{ matrix.generator }}"  # 使用显式生成器
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -DCMAKE_INSTALL_PREFIX=${{ steps.strings.outputs.build-install-dir }}
-        -DENABLE_ASAN=ON
-        -S ${{ github.workspace }}
+        -DENABLE_ASAN="ON"
+        -DBUILD_TESTS="ON"
 
     - name: Build
       working-directory: ${{ github.workspace }}
