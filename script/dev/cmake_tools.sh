@@ -328,6 +328,7 @@ function init_cmake_configure_param() {
     esac
 
     cmake_install_prefix="${INSTALL_ROOT_DIR}/${cmake_preset}"
+    cmake_enable_asan="${arg_enable_asan}"
 
     if [ -n "${env_param_file}" ]; then
         # shellcheck disable=SC1090
