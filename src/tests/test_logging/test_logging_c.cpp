@@ -1,7 +1,6 @@
 #include "gtest/gtest.h"
 #include "logging/c/logging_c.h"
 
-
 namespace test::test_logging {
 
 class TestLogger : public ::testing::Test {

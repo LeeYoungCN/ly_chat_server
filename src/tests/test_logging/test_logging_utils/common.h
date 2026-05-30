@@ -17,5 +17,8 @@ const std::vector<logging::LogLevel> LOG_LEVELS = {logging::LogLevel::TRACE,
                                                    logging::LogLevel::OFF};
 
 std::string get_logger_name(testing::TestInfo* test_info);
+
+std::string get_log_dir();
+
 }  // namespace test::test_logging
 #endif  // TEST_LOGGING_TEST_UTILS_COMMON_H

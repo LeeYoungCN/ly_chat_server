@@ -6,7 +6,7 @@
 #include "logging/details/log_msg.h"
 #include "logging/formatters/pattern_formatter.h"
 #include "logging/log_level.h"
-#include "test_utils/common.h"
+#include "test_logging_utils/common.h"
 #include "utils/date_time_utils.h"
 #include "utils/filesystem_utils.h"
 #include "utils/process_utils.h"
