@@ -17,7 +17,6 @@
 
 #include "common/constants/date_time_constants.h"
 #include "common/debug/debug_logger.h"
-#include "common/types/error_code_types.h"
 #include "utils/date_time_utils.h"
 #include "utils/thread_utils.h"
 #include "utils/utils_error_code.h"

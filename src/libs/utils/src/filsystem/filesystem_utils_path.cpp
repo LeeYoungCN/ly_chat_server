@@ -27,7 +27,6 @@
 
 #include "common/constants/filesystem_constants.h"
 #include "common/debug/debug_logger.h"
-#include "common/types/error_code_types.h"
 #include "common/types/filesystem_types.h"
 #include "internal/utils/filesystem_utils_internal.h"
 #include "utils/filesystem_utils.h"

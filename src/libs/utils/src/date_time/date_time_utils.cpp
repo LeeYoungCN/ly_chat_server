@@ -4,18 +4,18 @@
 
 #if OS_WINDOWS
 #include <windows.h>
-#endif  // OS_WINDOWS
-
+#else
 #include <cerrno>
 #include <chrono>
+#include <thread>
+#endif  // OS_WINDOWS
+
 #include <cstdint>
 #include <ctime>
-#include <thread>
 
 #include "common/constants/date_time_constants.h"
 #include "common/debug/debug_logger.h"
 #include "common/types/date_time_types.h"
-#include "common/types/error_code_types.h"
 #include "utils/thread_utils.h"
 #include "utils/utils_error_code.h"
 
