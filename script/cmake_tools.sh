@@ -10,7 +10,7 @@ SCRIPT_DIR="$(
     pwd
 )"
 ROOT_DIR="$(
-    cd "${SCRIPT_DIR}/../.." || exit 1
+    cd "${SCRIPT_DIR}/.." || exit 1
     pwd
 )"
 

@@ -10,13 +10,13 @@ function print_log() {
 
     case ${log_level} in
     error)
-        printf "%s ${RED}%s${NC}\n" "[$(date "+%Y-%m-%d %H:%M:%S")]" "${log_str}"
+        printf "%s ${RED}%s${NC}\n" "[$(date "+%Y-%m-%d %H:%M:%S.%3N")]" "${log_str}"
         ;;
     info)
-        printf "%s ${GREEN}%s${NC}\n" "[$(date "+%Y-%m-%d %H:%M:%S")]" "${log_str}"
+        printf "%s ${GREEN}%s${NC}\n" "[$(date "+%Y-%m-%d %H:%M:%S.%3N")]" "${log_str}"
         ;;
     debug | *)
-        printf "%s %s\n" "[$(date "+%Y-%m-%d %H:%M:%S")]" "${log_str}"
+        printf "%s %s\n" "[$(date "+%Y-%m-%d %H:%M:%S.%3N")]" "${log_str}"
         ;;
     esac
 }

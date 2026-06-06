@@ -9,7 +9,7 @@
             "label": "Clean",
             "detail": "清理所有build和install文件。",
             "options": {
-                "cwd": "${workspaceFolder}/script/dev"
+                "cwd": "${workspaceFolder}/script"
             },
             "command": "./cmake_tools.sh",
             "args": [
@@ -21,7 +21,7 @@
             "label": "CMake Configure",
             "detail": "CMake: 配置项目",
             "options": {
-                "cwd": "${workspaceFolder}/script/dev"
+                "cwd": "${workspaceFolder}/script"
             },
             "command": "./cmake_tools.sh",
             "args": [
@@ -33,7 +33,7 @@
             "label": "CMake Build",
             "detail": "CMake: 构建项目",
             "options": {
-                "cwd": "${workspaceFolder}/script/dev"
+                "cwd": "${workspaceFolder}/script"
             },
             "command": "./cmake_tools.sh",
             "args": [
@@ -45,7 +45,7 @@
             "label": "Run gtest",
             "detail": "运行gtest测试用例",
             "options": {
-                "cwd": "${workspaceFolder}/script/dev"
+                "cwd": "${workspaceFolder}/script"
             },
             "command": "./cmake_tools.sh",
             "args": [
@@ -60,7 +60,7 @@
             "label": "Run ctest",
             "detail": "CMake: 测试",
             "options": {
-                "cwd": "${workspaceFolder}/script/dev"
+                "cwd": "${workspaceFolder}/script"
             },
             "command": "./cmake_tools.sh",
             "args": [
@@ -73,7 +73,7 @@
             "label": "Format all files",
             "detail": "使用clang-format格式化所有文件",
             "options": {
-                "cwd": "${workspaceFolder}/script/dev"
+                "cwd": "${workspaceFolder}/script"
             },
             "command": "./format_all.sh*",
             "args": [],
@@ -83,7 +83,7 @@
             "label": "git push -f",
             "detail": "推送代码",
             "options": {
-                "cwd": "${workspaceFolder}/script/dev"
+                "cwd": "${workspaceFolder}/script"
             },
             "command": "./git_oper.sh push",
             "args": [],
@@ -93,7 +93,7 @@
             "label": "git pull --rebase",
             "detail": "更新代码",
             "options": {
-                "cwd": "${workspaceFolder}/script/dev"
+                "cwd": "${workspaceFolder}/script"
             },
             "command": "./git_oper.sh pull",
             "args": [],
