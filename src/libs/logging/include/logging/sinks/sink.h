@@ -29,6 +29,7 @@ public:
 protected:
     std::mutex& sink_mutex();
     std::unique_ptr<Formatter>& formatter();
+    void set_parameter(std::string_view paramStr);
 
 private:
     struct Impl;

@@ -28,7 +28,7 @@ protected:
 
 protected:
     std::shared_ptr<Logger> _logger;
-    std::shared_ptr<LogContentBuffer> _sink = std::make_shared<LogContentBuffer>();
+    std::shared_ptr<LogContentBufferSink> _sink = std::make_shared<LogContentBufferSink>();
 };
 
 TEST_F(TestLogger, create_single_sink)
@@ -38,7 +38,7 @@ TEST_F(TestLogger, create_single_sink)
     EXPECT_EQ(_sink.use_count(), 2);
     EXPECT_EQ(_logger->name(), name);
     EXPECT_EQ(_logger->sinks().size(), 1);
-    auto *sinkPtr = reinterpret_cast<LogContentBuffer *>(_logger->sinks()[0].get());
+    auto *sinkPtr = reinterpret_cast<LogContentBufferSink *>(_logger->sinks()[0].get());
     EXPECT_EQ(sinkPtr->buffer().size(), 0);
 }
 

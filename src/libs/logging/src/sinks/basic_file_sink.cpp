@@ -24,20 +24,31 @@ BasicFileSink::BasicFileSink()
 {
     std::string process = get_proc_path();
 
-    _pimpl =
-        new Impl(JoinPaths({GetDirectory(process), "logs", GetFileName(process) + ".log"}), true);
+    _pimpl = new Impl(join_paths({get_directory(process), "logs", get_file_name(process) + ".log"}),
+                      true);
+
+    set_parameter("BasicFileSink, File: " + _pimpl->_filePath +
+                  ", Overwrite: " + std::to_string(_pimpl->_overwrite));
 }
 
 BasicFileSink::~BasicFileSink()
 {
+    if (_pimpl == nullptr) {
+        return;
+    }
+
     _pimpl->_fileWriter.flush();
     _pimpl->_fileWriter.close();
+
     delete _pimpl;
+    _pimpl = nullptr;
 }
 
 BasicFileSink::BasicFileSink(std::string_view file, bool overwrite)
-    : _pimpl(new Impl(ToAbsolutePath(file), overwrite))
+    : _pimpl(new Impl(to_absolute_path(file), overwrite))
 {
+    set_parameter("BasicFileSink, File: " + std::string(file) +
+                  ", Overwrite: " + std::to_string(overwrite));
 }
 
 void BasicFileSink::sink_it(std::string_view message)

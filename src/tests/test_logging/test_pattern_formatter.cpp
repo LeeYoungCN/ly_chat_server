@@ -93,7 +93,7 @@ TEST_F(TestPatternFormatter, file_name)
     msg.source.file = __FILE__;
     std::string content;
     formatter.format(msg, content);
-    EXPECT_EQ(content, GetBaseName(__FILE__));
+    EXPECT_EQ(content, get_base_name(__FILE__));
 }
 
 TEST_F(TestPatternFormatter, file_path)
@@ -172,7 +172,7 @@ TEST_F(TestPatternFormatter, percent)
 TEST_F(TestPatternFormatter, default_pattern)
 {
     PatternFormatter formatter;
-    LogMsg msg(LOG_SRC_LOCAL, test_info_->name(), LogLevel::ERROR, "test message");
+    LogMsg msg(LOG_SRC_LOCAL, test_info_->name(), LogLevel::ERR, "test message");
     std::string content;
     formatter.format(msg, content);
     // "[%d][%L][%s:%#]: %v"
@@ -180,7 +180,7 @@ TEST_F(TestPatternFormatter, default_pattern)
         std::format("[{}][{}][{}:{}]: {}",
                     FormatTimeString(msg.timeStamp, FORMATTER_DEFAULT_TIME_PATTERN),
                     log_level_to_string(msg.level),
-                    GetBaseName(msg.source.file),
+                    get_base_name(msg.source.file),
                     msg.source.line,
                     msg.data);
 

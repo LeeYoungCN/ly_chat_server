@@ -12,7 +12,7 @@ const std::vector<logging::LogLevel> LOG_LEVELS = {logging::LogLevel::TRACE,
                                                    logging::LogLevel::DEBUG,
                                                    logging::LogLevel::INFO,
                                                    logging::LogLevel::WARN,
-                                                   logging::LogLevel::ERROR,
+                                                   logging::LogLevel::ERR,
                                                    logging::LogLevel::FATAL,
                                                    logging::LogLevel::OFF};
 

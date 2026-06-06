@@ -51,7 +51,7 @@ ErrorCode FileWriter::open_(FileWriteMode mode)
                          get_thread_last_err_msg());
         return m_errcode;
     }
-    m_currSize = GetFileSize(m_file);
+    m_currSize = get_file_size(m_file);
     DEBUG_LOGGER_DBG(
         "Open file success. file: {}, mode: {}", m_file.data(), FileWriteModeStr(mode));
     m_errcode = ERR_COMM_SUCCESS;
@@ -66,10 +66,10 @@ ErrorCode FileWriter::open(std::string_view file, FileWriteMode mode)
         DEBUG_LOGGER_ERR("Open file failed. msg: {}.", get_utils_err_msg(m_errcode));
         return m_errcode;
     }
-    m_file = ToAbsolutePath(file);
-    m_directory = GetDirectory(m_file);
+    m_file = to_absolute_path(file);
+    m_directory = get_directory(m_file);
 
-    if (!CreateDir(m_directory)) {
+    if (!create_dir(m_directory)) {
         m_errcode = get_thread_last_err();
         return m_errcode;
     }
@@ -131,12 +131,12 @@ size_t FileWriter::size() const
 
 std::string FileWriter::file_name() const
 {
-    return GetFileName(m_file);
+    return get_file_name(m_file);
 }
 
 std::string FileWriter::base_name() const
 {
-    return GetBaseName(m_file);
+    return get_base_name(m_file);
 }
 
 const std::string& FileWriter::directory() const

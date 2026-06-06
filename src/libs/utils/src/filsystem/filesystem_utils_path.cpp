@@ -12,11 +12,11 @@
 #include "common/compiler/macros.h"
 #include "utils/filesystem_utils.h"
 
-#if PLATFORM_WINDOWS
+#if OS_WINDOWS
 #include <windows.h>
-#elif PLATFORM_LINUX
+#elif OS_LINUX
 #include <unistd.h>  // Linux的readlink函数
-#elif PLATFORM_MACOS
+#elif OS_MACOS
 #include <mach-o/dyld.h>  // macOS的_NSGetExecutablePath
 #endif
 
@@ -41,7 +41,7 @@ using namespace constants::filesystem;
 
 // ------------------------------ 系统路径接口 ------------------------------
 
-std::string GetCurrentWorkingDirectory()
+std::string get_curr_working_dir()
 {
     try {
         auto p = fs::current_path();
@@ -60,7 +60,7 @@ std::string GetCurrentWorkingDirectory()
 }
 
 // ------------------------------ 路径处理接口 ------------------------------
-std::string JoinPaths(const PathList& parts)
+std::string join_paths(const PathList& parts)
 {
     if (parts.empty()) {
         set_thread_last_err(ERR_UTILS_PATH_INVALID);
@@ -75,7 +75,7 @@ std::string JoinPaths(const PathList& parts)
     return result.string();
 }
 
-std::string NormalizePath(std::string_view path)
+std::string normalize_path(std::string_view path)
 {
     try {
         auto normalized = fs::path(path).lexically_normal();
@@ -100,12 +100,12 @@ std::string NormalizePath(std::string_view path)
     }
 }
 
-std::string ToAbsolutePath(std::string_view relPath, std::string_view baseDir)
+std::string to_absolute_path(std::string_view relPath, std::string_view baseDir)
 {
     if (relPath.empty()) {
-        return GetCurrentWorkingDirectory();
+        return get_curr_working_dir();
     }
-    fs::path base = fs::path(baseDir.empty() ? GetCurrentWorkingDirectory() : baseDir);
+    fs::path base = fs::path(baseDir.empty() ? get_curr_working_dir() : baseDir);
     fs::path relative(relPath);
     fs::path combined = base / relative;
 
@@ -132,35 +132,35 @@ std::string ToAbsolutePath(std::string_view relPath, std::string_view baseDir)
     }
 }
 
-std::string GetDirectory(std::string_view path)
+std::string get_directory(std::string_view path)
 {
     fs::path proc(path);
     set_thread_last_err(ERR_COMM_SUCCESS);
     return proc.parent_path().string();
 }
 
-std::string GetBaseName(std::string_view path)
+std::string get_base_name(std::string_view path)
 {
     fs::path p(path);
     set_thread_last_err(ERR_COMM_SUCCESS);
     return p.filename().string();
 }
 
-std::string GetFileName(std::string_view path)
+std::string get_file_name(std::string_view path)
 {
     fs::path p(path);
     set_thread_last_err(ERR_COMM_SUCCESS);
     return p.stem().string();
 }
 
-std::string GetExtension(std::string_view path)
+std::string get_extension(std::string_view path)
 {
     fs::path p(path);
     set_thread_last_err(ERR_COMM_SUCCESS);
     return p.extension().string();
 }
 
-bool IsAbsolutePath(std::string_view path)
+bool is_absolute_path(std::string_view path)
 {
     bool result = fs::path(path).is_absolute();
     set_thread_last_err(ERR_COMM_SUCCESS);
@@ -171,7 +171,7 @@ bool IsPathTooLong(std::string_view path)
 {
     const auto len = path.length();
     bool result = false;
-#if PLATFORM_WINDOWS
+#if OS_WINDOWS
     result = len > MAX_PATH_LONG;
 #else
     result = len > MAX_PATH_STD;

@@ -2,9 +2,9 @@
 
 #include "common/compiler/macros.h"
 
-#if PLATFORM_WINDOWS
+#if OS_WINDOWS
 #include <windows.h>
-#endif  // PLATFORM_WINDOWS
+#endif  // OS_WINDOWS
 
 #include <cerrno>
 #include <chrono>
@@ -26,7 +26,7 @@ using namespace ::constants::date_time;
 
 bool SafeLocalTime(time_t timer, tm& timeInfo)
 {
-#if PLATFORM_WINDOWS
+#if OS_WINDOWS
     // Windows 使用 localtime_s
     auto err = localtime_s(&timeInfo, &timer);
     if (err != 0) {
@@ -54,7 +54,7 @@ bool SafeLocalTime(time_t timer, tm& timeInfo)
 
 bool SafeGmtime(time_t timer, tm& timeInfo)
 {
-#if PLATFORM_WINDOWS
+#if OS_WINDOWS
     // Windows下使用gmtime_s，增加负数时间戳检查
     errno_t err = gmtime_s(&timeInfo, &timer);
     if (err != 0) {
@@ -99,7 +99,7 @@ namespace utils::date_time {
 TimestampMs GetCurrentTimestampMs()
 {
     set_thread_last_err(ERR_COMM_SUCCESS);
-#if PLATFORM_WINDOWS
+#if OS_WINDOWS
     FILETIME ft;
     // 获取当前系统时间，以FILETIME格式存储（从Windows纪元1601-01-01 00:00:00开始的100纳秒间隔数）
     GetSystemTimeAsFileTime(&ft);
@@ -163,15 +163,15 @@ TimeComponent TimeStampMs2Component(TimestampMs timestamp, TimeZone timeZone)
         ConvertTmToTimeComp(timeInfo, millis, timeComp);
         set_thread_last_err(ERR_COMM_SUCCESS);
         DEBUG_LOGGER_TRACE("[SUCCESS] Get time info, zone: {}, message: {}.",
-                         GetTimeZoneString(timeZone),
-                         get_thread_last_err_msg());
+                           GetTimeZoneString(timeZone),
+                           get_thread_last_err_msg());
     }
     return timeComp;
 }
 
 void SleepMS(DurationMs ms)
 {
-#if PLATFORM_WINDOWS
+#if OS_WINDOWS
     ::Sleep(static_cast<DWORD>(ms));
 #else
     std::this_thread::sleep_for(std::chrono::milliseconds(ms));

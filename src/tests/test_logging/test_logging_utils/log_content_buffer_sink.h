@@ -1,5 +1,5 @@
-#ifndef TEST_LOGGING_TEST_UTILS_LOG_CONTENT_BUFFER_SINK_G
-#define TEST_LOGGING_TEST_UTILS_LOG_CONTENT_BUFFER_SINK_G
+#ifndef TEST_LOGGING_TEST_UTILS_LOG_CONTENT_BUFFER_SINK_H
+#define TEST_LOGGING_TEST_UTILS_LOG_CONTENT_BUFFER_SINK_H
 
 #include <sys/types.h>
 
@@ -11,11 +11,11 @@
 using namespace logging;
 
 namespace test::test_logging {
-class LogContentBuffer : public BaseSink {
+class LogContentBufferSink : public BaseSink {
 public:
-    LogContentBuffer();
-    ~LogContentBuffer() override = default;
-    explicit LogContentBuffer(uint32_t capacity);
+    LogContentBufferSink();
+    ~LogContentBufferSink() override = default;
+    explicit LogContentBufferSink(uint32_t capacity);
 
     [[nodiscard]] uint32_t capacity() const;
     const std::vector<std::string>& buffer();
@@ -33,4 +33,4 @@ private:
 };
 }  // namespace test::test_logging
 
-#endif  // TEST_LOGGING_TEST_UTILS_LOG_CONTENT_BUFFER_SINK_G
+#endif  // TEST_LOGGING_TEST_UTILS_LOG_CONTENT_BUFFER_SINK_H

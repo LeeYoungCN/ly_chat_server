@@ -83,7 +83,7 @@ public:
 
     DEFINE_LOGGER_LOG_FUNCTION(warn, logging::LogLevel::WARN)
 
-    DEFINE_LOGGER_LOG_FUNCTION(error, logging::LogLevel::ERROR)
+    DEFINE_LOGGER_LOG_FUNCTION(error, logging::LogLevel::ERR)
 
     DEFINE_LOGGER_LOG_FUNCTION(fatal, logging::LogLevel::FATAL)
 #pragma endregion

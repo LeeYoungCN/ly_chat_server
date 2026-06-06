@@ -148,7 +148,7 @@ std::string FormatTimeString(TimestampMs timestamp, const std::string_view& form
 
 std::string FormatTimeString(const TimeComponent& timeComp, const std::string_view& format)
 {
-    std::string timeString( MAX_TIME_STR_LEN, '\0');
+    std::string timeString(MAX_TIME_STR_LEN, '\0');
     size_t len = FormatTimeBuffer(timeString.data(), timeString.capacity(), timeComp, format);
 
     if (len <= 0 || len > timeString.capacity()) {

@@ -30,14 +30,14 @@ protected:
 
 void TestFileAppender::SetUp()
 {
-    m_directory = JoinPaths({get_proc_directory(), "file_writer"});
-    m_testFile = JoinPaths({m_directory, m_fileName + m_suffix});
+    m_directory = join_paths({get_proc_directory(), "file_writer"});
+    m_testFile = join_paths({m_directory, m_fileName + m_suffix});
 }
 
 void TestFileAppender::TearDown()
 {
     m_appender.close();
-    DeleteDir(m_directory);
+    delete_dir(m_directory);
 }
 
 TEST_F(TestFileAppender, file_name_empty)
@@ -58,7 +58,7 @@ TEST_F(TestFileAppender, open_success)
 {
     m_appender.open(m_testFile);
     EXPECT_EQ(m_appender.get_last_error(), ERR_COMM_SUCCESS);
-    EXPECT_TRUE(FileExists(m_testFile));
+    EXPECT_TRUE(file_exists(m_testFile));
 }
 
 TEST_F(TestFileAppender, append_size)
@@ -66,7 +66,7 @@ TEST_F(TestFileAppender, append_size)
     m_appender.open(m_testFile);
     EXPECT_EQ(m_appender.get_last_error(), ERR_COMM_SUCCESS);
     EXPECT_EQ(m_appender.size(), 0);
-    EXPECT_TRUE(FileExists(m_testFile));
+    EXPECT_TRUE(file_exists(m_testFile));
 
     size_t expectSize = 0;
     for (uint32_t i = 0; i < 1024; i++) {
@@ -75,11 +75,11 @@ TEST_F(TestFileAppender, append_size)
         m_appender.write(line);
         EXPECT_EQ(m_appender.get_last_error(), ERR_COMM_SUCCESS);
         EXPECT_EQ(m_appender.size(), expectSize);
-        EXPECT_GE(m_appender.size(), GetFileSize(m_testFile));
+        EXPECT_GE(m_appender.size(), get_file_size(m_testFile));
     }
     m_appender.flush();
     m_appender.close();
-    EXPECT_EQ(m_appender.size(), GetFileSize(m_testFile));
+    EXPECT_EQ(m_appender.size(), get_file_size(m_testFile));
 }
 
 TEST_F(TestFileAppender, append_line_size)
@@ -87,7 +87,7 @@ TEST_F(TestFileAppender, append_line_size)
     m_appender.open(m_testFile);
     EXPECT_EQ(m_appender.get_last_error(), ERR_COMM_SUCCESS);
     EXPECT_EQ(m_appender.size(), 0);
-    EXPECT_TRUE(FileExists(m_testFile));
+    EXPECT_TRUE(file_exists(m_testFile));
 
     size_t expectSize = 0;
     for (uint32_t i = 0; i < 1024; i++) {
@@ -96,12 +96,12 @@ TEST_F(TestFileAppender, append_line_size)
         m_appender.write_line(line);
         EXPECT_EQ(m_appender.get_last_error(), ERR_COMM_SUCCESS);
         EXPECT_EQ(m_appender.size(), expectSize);
-        EXPECT_GE(m_appender.size(), GetFileSize(m_testFile));
+        EXPECT_GE(m_appender.size(), get_file_size(m_testFile));
     }
     m_appender.flush();
-    EXPECT_EQ(m_appender.size(), GetFileSize(m_testFile));
+    EXPECT_EQ(m_appender.size(), get_file_size(m_testFile));
     m_appender.close();
-    EXPECT_EQ(m_appender.size(), GetFileSize(m_testFile));
+    EXPECT_EQ(m_appender.size(), get_file_size(m_testFile));
 }
 
 TEST_F(TestFileAppender, append_mode)
@@ -109,7 +109,7 @@ TEST_F(TestFileAppender, append_mode)
     m_appender.open(m_testFile);
     EXPECT_EQ(m_appender.get_last_error(), ERR_COMM_SUCCESS);
     EXPECT_EQ(m_appender.size(), 0);
-    EXPECT_TRUE(FileExists(m_testFile));
+    EXPECT_TRUE(file_exists(m_testFile));
 
     size_t expectSize = 0;
     for (uint32_t i = 0; i < 64; i++) {
@@ -121,12 +121,12 @@ TEST_F(TestFileAppender, append_mode)
         m_appender.reopen(FileWriteMode::APPEND);
         EXPECT_EQ(m_appender.get_last_error(), ERR_COMM_SUCCESS);
         EXPECT_EQ(m_appender.size(), expectSize);
-        EXPECT_GE(m_appender.size(), GetFileSize(m_testFile));
+        EXPECT_GE(m_appender.size(), get_file_size(m_testFile));
     }
     m_appender.flush();
-    EXPECT_EQ(m_appender.size(), GetFileSize(m_testFile));
+    EXPECT_EQ(m_appender.size(), get_file_size(m_testFile));
     m_appender.close();
-    EXPECT_EQ(m_appender.size(), GetFileSize(m_testFile));
+    EXPECT_EQ(m_appender.size(), get_file_size(m_testFile));
 }
 
 }  // namespace test::test_utils::test_file_writer

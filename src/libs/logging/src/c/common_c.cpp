@@ -18,7 +18,7 @@ LogLevel logging_to_log_level(LoggingLevel level)
         case LOGGING_LEVEL_WARN:
             return LogLevel::WARN;
         case LOGGING_LEVEL_ERROR:
-            return LogLevel::ERROR;
+            return LogLevel::ERR;
         case LOGGING_LEVEL_FATAL:
             return LogLevel::FATAL;
         case LOGGING_LEVEL_OFF:
@@ -36,7 +36,7 @@ LoggingLevel log_to_logging_level(LogLevel level)
             return LOGGING_LEVEL_INFO;
         case LogLevel::WARN:
             return LOGGING_LEVEL_WARN;
-        case LogLevel::ERROR:
+        case LogLevel::ERR:
             return LOGGING_LEVEL_ERROR;
         case LogLevel::FATAL:
             return LOGGING_LEVEL_FATAL;

@@ -19,7 +19,6 @@
 
 #include "common/debug/debug_logger.h"
 #include "common/types/date_time_types.h"
-#include "common/types/error_code_types.h"
 #include "common/types/filesystem_types.h"
 #include "internal/utils/filesystem_utils_internal.h"
 #include "utils/filesystem_utils.h"
@@ -52,9 +51,9 @@ namespace utils::filesystem {
 namespace fs = std::filesystem;
 using namespace utils::filesystem::internal;
 
-bool FileExists(std::string_view path)
+bool file_exists(std::string_view path)
 {
-    auto entrType = GetEntryType(path);
+    auto entrType = get_entry_type(path);
     bool exists = false;
     switch (entrType) {
         case EntryType::FILE:
@@ -71,9 +70,9 @@ bool FileExists(std::string_view path)
     return exists;
 }
 
-bool CreateFile(std::string_view path)
+bool create_file(std::string_view path)
 {
-    EntryType type = GetEntryType(path);
+    EntryType type = get_entry_type(path);
     if (type == EntryType::FILE) {
         set_thread_last_err(ERR_UTILS_ALREADY_EXISTS);
         DEBUG_LOGGER_DBG("[SUCCESS] File already exist: {}", path);
@@ -81,7 +80,7 @@ bool CreateFile(std::string_view path)
     }
     if (type != EntryType::NONEXISTENT) {
         set_thread_last_err(ERR_UTILS_NOT_FILE);
-        DEBUG_LOGGER_ERR("[FAILED] Target invalid: {}", GetEntryTypeString(type));
+        DEBUG_LOGGER_ERR("[FAILED] Target invalid: {}", get_entry_type_str(type));
         return false;
     }
 
@@ -114,9 +113,9 @@ bool DeleteFileInternal(std::string_view path)
     }
 }
 
-bool DeleteFile(std::string_view path)
+bool delete_file(std::string_view path)
 {
-    if (!FileExists(path)) {
+    if (!file_exists(path)) {
         bool rst = (get_thread_last_err() == ERR_UTILS_NOT_FOUND);
         DEBUG_LOGGER_COND(rst, "Delete file: {}, message: {}.", path, get_thread_last_err_msg());
         return rst;
@@ -124,18 +123,18 @@ bool DeleteFile(std::string_view path)
     return DeleteFileInternal(path);
 }
 
-bool CopyFile(std::string_view src, std::string_view dest, bool overwrite)
+bool copy_file(std::string_view src, std::string_view dest, bool overwrite)
 {
-    if (!FileExists(src)) {
+    if (!file_exists(src)) {
         DEBUG_LOGGER_DBG(
             "[FAILED] Copy file. src : {}, message: {}", src, get_thread_last_err_msg());
         return false;
     }
 
-    EntryType type = GetEntryType(dest);
-    type = GetEntryType(dest);
+    EntryType type = get_entry_type(dest);
+    type = get_entry_type(dest);
     if (type != EntryType::FILE && type != EntryType::NONEXISTENT) {
-        DEBUG_LOGGER_ERR("[FAILED] Dest file: {}, Type invalid: {}", src, GetEntryTypeString(type));
+        DEBUG_LOGGER_ERR("[FAILED] Dest file: {}, Type invalid: {}", src, get_entry_type_str(type));
         set_thread_last_err(ERR_UTILS_NOT_FILE);
         return false;
     }
@@ -164,22 +163,22 @@ bool CopyFile(std::string_view src, std::string_view dest, bool overwrite)
     }
 }
 
-bool RenameFile(std::string_view src, std::string_view dest, bool overwrite)
+bool rename_file(std::string_view src, std::string_view dest, bool overwrite)
 {
-    if (!FileExists(src)) {
+    if (!file_exists(src)) {
         DEBUG_LOGGER_ERR(
             "[FAILED] Rename file. src : {}, message: {}", src, get_thread_last_err_msg());
         return false;
     }
 
-    EntryType type = GetEntryType(dest);
+    EntryType type = get_entry_type(dest);
     // 类型错误
     if (type != EntryType::FILE && type != EntryType::NONEXISTENT) {
         set_thread_last_err(ERR_UTILS_NOT_FILE);
         DEBUG_LOGGER_ERR("[FAILED] Rename file {}. dest invalid: {}, type: {}",
                          (overwrite ? "overwrite " : "not overwrite"),
                          dest,
-                         GetEntryTypeString(type));
+                         get_entry_type_str(type));
         return false;
     }
     // 已存在
@@ -222,9 +221,9 @@ bool RenameFile(std::string_view src, std::string_view dest, bool overwrite)
     }
 }
 
-std::string ReadTextFile(std::string_view path)
+std::string read_text_file(std::string_view path)
 {
-    if (!FileExists(path)) {
+    if (!file_exists(path)) {
         DEBUG_LOGGER_ERR("[FAILED] Read file: {}, message: {}", path, get_thread_last_err_msg());
         return "";
     }
@@ -240,9 +239,9 @@ std::string ReadTextFile(std::string_view path)
     return {std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()};
 }
 
-ByteVector ReadBinaryFile(std::string_view path)
+ByteVector read_binary_file(std::string_view path)
 {
-    if (!FileExists(path)) {
+    if (!file_exists(path)) {
         DEBUG_LOGGER_ERR(
             "[FAILED] Read binary file: {}, message: {}", path, get_thread_last_err_msg());
         return {};
@@ -265,9 +264,9 @@ ByteVector ReadBinaryFile(std::string_view path)
     return buffer;
 }
 
-bool WriteTextFile(std::string_view path, std::string_view content, bool overwrite)
+bool write_text_file(std::string_view path, std::string_view content, bool overwrite)
 {
-    if (!FileExists(path)) {
+    if (!file_exists(path)) {
         DEBUG_LOGGER_ERR(
             "[FAILED] Write to text file: {}, message: {}", path, get_thread_last_err_msg());
         return false;
@@ -308,9 +307,9 @@ bool WriteTextFile(std::string_view path, std::string_view content, bool overwri
     return false;
 }
 
-FileSize GetFileSize(std::string_view path)
+FileSize get_file_size(std::string_view path)
 {
-    if (!FileExists(path)) {
+    if (!file_exists(path)) {
         DEBUG_LOGGER_ERR(
             "[FAILED] Get file size: {}, message: {}", path, get_thread_last_err_msg());
         return 0;
@@ -321,11 +320,11 @@ FileSize GetFileSize(std::string_view path)
     return size;
 }
 
-FileInfo GetFileInfo(std::string_view path)
+FileInfo get_file_info(std::string_view path)
 {
     FileInfo fileInfo{};
     fileInfo.path = path;
-    fileInfo.type = GetEntryType(path);
+    fileInfo.type = get_entry_type(path);
 
     if (fileInfo.type == EntryType::NONEXISTENT) {
         return fileInfo;

@@ -15,10 +15,10 @@
 
 #include "common/compiler/macros.h"
 
-#if PALTFORM_WINDOWS
+#if OS_WINDOWS
 #include <windows.h>
 typedef DWORD ThreadId;
-#elif PLATFORM_LINUX || PLATFORM_MACOS
+#elif OS_LINUX || OS_MACOS
 #include <stdint.h>
 typedef uint64_t ThreadId;
 #else

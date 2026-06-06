@@ -5,14 +5,14 @@
 #include "common/compiler/macros.h"
 #include "common/debug/debug_level.h"
 
-#if PLATFORM_WINDOWS
+#if OS_WINDOWS
 #include <windows.h>
-#elif PLATFORM_LINUX
+#elif OS_LINUX
 #include <sys/syscall.h>
 #include <unistd.h>
 
 #include <chrono>
-#elif PLATFORM_MACOS
+#elif OS_MACOS
 #include <pthread.h>
 
 #include <chrono>
@@ -31,7 +31,7 @@
 namespace {
 int64_t GetCurrentTimestampMs()
 {
-#if PLATFORM_WINDOWS
+#if OS_WINDOWS
     FILETIME ft;
     // 获取当前系统时间，以FILETIME格式存储（从Windows纪元1601-01-01 00:00:00开始的100纳秒间隔数）
     GetSystemTimeAsFileTime(&ft);
@@ -65,7 +65,7 @@ std::string time_string()
     auto millis = static_cast<int32_t>(timestamp % MILLIS_PER_SECOND);
 
     std::tm ltm{};
-#if PLATFORM_WINDOWS
+#if OS_WINDOWS
     // Windows 使用 localtime_s
     localtime_s(&ltm, &timer);
 #else
@@ -132,11 +132,11 @@ std::string DebugLoggerInner::format_log(DebugLevel level, const std::string& me
 
 size_t DebugLoggerInner::get_current_tid()
 {
-#if PLATFORM_WINDOWS
+#if OS_WINDOWS
     return static_cast<size_t>(GetCurrentThreadId());
-#elif PLATFORM_LINUX
+#elif OS_LINUX
     return static_cast<size_t>(syscall(SYS_gettid));
-#elif PLATFORM_MACOS
+#elif OS_MACOS
     uint64_t tid;
     pthread_threadid_np(nullptr, &tid);
     return static_cast<size_t>(tid);

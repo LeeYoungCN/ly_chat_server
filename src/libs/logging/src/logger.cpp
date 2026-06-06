@@ -29,7 +29,7 @@ struct Logger::Impl {
 
 Logger::~Logger()
 {
-    DEBUG_LOGGER_INFO("Logger release. [{}]", name());
+    DEBUG_LOGGER_INFO("Logger release. Name: \"{}\", SinkCount: {}.", name(), _pimpl->sinks.size());
     delete _pimpl;
 }
 

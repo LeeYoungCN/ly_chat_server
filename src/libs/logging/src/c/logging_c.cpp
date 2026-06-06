@@ -86,7 +86,7 @@ void logging_error(const char *file, int line, const char *func, const char *for
 {
     va_list args;
     va_start(args, format);
-    logging_log_it(ROOT_LOGGER, file, line, func, LogLevel::ERROR, format, args);
+    logging_log_it(ROOT_LOGGER, file, line, func, LogLevel::ERR, format, args);
     va_end(args);
 }
 

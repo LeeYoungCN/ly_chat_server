@@ -11,7 +11,7 @@ using namespace logging;
 using namespace logging::details;
 
 namespace test::test_logging {
-class TestLoggingAPI : public ::testing::Test {
+class TestRootLogger : public ::testing::Test {
 protected:
     static void SetUpTestSuite() {}
     static void TearDownTestSuite() {}
@@ -19,18 +19,18 @@ protected:
     void TearDown() override {};
 };
 
-TEST_F(TestLoggingAPI, create_logger)
+TEST_F(TestRootLogger, create_logger)
 {
     const std::string name = get_logger_name(test_info_);
-    std::shared_ptr<Logger> logger = create_logger<LogContentBuffer>(name);
+    std::shared_ptr<Logger> logger = create_logger<LogContentBufferSink>(name);
     EXPECT_NE(logger, nullptr);
     EXPECT_EQ(logger->name(), name);
     EXPECT_EQ(logger->sinks().size(), 1);
-    auto *sink = reinterpret_cast<LogContentBuffer *>(logger->sinks()[0].get());
+    auto *sink = reinterpret_cast<LogContentBufferSink *>(logger->sinks()[0].get());
     EXPECT_EQ(sink->buffer().size(), 0);
 }
 
-TEST_F(TestLoggingAPI, get_root_logger)
+TEST_F(TestRootLogger, get_root_logger)
 {
     EXPECT_EQ(root_logger()->name(), details::ROOT_LOGGER_NAME);
     EXPECT_EQ(root_logger_raw()->name(), details::ROOT_LOGGER_NAME);
@@ -41,16 +41,16 @@ TEST_F(TestLoggingAPI, get_root_logger)
     EXPECT_FALSE(should_log(LogLevel::DEBUG));
 }
 
-TEST_F(TestLoggingAPI, set_root_logger)
+TEST_F(TestRootLogger, set_root_logger)
 {
     const std::string name = get_logger_name(test_info_);
-    std::shared_ptr<Logger> logger = create_logger<LogContentBuffer>(name);
+    std::shared_ptr<Logger> logger = create_logger<LogContentBufferSink>(name);
     set_root_logger(logger);
     EXPECT_EQ(root_logger()->name(), name);
     EXPECT_EQ(root_logger_raw()->name(), name);
 }
 
-TEST_F(TestLoggingAPI, root_logger_function)
+TEST_F(TestRootLogger, root_logger_function)
 {
     const std::string name = get_logger_name(test_info_);
     root_logger()->set_level(LogLevel::TRACE);

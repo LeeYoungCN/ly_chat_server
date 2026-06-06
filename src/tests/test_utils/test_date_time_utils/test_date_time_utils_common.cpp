@@ -2,7 +2,7 @@
 
 #include "common/compiler/macros.h"
 
-#if PLATFORM_WINDOWS
+#if OS_WINDOWS
 #include <windows.h>
 #endif
 #include <cstdint>
@@ -24,7 +24,7 @@ tm TimestampToTimeInfo(TimestampMs ts)
     auto timer = static_cast<std::time_t>(ts / MILLIS_PER_SECOND);
     std::tm timeInfo{};
 
-#if PLATFORM_WINDOWS
+#if OS_WINDOWS
     localtime_s(&timeInfo, &timer);
 #else
     localtime_r(&timer, &timeInfo);

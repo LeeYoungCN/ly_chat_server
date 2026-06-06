@@ -17,7 +17,7 @@ std::string_view log_level_to_string(LogLevel level, bool full)
         {LogLevel::DEBUG, {"DEBUG", "D"}},
         {LogLevel::INFO, {"INFO", "I"}},
         {LogLevel::WARN, {"WARN", "W"}},
-        {LogLevel::ERROR, {"ERROR", "E"}},
+        {LogLevel::ERR, {"ERROR", "E"}},
         {LogLevel::FATAL, {"FATAL", "F"}},
         {LogLevel::OFF, {"OFF", "O"}}};
 

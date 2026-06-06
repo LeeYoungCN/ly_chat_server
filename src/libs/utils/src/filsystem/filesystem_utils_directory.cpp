@@ -12,11 +12,11 @@
 #include "common/compiler/macros.h"
 #include "utils/filesystem_utils.h"
 
-#if PLATFORM_WINDOWS
+#if OS_WINDOWS
 #include <windows.h>
-#elif PLATFORM_LINUX
+#elif OS_LINUX
 #include <unistd.h>  // Linux的readlink函数
-#elif PLATFORM_MACOS
+#elif OS_MACOS
 #include <mach-o/dyld.h>  // macOS的_NSGetExecutablePath
 #endif
 
@@ -35,9 +35,9 @@ namespace utils::filesystem {
 namespace fs = std::filesystem;
 using namespace utils::filesystem::internal;
 
-bool DirExists(std::string_view path)
+bool dir_exists(std::string_view path)
 {
-    EntryType type = GetEntryType(path);
+    EntryType type = get_entry_type(path);
     bool result = false;
     switch (type) {
         case EntryType::DIRECTORY:
@@ -54,9 +54,9 @@ bool DirExists(std::string_view path)
     return result;
 }
 
-bool CreateDir(std::string_view path, bool recursive)
+bool create_dir(std::string_view path, bool recursive)
 {
-    auto type = GetEntryType(path);
+    auto type = get_entry_type(path);
     if (type == EntryType::DIRECTORY) {
         set_thread_last_err(ERR_UTILS_ALREADY_EXISTS);
         DEBUG_LOGGER_DBG("[SUCCESS] Create dir: {}, already exist.", path.data());
@@ -65,7 +65,7 @@ bool CreateDir(std::string_view path, bool recursive)
     if (type != EntryType::NONEXISTENT) {
         DEBUG_LOGGER_ERR("[FAILED] Create dir: {}, Target type invalid: {}",
                          path.data(),
-                         GetEntryTypeString(type));
+                         get_entry_type_str(type));
         set_thread_last_err(ERR_UTILS_NOT_DIRECTORY);
         return false;
     }
@@ -97,9 +97,9 @@ bool CreateDir(std::string_view path, bool recursive)
     }
 }
 
-bool DeleteDir(std::string_view path, bool recursive)
+bool delete_dir(std::string_view path, bool recursive)
 {
-    if (!DirExists(path)) {
+    if (!dir_exists(path)) {
         bool rst = (get_thread_last_err() == ERR_UTILS_NOT_FOUND);
         DEBUG_LOGGER_COND(
             rst, "Delete dir: {}, message: {}", path.data(), get_thread_last_err_msg());

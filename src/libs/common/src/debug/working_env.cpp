@@ -1,11 +1,11 @@
 #include "common/debug/working_env.h"
 
 #include "common/compiler/macros.h"
-#if PLATFORM_WINDOWS
+#if OS_WINDOWS
 #include <windows.h>
-#elif PLATFORM_LINUX
+#elif OS_LINUX
 #include <unistd.h>  // Linux的readlink函数
-#elif PLATFORM_MACOS
+#elif OS_MACOS
 #include <mach-o/dyld.h>  // macOS的_NSGetExecutablePath
 #endif
 #include <array>
@@ -76,12 +76,12 @@ std::string GetProcessPath()
 {
     constexpr uint32_t BUFFER_LEN = 256;
     char path[BUFFER_LEN] = {'\0'};
-#if PLATFORM_WINDOWS
+#if OS_WINDOWS
     GetModuleFileNameA(nullptr, path, BUFFER_LEN);
-#elif PLATFORM_LINUX
+#elif OS_LINUX
     auto length = readlink("/proc/self/exe", path, BUFFER_LEN - 1);
     path[length] = '\0';
-#elif PLATFORM_MACOS
+#elif OS_MACOS
     uint32_t size = sizeof(path);
     _NSGetExecutablePath(path, &size);
 #else
@@ -175,7 +175,7 @@ const char* GetCppStandard()
 namespace common::debug::working_env {
 void ShowWorkingEnv()
 {
-    std::cout << "Os: " << GetOsName() << std::endl;
+    std::cout << "OS: " << GetOsName() << std::endl;
     std::cout << "Arch: " << GetArchitecture() << std::endl;
     std::cout << "Compilers: ";
     for (const auto& c : GetCompilers()) {

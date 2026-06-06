@@ -3,21 +3,21 @@
 
 // 平台区分宏
 #if defined(_WIN32) || defined(_WIN64)
-#define PLATFORM_WINDOWS 1
-#define PLATFORM_LINUX   0
-#define PLATFORM_MACOS   0
+#define OS_WINDOWS 1
+#define OS_LINUX   0
+#define OS_MACOS   0
 #elif defined(__linux__) || defined(linux)
-#define PLATFORM_WINDOWS 0
-#define PLATFORM_LINUX   1
-#define PLATFORM_MACOS   0
+#define OS_WINDOWS 0
+#define OS_LINUX   1
+#define OS_MACOS   0
 #elif defined(__APPLE__)
-#define PLATFORM_WINDOWS 0
-#define PLATFORM_LINUX   0
-#define PLATFORM_MACOS   1
+#define OS_WINDOWS 0
+#define OS_LINUX   0
+#define OS_MACOS   1
 #else
-#define PLATFORM_WINDOWS 0
-#define PLATFORM_LINUX   0
-#define PLATFORM_MACOS   0
+#define OS_WINDOWS 0
+#define OS_LINUX   0
+#define OS_MACOS   0
 #endif
 
 #if defined(_MSC_VER)
@@ -82,7 +82,7 @@
 #endif
 
 // common模块导出宏
-#if PLATFORM_WINDOWS && COMPILER_MSVC
+#if OS_WINDOWS && COMPILER_MSVC
 #ifdef COMMON_BUILD_SHARED
 #define COMMON_API __declspec(dllexport)
 #else

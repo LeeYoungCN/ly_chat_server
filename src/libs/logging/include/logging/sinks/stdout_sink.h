@@ -10,7 +10,7 @@
 namespace logging {
 class StdoutSink : public BaseSink {
 public:
-    StdoutSink() = default;
+    StdoutSink();
     ~StdoutSink() override = default;
     explicit StdoutSink(FILE *file);
 

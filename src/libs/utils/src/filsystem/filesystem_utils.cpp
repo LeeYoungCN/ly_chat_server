@@ -12,11 +12,11 @@
 
 #include "common/compiler/macros.h"
 
-#if PLATFORM_WINDOWS
+#if OS_WINDOWS
 #include <windows.h>
-#elif PLATFORM_LINUX
+#elif OS_LINUX
 #include <unistd.h>  // Linux的readlink函数
-#elif PLATFORM_MACOS
+#elif OS_MACOS
 #include <mach-o/dyld.h>  // macOS的_NSGetExecutablePath
 #endif
 
@@ -32,7 +32,7 @@
 namespace utils::filesystem {
 namespace fs = std::filesystem;
 
-EntryType GetEntryType(std::string_view path)
+EntryType get_entry_type(std::string_view path)
 {
     if (!fs::exists(path)) {
         set_thread_last_err(ERR_UTILS_NOT_FOUND);
@@ -67,7 +67,7 @@ EntryType GetEntryType(std::string_view path)
     }
 }
 
-const char* GetEntryTypeString(EntryType type)
+const char* get_entry_type_str(EntryType type)
 {
     switch (type) {
         case EntryType::NONEXISTENT:

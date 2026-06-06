@@ -14,10 +14,10 @@
 #define COMMON_TYPES_PROCESS_TYPES_H
 #include "common/compiler/macros.h"
 
-#if PALTFORM_WINDOWS
+#if OS_WINDOWS
 #include <windows.h>
 typedef DWORD ProcessId;
-#elif PLATFORM_LINUX || PLATFORM_MACOS
+#elif OS_LINUX || OS_MACOS
 #include <sys/types.h>
 typedef pid_t ProcessId;
 #else

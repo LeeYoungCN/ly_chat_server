@@ -3,6 +3,7 @@
 #include <atomic>
 #include <mutex>
 
+#include "common/debug/debug_logger.h"
 #include "logging/formatters/pattern_formatter.h"
 
 namespace logging {
@@ -11,13 +12,18 @@ struct Sink::Impl {
     std::atomic<LogLevel> level{LogLevel::INFO};
     std::unique_ptr<Formatter> formatter{std::make_unique<PatternFormatter>()};
     std::mutex sinkMtx;
+    std::string paramStr;
 };
 
 Sink::Sink() : _pimpl(new Impl()) {}
 
 Sink::~Sink()
 {
-    delete _pimpl;
+    if (_pimpl != nullptr) {
+        DEBUG_LOGGER_INFO("Sink release. {}.", _pimpl->paramStr);
+        delete _pimpl;
+        _pimpl = nullptr;
+    }
 }
 
 bool Sink::should_log(LogLevel level) const
@@ -54,5 +60,12 @@ std::mutex& Sink::sink_mutex()
 std::unique_ptr<Formatter>& Sink::formatter()
 {
     return _pimpl->formatter;
+}
+
+void Sink::set_parameter(std::string_view paramStr)
+{
+    if (_pimpl != nullptr) {
+        _pimpl->paramStr = paramStr;
+    }
 }
 }  // namespace logging

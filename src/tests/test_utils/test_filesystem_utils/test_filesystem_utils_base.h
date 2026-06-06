@@ -27,9 +27,9 @@ protected:
     {
         m_process = utils::process::get_proc_path();
         EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
-        m_processDir = utils::filesystem::GetDirectory(m_process);
+        m_processDir = utils::filesystem::get_directory(m_process);
         EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
-        m_workDir = utils::filesystem::GetCurrentWorkingDirectory();
+        m_workDir = utils::filesystem::get_curr_working_dir();
         EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
     };
     void TearDown() override {};

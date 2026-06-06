@@ -10,22 +10,22 @@
  */
 #include "utils/process_utils.h"
 
-#if PLATFORM_WINDOWS
+#if OS_WINDOWS
 #include <windows.h>
-#elif PLATFORM_LINUX
+#elif OS_LINUX
 #include <unistd.h>  // Linux的readlink函数
-#elif PLATFORM_MACOS
+#elif OS_MACOS
 #include <mach-o/dyld.h>  // macOS的_NSGetExecutablePath
 #include <unistd.h>
 #endif
 
+#include "common/common_error_code.h"
 #include "common/compiler/macros.h"
 #include "common/constants/filesystem_constants.h"
 #include "common/debug/debug_logger.h"
 #include "common/types/process_types.h"
 #include "utils/filesystem_utils.h"
 #include "utils/thread_utils.h"
-#include "utils/utils_error_code.h"
 
 namespace utils::process {
 using namespace utils::filesystem;
@@ -34,14 +34,14 @@ using namespace constants::filesystem;
 std::string get_proc_path()
 {
     char path[MAX_PATH_STD] = {'\0'};
-#if PLATFORM_WINDOWS
+#if OS_WINDOWS
     DWORD length = GetModuleFileNameA(nullptr, path, MAX_PATH_STD);
     if (length == 0 || length >= MAX_PATH_STD) {
         set_thread_last_err(ERR_COMM_SYSTEM_ERROR);
         DEBUG_LOGGER_ERR("[FAILED][WIN32] Get process path, length: {}", length);
         length = 0;
     }
-#elif PLATFORM_LINUX
+#elif OS_LINUX
     auto length = readlink("/proc/self/exe", path, MAX_PATH_STD - 1);
     if (length == -1) {
         set_thread_last_err(ERR_COMM_SYSTEM_ERROR);
@@ -49,7 +49,7 @@ std::string get_proc_path()
         length = 0;
     }
     path[length] = '\0';
-#elif PLATFORM_MACOS
+#elif OS_MACOS
     uint32_t size = sizeof(path);
     if (_NSGetExecutablePath(path, &size) != 0) {
         set_thread_last_err(ERR_COMM_SYSTEM_ERROR);
@@ -66,19 +66,19 @@ std::string get_proc_path()
 std::string get_proc_directory()
 {
     set_thread_last_err(ERR_COMM_SUCCESS);
-    return GetDirectory(get_proc_path());
+    return get_directory(get_proc_path());
 }
 
 std::string get_proc_file_name()
 {
     set_thread_last_err(ERR_COMM_SUCCESS);
-    return GetFileName(get_proc_path());
+    return get_file_name(get_proc_path());
 }
 
 ProcessId get_curr_proc_id()
 {
     ProcessId pid = 0;
-#if PLATFORM_WINDOWS
+#if OS_WINDOWS
     pid = GetCurrentProcessId();
 #else
     pid = getpid();

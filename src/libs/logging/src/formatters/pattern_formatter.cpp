@@ -80,7 +80,7 @@ void PatternFormatter::log_msg_to_content(char symbol, const details::LogMsg& lo
             break;
         case 's':  // file name
             content.append(
-                (logMsg.source.file.empty() ? "FileName" : GetBaseName(logMsg.source.file)));
+                (logMsg.source.file.empty() ? "FileName" : get_base_name(logMsg.source.file)));
             break;
         case 'g':  // file path
             content.append(logMsg.source.file.empty() ? "FilePath" : logMsg.source.file);

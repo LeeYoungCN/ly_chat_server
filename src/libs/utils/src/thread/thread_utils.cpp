@@ -16,12 +16,12 @@
 #include "common/compiler/macros.h"
 #include "common/types/thread_types.h"
 
-#if PLATFORM_WINDOWS
+#if OS_WINDOWS
 #include <windows.h>
-#elif PLATFORM_LINUX
+#elif OS_LINUX
 #include <sys/syscall.h>
 #include <unistd.h>
-#elif PLATFORM_MACOS
+#elif OS_MACOS
 #include <pthread.h>
 #else
 #error "Unsupport system"
@@ -36,11 +36,11 @@ thread_local volatile ErrorCode g_lastError = ERR_COMM_SUCCESS;
 
 ThreadId GetCurrentThreadIdInternal()
 {
-#if PLATFORM_WINDOWS
+#if OS_WINDOWS
     return static_cast<ThreadId>(GetCurrentThreadId());
-#elif PLATFORM_LINUX
+#elif OS_LINUX
     return static_cast<ThreadId>(syscall(SYS_gettid));
-#elif PLATFORM_MACOS
+#elif OS_MACOS
     uint64_t tid;
     pthread_threadid_np(nullptr, &tid);
     return static_cast<ThreadId>(tid);

@@ -3,37 +3,40 @@
 #include <mutex>
 
 namespace test::test_logging {
-LogContentBuffer::LogContentBuffer() : LogContentBuffer(1024) {}
+LogContentBufferSink::LogContentBufferSink() : LogContentBufferSink(1024)
+{
+    set_parameter("LogContentBufferSink, Capacity: " + std::to_string(_capacity));
+}
 
-LogContentBuffer::LogContentBuffer(uint32_t capacity) : _capacity(capacity)
+LogContentBufferSink::LogContentBufferSink(uint32_t capacity) : _capacity(capacity)
 {
     _buffer.reserve(_capacity);
 }
 
-uint32_t LogContentBuffer::capacity() const
+uint32_t LogContentBufferSink::capacity() const
 {
     return _capacity;
 }
 
-const std::vector<std::string>& LogContentBuffer::buffer()
+const std::vector<std::string>& LogContentBufferSink::buffer()
 {
     std::lock_guard<std::mutex> lock(sink_mutex());
     return _buffer;
 }
 
-const std::vector<std::string>& LogContentBuffer::disk()
+const std::vector<std::string>& LogContentBufferSink::disk()
 {
     std::lock_guard<std::mutex> lock(sink_mutex());
     return _disk;
 }
 
-void LogContentBuffer::clear()
+void LogContentBufferSink::clear()
 {
     _buffer.clear();
     _disk.clear();
 }
 
-void LogContentBuffer::sink_it(std::string_view message)
+void LogContentBufferSink::sink_it(std::string_view message)
 {
     _buffer.emplace_back(message);
     if (_buffer.size() >= _capacity) {
@@ -41,7 +44,7 @@ void LogContentBuffer::sink_it(std::string_view message)
     }
 }
 
-void LogContentBuffer::flush_it()
+void LogContentBufferSink::flush_it()
 {
     _disk.reserve(_disk.size() + _buffer.size());
     _disk.insert(_disk.end(), _buffer.begin(), _buffer.end());
