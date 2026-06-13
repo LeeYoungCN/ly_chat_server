@@ -24,15 +24,15 @@ namespace utils::date_time {
  * @return TimestampMs 毫秒级时间戳
  * @note 跨平台实现：Windows使用GetSystemTimeAsFileTime，Linux/macOS使用std::chrono
  */
-TimestampMs GetCurrentTimestampMs();
+TimestampMs get_current_time_stamp_ms();
 
 /**
  * @brief 获取当前系统时间的时间组件
  * @details
- * 直接返回分解后的时间信息（年、月、日等），等价于Timestamp2Component(GetCurrentTimestampMs())
+ * 直接返回分解后的时间信息（年、月、日等），等价于Timestamp2Component(get_current_time_stamp_ms())
  * @return TimeComponent 当前时间的分解结构
  */
-TimeComponent GetCurrentTimeComponent();
+TimeComponent get_current_time_comp();
 
 /**
  * @brief 将毫秒级时间戳转换为本地时间的时间组件
@@ -40,7 +40,7 @@ TimeComponent GetCurrentTimeComponent();
  * @return TimeComponent 转换后的时间组件
  *         失败时返回所有字段为0的结构
  */
-TimeComponent LocalTimeComponent(const TimestampMs& timestamp);
+TimeComponent local_time_component(TimestampMs timestamp);
 
 /**
  * @brief 将毫秒级时间戳转换为UTC时间的时间组件
@@ -48,7 +48,7 @@ TimeComponent LocalTimeComponent(const TimestampMs& timestamp);
  * @return TimeComponent 转换后的时间组件
  *         失败时返回所有字段为0的结构
  */
-TimeComponent UtcTimeComponent(const TimestampMs& timestamp);
+TimeComponent utc_time_component(TimestampMs timestamp);
 
 /**
  * @brief 将毫秒级时间戳转换为时间组件
@@ -57,7 +57,8 @@ TimeComponent UtcTimeComponent(const TimestampMs& timestamp);
  * @return TimeComponent 转换后的时间组件
  *         失败时返回所有字段为0的结构
  */
-TimeComponent TimeStampMs2Component(TimestampMs timestamp, TimeZone timeZone = TimeZone::LOCAL);
+TimeComponent time_stamp_ms_to_component(TimestampMs timestamp,
+                                         TimeZone timeZone = TimeZone::LOCAL);
 
 /**
  * @brief 获取月份的完整英文名称
@@ -65,7 +66,7 @@ TimeComponent TimeStampMs2Component(TimestampMs timestamp, TimeZone timeZone = T
  * @return std::string_view 完整月份名称（如"January"）
  *         若参数超出范围，返回空字符串视图
  */
-std::string_view GetMonthFullName(uint32_t month);
+std::string_view get_month_full_name(uint32_t month);
 
 /**
  * @brief 获取月份的缩写英文名称
@@ -73,7 +74,7 @@ std::string_view GetMonthFullName(uint32_t month);
  * @return std::string_view 缩写月份名称（如"Jan"）
  *         若参数超出范围，返回空字符串视图
  */
-std::string_view GetMonthAbbrName(uint32_t month);
+std::string_view get_month_abbr_name(uint32_t month);
 
 /**
  * @brief 获取星期的完整英文名称
@@ -81,7 +82,7 @@ std::string_view GetMonthAbbrName(uint32_t month);
  * @return std::string_view 完整星期名称（如"Monday"）
  *         若参数超出范围，返回空字符串视图
  */
-std::string_view GetWeekdayFullName(uint32_t weekday);
+std::string_view get_weekday_full_name(uint32_t weekday);
 
 /**
  * @brief 获取星期的缩写英文名称
@@ -89,7 +90,7 @@ std::string_view GetWeekdayFullName(uint32_t weekday);
  * @return std::string_view 缩写星期名称（如"Mon"）
  *         若参数超出范围，返回空字符串视图
  */
-std::string_view GetWeekdayAbbrName(uint32_t weekday);
+std::string_view get_weekday_abbr_name(uint32_t weekday);
 
 /**
  * @brief 将时间戳按指定格式转换为字符串
@@ -99,7 +100,7 @@ std::string_view GetWeekdayAbbrName(uint32_t weekday);
  * @return std::string 格式化后的时间字符串
  *         若格式化失败或参数无效，返回空字符串
  */
-std::string FormatTimeString(
+std::string format_time_string(
     TimestampMs timestamp, const std::string_view& format = constants::date_time::DEFAULT_TIME_FMT,
     TimeZone timeZone = TimeZone::LOCAL);
 
@@ -111,7 +112,7 @@ std::string FormatTimeString(
  * @return std::string 格式化后的时间字符串
  *         若格式化失败或参数无效，返回空字符串
  */
-std::string FormatTimeString(
+std::string format_time_string(
     const TimeComponent& timeComp,
     const std::string_view& format = constants::date_time::DEFAULT_TIME_FMT);
 
@@ -126,9 +127,9 @@ std::string FormatTimeString(
  * @return size_t 成功写入的字符数（不含终止符'\0'）
  *         若失败（缓冲区无效/空间不足/格式错误），返回0
  */
-size_t FormatTimeBuffer(char* buffer, size_t bufferSize, TimestampMs timestamp,
-                        const std::string_view& format = constants::date_time::DEFAULT_TIME_FMT,
-                        TimeZone timeZone = TimeZone::LOCAL);
+size_t format_time_buffer(char* buffer, size_t bufferSize, TimestampMs timestamp,
+                          const std::string_view& format = constants::date_time::DEFAULT_TIME_FMT,
+                          TimeZone timeZone = TimeZone::LOCAL);
 
 /**
  * @brief 将时间组件按指定格式写入字符缓冲区（高性能）
@@ -141,26 +142,8 @@ size_t FormatTimeBuffer(char* buffer, size_t bufferSize, TimestampMs timestamp,
  * @return size_t 成功写入的字符数（不含终止符'\0'）
  *         若失败（缓冲区无效/空间不足/格式错误），返回0
  */
-size_t FormatTimeBuffer(char* buffer, size_t bufferSize, const TimeComponent& timeComp,
-                        const std::string_view& format = constants::date_time::DEFAULT_TIME_FMT);
-
-// ------------------------------ 时间运算 ------------------------------
-
-/**
- * @brief 时间戳加上间隔（秒级）
- * @param timestamp 原始时间戳（秒）
- * @param duration 间隔（秒，可正可负）
- * @return 运算后的时间戳
- */
-TimestampSec AddDuration(TimestampSec timestamp, DurationSec duration);
-
-/**
- * @brief 计算两个时间戳的差值（秒级）
- * @param timestamp1 时间戳1（秒）
- * @param timestamp2 时间戳2（秒）
- * @return timestamp1 - timestamp2（秒）
- */
-DurationSec Diff(TimestampSec timestamp1, TimestampSec timestamp2);
+size_t format_time_buffer(char* buffer, size_t bufferSize, const TimeComponent& timeComp,
+                          const std::string_view& format = constants::date_time::DEFAULT_TIME_FMT);
 
 // ------------------------------ 系统时间操作 ------------------------------
 
@@ -168,7 +151,7 @@ DurationSec Diff(TimestampSec timestamp1, TimestampSec timestamp2);
  * @brief 线程睡眠指定毫秒数
  * @param ms 睡眠时长（毫秒）
  */
-void SleepMS(DurationMs ms);
+void sleep_ms(DurationMs ms);
 
 }  // namespace utils::date_time
 #endif  // UTILS_DATE_TIME_UTILS_H

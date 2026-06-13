@@ -53,7 +53,7 @@ namespace common::types::date_time {
 ```
 
 - **用途**：存储人类可读的分解时间信息，用于格式化和展示
-- **关联关系**：通常由 `TimestampMs` 通过 `LocalTimeComponent`、 `UtcTimeComponent` 转换生成
+- **关联关系**：通常由 `TimestampMs` 通过 `local_time_component`、 `utc_time_component` 转换生成
 
 
 ## 二、核心常量
@@ -76,7 +76,7 @@ namespace common::types::date_time {
 
 ### 3.1 时间获取接口
 
-#### 3.1.1 `GetCurrentTimestampMs`
+#### 3.1.1 `get_current_time_stamp_ms`
 
 ```cpp
 /**
@@ -85,11 +85,11 @@ namespace common::types::date_time {
  * @return common::types::date_timeTimestampMs 
  *         当前时间戳（Unix纪元基准，如1722057600000表示2024-07-27 00:00:00）
  */
-common::types::date_timeTimestampMs GetCurrentTimestampMs();
+common::types::date_timeTimestampMs get_current_time_stamp_ms();
 ```
 
 
-#### 3.1.2 `GetCurrentTimeComponent`
+#### 3.1.2 `get_current_time_comp`
 
 ```cpp
 /**
@@ -98,13 +98,13 @@ common::types::date_timeTimestampMs GetCurrentTimestampMs();
  * @return common::types::date_time::TimeComponent 
  *         当前时间的分解信息（年、月、日、时、分、秒等）
  */
-common::types::date_time::TimeComponent GetCurrentTimeComponent();
+common::types::date_time::TimeComponent get_current_time_comp();
 ```
 
 
 ### 3.2 时间转换接口
 
-#### 3.2.1 `LocalTimeComponent`
+#### 3.2.1 `local_time_component`
 
 ```cpp
 /**
@@ -114,13 +114,13 @@ common::types::date_time::TimeComponent GetCurrentTimeComponent();
  * @return common::types::date_time::TimeComponent 
  *         转换后的时间组件（失败时返回字段全为0的结构）
  */
-common::types::date_time::TimeComponent LocalTimeComponent(
+common::types::date_time::TimeComponent local_time_component(
     const common::types::date_timeTimestampMs& timestamp
 );
 ```
 
 
-#### 3.2.2 `UtcTimeComponent`
+#### 3.2.2 `utc_time_component`
 
 ```cpp
 /**
@@ -130,7 +130,7 @@ common::types::date_time::TimeComponent LocalTimeComponent(
  * @return common::types::date_time::TimeComponent 
  *         转换后的时间组件（失败时返回字段全为0的结构）
  */
-common::types::date_time::TimeComponent UtcTimeComponent(
+common::types::date_time::TimeComponent utc_time_component(
     const common::types::date_timeTimestampMs& timestamp
 );
 ```
@@ -140,15 +140,15 @@ common::types::date_time::TimeComponent UtcTimeComponent(
 
 | 接口 | 功能 | 参数要求 | 返回值 |
 |------|------|----------|--------|
-| `GetMonthFullName` | 获取月份完整英文名称（如“January”） | 月份：1-12（1=一月） | 名称的`std::string_view`（参数无效返回空） |
-| `GetMonthAbbrName` | 获取月份缩写英文名称（如“Jan”） | 月份：1-12 | 名称的`std::string_view`（参数无效返回空） |
-| `GetWeekdayFullName` | 获取星期完整英文名称（如“Monday”） | 星期：0-6（0=星期日） | 名称的`std::string_view`（参数无效返回空） |
-| `GetWeekdayAbbrName` | 获取星期缩写英文名称（如“Mon”） | 星期：0-6 | 名称的`std::string_view`（参数无效返回空） |
+| `get_month_full_name` | 获取月份完整英文名称（如“January”） | 月份：1-12（1=一月） | 名称的`std::string_view`（参数无效返回空） |
+| `get_month_abbr_name` | 获取月份缩写英文名称（如“Jan”） | 月份：1-12 | 名称的`std::string_view`（参数无效返回空） |
+| `get_weekday_full_name` | 获取星期完整英文名称（如“Monday”） | 星期：0-6（0=星期日） | 名称的`std::string_view`（参数无效返回空） |
+| `get_weekday_abbr_name` | 获取星期缩写英文名称（如“Mon”） | 星期：0-6 | 名称的`std::string_view`（参数无效返回空） |
 
 
 ### 3.4 时间格式化接口
 
-#### 3.4.1 字符串格式化（`FormatTimeString`）
+#### 3.4.1 字符串格式化（`format_time_string`）
 
 ```cpp
 /**
@@ -158,7 +158,7 @@ common::types::date_time::TimeComponent UtcTimeComponent(
  * @param format 格式字符串（支持占位符，见3.4.3节）
  * @return std::string 格式化后的字符串（失败返回空字符串）
  */
-std::string FormatTimeString(
+std::string format_time_string(
     common::types::date_timeTimestampMs timestamp, 
     const std::string_view& format
 );
@@ -170,14 +170,14 @@ std::string FormatTimeString(
  * @param format 格式字符串
  * @return std::string 格式化后的字符串（失败返回空字符串）
  */
-std::string FormatTimeString(
+std::string format_time_string(
     const common::types::date_time::TimeComponent& timeComp, 
     const std::string_view& format
 );
 ```
 
 
-#### 3.4.2 缓冲区格式化（`FormatTimeBuffer`）
+#### 3.4.2 缓冲区格式化（`format_time_buffer`）
 
 ```cpp
 /**
@@ -189,14 +189,14 @@ std::string FormatTimeString(
  * @param format 格式字符串
  * @return size_t 成功写入的字符数（不含终止符`\0`）；失败返回0
  */
-size_t FormatTimeBuffer(
+size_t format_time_buffer(
     char* buffer, 
     size_t bufferSize, 
     common::types::date_timeTimestampMs timestamp, 
     const std::string_view& format
 );
 
-size_t FormatTimeBuffer(
+size_t format_time_buffer(
     char* buffer, 
     size_t bufferSize, 
     const common::types::date_time::TimeComponent& timeComp, 
@@ -240,7 +240,7 @@ size_t FormatTimeBuffer(
 |----------|----------|------|
 | `common::types::date_time` | `TimestampMs`、`TimeComponent` 类型定义 | `common::types::date_timeTimestampMs` |
 | `common::constants::date_time` | 时间相关常量（如 `MILLIS_PER_SECOND`） | `common::constants::date_time::MAX_TIME_STR_LEN` |
-| `common::utils::date_time` | 所有工具接口（`GetCurrentTimestampMs` 等） | `common::utils::date_time::FormatTimeString` |
+| `common::utils::date_time` | 所有工具接口（`get_current_time_stamp_ms` 等） | `common::utils::date_time::format_time_string` |
 
 
 ### 4.3 命名空间使用建议
@@ -271,16 +271,16 @@ int main() {
     using namespace common::utils::date_time;
 
     // 1. 获取当前时间戳
-    TimestampMs now_ts = GetCurrentTimestampMs();
+    TimestampMs now_ts = get_current_time_stamp_ms();
     std::cout << "当前时间戳: " << now_ts << " ms" << std::endl;
 
     // 2. 转换为时间组件
-    TimeComponent now_comp = LocalTimeComponent(now_ts);
+    TimeComponent now_comp = local_time_component(now_ts);
     std::cout << "当前时间: " << now_comp.year << "-" 
               << now_comp.month << "-" << now_comp.day << std::endl;
 
     // 3. 格式化时间
-    std::string fmt_str = FormatTimeString(now_comp, "%Y-%m-%d %H:%M:%S.%3f %A");
+    std::string fmt_str = format_time_string(now_comp, "%Y-%m-%d %H:%M:%S.%3f %A");
     if (!fmt_str.empty()) {
         std::cout << "格式化结果: " << fmt_str << std::endl;
         // 输出示例：2024-07-27 15:30:45.678 Saturday
@@ -302,13 +302,13 @@ int main() {
     TimeComponent comp = {2023, 1, 1, 0, 0, 0, 500, 0};
 
     // 获取月份和星期名称
-    auto month_name = GetMonthFullName(comp.month);    // "January"
-    auto weekday_name = GetWeekdayAbbrName(comp.wday); // "Sun"
+    auto month_name = get_month_full_name(comp.month);    // "January"
+    auto weekday_name = get_weekday_abbr_name(comp.wday); // "Sun"
     std::cout << "月份: " << month_name << ", 星期: " << weekday_name << std::endl;
 
     // 缓冲区格式化（高性能场景）
     char buffer[256];
-    size_t len = FormatTimeBuffer(
+    size_t len = format_time_buffer(
         buffer, sizeof(buffer), comp, "%b %d, %Y %H:%M:%S.%3f"
     );
     if (len > 0) {
@@ -324,14 +324,14 @@ int main() {
 
 1. **参数有效性**：
    - 月份需在1-12范围内，星期需在0-6范围内，否则日期名称接口返回空。
-   - 调用 `FormatTimeBuffer` 时，`buffer` 不可为 `nullptr`，`bufferSize` 需>0。
+   - 调用 `format_time_buffer` 时，`buffer` 不可为 `nullptr`，`bufferSize` 需>0。
 
 2. **错误判断**：
    - 格式化接口返回空字符串（或0）时，表示失败。
-   - `LocalTimeComponent` 返回 `year == 0` 时，表示转换失败。
+   - `local_time_component` 返回 `year == 0` 时，表示转换失败。
 
 3. **性能建议**：
-   - 高频格式化场景（如日志），优先使用 `FormatTimeBuffer`（减少字符串分配）。
+   - 高频格式化场景（如日志），优先使用 `format_time_buffer`（减少字符串分配）。
    - 缓冲区大小建议≥256字节（`MAX_TIME_STR_LEN`），避免空间不足。
 
 4. **本地化**：

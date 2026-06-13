@@ -43,8 +43,8 @@ TEST_P(TestDateTimeUtilsFmtTimeCompBuffer, TimeComponent)
     auto month = std::get<2>(GetParam());
     auto wday = std::get<3>(GetParam());
 
-    auto ts = GetCurrentTimestampMs();
-    auto timeComp = LocalTimeComponent(ts);
+    auto ts = get_current_time_stamp_ms();
+    auto timeComp = local_time_component(ts);
     auto timeInfo = TimestampToTimeInfo(ts);
     timeComp.month = month;
     timeComp.wday = wday;
@@ -86,8 +86,8 @@ TEST_P(TestDateTimeUtilsTimeCompStr, TimeComponent)
     auto month = std::get<1>(GetParam());
     auto wday = std::get<2>(GetParam());
 
-    auto ts = GetCurrentTimestampMs();
-    auto timeComp = LocalTimeComponent(ts);
+    auto ts = get_current_time_stamp_ms();
+    auto timeComp = local_time_component(ts);
     auto timeInfo = TimestampToTimeInfo(ts);
     timeComp.month = month;
     timeComp.wday = wday;

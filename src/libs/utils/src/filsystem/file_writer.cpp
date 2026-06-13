@@ -40,7 +40,7 @@ ErrorCode FileWriter::open_(FileWriteMode mode)
     }
 
     m_stream = std::ofstream(m_file, m_mode);
-    date_time::SleepMS(constants::filesystem::FILE_OPEN_INTERNAL_MS);
+    date_time::sleep_ms(constants::filesystem::FILE_OPEN_INTERNAL_MS);
     if (!m_stream.is_open()) {
         m_errcode = get_thread_last_err();
         std::error_code ec(errno, std::generic_category());

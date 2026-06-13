@@ -96,7 +96,7 @@ void ConvertTmToTimeComp(const std::tm timeInfo, int32_t millis, TimeComponent& 
 
 namespace utils::date_time {
 
-TimestampMs GetCurrentTimestampMs()
+TimestampMs get_current_time_stamp_ms()
 {
     set_thread_last_err(ERR_COMM_SUCCESS);
 #if OS_WINDOWS
@@ -123,22 +123,22 @@ TimestampMs GetCurrentTimestampMs()
 #endif
 }
 
-TimeComponent GetCurrentTimeComponent()
+TimeComponent get_current_time_comp()
 {
-    return TimeStampMs2Component(GetCurrentTimestampMs());
+    return time_stamp_ms_to_component(get_current_time_stamp_ms());
 }
 
-TimeComponent LocalTimeComponent(const TimestampMs& timestamp)
+TimeComponent local_time_component(TimestampMs timestamp)
 {
-    return TimeStampMs2Component(timestamp, TimeZone::LOCAL);
+    return time_stamp_ms_to_component(timestamp, TimeZone::LOCAL);
 }
 
-TimeComponent UtcTimeComponent(const TimestampMs& timestamp)
+TimeComponent utc_time_component(TimestampMs timestamp)
 {
-    return TimeStampMs2Component(timestamp, TimeZone::UTC);
+    return time_stamp_ms_to_component(timestamp, TimeZone::UTC);
 }
 
-TimeComponent TimeStampMs2Component(TimestampMs timestamp, TimeZone timeZone)
+TimeComponent time_stamp_ms_to_component(TimestampMs timestamp, TimeZone timeZone)
 {
     auto timer = static_cast<std::time_t>(timestamp / MILLIS_PER_SECOND);
     auto millis = static_cast<int32_t>(timestamp % MILLIS_PER_SECOND);
@@ -169,7 +169,7 @@ TimeComponent TimeStampMs2Component(TimestampMs timestamp, TimeZone timeZone)
     return timeComp;
 }
 
-void SleepMS(DurationMs ms)
+void sleep_ms(DurationMs ms)
 {
 #if OS_WINDOWS
     ::Sleep(static_cast<DWORD>(ms));

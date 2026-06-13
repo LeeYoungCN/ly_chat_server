@@ -17,7 +17,7 @@ LogMsg::LogMsg(LogSource source, std::string_view loggerName, LogLevel level,
       level(level),
       data(message),
       source(std::move(source)),
-      timeStamp(utils::date_time::GetCurrentTimestampMs()),
+      timeStamp(utils::date_time::get_current_time_stamp_ms()),
       threadId(get_curr_thread_id()),
       procId(utils::process::get_curr_proc_id())
 {

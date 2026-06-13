@@ -50,7 +50,7 @@ void CompareString(const TimeComponent& timeComp, std::string stdTimeStr,
 
 void TestTimeBuffer(const std::string_view& format, uint32_t length, TimestampMs timestamp)
 {
-    auto timeComp = LocalTimeComponent(timestamp);
+    auto timeComp = local_time_component(timestamp);
     auto timeInfo = TimestampToTimeInfo(timestamp);
     TestTimeBuffer(format, length, timeInfo, timeComp);
 }
@@ -59,7 +59,7 @@ void TestTimeBuffer(const std::string_view& format, uint32_t length, std::tm tim
                     const TimeComponent& timeComp)
 {
     char bufferUtils[MAX_TIME_STR_LEN] = {'\0'};
-    auto sizeUtils = utils::date_time::FormatTimeBuffer(bufferUtils, length, timeComp, format);
+    auto sizeUtils = utils::date_time::format_time_buffer(bufferUtils, length, timeComp, format);
 
     char bufferStd[MAX_TIME_STR_LEN] = {'\0'};
     auto sizeStd = std::strftime(bufferStd, length, format.data(), &timeInfo);
@@ -73,14 +73,14 @@ void TestTimeBuffer(const std::string_view& format, uint32_t length, std::tm tim
 
 void TestTimeString(const std::string_view& format, TimestampMs timestamp)
 {
-    auto timeComp = LocalTimeComponent(timestamp);
+    auto timeComp = local_time_component(timestamp);
     auto timeInfo = TimestampToTimeInfo(timestamp);
     TestTimeString(format, timeInfo, timeComp);
 }
 
 void TestTimeString(const std::string_view& format, std::tm timeInfo, const TimeComponent& timeComp)
 {
-    auto utilsStr = utils::date_time::FormatTimeString(timeComp, format);
+    auto utilsStr = utils::date_time::format_time_string(timeComp, format);
     std::stringstream ss;
     ss << std::put_time(&timeInfo, format.data());
 

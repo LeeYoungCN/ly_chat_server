@@ -86,7 +86,7 @@ namespace utils::date_time {
 
 using namespace ::constants::date_time;
 
-std::string_view GetMonthFullName(uint32_t month)
+std::string_view get_month_full_name(uint32_t month)
 {
     if (month < MIN_MONTH || month > MAX_MONTH) {
         set_thread_last_err(ERR_UTILS_MONTH_INVALID);
@@ -98,7 +98,7 @@ std::string_view GetMonthFullName(uint32_t month)
     return MONTH_FULL_NAMES.at(month - MIN_MONTH);
 }
 
-std::string_view GetMonthAbbrName(uint32_t month)
+std::string_view get_month_abbr_name(uint32_t month)
 {
     if (month < MIN_MONTH || month > MAX_MONTH) {
         set_thread_last_err(ERR_UTILS_MONTH_INVALID);
@@ -110,7 +110,7 @@ std::string_view GetMonthAbbrName(uint32_t month)
     return MONTH_ABBR_NAMES.at(month - MIN_MONTH);
 }
 
-std::string_view GetWeekdayFullName(uint32_t weekday)
+std::string_view get_weekday_full_name(uint32_t weekday)
 {
     if (weekday < MIN_WEEKDAY || weekday > MAX_WEEKDAY) {
         set_thread_last_err(ERR_UTILS_WEEKDAY_INVALID);
@@ -124,7 +124,7 @@ std::string_view GetWeekdayFullName(uint32_t weekday)
     return WEEKDAY_FULL_NAMES.at(weekday);
 }
 
-std::string_view GetWeekdayAbbrName(uint32_t weekday)
+std::string_view get_weekday_abbr_name(uint32_t weekday)
 {
     if (weekday < MIN_WEEKDAY || weekday > MAX_WEEKDAY) {
         set_thread_last_err(ERR_UTILS_WEEKDAY_INVALID);
@@ -138,17 +138,17 @@ std::string_view GetWeekdayAbbrName(uint32_t weekday)
     return WEEKDAY_ABBR_NAMES.at(weekday);
 }
 
-std::string FormatTimeString(TimestampMs timestamp, const std::string_view& format,
-                             TimeZone timeZone)
+std::string format_time_string(TimestampMs timestamp, const std::string_view& format,
+                               TimeZone timeZone)
 {
-    auto timeComp = TimeStampMs2Component(timestamp, timeZone);
-    return FormatTimeString(timeComp, format);
+    auto timeComp = time_stamp_ms_to_component(timestamp, timeZone);
+    return format_time_string(timeComp, format);
 }
 
-std::string FormatTimeString(const TimeComponent& timeComp, const std::string_view& format)
+std::string format_time_string(const TimeComponent& timeComp, const std::string_view& format)
 {
     std::string timeString(MAX_TIME_STR_LEN, '\0');
-    size_t len = FormatTimeBuffer(timeString.data(), timeString.capacity(), timeComp, format);
+    size_t len = format_time_buffer(timeString.data(), timeString.capacity(), timeComp, format);
 
     if (len <= 0 || len > timeString.capacity()) {
         DEBUG_LOGGER_ERR("Time format failed or buffer overflow. len: {}.", len);
@@ -159,15 +159,15 @@ std::string FormatTimeString(const TimeComponent& timeComp, const std::string_vi
     return timeString;
 }
 
-size_t FormatTimeBuffer(char* buffer, size_t bufferSize, TimestampMs timestamp,
-                        const std::string_view& format, TimeZone timeZone)
+size_t format_time_buffer(char* buffer, size_t bufferSize, TimestampMs timestamp,
+                          const std::string_view& format, TimeZone timeZone)
 {
-    auto timeComp = TimeStampMs2Component(timestamp, timeZone);
-    return FormatTimeBuffer(buffer, bufferSize, timeComp, format);
+    auto timeComp = time_stamp_ms_to_component(timestamp, timeZone);
+    return format_time_buffer(buffer, bufferSize, timeComp, format);
 }
 
-size_t FormatTimeBuffer(char* buffer, size_t bufferSize, const TimeComponent& timeComp,
-                        const std::string_view& format)
+size_t format_time_buffer(char* buffer, size_t bufferSize, const TimeComponent& timeComp,
+                          const std::string_view& format)
 {
     if (buffer == nullptr || bufferSize == 0) {
         DEBUG_LOGGER_ERR("Invalid param!");
@@ -246,17 +246,17 @@ size_t FormatTimeBuffer(char* buffer, size_t bufferSize, const TimeComponent& ti
                 success = insertDateTimeNumber(timeComp.second, 2);
                 break;
             case 'B':  // 完整月份名称
-                success = insertString(GetMonthFullName(timeComp.month));
+                success = insertString(get_month_full_name(timeComp.month));
                 break;
             case 'b':  // 缩写月份名称
             case 'h':  // 缩写月份名称
-                success = insertString(GetMonthAbbrName(timeComp.month));
+                success = insertString(get_month_abbr_name(timeComp.month));
                 break;
             case 'A':  // 完整星期名称
-                success = insertString(GetWeekdayFullName(timeComp.wday));
+                success = insertString(get_weekday_full_name(timeComp.wday));
                 break;
             case 'a':  // 缩写星期名称
-                success = insertString(GetWeekdayAbbrName(timeComp.wday));
+                success = insertString(get_weekday_abbr_name(timeComp.wday));
                 break;
             case '%':
                 buffer[bufferIdx++] = '%';
