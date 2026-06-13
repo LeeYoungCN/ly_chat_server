@@ -3,6 +3,7 @@
 #include "gtest/gtest.h"
 #include "logging/logger.h"
 #include "logging/logging.h"
+#include "logging/sinks/stdout_sink.h"
 #include "test_logging_utils/common.h"
 #include "test_logging_utils/log_content_buffer_sink.h"
 
@@ -19,6 +20,11 @@ protected:
     void TearDown() override {};
 };
 
+void TearDown()
+{
+    logging::shut_down();
+}
+
 TEST_F(TestRootLogger, create_logger)
 {
     const std::string name = get_logger_name(test_info_);
@@ -30,10 +36,23 @@ TEST_F(TestRootLogger, create_logger)
     EXPECT_EQ(sink->buffer().size(), 0);
 }
 
+TEST_F(TestRootLogger, set_root_logger)
+{
+    const std::string name = get_logger_name(test_info_);
+    std::shared_ptr<Logger> logger = create_logger<StdoutSink>(name);
+    set_root_logger(logger);
+    EXPECT_EQ(root_logger()->name(), name);
+    EXPECT_EQ(root_logger_raw()->name(), name);
+}
+
 TEST_F(TestRootLogger, get_root_logger)
 {
-    EXPECT_EQ(root_logger()->name(), details::ROOT_LOGGER_NAME);
-    EXPECT_EQ(root_logger_raw()->name(), details::ROOT_LOGGER_NAME);
+    const std::string name = get_logger_name(test_info_);
+    std::shared_ptr<Logger> logger = create_logger<StdoutSink>(name);
+    set_root_logger(logger);
+    EXPECT_EQ(root_logger()->name(), name);
+    EXPECT_EQ(root_logger_raw()->name(), name);
+
     root_logger()->set_level(LogLevel::INFO);
     EXPECT_EQ(root_logger()->level(), LogLevel::INFO);
     EXPECT_EQ(root_logger_raw()->level(), LogLevel::INFO);
@@ -41,18 +60,11 @@ TEST_F(TestRootLogger, get_root_logger)
     EXPECT_FALSE(should_log(LogLevel::DEBUG));
 }
 
-TEST_F(TestRootLogger, set_root_logger)
-{
-    const std::string name = get_logger_name(test_info_);
-    std::shared_ptr<Logger> logger = create_logger<LogContentBufferSink>(name);
-    set_root_logger(logger);
-    EXPECT_EQ(root_logger()->name(), name);
-    EXPECT_EQ(root_logger_raw()->name(), name);
-}
-
 TEST_F(TestRootLogger, root_logger_function)
 {
     const std::string name = get_logger_name(test_info_);
+    std::shared_ptr<Logger> logger = create_logger<StdoutSink>(name);
+    set_root_logger(logger);
     root_logger()->set_level(LogLevel::TRACE);
     trace(LOG_SRC_LOCAL, "trace {}", name);
     debug(LOG_SRC_LOCAL, "debug {}", name);
