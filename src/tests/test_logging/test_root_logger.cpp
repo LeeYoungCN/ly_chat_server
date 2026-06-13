@@ -20,11 +20,6 @@ protected:
     void TearDown() override {};
 };
 
-void TearDown()
-{
-    logging::shut_down();
-}
-
 TEST_F(TestRootLogger, create_logger)
 {
     const std::string name = get_logger_name(test_info_);

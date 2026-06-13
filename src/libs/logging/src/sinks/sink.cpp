@@ -20,7 +20,7 @@ Sink::Sink() : _pimpl(new Impl()) {}
 Sink::~Sink()
 {
     if (_pimpl != nullptr) {
-        DEBUG_LOGGER_INFO("Sink release. {}.", _pimpl->paramStr);
+        DEBUG_LOGGER_DBG("Sink release. {}.", _pimpl->paramStr);
         delete _pimpl;
         _pimpl = nullptr;
     }
