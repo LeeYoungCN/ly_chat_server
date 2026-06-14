@@ -32,31 +32,31 @@ jobs:
             c_compiler: cl
             cpp_compiler: cl
             generator: "Visual Studio 18 2026"  # MSVC默认生成器
-            asan: "OFF"  # MSVC不支持ASAN
+            asan: OFF  # MSVC不支持ASAN
           # Windows + GCC
           - os: windows-latest
             c_compiler: gcc
             cpp_compiler: g++  # 显式指定C++编译器
             generator: "MinGW Makefiles"  # 显式指定MinGW生成器
-            asan: "OFF"  # Windows上的GCC通常不支持ASAN
+            asan: OFF  # Windows上的GCC通常不支持ASAN
           # Ubuntu + GCC
           - os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
             generator: "Unix Makefiles"
-            asan: "ON"  # Ubuntu支持ASAN
+            asan: ON  # Ubuntu支持ASAN
           # Ubuntu + Clang
           - os: ubuntu-latest
             c_compiler: clang
             cpp_compiler: clang++
             generator: "Unix Makefiles"
-            asan: "ON"
+            asan: ON
           # macOS + Clang
           - os: macos-15
             c_compiler: clang
             cpp_compiler: clang++
             generator: "Unix Makefiles"
-            asan: "ON"
+            asan: ON
         exclude:
           - os: windows-latest
             c_compiler: clang
@@ -106,8 +106,8 @@ jobs:
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -DCMAKE_INSTALL_PREFIX=${{ steps.strings.outputs.build-install-dir }}
-        -DENABLE_ASAN="${{ matrix.asan }}"
-        -DBUILD_TESTS="ON"
+        -DENABLE_ASAN=${{ matrix.asan }}
+        -DBUILD_TESTS=ON
 
     - name: Build
       working-directory: ${{ github.workspace }}

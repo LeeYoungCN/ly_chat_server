@@ -12,7 +12,7 @@ set(CMAKE_VERBOSE_MAKEFILE          OFF)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 option(BUILD_TESTS "Build and run tests."   ON)
-option(ENABLE_ASAN "Enable asan."           ON)
+option(ENABLE_ASAN "Enable asan."           OFF)
 
 if (MSVC)
     set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /MDd")
