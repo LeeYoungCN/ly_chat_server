@@ -5,7 +5,7 @@
 
 int main(int argc, char *argv[])
 {
-    set_debug_log_level(DebugLevel::DEBUG_LVL_INFO);
+    set_debug_log_level(DebugLevel::DEBUG_LVL_DEBUG);
     DEBUG_LOGGER_INFO("Running main() from {}", __FILE__);
 
 #ifdef DEBUG_MODE

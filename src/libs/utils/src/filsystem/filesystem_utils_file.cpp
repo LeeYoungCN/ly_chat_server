@@ -126,7 +126,7 @@ bool delete_file(std::string_view path)
 bool copy_file(std::string_view src, std::string_view dest, bool overwrite)
 {
     if (!file_exists(src)) {
-        DEBUG_LOGGER_DBG(
+        DEBUG_LOGGER_ERR(
             "[FAILED] Copy file. src : {}, message: {}", src, get_thread_last_err_msg());
         return false;
     }
@@ -235,7 +235,6 @@ std::string read_text_file(std::string_view path)
         DEBUG_LOGGER_ERR("[FAILED] Read file: {}, message: {}", path, get_thread_last_err_msg());
         return "";
     }
-    DEBUG_LOGGER_DBG("[SUCCESS] Read file: {}, message: {}", path, get_thread_last_err_msg());
     return {std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()};
 }
 
@@ -291,10 +290,10 @@ bool write_text_file(std::string_view path, std::string_view content, bool overw
     if (file << content) {
         file.close();
         set_thread_last_err(ERR_COMM_SUCCESS);
-        DEBUG_LOGGER_DBG("[SUCCESS] Write text file {}: {}, message: {}",
-                         (overwrite ? "overwrite" : "append"),
-                         path,
-                         get_thread_last_err_msg());
+        DEBUG_LOGGER_TRACE("[SUCCESS] Write text file {}: {}, message: {}",
+                           (overwrite ? "overwrite" : "append"),
+                           path,
+                           get_thread_last_err_msg());
         return true;
     }
 

@@ -105,7 +105,7 @@ void Registry::shut_down()
             _globalTaskPool.reset();
         }
     }
-    DEBUG_LOG_INFO("Logging module shutdown.");
+    DEBUG_LOG_DBG("Logging module shutdown.");
 }
 #pragma endregion
 
@@ -141,7 +141,7 @@ void Registry::remove_all()
         }
         _loggers.clear();
     }
-    DEBUG_LOG_INFO("Remove all loggers.");
+    DEBUG_LOG_DBG("Remove all loggers.");
 }
 
 std::shared_ptr<Logger> Registry::get_logger(std::string_view name)

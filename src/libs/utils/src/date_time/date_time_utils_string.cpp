@@ -284,7 +284,6 @@ size_t format_time_buffer(char* buffer, size_t bufferSize, const TimeComponent& 
         bufferIdx = 0;
     } else {
         set_thread_last_err(ERR_COMM_SUCCESS);
-        DEBUG_LOGGER_DBG("[SUCCESS] Format time string, message: {}.", get_thread_last_err_msg());
     }
 
     buffer[bufferIdx] = '\0';

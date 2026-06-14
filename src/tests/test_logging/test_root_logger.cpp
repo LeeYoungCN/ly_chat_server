@@ -1,9 +1,9 @@
 #include <memory>
 
 #include "gtest/gtest.h"
+#include "logging/formatters/pattern_formatter.h"
 #include "logging/logger.h"
 #include "logging/logging.h"
-#include "logging/sinks/stdout_sink.h"
 #include "test_logging_utils/common.h"
 #include "test_logging_utils/log_content_buffer_sink.h"
 
@@ -17,8 +17,32 @@ protected:
     static void SetUpTestSuite() {}
     static void TearDownTestSuite() {}
     void SetUp() override {};
-    void TearDown() override {};
+    void TearDown() override;
 };
+
+void TestRootLogger::TearDown()
+{
+    shut_down();
+}
+
+TEST_F(TestRootLogger, should_log_and_set_level)
+{
+    const std::string name = get_logger_name(test_info_);
+    std::shared_ptr<Logger> logger = create_logger<LogContentBufferSink>(name);
+    set_root_logger(logger);
+    EXPECT_EQ(root_logger()->name(), name);
+    EXPECT_EQ(root_logger_raw()->name(), name);
+
+    for (LogLevel level : LOG_LEVELS) {
+        set_level(level);
+        EXPECT_EQ(root_logger()->level(), level);
+        if (level != LogLevel::OFF) {
+            EXPECT_TRUE(should_log(level));
+        } else {
+            EXPECT_FALSE(should_log(level));
+        }
+    }
+}
 
 TEST_F(TestRootLogger, create_logger)
 {
@@ -34,7 +58,7 @@ TEST_F(TestRootLogger, create_logger)
 TEST_F(TestRootLogger, set_root_logger)
 {
     const std::string name = get_logger_name(test_info_);
-    std::shared_ptr<Logger> logger = create_logger<StdoutSink>(name);
+    std::shared_ptr<Logger> logger = create_logger<LogContentBufferSink>(name);
     set_root_logger(logger);
     EXPECT_EQ(root_logger()->name(), name);
     EXPECT_EQ(root_logger_raw()->name(), name);
@@ -43,7 +67,7 @@ TEST_F(TestRootLogger, set_root_logger)
 TEST_F(TestRootLogger, get_root_logger)
 {
     const std::string name = get_logger_name(test_info_);
-    std::shared_ptr<Logger> logger = create_logger<StdoutSink>(name);
+    std::shared_ptr<Logger> logger = create_logger<LogContentBufferSink>(name);
     set_root_logger(logger);
     EXPECT_EQ(root_logger()->name(), name);
     EXPECT_EQ(root_logger_raw()->name(), name);
@@ -55,10 +79,10 @@ TEST_F(TestRootLogger, get_root_logger)
     EXPECT_FALSE(should_log(LogLevel::DEBUG));
 }
 
-TEST_F(TestRootLogger, root_logger_function)
+TEST_F(TestRootLogger, log)
 {
     const std::string name = get_logger_name(test_info_);
-    std::shared_ptr<Logger> logger = create_logger<StdoutSink>(name);
+    std::shared_ptr<Logger> logger = create_logger<LogContentBufferSink>(name);
     set_root_logger(logger);
     root_logger()->set_level(LogLevel::TRACE);
     trace(LOG_SRC_LOCAL, "trace {}", name);
@@ -88,6 +112,83 @@ TEST_F(TestRootLogger, root_logger_function)
     warn(name);
     error(name);
     fatal(name);
+}
+
+TEST_F(TestRootLogger, flush)
+{
+    const std::string name = get_logger_name(test_info_);
+    auto sink = std::make_shared<LogContentBufferSink>();
+    std::shared_ptr<Logger> logger = std::make_shared<Logger>(name, sink);
+    set_root_logger(logger);
+
+    root_logger()->set_level(LogLevel::TRACE);
+
+    constexpr uint32_t MAX_ITEM_CNT = 100;
+    for (uint32_t i = 0; i < MAX_ITEM_CNT; ++i) {
+        root_logger()->log(LOG_SRC_LOCAL, sink->level(), i);
+        EXPECT_EQ(sink->buffer().size(), i + 1);
+        EXPECT_EQ(sink->disk().size(), 0);
+    }
+    root_logger()->flush();
+    EXPECT_EQ(sink->buffer().size(), 0);
+    EXPECT_EQ(sink->disk().size(), MAX_ITEM_CNT);
+}
+
+TEST_F(TestRootLogger, flush_on)
+{
+    const std::string name = get_logger_name(test_info_);
+    auto sink = std::make_shared<LogContentBufferSink>();
+    sink->set_level(LogLevel::TRACE);
+    std::shared_ptr<Logger> logger = std::make_shared<Logger>(name, sink);
+    set_root_logger(logger);
+    root_logger()->set_level(LogLevel::TRACE);
+    for (auto flushLevel : LOG_LEVELS) {
+        // 设置刷新等级
+        root_logger()->flush_on(flushLevel);
+        for (uint32_t i = 0; i < LOG_LEVELS.size(); ++i) {
+            LogLevel level = LOG_LEVELS[i];
+            if (level == LogLevel::OFF) {
+                break;
+            }
+            root_logger()->log(LOG_SRC_LOCAL, level, i);
+            if (root_logger()->flush_level() == LogLevel::OFF ||
+                level < root_logger()->flush_level()) {
+                EXPECT_EQ(sink->buffer().size(), i + 1);
+                EXPECT_EQ(sink->disk().size(), 0);
+            } else {
+                EXPECT_EQ(sink->buffer().size(), 0);
+                EXPECT_EQ(sink->disk().size(), i + 1);
+            }
+        }
+        sink->clear();
+    }
+}
+
+TEST_F(TestRootLogger, set_pattern)
+{
+    const std::string name = get_logger_name(test_info_);
+    auto sink = std::make_shared<LogContentBufferSink>();
+    auto logger = std::make_shared<Logger>(name, sink);
+    set_root_logger(logger);
+    root_logger()->set_pattern("%v");
+    for (uint32_t i = 0; i < 100; i++) {
+        root_logger()->error(i);
+        EXPECT_EQ(std::to_string(i), sink->buffer()[i]);
+    }
+}
+
+TEST_F(TestRootLogger, set_formatter)
+{
+    const std::string name = get_logger_name(test_info_);
+    auto sink = std::make_shared<LogContentBufferSink>();
+    auto logger = std::make_shared<Logger>(name, sink);
+    set_root_logger(logger);
+    std::unique_ptr<Formatter> formatter = std::make_unique<PatternFormatter>("%v");
+    root_logger()->set_formatter(formatter);
+    for (uint32_t i = 0; i < 100; i++) {
+        root_logger()->error(i);
+        EXPECT_EQ(std::to_string(i), sink->buffer()[i]);
+    }
 }
 
 }  // namespace test::test_logging
