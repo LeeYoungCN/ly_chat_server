@@ -51,7 +51,7 @@ TaskPool::~TaskPool()
         }
     }
     delete _pimpl;
-    DEBUG_LOGGER_INFO("Log thread pool release.");
+    DEBUG_LOGGER_DBG("Log thread pool release.");
 }
 
 void TaskPool::log(const std::shared_ptr<AsyncLogger>& logger, const LogMsg& logMsg)
@@ -62,6 +62,11 @@ void TaskPool::log(const std::shared_ptr<AsyncLogger>& logger, const LogMsg& log
 void TaskPool::flush(const std::shared_ptr<AsyncLogger>& logger)
 {
     _pimpl->buffer.enqueue_wait(LogTask(TaskType::FLUSH, logger, LogMsg()));
+}
+
+[[nodiscard]] size_t TaskPool::task_count() const
+{
+    return _pimpl->buffer.size();
 }
 
 void TaskPool::worker_loop(uint32_t idx)
@@ -87,6 +92,6 @@ void TaskPool::worker_loop(uint32_t idx)
             DEBUG_LOGGER_ERR("[Exception]: {}.", ex.what());
         }
     }
-    DEBUG_LOGGER_INFO("Log thread pool worker loop shutdown. [{}/{}]", idx, _pimpl->threadCnt);
+    DEBUG_LOGGER_DBG("Log thread pool worker loop shutdown. [{}/{}]", idx, _pimpl->threadCnt);
 }
 }  // namespace logging::details

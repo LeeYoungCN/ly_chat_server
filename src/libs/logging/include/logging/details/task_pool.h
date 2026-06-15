@@ -1,4 +1,5 @@
 #pragma once
+#include <cstddef>
 #ifndef LOGGING_DETAILS_LOG_THREAD_POOL_H
 #define LOGGING_DETAILS_LOG_THREAD_POOL_H
 
@@ -22,6 +23,7 @@ public:
 
     void log(const std::shared_ptr<AsyncLogger>& logger, const LogMsg& logMsg);
     void flush(const std::shared_ptr<AsyncLogger>& logger);
+    [[nodiscard]] size_t task_count() const;
 
 protected:
     void worker_loop(uint32_t idx);

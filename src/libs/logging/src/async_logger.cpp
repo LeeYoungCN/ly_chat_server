@@ -22,7 +22,7 @@ AsyncLogger::~AsyncLogger()
 {
     _pimpl->taskPool.reset();
     delete _pimpl;
-    DEBUG_LOGGER_INFO("Async logger release. [{}].", name());
+    DEBUG_LOGGER_DBG("Async logger release. [{}].", name());
 }
 
 AsyncLogger::AsyncLogger(std::string_view name, const std::shared_ptr<Sink>& sink,
