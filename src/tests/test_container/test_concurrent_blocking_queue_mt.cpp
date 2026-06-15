@@ -134,7 +134,7 @@ void TestConcurrentBlockingQueueMt::StartThread(uint32_t producerCnt, uint32_t c
 void TestConcurrentBlockingQueueMt::WaitFinish()
 {
     while (_totalConsumeItemCnt < _totalProduceItemCnt) {
-        utils::date_time::sleep_ms(100);
+        utils::date_time::sleep_ms(1);
     }
     _isRunning = false;
 }
