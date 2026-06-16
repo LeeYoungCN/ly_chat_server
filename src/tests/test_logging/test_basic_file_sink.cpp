@@ -25,7 +25,7 @@ protected:
 
 void TestBasicFileSink::TearDown()
 {
-    // delete_dir(_dir);
+    delete_dir(_dir, true);
 }
 
 TEST_F(TestBasicFileSink, create_file_empty)
@@ -35,7 +35,8 @@ TEST_F(TestBasicFileSink, create_file_empty)
 
 TEST_F(TestBasicFileSink, create_file_invalid_path)
 {
-    EXPECT_THROW(BasicFileSink sink("/invalid_path/log.txt"), std::runtime_error);
+    create_dir(_dir);
+    EXPECT_THROW(BasicFileSink sink(_dir), std::runtime_error);
 }
 
 TEST_F(TestBasicFileSink, create_file_success)

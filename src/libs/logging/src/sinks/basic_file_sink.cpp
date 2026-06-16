@@ -1,20 +1,18 @@
 #include "logging/sinks/basic_file_sink.h"
 
 #include <stdexcept>
-#include <type_traits>
 
 #include "common/debug/debug_logger.h"
 #include "internal/logging_internal.h"
 #include "utils/file_writer.h"
 #include "utils/filesystem_utils.h"
-#include "utils/thread_utils.h"
 #include "utils/utils_error_code.h"
 
 namespace logging {
 using namespace utils::filesystem;
 
 struct BasicFileSink::Impl {
-    Impl(std::string_view file, bool overwrite) : _filePath(file), _overwrite(overwrite)
+    Impl(std::string_view file, bool overwrite) : _filePath(to_absolute_path(file)), _overwrite(overwrite)
     {
         _fileWriter.open(_filePath,
                          (_overwrite ? FileWriteMode::OVERWRITE : FileWriteMode::APPEND));
