@@ -1,12 +1,17 @@
 #include "logging/sinks/basic_file_sink.h"
 
+#include <stdexcept>
+#include <type_traits>
+
+#include "common/debug/debug_logger.h"
+#include "internal/logging_internal.h"
 #include "utils/file_writer.h"
 #include "utils/filesystem_utils.h"
-#include "utils/process_utils.h"
+#include "utils/thread_utils.h"
+#include "utils/utils_error_code.h"
 
 namespace logging {
 using namespace utils::filesystem;
-using namespace utils::process;
 
 struct BasicFileSink::Impl {
     Impl(std::string_view file, bool overwrite) : _filePath(file), _overwrite(overwrite)
@@ -20,17 +25,6 @@ struct BasicFileSink::Impl {
     utils::filesystem::FileWriter _fileWriter;
 };
 
-BasicFileSink::BasicFileSink()
-{
-    std::string process = get_proc_path();
-
-    _pimpl = new Impl(join_paths({get_directory(process), "logs", get_file_name(process) + ".log"}),
-                      true);
-
-    set_parameter("BasicFileSink, File: " + _pimpl->_filePath +
-                  ", Overwrite: " + std::to_string(_pimpl->_overwrite));
-}
-
 BasicFileSink::~BasicFileSink()
 {
     if (_pimpl == nullptr) {
@@ -40,24 +34,47 @@ BasicFileSink::~BasicFileSink()
     _pimpl->_fileWriter.flush();
     _pimpl->_fileWriter.close();
 
-    delete _pimpl;
+    _pimpl.reset();
     _pimpl = nullptr;
 }
 
+BasicFileSink::BasicFileSink() : BasicFileSink(internal::get_default_log_file("log"), true) {}
+
 BasicFileSink::BasicFileSink(std::string_view file, bool overwrite)
-    : _pimpl(new Impl(to_absolute_path(file), overwrite))
 {
-    set_parameter("BasicFileSink, File: " + std::string(file) +
-                  ", Overwrite: " + std::to_string(overwrite));
+    if (file.empty()) {
+        DEBUG_LOGGER_ERR("Failed to create BasicFileSink. file path is empty.");
+        throw std::invalid_argument("File path cannot be empty");
+    }
+
+    _pimpl = std::make_unique<Impl>(file, overwrite);
+
+    if (_pimpl->_fileWriter.get_last_error() != ERR_COMM_SUCCESS) {
+        DEBUG_LOGGER_ERR("Failed to open file. file: \"{}\", overwrite: {}, msg: {}",
+                         file,
+                         overwrite,
+                         get_utils_err_msg(_pimpl->_fileWriter.get_last_error()));
+        _pimpl.reset();
+        throw std::runtime_error("Failed to open file: " + std::string(file));
+    }
+
+    set_parameter("BasicFileSink, File: \"" + std::string(file) +
+                  "\", Overwrite: " + std::to_string(overwrite));
 }
 
 void BasicFileSink::sink_it(std::string_view message)
 {
+    if (_pimpl == nullptr) {
+        return;
+    }
     _pimpl->_fileWriter.write_line(message);
 }
 
 void BasicFileSink::flush_it()
 {
+    if (_pimpl == nullptr) {
+        return;
+    }
     _pimpl->_fileWriter.flush();
 }
 

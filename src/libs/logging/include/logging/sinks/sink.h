@@ -6,6 +6,7 @@
 #include <mutex>
 #include <string_view>
 
+#include "logging/details/constants.h"
 #include "logging/details/log_msg.h"
 #include "logging/formatters/formatter.h"
 #include "logging/log_level.h"
@@ -19,7 +20,9 @@ public:
     virtual void log(const details::LogMsg& logMsg) = 0;
     virtual void flush() = 0;
 
-    void set_pattern(std::string_view pattern, std::string_view timePattern);
+    void set_pattern(
+        std::string_view pattern = logging::details::FORMATTER_DEFAULT_PATTERN,
+        std::string_view timePattern = logging::details::FORMATTER_DEFAULT_TIME_PATTERN);
     void set_formatter(std::unique_ptr<Formatter> formatter);
 
     [[nodiscard]] bool should_log(LogLevel level) const;
@@ -33,7 +36,7 @@ protected:
 
 private:
     struct Impl;
-    Impl* _pimpl;
+    std::unique_ptr<Impl> _pimpl;
 };
 }  // namespace logging
 

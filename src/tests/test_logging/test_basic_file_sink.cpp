@@ -1,0 +1,93 @@
+#include <cstdint>
+#include <string>
+
+#include "common/constants/filesystem_constants.h"
+#include "gtest/gtest.h"
+#include "logging/sinks/basic_file_sink.h"
+#include "test_logging_utils/common.h"
+#include "utils/filesystem_utils.h"
+
+using namespace logging;
+using namespace utils::filesystem;
+using namespace constants::filesystem;
+
+namespace test::test_logging {
+class TestBasicFileSink : public ::testing::Test {
+protected:
+    static void SetUpTestSuite() {}
+    static void TearDownTestSuite() {}
+    void SetUp() override {};
+    void TearDown() override;
+
+protected:
+    std::string _dir = get_log_dir();
+};
+
+void TestBasicFileSink::TearDown()
+{
+    // delete_dir(_dir);
+}
+
+TEST_F(TestBasicFileSink, create_file_empty)
+{
+    EXPECT_THROW(BasicFileSink sink(""), std::invalid_argument);
+}
+
+TEST_F(TestBasicFileSink, create_file_invalid_path)
+{
+    EXPECT_THROW(BasicFileSink sink("/invalid_path/log.txt"), std::runtime_error);
+}
+
+TEST_F(TestBasicFileSink, create_file_success)
+{
+    std::string logFile = join_paths({_dir, get_logger_name(test_info_) + ".log"});
+    BasicFileSink sink(logFile);
+    EXPECT_TRUE(file_exists(logFile));
+}
+
+TEST_F(TestBasicFileSink, sink_log_level)
+{
+    std::string logFile = join_paths({_dir, get_logger_name(test_info_) + ".log"});
+    BasicFileSink sink(logFile);
+    EXPECT_TRUE(file_exists(logFile));
+
+    for (LogLevel level : LOG_LEVELS) {
+        sink.set_level(level);
+        EXPECT_EQ(sink.level(), level);
+        for (LogLevel level : LOG_LEVELS) {
+            if (level == LogLevel::OFF) {
+                EXPECT_FALSE(sink.should_log(level));
+            } else if (level >= sink.level()) {
+                EXPECT_TRUE(sink.should_log(level));
+            } else {
+                EXPECT_FALSE(sink.should_log(level));
+            }
+        }
+    }
+}
+
+TEST_F(TestBasicFileSink, sink_log_and_flush)
+{
+    std::string logFile = join_paths({_dir, get_logger_name(test_info_) + ".log"});
+    BasicFileSink sink(logFile);
+    EXPECT_TRUE(file_exists(logFile));
+    auto fileSizeBefore = get_file_size(logFile);
+
+    sink.set_pattern("[%d][%l]: %v");
+
+    std::string_view message = "Test log message.";
+    std::string logContent = "[2024-01-01 12:00:00.000][E]: " + std::string(message);
+
+    FileSize messageSize = logContent.size() + LF_LENGTH;
+
+    logging::details::LogMsg logMsg(LOG_SRC_LOCAL, "logger", LogLevel::INFO, message);
+
+    for (int i = 0; i < 100; ++i) {
+        sink.log(logMsg);
+        sink.flush();
+        EXPECT_EQ(get_file_size(logFile), fileSizeBefore + messageSize);
+        fileSizeBefore += messageSize;
+    }
+}
+
+}  // namespace test::test_logging

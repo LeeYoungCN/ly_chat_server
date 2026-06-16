@@ -42,18 +42,18 @@ ErrorCode FileWriter::open_(FileWriteMode mode)
     m_stream = std::ofstream(m_file, m_mode);
     date_time::sleep_ms(constants::filesystem::FILE_OPEN_INTERNAL_MS);
     if (!m_stream.is_open()) {
-        m_errcode = get_thread_last_err();
         std::error_code ec(errno, std::generic_category());
-        ConvertSysEcToErrorCode(ec);
-        DEBUG_LOGGER_ERR("Open file failed. file: {}, mode: {}, msg: {}",
+        set_thread_last_err(ConvertSysEcToErrorCode(ec));
+        DEBUG_LOGGER_ERR("Open file failed. file: \"{}\", mode: {}, msg: {}",
                          m_file.data(),
                          FileWriteModeStr(mode),
                          get_thread_last_err_msg());
+        m_errcode = get_thread_last_err();
         return m_errcode;
     }
     m_currSize = get_file_size(m_file);
     DEBUG_LOGGER_DBG(
-        "Open file success. file: {}, mode: {}", m_file.data(), FileWriteModeStr(mode));
+        "Open file success. file: \"{}\", mode: {}", m_file.data(), FileWriteModeStr(mode));
     m_errcode = ERR_COMM_SUCCESS;
     return m_errcode;
 }
@@ -97,7 +97,7 @@ void FileWriter::write(std::string_view str)
         set_thread_last_err(ERR_UTILS_FILE_NOT_OPEN);
         m_errcode = ERR_UTILS_FILE_NOT_OPEN;
         DEBUG_LOGGER_ERR(
-            "Append failed. file: {}, msg: {}.", m_file.c_str(), get_utils_err_msg(m_errcode));
+            "Append failed. file: \"{}\", msg: {}.", m_file.c_str(), get_utils_err_msg(m_errcode));
     } else {
         m_errcode = ERR_COMM_SUCCESS;
         m_stream << str;
@@ -110,7 +110,7 @@ void FileWriter::write_line(std::string_view str)
     if (!m_stream.is_open()) {
         m_errcode = ERR_UTILS_FILE_NOT_OPEN;
         DEBUG_LOGGER_ERR(
-            "Append failed. file: {}, msg: {}.", m_file.c_str(), get_utils_err_msg(m_errcode));
+            "Append failed. file: \"{}\", msg: {}.", m_file.c_str(), get_utils_err_msg(m_errcode));
     } else {
         m_errcode = ERR_COMM_SUCCESS;
         m_stream << str << '\n';

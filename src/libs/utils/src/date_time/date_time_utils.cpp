@@ -162,9 +162,6 @@ TimeComponent time_stamp_ms_to_component(TimestampMs timestamp, TimeZone timeZon
     } else {
         ConvertTmToTimeComp(timeInfo, millis, timeComp);
         set_thread_last_err(ERR_COMM_SUCCESS);
-        DEBUG_LOGGER_TRACE("[SUCCESS] Get time info, zone: {}, message: {}.",
-                           GetTimeZoneString(timeZone),
-                           get_thread_last_err_msg());
     }
     return timeComp;
 }

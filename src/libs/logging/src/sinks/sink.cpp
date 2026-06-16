@@ -15,19 +15,21 @@ struct Sink::Impl {
     std::string paramStr;
 };
 
-Sink::Sink() : _pimpl(new Impl()) {}
+Sink::Sink() : _pimpl(std::make_unique<Impl>()) {}
 
 Sink::~Sink()
 {
     if (_pimpl != nullptr) {
         DEBUG_LOGGER_DBG("Sink release. {}.", _pimpl->paramStr);
-        delete _pimpl;
-        _pimpl = nullptr;
+        _pimpl.reset();
     }
 }
 
 bool Sink::should_log(LogLevel level) const
 {
+    if (level == LogLevel::OFF) {
+        return false;
+    }
     return level >= _pimpl->level.load(std::memory_order_relaxed);
 }
 

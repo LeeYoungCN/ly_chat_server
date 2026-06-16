@@ -10,7 +10,7 @@
 
 #include "common/types/type_traits.h"
 #include "logging/details//inner_macros.h"
-#include "logging/details/common.h"
+#include "logging/details/constants.h"
 #include "logging/details/log_msg.h"
 #include "logging/details/log_source.h"
 #include "logging/formatters/formatter.h"
@@ -97,7 +97,7 @@ protected:
 
 private:
     struct Impl;
-    Impl* _pimpl;
+    std::unique_ptr<Impl> _pimpl;
 };
 }  // namespace logging
 

@@ -6,7 +6,7 @@
 
 #include "gtest/gtest.h"
 #include "logging/async_logger.h"
-#include "logging/details/common.h"
+#include "logging/details/log_source.h"
 #include "logging/formatters/formatter.h"
 #include "logging/formatters/pattern_formatter.h"
 #include "logging/log_level.h"
@@ -25,14 +25,9 @@ protected:
     static void SetUpTestSuite() {}
     static void TearDownTestSuite() {}
     void SetUp() override {};
-    void TearDown() override;
+    void TearDown() override {};
 
-    void wait_for_task()
-    {
-        while (_taskPool->task_count() > 0) {
-            utils::date_time::sleep_ms(10);
-        }
-    }
+    void wait_for_task();
 
 protected:
     std::shared_ptr<AsyncLogger> _logger;
@@ -41,11 +36,11 @@ protected:
         std::make_shared<logging::details::TaskPool>(1024, 1);
 };
 
-void TestAsyncLogger::TearDown()
+void TestAsyncLogger::wait_for_task()
 {
-    // _logger.reset();
-    // _sink.reset();
-    // _taskPool.reset();
+    while (_taskPool->task_count() > 0) {
+        utils::date_time::sleep_ms(10);
+    }
 }
 
 TEST_F(TestAsyncLogger, create_single_sink)

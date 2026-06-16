@@ -9,7 +9,7 @@
 #include <unordered_map>
 
 #include "common/base/singleton.h"
-#include "logging/details/common.h"
+#include "logging/details/constants.h"
 #include "logging/details/task_pool.h"
 #include "logging/formatters/formatter.h"
 #include "logging/log_level.h"

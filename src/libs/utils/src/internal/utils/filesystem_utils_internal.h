@@ -14,11 +14,13 @@
 
 #include <system_error>
 
+#include "common/types/error_code_types.h"
+
 namespace utils::filesystem::internal {
 
-void ConvertSysEcToErrorCode(const std::error_code& ec);
+ErrorCode ConvertSysEcToErrorCode(const std::error_code& ec);
 
-void ConvertExceptionToErrorCode(const std::exception& ex);
+ErrorCode ConvertExceptionToErrorCode(const std::exception& ex);
 
 }  // namespace utils::filesystem::internal
 

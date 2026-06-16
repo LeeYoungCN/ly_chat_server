@@ -1,6 +1,6 @@
 #include "c/common_c.h"
 #include "logging/c/logging_c.h"
-#include "logging/details/common.h"
+#include "logging/details/constants.h"
 #include "logging/formatters/pattern_formatter.h"
 
 using namespace logging;

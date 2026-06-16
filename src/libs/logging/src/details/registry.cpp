@@ -6,7 +6,7 @@
 
 #include "common/debug/debug_log.h"
 #include "common/debug/debug_logger.h"
-#include "logging/details/common.h"
+#include "logging/details/constants.h"
 #include "logging/formatters/pattern_formatter.h"
 #include "logging/sinks/stdout_sink.h"
 

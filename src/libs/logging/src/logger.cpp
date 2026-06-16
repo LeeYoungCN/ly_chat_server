@@ -30,23 +30,23 @@ struct Logger::Impl {
 Logger::~Logger()
 {
     DEBUG_LOGGER_DBG("Logger release. Name: \"{}\", SinkCount: {}.", name(), _pimpl->sinks.size());
-    delete _pimpl;
+    _pimpl.reset();
 }
 
-Logger::Logger(std::string_view name) : _pimpl(new Impl(name)) {}
+Logger::Logger(std::string_view name) : _pimpl(std::make_unique<Impl>(name)) {}
 
 Logger::Logger(std::string_view name, const std::shared_ptr<Sink>& sink)
-    : _pimpl(new Impl(name, {sink}))
+    : _pimpl(std::make_unique<Impl>(name, std::vector<std::shared_ptr<Sink>>{sink}))
 {
 }
 
 Logger::Logger(std::string_view name, const std::vector<std::shared_ptr<Sink>>& sinks)
-    : _pimpl(new Impl(name, sinks))
+    : _pimpl(std::make_unique<Impl>(name, sinks))
 {
 }
 
 Logger::Logger(std::string_view name, const std::initializer_list<std::shared_ptr<Sink>>& sinks)
-    : _pimpl(new Impl(name, std::vector<std::shared_ptr<Sink>>(sinks)))
+    : _pimpl(std::make_unique<Impl>(name, std::vector<std::shared_ptr<Sink>>(sinks)))
 {
 }
 

@@ -59,7 +59,7 @@ std::string get_proc_path()
 #error "Unsupport system."
 #endif
     set_thread_last_err(ERR_COMM_SUCCESS);
-    DEBUG_LOGGER_DBG("[SUCCESS] Get process path: {}", path);
+    DEBUG_LOGGER_TRACE("Get process path: {}", path);
     return path;
 }
 

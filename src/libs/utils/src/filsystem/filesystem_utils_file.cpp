@@ -90,7 +90,7 @@ bool create_file(std::string_view path)
         return true;
     }
     std::error_code ec(errno, std::generic_category());
-    ConvertSysEcToErrorCode(ec);
+    set_thread_last_err(ConvertSysEcToErrorCode(ec));;
     return false;
 }
 
@@ -104,11 +104,11 @@ bool DeleteFileInternal(std::string_view path)
         return result;
     } catch (const fs::filesystem_error& e) {
         DEBUG_LOGGER_ERR("[FAILED] Delete file: {}. ex: {}", path, e.what());
-        ConvertSysEcToErrorCode(e.code());
+        set_thread_last_err(ConvertSysEcToErrorCode(e.code()));
         return false;
     } catch (const std::exception& e) {
         DEBUG_LOGGER_ERR("[FAILED] Delete file: {}. ex: {}", path, e.what());
-        ConvertExceptionToErrorCode(e);
+        set_thread_last_err(ConvertExceptionToErrorCode(e));
         return false;
     }
 }
@@ -143,19 +143,15 @@ bool copy_file(std::string_view src, std::string_view dest, bool overwrite)
     try {
         fs::copy_file(src, dest, option);
         set_thread_last_err(ERR_COMM_SUCCESS);
-        DEBUG_LOGGER_DBG("[SUCCESS] Copy file {}. src: {}. dst: {}",
-                         (overwrite ? "overwrite" : "not overwrite"),
-                         src,
-                         dest);
         return true;
     } catch (const fs::filesystem_error& e) {
-        ConvertSysEcToErrorCode(e.code());
+        set_thread_last_err(ConvertSysEcToErrorCode(e.code()));
         DEBUG_LOGGER_ERR("[FAILED] Copy file {}. ex: {}.",
                          (overwrite ? "overwrite" : "not overwrite"),
                          e.what());
         return false;
     } catch (const std::exception& e) {
-        ConvertExceptionToErrorCode(e);
+        set_thread_last_err(ConvertExceptionToErrorCode(e));
         DEBUG_LOGGER_ERR("[FAILED]  Copy file {}. ex: {}.",
                          (overwrite ? "overwrite" : "not overwrite"),
                          e.what());
@@ -201,7 +197,7 @@ bool rename_file(std::string_view src, std::string_view dest, bool overwrite)
                          get_thread_last_err_msg());
         return true;
     } catch (const fs::filesystem_error& e) {
-        ConvertSysEcToErrorCode(e.code());
+        set_thread_last_err(ConvertSysEcToErrorCode(e.code()));
         DEBUG_LOGGER_ERR("[FAILED] Rename file {}, src: {}, dest: {}, message: {}. ex: {}.",
                          (overwrite ? "overwrite " : "not overwrite"),
                          src,
@@ -210,7 +206,7 @@ bool rename_file(std::string_view src, std::string_view dest, bool overwrite)
                          e.what());
         return false;
     } catch (const std::exception& e) {
-        ConvertExceptionToErrorCode(e);
+        set_thread_last_err(ConvertExceptionToErrorCode(e));
         DEBUG_LOGGER_ERR("[FAILED] Rename file {}. src: {}, dest: {}, message: {}. ex: {}",
                          (overwrite ? "overwrite " : "not overwrite"),
                          src,
@@ -231,7 +227,7 @@ std::string read_text_file(std::string_view path)
     std::ifstream file(path.data(), std::ios::in);
     if (!file.is_open()) {
         std::error_code ec(errno, std::generic_category());
-        ConvertSysEcToErrorCode(ec);
+        set_thread_last_err(ConvertSysEcToErrorCode(ec));;
         DEBUG_LOGGER_ERR("[FAILED] Read file: {}, message: {}", path, get_thread_last_err_msg());
         return "";
     }
@@ -249,7 +245,7 @@ ByteVector read_binary_file(std::string_view path)
     std::ifstream file(path.data(), std::ios::in);
     if (!file.is_open()) {
         std::error_code ec(errno, std::generic_category());
-        ConvertSysEcToErrorCode(ec);
+        set_thread_last_err(ConvertSysEcToErrorCode(ec));;
         DEBUG_LOGGER_ERR(
             "[FAILED] Read binary file: {}, message: {}", path, get_thread_last_err_msg());
         return {};
@@ -279,7 +275,7 @@ bool write_text_file(std::string_view path, std::string_view content, bool overw
     std::ofstream file(path.data(), mode);
     if (!file.is_open()) {
         std::error_code ec(errno, std::generic_category());
-        ConvertSysEcToErrorCode(ec);
+        set_thread_last_err(ConvertSysEcToErrorCode(ec));;
         DEBUG_LOGGER_ERR("[FAILED] Write text file {}: {}, message: {}",
                          (overwrite ? "overwrite" : "append"),
                          path,
@@ -298,7 +294,7 @@ bool write_text_file(std::string_view path, std::string_view content, bool overw
     }
 
     std::error_code ec(errno, std::system_category());
-    ConvertSysEcToErrorCode(ec);
+    set_thread_last_err(ConvertSysEcToErrorCode(ec));;
     DEBUG_LOGGER_ERR("[FAILED] Write text file {}: {}, message: {}",
                      (overwrite ? "overwrite" : "append"),
                      path,
@@ -315,7 +311,7 @@ FileSize get_file_size(std::string_view path)
     }
     std::error_code ec;
     const auto& size = fs::file_size(path, ec);
-    ConvertSysEcToErrorCode(ec);
+    set_thread_last_err(ConvertSysEcToErrorCode(ec));;
     return size;
 }
 

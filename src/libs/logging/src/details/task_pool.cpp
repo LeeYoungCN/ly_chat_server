@@ -9,7 +9,7 @@
 #include "common/container/concurrent_blocking_queue.hpp"
 #include "common/debug/debug_logger.h"
 #include "logging/async_logger.h"
-#include "logging/details/common.h"
+#include "logging/details/constants.h"
 #include "logging/details/log_msg.h"
 #include "logging/details/log_task.h"
 
@@ -31,7 +31,7 @@ TaskPool::TaskPool() : TaskPool(THREAD_POOL_DEFAULT_CAPACITY, THREAD_POOL_DEFAUL
 
 TaskPool::TaskPool(uint32_t capacity) : TaskPool(capacity, THREAD_POOL_DEFAULT_THREAD_CNT) {}
 
-TaskPool::TaskPool(uint32_t capacity, uint32_t threadCnt) : _pimpl(new Impl(capacity, threadCnt))
+TaskPool::TaskPool(uint32_t capacity, uint32_t threadCnt) : _pimpl(std::make_unique<Impl>(capacity, threadCnt))
 {
     _pimpl->threadPool.reserve(_pimpl->threadCnt);
     for (uint32_t i = 0; i < _pimpl->threadCnt; i++) {
@@ -50,7 +50,7 @@ TaskPool::~TaskPool()
             t.join();
         }
     }
-    delete _pimpl;
+    _pimpl.reset();
     DEBUG_LOGGER_DBG("Log thread pool release.");
 }
 

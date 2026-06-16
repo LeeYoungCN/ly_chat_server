@@ -19,4 +19,8 @@ struct LogSource {
 };
 }  // namespace logging::details
 
+#define LOG_SRC_LOCAL                  logging::details::LogSource(__FILE__, __LINE__, __FUNCTION__)
+#define LOG_SRC_EMPTY                  logging::details::LogSource()
+#define LOG_SRC_INST(file, line, func) logging::details::LogSource(file, line, func)
+
 #endif  // LOGGING_DETAILS_LOG_SOURCE_H

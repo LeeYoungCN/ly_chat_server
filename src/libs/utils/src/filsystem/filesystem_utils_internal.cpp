@@ -23,7 +23,7 @@
 
 namespace utils::filesystem::internal {
 
-void ConvertGenericCategory(const std::error_code& ec)
+ErrorCode ConvertGenericCategory(const std::error_code& ec)
 {
     static const std::unordered_map<int, ErrorCode> ERR_MAP = {
         {static_cast<int>(std::errc::permission_denied), ERR_UTILS_PERMISSION_DENIED},
@@ -36,10 +36,10 @@ void ConvertGenericCategory(const std::error_code& ec)
         {static_cast<int>(std::errc::io_error), ERR_UTILS_IO_ERROR}};
 
     auto it = ERR_MAP.find(ec.value());
-    set_thread_last_err(it != ERR_MAP.end() ? it->second : ERR_COMM_GENERIC_ERROR);
+    return (it != ERR_MAP.end() ? it->second : ERR_COMM_GENERIC_ERROR);
 }
 
-void ConvertSystemCategory(const std::error_code& ec)
+ErrorCode ConvertSystemCategory(const std::error_code& ec)
 {
     static const std::unordered_map<int, ErrorCode> ERR_MAP = {
 #if COMPILER_MSVC
@@ -55,33 +55,30 @@ void ConvertSystemCategory(const std::error_code& ec)
     };
 
     auto it = ERR_MAP.find(ec.value());
-    set_thread_last_err(it != ERR_MAP.end() ? it->second : ERR_COMM_SYSTEM_ERROR);
+    return (it != ERR_MAP.end() ? it->second : ERR_COMM_SYSTEM_ERROR);
 }
 
-void ConvertExceptionToErrorCode(const std::exception& ex)
+ErrorCode ConvertExceptionToErrorCode(const std::exception& ex)
 {
     try {
         std::throw_with_nested(ex);
     } catch (const std::filesystem::filesystem_error& fse) {
         DEBUG_LOGGER_WARN("File system error: {} (code: {})", fse.what(), fse.code().value());
-        ConvertSysEcToErrorCode(fse.code());
-        return;
+        return ConvertSysEcToErrorCode(fse.code());
     } catch (const std::system_error& se) {
         DEBUG_LOGGER_WARN("System error: {} (code: {})", se.what(), se.code().value());
-        ConvertSysEcToErrorCode(se.code());
-        return;
+        return ConvertSysEcToErrorCode(se.code());
     } catch (const std::exception& other) {
         DEBUG_LOGGER_ERR("Non-filesystem exception, ex: {}.", other.what());
-        set_thread_last_err(ERR_COMM_SYSTEM_ERROR);
-        return;
+        return ERR_COMM_SYSTEM_ERROR;
     }
 }
 
-void ConvertSysEcToErrorCode(const std::error_code& ec)
+ErrorCode ConvertSysEcToErrorCode(const std::error_code& ec)
 {
     if (!ec) {
         set_thread_last_err(ERR_COMM_SUCCESS);
-        return;
+        return ERR_COMM_SUCCESS;
     }
     // 详细日志便于调试
     DEBUG_LOGGER_WARN("Convert error: {} (category: {}, value: {})",
@@ -90,11 +87,12 @@ void ConvertSysEcToErrorCode(const std::error_code& ec)
                       ec.value());
 
     if (ec.category() == std::system_category()) {
-        ConvertSystemCategory(ec);
+        return ConvertSystemCategory(ec);
     } else if (ec.category() == std::generic_category()) {
-        ConvertGenericCategory(ec);
+        return ConvertGenericCategory(ec);
     } else {
-        DEBUG_LOGGER_FATAL("Unkown");
+        DEBUG_LOGGER_FATAL("Unknown error category: {}", ec.category().name());
+        return ERR_COMM_UNKNOWN_ERROR;
     }
 }
 

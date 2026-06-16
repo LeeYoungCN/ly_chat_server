@@ -4,7 +4,7 @@
 #include <string>
 #include <string_view>
 
-#include "logging/details/common.h"
+#include "logging/details/constants.h"
 #include "logging/log_level.h"
 #include "utils/date_time_utils.h"
 #include "utils/filesystem_utils.h"
@@ -15,8 +15,8 @@ using namespace utils::date_time;
 using namespace utils::filesystem;
 
 struct PatternFormatter::Impl {
-    std::string pattern;
-    std::string timePattern;
+    std::string pattern{details::FORMATTER_DEFAULT_PATTERN};
+    std::string timePattern{details::FORMATTER_DEFAULT_TIME_PATTERN};
 
     Impl(std::string_view pattern, std::string_view timePattern)
         : pattern(pattern.empty() ? details::FORMATTER_DEFAULT_PATTERN : pattern),
@@ -27,7 +27,7 @@ struct PatternFormatter::Impl {
 
 PatternFormatter::~PatternFormatter()
 {
-    delete _pimpl;
+    _pimpl.reset();
 }
 
 PatternFormatter::PatternFormatter()
@@ -41,7 +41,7 @@ PatternFormatter::PatternFormatter(std::string_view pattern)
 }
 
 PatternFormatter::PatternFormatter(std::string_view pattern, std::string_view timePattern)
-    : _pimpl(new Impl(pattern, timePattern))
+    : _pimpl(std::make_unique<Impl>(pattern, timePattern))
 {
 }
 

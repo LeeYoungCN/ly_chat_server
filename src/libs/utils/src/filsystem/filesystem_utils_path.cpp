@@ -44,16 +44,15 @@ std::string get_curr_working_dir()
 {
     try {
         auto p = fs::current_path();
-        DEBUG_LOGGER_DBG("[SUCCESS] Get current working dir: {}.", p.string().c_str());
         set_thread_last_err(ERR_COMM_SUCCESS);
         return p.string();
     } catch (const fs::filesystem_error& e) {
-        DEBUG_LOGGER_ERR("[FAILED] Get current working dir.");
-        ConvertSysEcToErrorCode(e.code());
+        DEBUG_LOGGER_ERR("Get current working dir failed.");
+        set_thread_last_err(ConvertSysEcToErrorCode(e.code()));
         return "";
     } catch (const std::exception& e) {
-        DEBUG_LOGGER_ERR("[FAILED] Get current working dir.");
-        ConvertExceptionToErrorCode(e);
+        DEBUG_LOGGER_ERR("Get current working dir failed.");
+        set_thread_last_err(ConvertExceptionToErrorCode(e));
         return "";
     }
 }
@@ -79,18 +78,16 @@ std::string normalize_path(std::string_view path)
     try {
         auto normalized = fs::path(path).lexically_normal();
         set_thread_last_err(ERR_COMM_SUCCESS);
-        DEBUG_LOGGER_DBG(
-            "[SUCCESS] Normalized path: {}, message: {}", path, get_thread_last_err_msg());
         return normalized.string();
     } catch (const fs::filesystem_error& e) {
-        ConvertSysEcToErrorCode(e.code());
+        set_thread_last_err(ConvertSysEcToErrorCode(e.code()));
         DEBUG_LOGGER_ERR("[FAILED] Normalized path: {}, message: {}. ex: {}",
                          path,
                          get_thread_last_err_msg(),
                          e.what());
         return "";
     } catch (const std::exception& e) {
-        ConvertExceptionToErrorCode(e);
+        set_thread_last_err(ConvertExceptionToErrorCode(e));
         DEBUG_LOGGER_ERR("[FAILED] Normalized path: {}, message: {}. ex: {}",
                          path,
                          get_thread_last_err_msg(),
@@ -111,18 +108,16 @@ std::string to_absolute_path(std::string_view relPath, std::string_view baseDir)
     try {
         auto absPath = fs::absolute(combined).lexically_normal();
         set_thread_last_err(ERR_COMM_SUCCESS);
-        DEBUG_LOGGER_DBG(
-            "[SUCCESS] Absolute path: {}, message: {}", relPath, get_thread_last_err_msg());
         return absPath.string();
     } catch (const fs::filesystem_error& e) {
-        ConvertSysEcToErrorCode(e.code());
+        set_thread_last_err(ConvertSysEcToErrorCode(e.code()));
         DEBUG_LOGGER_ERR("[FAILED] Absolute path: {}, message: {}. ex: {}",
                          relPath,
                          get_thread_last_err_msg(),
                          e.what());
         return "";
     } catch (const std::exception& e) {
-        ConvertExceptionToErrorCode(e);
+        set_thread_last_err(ConvertExceptionToErrorCode(e));
         DEBUG_LOGGER_ERR("[FAILED] Absolute path: {}, message: {}.ex: {}",
                          relPath,
                          get_thread_last_err_msg(),

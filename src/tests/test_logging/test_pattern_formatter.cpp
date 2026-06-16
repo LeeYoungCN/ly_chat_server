@@ -2,7 +2,7 @@
 #include <string>
 
 #include "gtest/gtest.h"
-#include "logging/details/common.h"
+#include "logging/details/constants.h"
 #include "logging/details/log_msg.h"
 #include "logging/formatters/pattern_formatter.h"
 #include "logging/log_level.h"
@@ -179,7 +179,7 @@ TEST_F(TestPatternFormatter, default_pattern)
     std::string expect =
         std::format("[{}][{}][{}:{}]: {}",
                     format_time_string(msg.timeStamp, FORMATTER_DEFAULT_TIME_PATTERN),
-                    log_level_to_string(msg.level),
+                    log_level_to_string(msg.level, false),
                     get_base_name(msg.source.file),
                     msg.source.line,
                     msg.data);

@@ -21,26 +21,26 @@ struct AsyncLogger::Impl {
 AsyncLogger::~AsyncLogger()
 {
     _pimpl->taskPool.reset();
-    delete _pimpl;
+    _pimpl.reset();
     DEBUG_LOGGER_DBG("Async logger release. [{}].", name());
 }
 
 AsyncLogger::AsyncLogger(std::string_view name, const std::shared_ptr<Sink>& sink,
                          const std::weak_ptr<TaskPool>& pool)
-    : Logger(name, sink), _pimpl(new Impl(pool))
+    : Logger(name, sink), _pimpl(std::make_unique<Impl>(pool))
 {
 }
 
 AsyncLogger::AsyncLogger(std::string_view name, const std::vector<std::shared_ptr<Sink>>& sinks,
                          const std::weak_ptr<TaskPool>& pool)
-    : Logger(name, sinks), _pimpl(new Impl(pool))
+    : Logger(name, sinks), _pimpl(std::make_unique<Impl>(pool))
 {
 }
 
 AsyncLogger::AsyncLogger(std::string_view name,
                          const std::initializer_list<std::shared_ptr<Sink>>& sinks,
                          const std::weak_ptr<TaskPool>& pool)
-    : Logger(name, sinks), _pimpl(new Impl(pool))
+    : Logger(name, sinks), _pimpl(std::make_unique<Impl>(pool))
 {
 }
 

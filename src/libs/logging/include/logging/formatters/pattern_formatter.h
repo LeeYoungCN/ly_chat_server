@@ -39,7 +39,7 @@ private:
 
 private:
     struct Impl;
-    Impl* _pimpl;
+    std::unique_ptr<Impl> _pimpl;
 };
 }  // namespace logging
 
