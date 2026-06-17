@@ -50,57 +50,57 @@ TEST_F(TestFilesystemUtilsFile, file_exists)
     EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS) << get_thread_last_err_msg();
 }
 
-TEST_F(TestFilesystemUtilsFile, FileExists_Nonexistent)
+TEST_F(TestFilesystemUtilsFile, file_exists_nonexistent)
 {
     EXPECT_FALSE(file_exists(m_testFile));
     EXPECT_EQ(get_thread_last_err(), ERR_UTILS_NOT_FOUND) << get_thread_last_err_msg();
 }
 
-TEST_F(TestFilesystemUtilsFile, FileExists_TypeInvalid)
+TEST_F(TestFilesystemUtilsFile, file_exists_type_invalid)
 {
     EXPECT_FALSE(file_exists(m_processDir));
     EXPECT_EQ(get_thread_last_err(), ERR_UTILS_NOT_FILE) << get_thread_last_err_msg();
 }
 
-TEST_F(TestFilesystemUtilsFile, CreateFile_AlreadyExists)
+TEST_F(TestFilesystemUtilsFile, create_file_already_exists)
 {
     EXPECT_TRUE(utils::filesystem::create_file(m_process));
     EXPECT_EQ(get_thread_last_err(), ERR_UTILS_ALREADY_EXISTS) << get_thread_last_err_msg();
 }
 
-TEST_F(TestFilesystemUtilsFile, CreateFile_TypeInvalid)
+TEST_F(TestFilesystemUtilsFile, create_file_type_invalid)
 {
     EXPECT_FALSE(utils::filesystem::create_file(m_processDir));
     EXPECT_EQ(get_thread_last_err(), ERR_UTILS_NOT_FILE) << get_thread_last_err_msg();
 }
 
-TEST_F(TestFilesystemUtilsFile, CreateFile_Success)
+TEST_F(TestFilesystemUtilsFile, create_file_success)
 {
     EXPECT_TRUE(utils::filesystem::create_file(m_testFile));
     EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS) << get_thread_last_err_msg();
 }
 
-TEST_F(TestFilesystemUtilsFile, CreateFile_DirNotExist)
+TEST_F(TestFilesystemUtilsFile, create_file_dir_nonexistent)
 {
     auto newFile = to_absolute_path(m_testFileName, m_processDir + "/nonexistent");
     EXPECT_FALSE(utils::filesystem::create_file(newFile));
     EXPECT_EQ(get_thread_last_err(), ERR_UTILS_NOT_FOUND) << get_thread_last_err_msg();
 }
 
-TEST_F(TestFilesystemUtilsFile, DeleteFile_DirNotExist)
+TEST_F(TestFilesystemUtilsFile, delete_file_dir_nonexistent)
 {
     auto newFile = to_absolute_path(m_testFileName, m_processDir + "/nonexistent");
     EXPECT_TRUE(delete_file(newFile));
     EXPECT_EQ(get_thread_last_err(), ERR_UTILS_NOT_FOUND) << get_thread_last_err_msg();
 }
 
-TEST_F(TestFilesystemUtilsFile, DeleteFile_TypeInvalid)
+TEST_F(TestFilesystemUtilsFile, delete_file_type_invalid)
 {
     EXPECT_FALSE(delete_file(m_processDir));
     EXPECT_EQ(get_thread_last_err(), ERR_UTILS_NOT_FILE) << get_thread_last_err_msg();
 }
 
-TEST_F(TestFilesystemUtilsFile, DeleteFile_FileExist)
+TEST_F(TestFilesystemUtilsFile, delete_file_file_exist)
 {
     EXPECT_TRUE(utils::filesystem::create_file(m_testFile));
     EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS) << get_thread_last_err_msg();
@@ -110,7 +110,7 @@ TEST_F(TestFilesystemUtilsFile, DeleteFile_FileExist)
     EXPECT_EQ(get_thread_last_err(), ERR_UTILS_NOT_FOUND) << get_thread_last_err_msg();
 }
 
-TEST_F(TestFilesystemUtilsFile, ReadeFile_Success)
+TEST_F(TestFilesystemUtilsFile, read_file_success)
 {
     EXPECT_TRUE(create_file(m_testFile));
     EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS) << get_thread_last_err_msg();
@@ -120,19 +120,19 @@ TEST_F(TestFilesystemUtilsFile, ReadeFile_Success)
     EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS) << get_thread_last_err_msg();
 }
 
-TEST_F(TestFilesystemUtilsFile, ReadeFile_TargetInvalid)
+TEST_F(TestFilesystemUtilsFile, read_file_target_invalid)
 {
     EXPECT_EQ(read_text_file(m_processDir), "");
     EXPECT_EQ(get_thread_last_err(), ERR_UTILS_NOT_FILE) << get_thread_last_err_msg();
 }
 
-TEST_F(TestFilesystemUtilsFile, ReadeFile_Nonexistent)
+TEST_F(TestFilesystemUtilsFile, read_file_nonexistent)
 {
     EXPECT_EQ(read_text_file(m_testFile), "");
     EXPECT_EQ(get_thread_last_err(), ERR_UTILS_NOT_FOUND) << get_thread_last_err_msg();
 }
 
-TEST_F(TestFilesystemUtilsFile, WriteTextFile_success)
+TEST_F(TestFilesystemUtilsFile, write_text_file_success)
 {
     std::string text = "1234";
     EXPECT_TRUE(create_file(m_testFile));
@@ -145,7 +145,7 @@ TEST_F(TestFilesystemUtilsFile, WriteTextFile_success)
     EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS) << get_thread_last_err_msg();
 }
 
-TEST_F(TestFilesystemUtilsFile, WriteTextFile_OverwriteSuccess)
+TEST_F(TestFilesystemUtilsFile, write_text_file_overwrite_success)
 {
     std::string text = "1234";
     EXPECT_TRUE(create_file(m_testFile));
@@ -166,7 +166,7 @@ TEST_F(TestFilesystemUtilsFile, WriteTextFile_OverwriteSuccess)
     EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS) << get_thread_last_err_msg();
 }
 
-TEST_F(TestFilesystemUtilsFile, WriteTextFile_AppendSuccess)
+TEST_F(TestFilesystemUtilsFile, write_text_file_append_success)
 {
     std::string text = "1234\n";
     EXPECT_TRUE(create_file(m_testFile));
@@ -195,19 +195,19 @@ TEST_F(TestFilesystemUtilsFile, WriteTextFile_AppendSuccess)
     EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS) << get_thread_last_err_msg();
 }
 
-TEST_F(TestFilesystemUtilsFile, WriteTextFile_Nonexistent)
+TEST_F(TestFilesystemUtilsFile, write_text_file_nonexistent)
 {
     EXPECT_FALSE(write_text_file(m_testFile, ""));
     EXPECT_EQ(get_thread_last_err(), ERR_UTILS_NOT_FOUND);
 }
 
-TEST_F(TestFilesystemUtilsFile, WriteTextFile_TargetInvalid)
+TEST_F(TestFilesystemUtilsFile, write_text_file_target_invalid)
 {
     EXPECT_FALSE(write_text_file(m_processDir, ""));
     EXPECT_EQ(get_thread_last_err(), ERR_UTILS_NOT_FILE);
 }
 
-TEST_F(TestFilesystemUtilsFile, CopyFile_Success)
+TEST_F(TestFilesystemUtilsFile, copy_file_success)
 {
     PathString newFile = m_processDir + PATH_SEP + "file2";
     std::string text = "12345";
@@ -223,7 +223,7 @@ TEST_F(TestFilesystemUtilsFile, CopyFile_Success)
     EXPECT_TRUE(delete_file(newFile));
 }
 
-TEST_F(TestFilesystemUtilsFile, CopyFile_OverWriteSuccess)
+TEST_F(TestFilesystemUtilsFile, copy_file_over_write_success)
 {
     PathString newFile = m_processDir + PATH_SEP + "file2";
     EXPECT_TRUE(create_file(m_testFile));
@@ -242,21 +242,21 @@ TEST_F(TestFilesystemUtilsFile, CopyFile_OverWriteSuccess)
     EXPECT_TRUE(delete_file(newFile));
 }
 
-TEST_F(TestFilesystemUtilsFile, CopyFile_SrcNotExist)
+TEST_F(TestFilesystemUtilsFile, copy_file_src_nonexistent)
 {
     std::string newFile = m_processDir + PATH_SEP + "file2";
     EXPECT_FALSE(copy_file(m_testFile, newFile));
     EXPECT_EQ(get_thread_last_err(), ERR_UTILS_NOT_FOUND) << get_thread_last_err_msg();
 }
 
-TEST_F(TestFilesystemUtilsFile, CopyFile_SrcInvalid)
+TEST_F(TestFilesystemUtilsFile, copy_file_src_invalid)
 {
     std::string newFile = m_processDir + PATH_SEP + "file2";
     EXPECT_FALSE(copy_file(m_processDir, newFile));
     EXPECT_EQ(get_thread_last_err(), ERR_UTILS_NOT_FILE) << get_thread_last_err_msg();
 }
 
-TEST_F(TestFilesystemUtilsFile, CopyFile_DstInvalid)
+TEST_F(TestFilesystemUtilsFile, copy_file_dst_invalid)
 {
     EXPECT_TRUE(create_file(m_testFile));
     EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS) << get_thread_last_err_msg();
@@ -264,7 +264,7 @@ TEST_F(TestFilesystemUtilsFile, CopyFile_DstInvalid)
     EXPECT_EQ(get_thread_last_err(), ERR_UTILS_NOT_FILE) << get_thread_last_err_msg();
 }
 
-TEST_F(TestFilesystemUtilsFile, CopyFile_DstAlreadyExist)
+TEST_F(TestFilesystemUtilsFile, copy_file_dst_already_exist)
 {
     PathString newFile = m_processDir + PATH_SEP + "file2";
     EXPECT_TRUE(create_file(m_testFile));
@@ -282,7 +282,7 @@ TEST_F(TestFilesystemUtilsFile, CopyFile_DstAlreadyExist)
     EXPECT_TRUE(delete_file(newFile));
 }
 
-TEST_F(TestFilesystemUtilsFile, RenameFile_Success)
+TEST_F(TestFilesystemUtilsFile, rename_file_success)
 {
     PathString newFile = m_processDir + PATH_SEP + "file2";
     std::string text = "12345";
@@ -303,7 +303,7 @@ TEST_F(TestFilesystemUtilsFile, RenameFile_Success)
     EXPECT_TRUE(delete_file(newFile));
 }
 
-TEST_F(TestFilesystemUtilsFile, RenameFile_DestAlreadyExist)
+TEST_F(TestFilesystemUtilsFile, rename_file_dest_already_exist)
 {
     PathString newFile = m_processDir + PATH_SEP + "file2";
     std::string text = "12345";
@@ -328,7 +328,7 @@ TEST_F(TestFilesystemUtilsFile, RenameFile_DestAlreadyExist)
     EXPECT_TRUE(delete_file(newFile));
 }
 
-TEST_F(TestFilesystemUtilsFile, RenameFile_Overwrite)
+TEST_F(TestFilesystemUtilsFile, rename_file_overwrite)
 {
     PathString newFile = m_processDir + PATH_SEP + "file2";
     std::string text = "12345";
@@ -354,7 +354,7 @@ TEST_F(TestFilesystemUtilsFile, RenameFile_Overwrite)
     EXPECT_TRUE(delete_file(newFile));
 }
 
-TEST_F(TestFilesystemUtilsFile, RenameFile_SrcNonexistent)
+TEST_F(TestFilesystemUtilsFile, rename_file_src_nonexistent)
 {
     PathString newFile = m_processDir + PATH_SEP + "file2";
 
@@ -362,7 +362,7 @@ TEST_F(TestFilesystemUtilsFile, RenameFile_SrcNonexistent)
     EXPECT_EQ(get_thread_last_err(), ERR_UTILS_NOT_FOUND) << get_thread_last_err_msg();
 }
 
-TEST_F(TestFilesystemUtilsFile, RenameFile_SrcInvalid)
+TEST_F(TestFilesystemUtilsFile, rename_file_src_invalid)
 {
     PathString newFile = m_processDir + PATH_SEP + "file2";
 
@@ -370,7 +370,7 @@ TEST_F(TestFilesystemUtilsFile, RenameFile_SrcInvalid)
     EXPECT_EQ(get_thread_last_err(), ERR_UTILS_NOT_FILE) << get_thread_last_err_msg();
 }
 
-TEST_F(TestFilesystemUtilsFile, RenameFile_DestInvalid)
+TEST_F(TestFilesystemUtilsFile, rename_file_dest_invalid)
 {
     PathString newFile = m_processDir + PATH_SEP + "file2";
     std::string text = "12345";

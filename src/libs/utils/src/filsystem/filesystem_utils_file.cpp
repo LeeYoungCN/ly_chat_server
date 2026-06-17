@@ -90,24 +90,26 @@ bool create_file(std::string_view path)
         return true;
     }
     std::error_code ec(errno, std::generic_category());
-    set_thread_last_err(ConvertSysEcToErrorCode(ec));;
+    set_thread_last_err(ConvertSysEcToErrorCode(ec));
+    DEBUG_LOGGER_ERR(
+        "Create file failed. file: \"{}\". message: \"{}\".", path, get_thread_last_err_msg());
     return false;
 }
 
 bool DeleteFileInternal(std::string_view path)
 {
     try {
-        bool result = false;
-        result = fs::remove(path);
-        DEBUG_LOGGER_COND(result, "Delete file: {}", path);
+        bool result = fs::remove(path);
         set_thread_last_err(result ? ERR_COMM_SUCCESS : ERR_UTILS_NOT_FOUND);
+        DEBUG_LOGGER_DBG(
+            "Delete file success. file: \"{}\". message: \"{}\".", path, get_thread_last_err_msg());
         return result;
     } catch (const fs::filesystem_error& e) {
-        DEBUG_LOGGER_ERR("[FAILED] Delete file: {}. ex: {}", path, e.what());
+        DEBUG_LOGGER_ERR("Delete file failed. file: \"{}\". message: \"{}\".", path, e.what());
         set_thread_last_err(ConvertSysEcToErrorCode(e.code()));
         return false;
     } catch (const std::exception& e) {
-        DEBUG_LOGGER_ERR("[FAILED] Delete file: {}. ex: {}", path, e.what());
+        DEBUG_LOGGER_ERR("Delete file failed. file: \"{}\". message: \"{}\".", path, e.what());
         set_thread_last_err(ConvertExceptionToErrorCode(e));
         return false;
     }
@@ -117,9 +119,18 @@ bool delete_file(std::string_view path)
 {
     if (!file_exists(path)) {
         bool rst = (get_thread_last_err() == ERR_UTILS_NOT_FOUND);
-        DEBUG_LOGGER_COND(rst, "Delete file: {}, message: {}.", path, get_thread_last_err_msg());
+        if (get_thread_last_err() == ERR_UTILS_NOT_FOUND) {
+            DEBUG_LOGGER_DBG("Delete file success. file: \"{}\". message: \"{}\".",
+                             path,
+                             get_thread_last_err_msg());
+        } else {
+            DEBUG_LOGGER_ERR("Delete file failed. file: \"{}\". message: \"{}\".",
+                             path,
+                             get_thread_last_err_msg());
+        }
         return rst;
     }
+
     return DeleteFileInternal(path);
 }
 
@@ -127,14 +138,17 @@ bool copy_file(std::string_view src, std::string_view dest, bool overwrite)
 {
     if (!file_exists(src)) {
         DEBUG_LOGGER_ERR(
-            "[FAILED] Copy file. src : {}, message: {}", src, get_thread_last_err_msg());
+            "Copy file failed. file: {}, message: \"{}\".", src, get_thread_last_err_msg());
         return false;
     }
 
     EntryType type = get_entry_type(dest);
     type = get_entry_type(dest);
     if (type != EntryType::FILE && type != EntryType::NONEXISTENT) {
-        DEBUG_LOGGER_ERR("[FAILED] Dest file: {}, Type invalid: {}", src, get_entry_type_str(type));
+        DEBUG_LOGGER_ERR("Copy file failed. file: {}, dest invalid: {}, type: {}",
+                         src,
+                         dest,
+                         get_entry_type_str(type));
         set_thread_last_err(ERR_UTILS_NOT_FILE);
         return false;
     }
@@ -146,15 +160,11 @@ bool copy_file(std::string_view src, std::string_view dest, bool overwrite)
         return true;
     } catch (const fs::filesystem_error& e) {
         set_thread_last_err(ConvertSysEcToErrorCode(e.code()));
-        DEBUG_LOGGER_ERR("[FAILED] Copy file {}. ex: {}.",
-                         (overwrite ? "overwrite" : "not overwrite"),
-                         e.what());
+        DEBUG_LOGGER_ERR("Copy file failed. file: {}, message: \"{}\".", src, e.what());
         return false;
     } catch (const std::exception& e) {
         set_thread_last_err(ConvertExceptionToErrorCode(e));
-        DEBUG_LOGGER_ERR("[FAILED]  Copy file {}. ex: {}.",
-                         (overwrite ? "overwrite" : "not overwrite"),
-                         e.what());
+        DEBUG_LOGGER_ERR("Copy file failed. file: {}, message: \"{}\".", src, e.what());
         return false;
     }
 }
@@ -163,7 +173,7 @@ bool rename_file(std::string_view src, std::string_view dest, bool overwrite)
 {
     if (!file_exists(src)) {
         DEBUG_LOGGER_ERR(
-            "[FAILED] Rename file. src : {}, message: {}", src, get_thread_last_err_msg());
+            "Rename file failed. file: {}, message: \"{}\".", src, get_thread_last_err_msg());
         return false;
     }
 
@@ -171,7 +181,7 @@ bool rename_file(std::string_view src, std::string_view dest, bool overwrite)
     // 类型错误
     if (type != EntryType::FILE && type != EntryType::NONEXISTENT) {
         set_thread_last_err(ERR_UTILS_NOT_FILE);
-        DEBUG_LOGGER_ERR("[FAILED] Rename file {}. dest invalid: {}, type: {}",
+        DEBUG_LOGGER_ERR("Rename file failed. file: {}. dest invalid: {}, type: {}",
                          (overwrite ? "overwrite " : "not overwrite"),
                          dest,
                          get_entry_type_str(type));
@@ -180,39 +190,23 @@ bool rename_file(std::string_view src, std::string_view dest, bool overwrite)
     // 已存在
     if (!overwrite && type == EntryType::FILE) {
         set_thread_last_err(ERR_UTILS_ALREADY_EXISTS);
-        DEBUG_LOGGER_ERR("[FAILED] Rename file {}. dest already exist: {}, message: {}",
+        DEBUG_LOGGER_ERR("Rename file failed. file: {}. dest already exist: {}.",
                          (overwrite ? "overwrite " : "not overwrite"),
-                         dest,
-                         get_thread_last_err_msg());
+                         dest);
         return false;
     }
 
     try {
         fs::rename(src, dest);
         set_thread_last_err(ERR_COMM_SUCCESS);
-        DEBUG_LOGGER_DBG("[SUCCESS] Rename file {} succeeded. src: {}, dest: {}, message: {}",
-                         (overwrite ? "overwrite " : ""),
-                         src,
-                         dest,
-                         get_thread_last_err_msg());
         return true;
     } catch (const fs::filesystem_error& e) {
         set_thread_last_err(ConvertSysEcToErrorCode(e.code()));
-        DEBUG_LOGGER_ERR("[FAILED] Rename file {}, src: {}, dest: {}, message: {}. ex: {}.",
-                         (overwrite ? "overwrite " : "not overwrite"),
-                         src,
-                         dest,
-                         get_thread_last_err_msg(),
-                         e.what());
+        DEBUG_LOGGER_ERR("Rename file failed. file: {}, message: \"{}\".", src, e.what());
         return false;
     } catch (const std::exception& e) {
         set_thread_last_err(ConvertExceptionToErrorCode(e));
-        DEBUG_LOGGER_ERR("[FAILED] Rename file {}. src: {}, dest: {}, message: {}. ex: {}",
-                         (overwrite ? "overwrite " : "not overwrite"),
-                         src,
-                         dest,
-                         get_thread_last_err_msg(),
-                         e.what());
+        DEBUG_LOGGER_ERR("Rename file failed. file: {}, message: \"{}\".", src, e.what());
         return false;
     }
 }
@@ -220,15 +214,17 @@ bool rename_file(std::string_view src, std::string_view dest, bool overwrite)
 std::string read_text_file(std::string_view path)
 {
     if (!file_exists(path)) {
-        DEBUG_LOGGER_ERR("[FAILED] Read file: {}, message: {}", path, get_thread_last_err_msg());
+        DEBUG_LOGGER_ERR(
+            "Read file failed. file: \"{}\". message: \"{}\".", path, get_thread_last_err_msg());
         return "";
     }
 
     std::ifstream file(path.data(), std::ios::in);
     if (!file.is_open()) {
         std::error_code ec(errno, std::generic_category());
-        set_thread_last_err(ConvertSysEcToErrorCode(ec));;
-        DEBUG_LOGGER_ERR("[FAILED] Read file: {}, message: {}", path, get_thread_last_err_msg());
+        set_thread_last_err(ConvertSysEcToErrorCode(ec));
+        DEBUG_LOGGER_ERR(
+            "Read file failed. file: \"{}\". message: \"{}\".", path, get_thread_last_err_msg());
         return "";
     }
     return {std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()};
@@ -237,17 +233,20 @@ std::string read_text_file(std::string_view path)
 ByteVector read_binary_file(std::string_view path)
 {
     if (!file_exists(path)) {
-        DEBUG_LOGGER_ERR(
-            "[FAILED] Read binary file: {}, message: {}", path, get_thread_last_err_msg());
+        DEBUG_LOGGER_ERR("Read binary file failed. file: \"{}\". message: \"{}\".",
+                         path,
+                         get_thread_last_err_msg());
         return {};
     }
 
     std::ifstream file(path.data(), std::ios::in);
     if (!file.is_open()) {
         std::error_code ec(errno, std::generic_category());
-        set_thread_last_err(ConvertSysEcToErrorCode(ec));;
-        DEBUG_LOGGER_ERR(
-            "[FAILED] Read binary file: {}, message: {}", path, get_thread_last_err_msg());
+        set_thread_last_err(ConvertSysEcToErrorCode(ec));
+        ;
+        DEBUG_LOGGER_ERR("Read binary file failed. file: \"{}\". message: \"{}\".",
+                         path,
+                         get_thread_last_err_msg());
         return {};
     }
     FileSize fileSize = fs::file_size(path);
@@ -262,8 +261,9 @@ ByteVector read_binary_file(std::string_view path)
 bool write_text_file(std::string_view path, std::string_view content, bool overwrite)
 {
     if (!file_exists(path)) {
-        DEBUG_LOGGER_ERR(
-            "[FAILED] Write to text file: {}, message: {}", path, get_thread_last_err_msg());
+        DEBUG_LOGGER_ERR("Write to text file failed. file: \"{}\". message: \"{}\".",
+                         path,
+                         get_thread_last_err_msg());
         return false;
     }
     std::ios::openmode mode = std::ios::out;
@@ -275,9 +275,8 @@ bool write_text_file(std::string_view path, std::string_view content, bool overw
     std::ofstream file(path.data(), mode);
     if (!file.is_open()) {
         std::error_code ec(errno, std::generic_category());
-        set_thread_last_err(ConvertSysEcToErrorCode(ec));;
-        DEBUG_LOGGER_ERR("[FAILED] Write text file {}: {}, message: {}",
-                         (overwrite ? "overwrite" : "append"),
+        set_thread_last_err(ConvertSysEcToErrorCode(ec));
+        DEBUG_LOGGER_ERR("Write to text file failed. file: \"{}\". message: \"{}\".",
                          path,
                          get_thread_last_err_msg());
         return false;
@@ -286,7 +285,7 @@ bool write_text_file(std::string_view path, std::string_view content, bool overw
     if (file << content) {
         file.close();
         set_thread_last_err(ERR_COMM_SUCCESS);
-        DEBUG_LOGGER_TRACE("[SUCCESS] Write text file {}: {}, message: {}",
+        DEBUG_LOGGER_TRACE("Write to text file succeeded. file: \"{}\". message: \"{}\".",
                            (overwrite ? "overwrite" : "append"),
                            path,
                            get_thread_last_err_msg());
@@ -294,8 +293,9 @@ bool write_text_file(std::string_view path, std::string_view content, bool overw
     }
 
     std::error_code ec(errno, std::system_category());
-    set_thread_last_err(ConvertSysEcToErrorCode(ec));;
-    DEBUG_LOGGER_ERR("[FAILED] Write text file {}: {}, message: {}",
+    set_thread_last_err(ConvertSysEcToErrorCode(ec));
+    ;
+    DEBUG_LOGGER_ERR("[FAILED] Write text file {}: {}, message: \"{}\".",
                      (overwrite ? "overwrite" : "append"),
                      path,
                      get_thread_last_err_msg());
@@ -306,12 +306,13 @@ FileSize get_file_size(std::string_view path)
 {
     if (!file_exists(path)) {
         DEBUG_LOGGER_ERR(
-            "[FAILED] Get file size: {}, message: {}", path, get_thread_last_err_msg());
+            "[FAILED] Get file size: {}, message: \"{}\".", path, get_thread_last_err_msg());
         return 0;
     }
     std::error_code ec;
     const auto& size = fs::file_size(path, ec);
-    set_thread_last_err(ConvertSysEcToErrorCode(ec));;
+    set_thread_last_err(ConvertSysEcToErrorCode(ec));
+    ;
     return size;
 }
 
