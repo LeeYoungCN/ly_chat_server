@@ -44,6 +44,25 @@ TimestampMs GetFileModifyTimestampInternal(std::string_view path)
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(sysTime.time_since_epoch());
     return static_cast<TimestampMs>(ms.count());
 }
+
+bool DeleteFileInternal(std::string_view path)
+{
+    try {
+        bool result = fs::remove(path);
+        set_thread_last_err(result ? ERR_COMM_SUCCESS : ERR_UTILS_NOT_FOUND);
+        DEBUG_LOGGER_DBG(
+            "Delete file success. file: \"{}\". message: \"{}\".", path, get_thread_last_err_msg());
+        return result;
+    } catch (const fs::filesystem_error& e) {
+        DEBUG_LOGGER_ERR("Delete file failed. file: \"{}\". message: \"{}\".", path, e.what());
+        set_thread_last_err(ConvertSysEcToErrorCode(e.code()));
+        return false;
+    } catch (const std::exception& e) {
+        DEBUG_LOGGER_ERR("Delete file failed. file: \"{}\". message: \"{}\".", path, e.what());
+        set_thread_last_err(ConvertExceptionToErrorCode(e));
+        return false;
+    }
+}
 }  // namespace
 
 namespace utils::filesystem {
@@ -94,25 +113,6 @@ bool create_file(std::string_view path)
     DEBUG_LOGGER_ERR(
         "Create file failed. file: \"{}\". message: \"{}\".", path, get_thread_last_err_msg());
     return false;
-}
-
-bool DeleteFileInternal(std::string_view path)
-{
-    try {
-        bool result = fs::remove(path);
-        set_thread_last_err(result ? ERR_COMM_SUCCESS : ERR_UTILS_NOT_FOUND);
-        DEBUG_LOGGER_DBG(
-            "Delete file success. file: \"{}\". message: \"{}\".", path, get_thread_last_err_msg());
-        return result;
-    } catch (const fs::filesystem_error& e) {
-        DEBUG_LOGGER_ERR("Delete file failed. file: \"{}\". message: \"{}\".", path, e.what());
-        set_thread_last_err(ConvertSysEcToErrorCode(e.code()));
-        return false;
-    } catch (const std::exception& e) {
-        DEBUG_LOGGER_ERR("Delete file failed. file: \"{}\". message: \"{}\".", path, e.what());
-        set_thread_last_err(ConvertExceptionToErrorCode(e));
-        return false;
-    }
 }
 
 bool delete_file(std::string_view path)
@@ -266,6 +266,7 @@ bool write_text_file(std::string_view path, std::string_view content, bool overw
                          get_thread_last_err_msg());
         return false;
     }
+
     std::ios::openmode mode = std::ios::out;
     if (overwrite) {
         mode = (std::ios::out | std::ios::trunc);
@@ -294,8 +295,8 @@ bool write_text_file(std::string_view path, std::string_view content, bool overw
 
     std::error_code ec(errno, std::system_category());
     set_thread_last_err(ConvertSysEcToErrorCode(ec));
-    ;
-    DEBUG_LOGGER_ERR("[FAILED] Write text file {}: {}, message: \"{}\".",
+
+    DEBUG_LOGGER_ERR("Write text failed. file {}: {}, message: \"{}\".",
                      (overwrite ? "overwrite" : "append"),
                      path,
                      get_thread_last_err_msg());
