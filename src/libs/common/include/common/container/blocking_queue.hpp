@@ -2,6 +2,7 @@
 #define COMMON_CONTAINER_BLOCKING_QUEUE_HPP
 
 #include <cstddef>
+#include <cstdint>
 #include <format>
 #include <stdexcept>
 #include <utility>

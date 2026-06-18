@@ -264,6 +264,12 @@ public:
         return _queue[idx];
     }
 
+    void clear()
+    {
+        std::lock_guard lock(_queueMtx);
+        _queue.clear();
+    }
+
 private:
     void throw_if_out_of_range(size_t idx) const
     {

@@ -44,7 +44,7 @@ BasicFileSink::BasicFileSink(std::string_view file, bool overwrite)
     if (file.empty()) {
         DEBUG_LOGGER_ERR("Create BasicFileSink failed. file path is empty.");
         set_thread_last_err(ERR_COMM_PARAM_NULL);
-        throw std::invalid_argument("File path cannot be empty");
+        throw std::invalid_argument("Create BasicFileSink failed. file path is empty.");
     }
 
     _pimpl = std::make_unique<Impl>(file, overwrite);
