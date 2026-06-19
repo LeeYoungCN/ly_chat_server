@@ -46,7 +46,7 @@ void TestFileAppender::TearDown()
 
 TEST_F(TestFileAppender, file_name_empty)
 {
-    EXPECT_THROW(std::make_shared<FileWriter>(""), std::invalid_argument);
+    EXPECT_THROW(FileWriter(""), std::invalid_argument);
 }
 
 TEST_F(TestFileAppender, file_name_process)
