@@ -96,7 +96,7 @@ void Registry::flush_all()
     }
 }
 
-void Registry::shut_down()
+void Registry::shutdown()
 {
     remove_all();
     {

@@ -152,6 +152,7 @@ public:
     {
         return _tail >= _head ? _tail - _head : _maxItems - (_head - _tail);
     }
+
     [[nodiscard]] size_t capacity() const { return _capacity; }
 
     [[nodiscard]] bool empty() const { return _head == _tail; }

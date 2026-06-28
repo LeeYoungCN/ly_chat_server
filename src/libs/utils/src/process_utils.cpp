@@ -69,10 +69,10 @@ std::string get_proc_directory()
     return get_directory(get_proc_path());
 }
 
-std::string get_proc_file_name()
+std::string get_proc_file_name_stem()
 {
     set_thread_last_err(ERR_COMM_SUCCESS);
-    return get_file_name(get_proc_path());
+    return get_file_name_stem(get_proc_path());
 }
 
 ProcessId get_curr_proc_id()

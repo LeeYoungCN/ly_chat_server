@@ -34,7 +34,7 @@ public:
                          std::string_view timePattern = FORMATTER_DEFAULT_TIME_PATTERN);
     void set_formatter_all(std::unique_ptr<Formatter> formatter);
     void flush_all();
-    void shut_down();
+    void shutdown();
 #pragma endregion
 
 #pragma region Container

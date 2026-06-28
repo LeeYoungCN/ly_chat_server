@@ -84,14 +84,14 @@ std::string get_directory(std::string_view path);
  * @param path 完整路径
  * @return 带扩展名的文件名
  */
-std::string get_base_name(std::string_view path);
+std::string get_file_name(std::string_view path);
 
 /**
  * @brief 获取路径中的文件名（不含扩展名）
  * @param path 完整路径
  * @return 不带扩展名的文件名
  */
-std::string get_file_name(std::string_view path);
+std::string get_file_name_stem(std::string_view path);
 
 /**
  * @brief 获取文件的扩展名（含.）

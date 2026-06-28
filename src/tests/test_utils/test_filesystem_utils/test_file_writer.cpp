@@ -52,8 +52,8 @@ TEST_F(TestFileAppender, file_name_empty)
 TEST_F(TestFileAppender, file_name_process)
 {
     m_appender = std::make_shared<FileWriter>(m_testFile);
-    EXPECT_EQ(m_appender->base_name(), m_fileName + m_suffix);
-    EXPECT_EQ(m_appender->file_name(), m_fileName);
+    EXPECT_EQ(m_appender->file_name(), m_fileName + m_suffix);
+    EXPECT_EQ(m_appender->file_name_stem(), m_fileName);
     EXPECT_EQ(m_appender->directory(), m_directory);
 }
 

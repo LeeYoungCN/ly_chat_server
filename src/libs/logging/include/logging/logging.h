@@ -229,7 +229,7 @@ void set_pattern_all(std::string_view pattern = details::FORMATTER_DEFAULT_PATTE
                      std::string_view timePattern = details::FORMATTER_DEFAULT_TIME_PATTERN);
 void set_formatter_all(std::unique_ptr<Formatter> formatter);
 void flush_all();
-void shut_down();
+void shutdown();
 #pragma endregion
 
 #pragma region Container

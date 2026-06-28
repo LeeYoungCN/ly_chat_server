@@ -62,7 +62,7 @@ ErrorCode FileWriter::open_it(bool overwrite)
     m_currSize = get_file_size(m_file);
 
     DEBUG_LOGGER_DBG(
-        "Open file success. file: \"{}\", mode: {}", m_file.data(), MODE_STR(overwrite));
+        "Open file success. file: \"{}\", mode: {}.", m_file.data(), MODE_STR(overwrite));
     m_errcode = ERR_COMM_SUCCESS;
     set_thread_last_err(m_errcode);
     return m_errcode;
@@ -145,14 +145,14 @@ size_t FileWriter::size() const
     return m_stream.is_open() ? m_currSize : get_file_size(m_file);
 }
 
+std::string FileWriter::file_name_stem() const
+{
+    return get_file_name_stem(m_file);
+}
+
 std::string FileWriter::file_name() const
 {
     return get_file_name(m_file);
-}
-
-std::string FileWriter::base_name() const
-{
-    return get_base_name(m_file);
 }
 
 std::string FileWriter::directory() const

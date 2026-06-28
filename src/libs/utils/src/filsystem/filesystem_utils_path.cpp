@@ -133,14 +133,14 @@ std::string get_directory(std::string_view path)
     return proc.parent_path().string();
 }
 
-std::string get_base_name(std::string_view path)
+std::string get_file_name(std::string_view path)
 {
     fs::path p(path);
     set_thread_last_err(ERR_COMM_SUCCESS);
     return p.filename().string();
 }
 
-std::string get_file_name(std::string_view path)
+std::string get_file_name_stem(std::string_view path)
 {
     fs::path p(path);
     set_thread_last_err(ERR_COMM_SUCCESS);

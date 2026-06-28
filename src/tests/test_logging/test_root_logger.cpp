@@ -22,7 +22,7 @@ protected:
 
 void TestRootLogger::TearDown()
 {
-    shut_down();
+    shutdown();
 }
 
 TEST_F(TestRootLogger, should_log_and_set_level)

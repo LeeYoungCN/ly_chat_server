@@ -52,7 +52,7 @@ TEST_F(TestFilesystemUtilsPath, AbsolutePath)
 
 TEST_F(TestFilesystemUtilsPath, ToAbsolute)
 {
-    auto baseName = get_base_name(m_process);
+    auto baseName = get_file_name(m_process);
     PathString relPah = std::string(".") + PATH_SEP + baseName;
     EXPECT_FALSE(is_absolute_path(relPah));
     auto absFile = to_absolute_path(relPah, m_processDir);
@@ -64,19 +64,19 @@ TEST_F(TestFilesystemUtilsPath, ToAbsolute)
 
 TEST_F(TestFilesystemUtilsPath, BaseName)
 {
-    auto fileName = get_file_name(m_process);
+    auto fileName = get_file_name_stem(m_process);
     EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
     auto extention = get_extension(m_process);
     EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
     PathString fileWithExt = fileName + extention;
-    auto baseName = get_base_name(m_process);
+    auto baseName = get_file_name(m_process);
     EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
     EXPECT_EQ(baseName, fileWithExt);
 }
 
 TEST_F(TestFilesystemUtilsPath, normalize_path)
 {
-    auto baseName = get_base_name(m_process);
+    auto baseName = get_file_name(m_process);
     auto testPath = m_processDir + PATH_SEP + "." + PATH_SEP + baseName;
     auto rstPath = normalize_path(testPath);
     EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);

@@ -89,9 +89,9 @@ void flush_all()
     REGISTRY.flush_all();
 }
 
-void shut_down()
+void shutdown()
 {
-    REGISTRY.shut_down();
+    REGISTRY.shutdown();
 }
 #pragma endregion
 

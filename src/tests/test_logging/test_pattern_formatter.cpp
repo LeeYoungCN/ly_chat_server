@@ -93,7 +93,7 @@ TEST_F(TestPatternFormatter, file_name)
     msg.source.file = __FILE__;
     std::string content;
     formatter.format(msg, content);
-    EXPECT_EQ(content, get_base_name(__FILE__));
+    EXPECT_EQ(content, get_file_name(__FILE__));
 }
 
 TEST_F(TestPatternFormatter, file_path)
@@ -180,7 +180,7 @@ TEST_F(TestPatternFormatter, default_pattern)
         std::format("[{}][{}][{}:{}]: {}",
                     format_time_string(msg.timeStamp, FORMATTER_DEFAULT_TIME_PATTERN),
                     log_level_to_string(msg.level, false),
-                    get_base_name(msg.source.file),
+                    get_file_name(msg.source.file),
                     msg.source.line,
                     msg.data);
 

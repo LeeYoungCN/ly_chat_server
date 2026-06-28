@@ -40,7 +40,7 @@ std::string get_proc_directory();
  *
  * @return std::string Process file name.
  */
-std::string get_proc_file_name();
+std::string get_proc_file_name_stem();
 
 /**
  * @brief 获取当前进程ID

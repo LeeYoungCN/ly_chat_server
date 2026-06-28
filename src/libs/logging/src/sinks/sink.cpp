@@ -12,7 +12,7 @@ struct Sink::Impl {
     std::atomic<LogLevel> level{LogLevel::INFO};
     std::unique_ptr<Formatter> formatter{std::make_unique<PatternFormatter>()};
     std::mutex sinkMtx;
-    std::string paramStr;
+    std::string paramStr{"unknown"};
 };
 
 Sink::Sink() : _pimpl(std::make_unique<Impl>()) {}

@@ -1,4 +1,3 @@
-#include <cstdint>
 #include <string>
 
 #include "common/constants/filesystem_constants.h"

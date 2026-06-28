@@ -26,8 +26,8 @@ public:
     void flush();
 
     [[nodiscard]] size_t size() const;
+    [[nodiscard]] std::string file_name_stem() const;
     [[nodiscard]] std::string file_name() const;
-    [[nodiscard]] std::string base_name() const;
     [[nodiscard]] std::string directory() const;
     [[nodiscard]] std::string full_path() const;
     [[nodiscard]] std::string extension() const;
