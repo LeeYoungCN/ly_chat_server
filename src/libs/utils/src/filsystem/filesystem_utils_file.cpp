@@ -35,22 +35,12 @@ namespace fs = std::filesystem;
 using namespace utils::filesystem;
 using namespace utils::filesystem::internal;
 
-TimestampMs GetFileModifyTimestampInternal(std::string_view path)
-{
-    fs::file_time_type fileTime = fs::last_write_time(path);
-    auto sysTime = std::chrono::time_point_cast<std::chrono::system_clock::duration>(
-        fileTime - std::filesystem::file_time_type::clock::now() +
-        std::chrono::system_clock::now());
-    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(sysTime.time_since_epoch());
-    return static_cast<TimestampMs>(ms.count());
-}
-
-bool DeleteFileInternal(std::string_view path)
+bool delete_file_it(std::string_view path)
 {
     try {
         bool result = fs::remove(path);
         set_thread_last_err(result ? ERR_COMM_SUCCESS : ERR_UTILS_NOT_FOUND);
-        DEBUG_LOGGER_DBG(
+        DEBUG_LOGGER_TRACE(
             "Delete file success. file: \"{}\". msg: \"{}\".", path, get_thread_last_err_msg());
         return result;
     } catch (const fs::filesystem_error& e) {
@@ -94,7 +84,7 @@ bool create_file(std::string_view path)
     EntryType type = get_entry_type(path);
     if (type == EntryType::FILE) {
         set_thread_last_err(ERR_UTILS_ALREADY_EXISTS);
-        DEBUG_LOGGER_DBG("[SUCCESS] File already exist: {}", path);
+        DEBUG_LOGGER_TRACE("[SUCCESS] File already exist: {}", path);
         return true;
     }
     if (type != EntryType::NONEXISTENT) {
@@ -120,7 +110,7 @@ bool delete_file(std::string_view path)
     if (!file_exists(path)) {
         bool rst = (get_thread_last_err() == ERR_UTILS_NOT_FOUND);
         if (get_thread_last_err() == ERR_UTILS_NOT_FOUND) {
-            DEBUG_LOGGER_DBG(
+            DEBUG_LOGGER_TRACE(
                 "Delete file success. file: \"{}\". msg: \"{}\".", path, get_thread_last_err_msg());
         } else {
             DEBUG_LOGGER_ERR(
@@ -129,7 +119,7 @@ bool delete_file(std::string_view path)
         return rst;
     }
 
-    return DeleteFileInternal(path);
+    return delete_file_it(path);
 }
 
 bool copy_file(std::string_view src, std::string_view dest, bool overwrite)
@@ -312,6 +302,16 @@ FileSize get_file_size(std::string_view path)
     return size;
 }
 
+TimestampMs get_file_modify_time(std::string_view path)
+{
+    fs::file_time_type fileTime = fs::last_write_time(path);
+    auto sysTime = std::chrono::time_point_cast<std::chrono::system_clock::duration>(
+        fileTime - std::filesystem::file_time_type::clock::now() +
+        std::chrono::system_clock::now());
+    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(sysTime.time_since_epoch());
+    return static_cast<TimestampMs>(ms.count());
+}
+
 FileInfo get_file_info(std::string_view path)
 {
     FileInfo fileInfo{};
@@ -324,7 +324,7 @@ FileInfo get_file_info(std::string_view path)
     if (fileInfo.type == EntryType::FILE) {
         fileInfo.size = fs::file_size(path);
     }
-    fileInfo.modifyTime = GetFileModifyTimestampInternal(path);
+    fileInfo.modifyTime = get_file_modify_time(path);
 
     return fileInfo;
 }

@@ -6,6 +6,7 @@
 #include <filesystem>
 #include <format>
 #include <mutex>
+#include <stdexcept>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -13,9 +14,18 @@
 #include "common/common_error_code.h"
 #include "common/debug/debug_logger.h"
 #include "internal/logging_internal.h"
+#include "utils/date_time_utils.h"
 #include "utils/file_writer.h"
 #include "utils/filesystem_utils.h"
 #include "utils/thread_utils.h"
+
+namespace {
+constexpr uint32_t DELETE_FILE_RETRY = 3;
+constexpr uint32_t DELETE_FILE_SLEEP_MS = 100;
+
+constexpr uint32_t RENAME_FILE_RETRY = 3;
+constexpr uint32_t RENAME_FILE_SLEEP_MS = 100;
+}  // namespace
 
 namespace logging {
 using namespace utils::filesystem;
@@ -23,6 +33,11 @@ using namespace utils::filesystem;
 struct LogFileInfo {
     uint32_t idx{0};
     std::string file;
+    TimestampMs modifyTime{0};
+    LogFileInfo(uint32_t i, std::string_view f)
+        : idx(i), file(f), modifyTime(get_file_modify_time(f))
+    {
+    }
 };
 
 struct RotatingFileSink::Impl {
@@ -55,8 +70,14 @@ RotatingFileSink::~RotatingFileSink()
 
 RotatingFileSink::RotatingFileSink() : RotatingFileSink(internal::get_default_log_file("log")) {}
 
+RotatingFileSink::RotatingFileSink(std::string_view file, bool rotateOnOpen)
+    : RotatingFileSink(file, RotatingFileSink::DEFAULT_MAX_FILE_SIZE,
+                       RotatingFileSink::DEFAULT_MAX_FILES, rotateOnOpen)
+{
+}
+
 RotatingFileSink::RotatingFileSink(std::string_view file, uint32_t maxFileSize, uint32_t maxFiles,
-                                   bool overwrite)
+                                   bool rotateOnOpen)
 {
     if (maxFileSize == 0) {
         DEBUG_LOGGER_ERR("Create RotatingFileSink failed. maxFileSize is 0.");
@@ -64,33 +85,35 @@ RotatingFileSink::RotatingFileSink(std::string_view file, uint32_t maxFileSize, 
         throw std::invalid_argument("maxFileSize is 0.");
     }
 
-    if (maxFiles == 0) {
-        DEBUG_LOGGER_ERR("Create RotatingFileSink failed. maxFiles is 0.");
+    if (maxFiles > RotatingFileSink::MAX_INDEX) {
+        DEBUG_LOGGER_ERR("Create RotatingFileSink failed. maxFiles out of range.");
         set_thread_last_err(ERR_COMM_PARAM_INVALID);
-        throw std::invalid_argument("maxFiles is 0.");
+        throw std::out_of_range("maxFiles out of range.");
     }
 
     _pimpl = std::make_unique<Impl>(file, maxFileSize, maxFiles);
 
-    if (_pimpl->_logWriter.open(overwrite) != ERR_COMM_SUCCESS) {
+    if (_pimpl->_logWriter.open(false) != ERR_COMM_SUCCESS) {
         DEBUG_LOGGER_ERR("Create RotatingFileSink failed. File: \"{}\", mode: {}. msg: \"{}\".",
                          file,
-                         get_file_mode_str(overwrite),
+                         get_file_mode_str(rotateOnOpen),
                          get_comm_err_msg(_pimpl->_logWriter.get_last_error()));
         _pimpl.reset();
         throw std::runtime_error("Failed to open file: " + std::string(file));
     }
 
     std::string parameter =
-        std::format("RotatingFileSink, File: \"{}\", MaxFileSize: {}, MaxFiles: {}, Mode: {}",
+        std::format("RotatingFileSink, File: \"{}\", MaxFileSize: {}, MaxFiles: {}",
                     file,
                     maxFileSize,
-                    maxFiles,
-                    get_file_mode_str(overwrite));
-
+                    maxFiles);
     set_parameter(parameter);
 
     init_file_list();
+
+    if (rotateOnOpen) {
+        rotate();
+    }
 }
 
 std::vector<std::string> RotatingFileSink::get_rotating_file_list()
@@ -155,20 +178,28 @@ void RotatingFileSink::init_file_list()
 
         uint32_t idx = parse_log_index(entry.path().filename().string());
 
-        if (idx < ROTATING_FILE_SINK_MIN_INDEX) {
+        if (idx < RotatingFileSink::MIN_INDEX || idx > RotatingFileSink::MAX_INDEX) {
             continue;
         }
 
         logList.emplace_back(idx, entry.path().string());
     }
 
-    std::sort(logList.begin(),
-              logList.end(),
-              [](const LogFileInfo& a, const LogFileInfo& b) -> bool { return a.idx < b.idx; });
+    std::sort(
+        logList.begin(), logList.end(), [](const LogFileInfo& a, const LogFileInfo& b) -> bool {
+            if (a.modifyTime == b.modifyTime) {
+                return a.idx < b.idx;
+            } else {
+                return a.modifyTime < b.modifyTime;
+            };
+        });
 
     for (const auto& logInfo : logList) {
         DEBUG_LOGGER_DBG(
-            "Find rotating log file. idx: {}, file: \"{}\".", logInfo.idx, logInfo.file);
+            "Find rotating log file. idx: {}, time: [{}], file: \"{}\".",
+            logInfo.idx,
+            utils::date_time::format_time_string(logInfo.modifyTime, "%Y-%m-%d %H:%M:%S.%3f"),
+            logInfo.file);
         _pimpl->_logQueue.emplace_back(logInfo);
     }
 }
@@ -216,9 +247,15 @@ void RotatingFileSink::rotate()
     _pimpl->_logWriter.close();
 
     uint32_t nextIdx = (_pimpl->_logQueue.empty() ? 0 : _pimpl->_logQueue.back().idx) + 1;
+
+    if (nextIdx > RotatingFileSink::MAX_INDEX) {
+        nextIdx = RotatingFileSink::MIN_INDEX;
+    }
+
     std::string nextFile = _pimpl->_filePath + "." + std::to_string(nextIdx);
 
-    if (rename_log_file(nextFile)) {
+    if (internal::rename_file(
+            _pimpl->_filePath, nextFile, true, RENAME_FILE_RETRY, RENAME_FILE_SLEEP_MS)) {
         _pimpl->_logQueue.emplace_back(nextIdx, nextFile);
         _pimpl->_logWriter.reopen(true);
     } else {
@@ -226,24 +263,6 @@ void RotatingFileSink::rotate()
     }
 
     delete_overflow_file();
-}
-
-bool RotatingFileSink::rename_log_file(std::string_view nextFile)
-{
-    constexpr uint32_t MAX_RENAME_CNT = 3;
-    for (uint32_t i = 0; i < MAX_RENAME_CNT; i++) {
-        if (rename_file(_pimpl->_filePath, nextFile, false)) {
-            DEBUG_LOGGER_DBG("Rotating file success. file: \"{}\", size: {}.",
-                             nextFile,
-                             get_file_size(nextFile));
-            return true;
-        }
-    }
-    DEBUG_LOGGER_DBG("Rotating file failed. file: \"{}\", size: {}, msg: \"{}\".",
-                     nextFile,
-                     get_file_size(_pimpl->_filePath),
-                     get_thread_last_err_msg());
-    return false;
 }
 
 void RotatingFileSink::delete_overflow_file()
@@ -254,7 +273,7 @@ void RotatingFileSink::delete_overflow_file()
     while (_pimpl->_logQueue.size() + failedQueue.size() > _pimpl->_maxFiles &&
            !_pimpl->_logQueue.empty()) {
         auto fileInfo = _pimpl->_logQueue.front();
-        if (!delete_file(fileInfo.file)) {
+        if (!internal::delete_file(fileInfo.file, DELETE_FILE_RETRY, DELETE_FILE_SLEEP_MS)) {
             failedQueue.emplace_back(fileInfo);
         }
         _pimpl->_logQueue.pop_front();
@@ -264,23 +283,6 @@ void RotatingFileSink::delete_overflow_file()
         _pimpl->_logQueue.emplace_front(failedQueue.back());
         failedQueue.pop_back();
     }
-}
-
-bool RotatingFileSink::delete_log_file(std::string_view file)
-{
-    constexpr uint32_t MAX_FAILED_CNT = 3;
-
-    for (uint32_t i = 0; i < MAX_FAILED_CNT; i++) {
-        if (delete_file(file)) {
-            DEBUG_LOGGER_DBG("Delete rotating log file success. file: \"{}\".", file);
-            return true;
-        }
-    }
-
-    DEBUG_LOGGER_ERR("Delete rotating log file faild. file: \"{}\", msg: \"{}\".",
-                     file,
-                     get_thread_last_err_msg());
-    return false;
 }
 
 }  // namespace logging

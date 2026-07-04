@@ -117,7 +117,7 @@ bool is_absolute_path(std::string_view path);
  * @param path 待检查的路径
  * @return 超过限制返回true，否则返回false
  */
-bool IsPathTooLong(std::string_view path);
+bool is_path_too_long(std::string_view path);
 
 /**
  * @brief 判断文件是否存在且为普通文件
@@ -188,6 +188,8 @@ bool write_text_file(std::string_view path, std::string_view content, bool overw
  * @return 文件大小（字节），获取失败返回0
  */
 FileSize get_file_size(std::string_view path);
+
+TimestampMs get_file_modify_time(std::string_view path);
 
 /**
  * @brief 获取文件的详细信息

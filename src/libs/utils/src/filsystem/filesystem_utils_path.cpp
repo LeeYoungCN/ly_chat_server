@@ -161,7 +161,7 @@ bool is_absolute_path(std::string_view path)
     return result;
 }
 
-bool IsPathTooLong(std::string_view path)
+bool is_path_too_long(std::string_view path)
 {
     const auto len = path.length();
     bool result = false;

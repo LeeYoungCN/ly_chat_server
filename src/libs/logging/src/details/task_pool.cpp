@@ -28,9 +28,9 @@ struct TaskPool::Impl {
     Impl(uint32_t capacity, uint32_t threadCnt) : buffer(capacity), threadCnt(threadCnt) {}
 };
 
-TaskPool::TaskPool() : TaskPool(THREAD_POOL_DEFAULT_CAPACITY, THREAD_POOL_DEFAULT_THREAD_CNT) {}
+TaskPool::TaskPool() : TaskPool(TaskPool::DEFAULT_CAPACITY, TaskPool::DEFAULT_THREAD_CNT) {}
 
-TaskPool::TaskPool(uint32_t capacity) : TaskPool(capacity, THREAD_POOL_DEFAULT_THREAD_CNT) {}
+TaskPool::TaskPool(uint32_t capacity) : TaskPool(capacity, TaskPool::DEFAULT_THREAD_CNT) {}
 
 TaskPool::TaskPool(uint32_t capacity, uint32_t threadCnt)
     : _pimpl(std::make_unique<Impl>(capacity, threadCnt))

@@ -16,6 +16,9 @@ namespace details {
 
 class TaskPool {
 public:
+    static constexpr uint32_t DEFAULT_CAPACITY = 4096;
+    static constexpr uint32_t DEFAULT_THREAD_CNT = 1;
+public:
     TaskPool();
     ~TaskPool();
     explicit TaskPool(uint32_t capacity);

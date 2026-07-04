@@ -10,19 +10,19 @@
 #include "logging/sinks/base_sink.h"
 
 namespace logging {
-constexpr uint32_t ROTATING_FILE_SINK_MIN_INDEX = 1;
-
-constexpr uint32_t ROTATING_FILE_SINK_DEFAULT_MAX_FILE_SIZE = 10 * 1024 * 1024;  // 10MB
-constexpr uint32_t ROTATING_FILE_SINK_DEFAULT_MAX_FILES = 1024;
-
 class RotatingFileSink : public BaseSink {
+public:
+    static constexpr uint32_t DEFAULT_MAX_FILE_SIZE = 10 * 1024 * 1024;  // 10MB;
+    static constexpr uint32_t DEFAULT_MAX_FILES = 100;                   // 最大保留100个日志文件;
+    static constexpr uint32_t MIN_INDEX = 1;
+    static constexpr uint32_t MAX_INDEX = 20000;
+
 public:
     RotatingFileSink();
     ~RotatingFileSink() override;
-    explicit RotatingFileSink(std::string_view file,
-                              uint32_t maxFileSize = ROTATING_FILE_SINK_DEFAULT_MAX_FILE_SIZE,
-                              uint32_t maxFiles = ROTATING_FILE_SINK_DEFAULT_MAX_FILES,
-                              bool overwrite = true);
+    explicit RotatingFileSink(std::string_view file, bool rotateOnOpen = false);
+    RotatingFileSink(std::string_view file, uint32_t maxFileSize, uint32_t maxFiles,
+                     bool rotateOnOpen = false);
 
 public:
     std::vector<std::string> get_rotating_file_list();
@@ -38,10 +38,8 @@ private:
     uint32_t parse_log_index(std::string_view file);
 
     void rotate();
-    bool rename_log_file(std::string_view nextFile);
 
     void delete_overflow_file();
-    bool delete_log_file(std::string_view file);
 
 private:
     struct Impl;
