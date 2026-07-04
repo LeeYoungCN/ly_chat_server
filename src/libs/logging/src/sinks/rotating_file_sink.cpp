@@ -10,6 +10,7 @@
 #include <string_view>
 #include <vector>
 
+#include "common/common_error_code.h"
 #include "common/debug/debug_logger.h"
 #include "internal/logging_internal.h"
 #include "utils/file_writer.h"
@@ -22,24 +23,20 @@ using namespace utils::filesystem;
 struct LogFileInfo {
     uint32_t idx{0};
     std::string file;
-
-    bool operator<(const LogFileInfo& other) const { return idx < other.idx; }
 };
 
 struct RotatingFileSink::Impl {
-    const std::string _filePath;
+    FileWriter _logWriter;
     uint32_t _maxFileSize{0};
     uint32_t _maxFiles{0};
-    const bool _overwrite{true};
-    FileWriter _logWriter;
+    const std::string _filePath;
     std::deque<LogFileInfo> _logQueue;
 
-    Impl(std::string_view file, uint32_t maxFileSize, uint32_t maxFiles, bool overwrite)
-        : _filePath(to_absolute_path(file)),
+    Impl(std::string_view file, uint32_t maxFileSize, uint32_t maxFiles)
+        : _logWriter(file),
           _maxFileSize(maxFileSize),
           _maxFiles(maxFiles),
-          _overwrite(overwrite),
-          _logWriter(_filePath)
+          _filePath(_logWriter.full_path())
     {
     }
 };
@@ -61,12 +58,6 @@ RotatingFileSink::RotatingFileSink() : RotatingFileSink(internal::get_default_lo
 RotatingFileSink::RotatingFileSink(std::string_view file, uint32_t maxFileSize, uint32_t maxFiles,
                                    bool overwrite)
 {
-    if (file.empty()) {
-        DEBUG_LOGGER_ERR("Create RotatingFileSink failed. file path is empty.");
-        set_thread_last_err(ERR_COMM_PARAM_NULL);
-        throw std::invalid_argument("file empty.");
-    }
-
     if (maxFileSize == 0) {
         DEBUG_LOGGER_ERR("Create RotatingFileSink failed. maxFileSize is 0.");
         set_thread_last_err(ERR_COMM_PARAM_INVALID);
@@ -79,12 +70,12 @@ RotatingFileSink::RotatingFileSink(std::string_view file, uint32_t maxFileSize, 
         throw std::invalid_argument("maxFiles is 0.");
     }
 
-    _pimpl = std::make_unique<Impl>(file, maxFileSize, maxFiles, overwrite);
+    _pimpl = std::make_unique<Impl>(file, maxFileSize, maxFiles);
 
     if (_pimpl->_logWriter.open(overwrite) != ERR_COMM_SUCCESS) {
         DEBUG_LOGGER_ERR("Create RotatingFileSink failed. File: \"{}\", mode: {}. msg: \"{}\".",
                          file,
-                         (overwrite ? "overwrite" : "append"),
+                         get_file_mode_str(overwrite),
                          get_comm_err_msg(_pimpl->_logWriter.get_last_error()));
         _pimpl.reset();
         throw std::runtime_error("Failed to open file: " + std::string(file));
@@ -95,7 +86,7 @@ RotatingFileSink::RotatingFileSink(std::string_view file, uint32_t maxFileSize, 
                     file,
                     maxFileSize,
                     maxFiles,
-                    (overwrite ? "overwrite" : "append"));
+                    get_file_mode_str(overwrite));
 
     set_parameter(parameter);
 

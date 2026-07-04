@@ -42,6 +42,11 @@ EntryType get_entry_type(std::string_view path);
 
 const char* get_entry_type_str(EntryType type);
 
+inline const char* get_file_mode_str(bool overwrite)
+{
+    return overwrite ? "overwrite" : "append";
+}
+
 /**
  * @brief 获取当前工作路径。
  *

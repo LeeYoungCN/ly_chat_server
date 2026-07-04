@@ -283,7 +283,7 @@ bool write_text_file(std::string_view path, std::string_view content, bool overw
         file.close();
         set_thread_last_err(ERR_COMM_SUCCESS);
         DEBUG_LOGGER_TRACE("Write to text file succeeded. file: \"{}\". msg: \"{}\".",
-                           (overwrite ? "overwrite" : "append"),
+                           get_file_mode_str(overwrite),
                            path,
                            get_thread_last_err_msg());
         return true;
@@ -293,7 +293,7 @@ bool write_text_file(std::string_view path, std::string_view content, bool overw
     set_thread_last_err(ConvertSysEcToErrorCode(ec));
 
     DEBUG_LOGGER_ERR("Write text failed. file {}: {}, msg: \"{}\".",
-                     (overwrite ? "overwrite" : "append"),
+                     get_file_mode_str(overwrite),
                      path,
                      get_thread_last_err_msg());
     return false;
@@ -309,7 +309,6 @@ FileSize get_file_size(std::string_view path)
     std::error_code ec;
     const auto& size = fs::file_size(path, ec);
     set_thread_last_err(ConvertSysEcToErrorCode(ec));
-    ;
     return size;
 }
 

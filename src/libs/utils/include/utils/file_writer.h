@@ -2,12 +2,10 @@
 #define UTILS_FILE_WRITER_H
 
 #include <cstddef>
-#include <cstdio>
-#include <fstream>
+#include <memory>
 #include <string>
 #include <string_view>
 
-#include "common/common_error_code.h"
 #include "common/types/error_code_types.h"
 
 namespace utils::filesystem {
@@ -35,12 +33,11 @@ public:
 
 private:
     ErrorCode open_it(bool overwrite);
-    std::string m_file;
-    std::string m_directory;
-    std::ofstream m_stream;
-    std::ios::openmode m_mode{(std::ios::out | std::ios::trunc)};
-    ErrorCode m_errcode{ERR_COMM_SUCCESS};
-    size_t m_currSize{0};
+    [[nodiscard]] size_t get_file_size_it() const;
+
+private:
+    struct Impl;
+    std::unique_ptr<Impl> _impl;
 };
 
 }  // namespace utils::filesystem

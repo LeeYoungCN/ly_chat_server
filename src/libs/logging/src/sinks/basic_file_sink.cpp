@@ -14,13 +14,8 @@ namespace logging {
 using namespace utils::filesystem;
 
 struct BasicFileSink::Impl {
-    Impl(std::string_view file, bool overwrite)
-        : _filePath(to_absolute_path(file)), _overwrite(overwrite), _fileWriter(_filePath)
-    {
-    }
+    explicit Impl(std::string_view file) : _fileWriter(file) {}
 
-    std::string _filePath;
-    bool _overwrite{true};
     FileWriter _fileWriter;
 };
 
@@ -41,26 +36,20 @@ BasicFileSink::BasicFileSink() : BasicFileSink(internal::get_default_log_file("l
 
 BasicFileSink::BasicFileSink(std::string_view file, bool overwrite)
 {
-    if (file.empty()) {
-        DEBUG_LOGGER_ERR("Create BasicFileSink failed. file path is empty.");
-        set_thread_last_err(ERR_COMM_PARAM_NULL);
-        throw std::invalid_argument("Create BasicFileSink failed. file path is empty.");
-    }
-
-    _pimpl = std::make_unique<Impl>(file, overwrite);
+    _pimpl = std::make_unique<Impl>(file);
     _pimpl->_fileWriter.open(overwrite);
 
     if (_pimpl->_fileWriter.get_last_error() != ERR_COMM_SUCCESS) {
         DEBUG_LOGGER_ERR("Create BasicFileSink failed. File: \"{}\", mode: {}. msg: \"{}\".",
                          file,
-                         (overwrite ? "overwrite" : "append"),
+                         get_file_mode_str(overwrite),
                          get_utils_err_msg(_pimpl->_fileWriter.get_last_error()));
         _pimpl.reset();
         throw std::runtime_error("Failed to open file: " + std::string(file));
     }
 
-    set_parameter(std::format(
-        "BasicFileSink, File: \"{}\", mode: {}", file, (overwrite ? "overwrite" : "append")));
+    set_parameter(
+        std::format("BasicFileSink, File: \"{}\", Mode: {}", file, get_file_mode_str(overwrite)));
 }
 
 void BasicFileSink::sink_it(std::string_view message)

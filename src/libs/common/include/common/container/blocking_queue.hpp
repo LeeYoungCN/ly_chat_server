@@ -36,6 +36,7 @@ public:
             DEBUG_LOGGER_ERR(errmsg);
             throw std::invalid_argument(errmsg);
         }
+        _items.reserve(_maxItems);
     }
 
     template <typename... Args>

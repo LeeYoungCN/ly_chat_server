@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <string_view>
 
+#include "common/common_error_code.h"
 #include "common/constants/filesystem_constants.h"
 #include "common/debug/debug_logger.h"
 #include "internal/utils/filesystem_utils_internal.h"
@@ -17,71 +18,101 @@
 namespace utils::filesystem {
 using namespace utils::filesystem::internal;
 
+struct FileWriter::Impl {
+    std::string file;
+    std::string directory;
+    std::ofstream stream;
+    std::ios::openmode mode{(std::ios::out | std::ios::trunc)};
+    ErrorCode errcode{ERR_COMM_SUCCESS};
+    size_t currSize{0};
+
+    explicit Impl(std::string_view file)
+        : file(to_absolute_path(file)), directory(get_directory(file))
+    {
+    }
+};
+
 FileWriter::~FileWriter()
 {
+    if (_impl == nullptr) {
+        return;
+    }
     close();
+    _impl.reset();
 }
 
-FileWriter::FileWriter(std::string_view file)
+FileWriter::FileWriter(std::string_view file) : _impl(std::make_unique<Impl>(file))
 {
     if (file.empty()) {
-        m_errcode = ERR_COMM_PARAM_EMPTY;
+        _impl->errcode = ERR_COMM_PARAM_EMPTY;
         DEBUG_LOGGER_ERR("Create FileWriter failed. File path is empty.");
         throw std::invalid_argument("Create FileWriter failed. File path is empty.");
         return;
     }
 
-    m_file = to_absolute_path(file);
-    m_directory = get_directory(m_file);
+    _impl->file = to_absolute_path(file);
+    _impl->directory = get_directory(_impl->file);
 }
 
 ErrorCode FileWriter::open_it(bool overwrite)
 {
     close();
     if (overwrite) {
-        m_mode = (std::ios::out | std::ios::trunc);
+        _impl->mode = (std::ios::out | std::ios::trunc);
     } else {
-        m_mode = (std::ios::out | std::ios::app);
+        _impl->mode = (std::ios::out | std::ios::app);
     }
 
-    m_stream = std::ofstream(m_file, m_mode);
+    _impl->stream = std::ofstream(_impl->file, _impl->mode);
 
     date_time::sleep_ms(constants::filesystem::FILE_OPEN_INTERNAL_MS);
 
-    if (!m_stream.is_open()) {
+    if (!_impl->stream.is_open()) {
         std::error_code ec(errno, std::generic_category());
         set_thread_last_err(ConvertSysEcToErrorCode(ec));
         DEBUG_LOGGER_ERR("Open file failed. file: \"{}\", mode: {}, msg: {}",
-                         m_file.data(),
+                         _impl->file.data(),
                          MODE_STR(overwrite),
                          get_thread_last_err_msg());
-        m_errcode = get_thread_last_err();
-        return m_errcode;
+        _impl->errcode = get_thread_last_err();
+        return _impl->errcode;
     }
 
-    m_currSize = get_file_size(m_file);
+    _impl->currSize = get_file_size(_impl->file);
 
     DEBUG_LOGGER_DBG(
-        "Open file success. file: \"{}\", mode: {}.", m_file.data(), MODE_STR(overwrite));
-    m_errcode = ERR_COMM_SUCCESS;
-    set_thread_last_err(m_errcode);
-    return m_errcode;
+        "Open file success. file: \"{}\", mode: {}.", _impl->file.data(), MODE_STR(overwrite));
+    _impl->errcode = ERR_COMM_SUCCESS;
+    set_thread_last_err(_impl->errcode);
+    return _impl->errcode;
+}
+
+size_t FileWriter::get_file_size_it() const
+{
+    // tellp() returns a signed position type (std::streampos); handle possible -1 and avoid
+    // implicit conversion to unsigned size_t which would change signedness.
+    auto pos = _impl->stream.tellp();
+    if (pos == std::ofstream::pos_type(-1)) {
+        return 0;
+    } else {
+        return static_cast<size_t>(pos);
+    }
 }
 
 ErrorCode FileWriter::open(bool overwrite)
 {
     close();
-    if (!file_exists(m_file) && get_thread_last_err() == ERR_UTILS_NOT_FILE) {
+    if (!file_exists(_impl->file) && get_thread_last_err() == ERR_UTILS_NOT_FILE) {
         DEBUG_LOGGER_ERR("Write to text file failed. file: \"{}\". message: \"{}\".",
-                         m_file,
+                         _impl->file,
                          get_thread_last_err_msg());
-        m_errcode = get_thread_last_err();
-        return m_errcode;
+        _impl->errcode = get_thread_last_err();
+        return _impl->errcode;
     }
 
-    if (!create_dir(m_directory)) {
-        m_errcode = get_thread_last_err();
-        return m_errcode;
+    if (!create_dir(_impl->directory)) {
+        _impl->errcode = get_thread_last_err();
+        return _impl->errcode;
     }
 
     return open_it(overwrite);
@@ -94,85 +125,86 @@ ErrorCode FileWriter::reopen(bool overwrite)
 
 void FileWriter::close()
 {
-    m_errcode = ERR_COMM_SUCCESS;
-    set_thread_last_err(m_errcode);
-    if (m_stream.is_open()) {
-        m_stream.flush();
-        m_stream.close();
-        m_currSize = 0;
-        DEBUG_LOGGER_DBG("Close file success. file: \"{}\".", m_file.data());
+    _impl->errcode = ERR_COMM_SUCCESS;
+    set_thread_last_err(_impl->errcode);
+    if (_impl->stream.is_open()) {
+        _impl->stream.flush();
+        _impl->stream.close();
+        _impl->currSize = 0;
+        DEBUG_LOGGER_DBG("Close file success. file: \"{}\".", _impl->file.data());
     }
 }
 
 void FileWriter::write(std::string_view str)
 {
-    if (!m_stream.is_open()) {
-        m_errcode = ERR_UTILS_FILE_NOT_OPEN;
-        DEBUG_LOGGER_ERR(
-            "Write failed. file: \"{}\", msg: {}.", m_file.c_str(), get_utils_err_msg(m_errcode));
+    if (!_impl->stream.is_open()) {
+        _impl->errcode = ERR_UTILS_FILE_NOT_OPEN;
+        DEBUG_LOGGER_ERR("Write failed. file: \"{}\", msg: {}.",
+                         _impl->file.c_str(),
+                         get_utils_err_msg(_impl->errcode));
     } else {
-        m_errcode = ERR_COMM_SUCCESS;
-        m_stream << str;
-        m_currSize += str.length();
+        _impl->errcode = ERR_COMM_SUCCESS;
+        _impl->stream << str;
+        _impl->currSize += str.length();
     }
-    set_thread_last_err(m_errcode);
+    set_thread_last_err(_impl->errcode);
 }
 
 void FileWriter::write_line(std::string_view str)
 {
-    if (!m_stream.is_open()) {
-        m_errcode = ERR_UTILS_FILE_NOT_OPEN;
+    if (!_impl->stream.is_open()) {
+        _impl->errcode = ERR_UTILS_FILE_NOT_OPEN;
         DEBUG_LOGGER_ERR("Write line failed. file: \"{}\", msg: {}.",
-                         m_file.c_str(),
-                         get_utils_err_msg(m_errcode));
+                         _impl->file.c_str(),
+                         get_utils_err_msg(_impl->errcode));
     } else {
-        m_errcode = ERR_COMM_SUCCESS;
-        m_stream << str << '\n';
-        m_currSize += str.length() + constants::filesystem::LF_LENGTH;
+        _impl->errcode = ERR_COMM_SUCCESS;
+        _impl->stream << str << '\n';
+        _impl->currSize += str.length() + constants::filesystem::LF_LENGTH;
     }
-    set_thread_last_err(m_errcode);
+    set_thread_last_err(_impl->errcode);
 }
 
 void FileWriter::flush()
 {
-    m_errcode = ERR_COMM_SUCCESS;
-    m_stream.flush();
-    m_currSize = get_file_size(m_file);
+    _impl->errcode = ERR_COMM_SUCCESS;
+    _impl->stream.flush();
+    _impl->currSize = get_file_size_it();
 }
 
 size_t FileWriter::size() const
 {
-    return m_stream.is_open() ? m_currSize : get_file_size(m_file);
+    return _impl->stream.is_open() ? _impl->currSize : get_file_size(_impl->file);
 }
 
 std::string FileWriter::file_name_stem() const
 {
-    return get_file_name_stem(m_file);
+    return get_file_name_stem(_impl->file);
 }
 
 std::string FileWriter::file_name() const
 {
-    return get_file_name(m_file);
+    return get_file_name(_impl->file);
 }
 
 std::string FileWriter::directory() const
 {
-    return m_directory;
+    return _impl->directory;
 }
 
 std::string FileWriter::full_path() const
 {
-    return m_file;
+    return _impl->file;
 }
 
 std::string FileWriter::extension() const
 {
-    return get_extension(m_file);
+    return get_extension(_impl->file);
 }
 
 ErrorCode FileWriter::get_last_error() const
 {
-    return m_errcode;
+    return _impl->errcode;
 }
 
 }  // namespace utils::filesystem
