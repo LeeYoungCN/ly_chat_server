@@ -129,7 +129,7 @@ std::vector<std::string> RotatingFileSink::get_rotating_file_list()
 
 void RotatingFileSink::set_max_file_size(uint32_t maxFileSize)
 {
-    sink_mutex();
+    std::lock_guard lock(sink_mutex());
     if (maxFileSize > 0) {
         _pimpl->_maxFileSize = maxFileSize;
     } else {
@@ -137,14 +137,26 @@ void RotatingFileSink::set_max_file_size(uint32_t maxFileSize)
     }
 }
 
+uint32_t RotatingFileSink::max_file_size()
+{
+    std::lock_guard lock(sink_mutex());
+    return _pimpl->_maxFileSize;
+}
+
 void RotatingFileSink::set_max_files(uint32_t maxFiles)
 {
-    sink_mutex();
+    std::lock_guard lock(sink_mutex());
     if (maxFiles > 0) {
         _pimpl->_maxFiles = maxFiles;
     } else {
         DEBUG_LOGGER_ERR("maxFiles invalid, {}.", maxFiles);
     }
+}
+
+uint32_t RotatingFileSink::max_files()
+{
+    std::lock_guard lock(sink_mutex());
+    return _pimpl->_maxFiles;
 }
 
 void RotatingFileSink::flush_it()

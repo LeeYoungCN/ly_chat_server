@@ -26,8 +26,12 @@ public:
 
 public:
     std::vector<std::string> get_rotating_file_list();
+
     void set_max_file_size(uint32_t maxFileSize);
+    [[nodiscard]] uint32_t max_file_size();
+
     void set_max_files(uint32_t maxFiles);
+    [[nodiscard]] uint32_t max_files();
 
 protected:
     void flush_it() override;
