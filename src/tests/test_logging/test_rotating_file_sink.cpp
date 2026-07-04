@@ -91,7 +91,7 @@ TEST_F(TestRotatingFileSink, rotate)
     std::string logContent = std::string(100, 'a');
 
     size_t logMsgSize = logContent.size() + LF_LENGTH;
-    uint32_t currSize = 0;
+    size_t currSize = 0;
     while (currSize < maxFileSize) {
         LogMsg logMsg(LOG_SRC_LOCAL, "noname", LogLevel::ERR, logContent);
         sink.log(logMsg);
@@ -127,7 +127,7 @@ TEST_F(TestRotatingFileSink, rotate_and_delete)
     std::string logContent = std::string(100, 'a');
 
     size_t logMsgSize = logContent.size() + LF_LENGTH;
-    uint32_t currSize = 0;
+    size_t currSize = 0;
     while (currSize < rotate_log_file * maxFileSize) {
         LogMsg logMsg(LOG_SRC_LOCAL, "noname", LogLevel::ERR, logContent);
         sink.log(logMsg);

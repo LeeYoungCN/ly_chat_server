@@ -89,6 +89,9 @@ ErrorCode FileWriter::open_it(bool overwrite)
 
 size_t FileWriter::get_file_size_it() const
 {
+#if OS_WINDOWS
+    return get_file_size(_impl->file);
+#else
     // tellp() returns a signed position type (std::streampos); handle possible -1 and avoid
     // implicit conversion to unsigned size_t which would change signedness.
     auto pos = _impl->stream.tellp();
@@ -97,6 +100,7 @@ size_t FileWriter::get_file_size_it() const
     } else {
         return static_cast<size_t>(pos);
     }
+#endif
 }
 
 ErrorCode FileWriter::open(bool overwrite)
