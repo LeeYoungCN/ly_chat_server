@@ -80,7 +80,7 @@ ErrorCode FileWriter::open_it(bool overwrite)
 
     _impl->currSize = get_file_size(_impl->file);
 
-    DEBUG_LOGGER_DBG(
+    DEBUG_LOGGER_TRACE(
         "Open file success. file: \"{}\", mode: {}.", _impl->file.data(), MODE_STR(overwrite));
     _impl->errcode = ERR_COMM_SUCCESS;
     set_thread_last_err(_impl->errcode);
@@ -135,7 +135,7 @@ void FileWriter::close()
         _impl->stream.flush();
         _impl->stream.close();
         _impl->currSize = 0;
-        DEBUG_LOGGER_DBG("Close file success. file: \"{}\".", _impl->file.data());
+        DEBUG_LOGGER_TRACE("Close file success. file: \"{}\".", _impl->file.data());
     }
 }
 

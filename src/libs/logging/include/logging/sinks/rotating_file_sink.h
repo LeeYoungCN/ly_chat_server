@@ -14,8 +14,11 @@ class RotatingFileSink : public BaseSink {
 public:
     static constexpr uint32_t DEFAULT_MAX_FILE_SIZE = 10 * 1024 * 1024;  // 10MB;
     static constexpr uint32_t DEFAULT_MAX_FILES = 100;                   // 最大保留100个日志文件;
+
+    static constexpr uint32_t MAX_FILES = 20000;  // 最大保留20000个日志文件;
+
     static constexpr uint32_t MIN_INDEX = 1;
-    static constexpr uint32_t MAX_INDEX = 20000;
+    static constexpr uint32_t MAX_INDEX = MAX_FILES;  // 最大索引号为20000;
 
 public:
     RotatingFileSink();
