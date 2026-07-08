@@ -9,14 +9,23 @@
  *
  */
 
+#include "common/compiler/macros.h"
+
+#if OS_WINDOWS
+#include <windows.h>
+#else
 #include <chrono>
+#endif
+
 #include <cstddef>
+#include <cstdint>
 #include <exception>
 #include <filesystem>
 #include <fstream>
 #include <string>
 #include <system_error>
 
+#include "common/constants/date_time_constants.h"
 #include "common/debug/debug_logger.h"
 #include "common/types/date_time_types.h"
 #include "common/types/filesystem_types.h"
@@ -32,6 +41,7 @@
 
 namespace {
 namespace fs = std::filesystem;
+using namespace constants::date_time;
 using namespace utils::filesystem;
 using namespace utils::filesystem::internal;
 
@@ -304,12 +314,39 @@ FileSize get_file_size(std::string_view path)
 
 TimestampMs get_file_modify_time(std::string_view path)
 {
+#if OS_WINDOWS
+    WIN32_FILE_ATTRIBUTE_DATA fileAttr{};
+    // convert utf-8 path to wide string for Windows API
+    std::wstring wpath;
+    if (!path.empty()) {
+        int sz =
+            MultiByteToWideChar(CP_UTF8, 0, path.data(), static_cast<int>(path.size()), nullptr, 0);
+        if (sz > 0) {
+            wpath.resize(sz);
+            MultiByteToWideChar(
+                CP_UTF8, 0, path.data(), static_cast<int>(path.size()), &wpath[0], sz);
+        }
+    }
+    BOOL ok = GetFileAttributesExW(wpath.c_str(), GetFileExInfoStandard, &fileAttr);
+    if (!ok) return 0;
+
+    FILETIME ftCreate = fileAttr.ftCreationTime;
+    ULARGE_INTEGER ul;
+    ul.LowPart = ftCreate.dwLowDateTime;
+    ul.HighPart = ftCreate.dwHighDateTime;
+
+    // FILETIME基准：1601-01-01 单位100ns
+    // 转毫秒，再减去1601到1970的毫秒差值 11644473600000
+    int64_t totalMs = static_cast<int64_t>(ul.QuadPart) / HUNDRED_NANOSECONDS_PER_MILLISECOND;
+    return totalMs - WINDOWS_EPOCH_TO_UNIX_EPOCH_MS;
+#else
     fs::file_time_type fileTime = fs::last_write_time(path);
     auto sysTime = std::chrono::time_point_cast<std::chrono::system_clock::duration>(
         fileTime - std::filesystem::file_time_type::clock::now() +
         std::chrono::system_clock::now());
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(sysTime.time_since_epoch());
     return static_cast<TimestampMs>(ms.count());
+#endif
 }
 
 FileInfo get_file_info(std::string_view path)

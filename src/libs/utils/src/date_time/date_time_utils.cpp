@@ -106,16 +106,15 @@ TimestampMs get_current_time_stamp_ms()
 
     // 将FILETIME的高低位 DWORD 合并为64位无符号整数，得到完整的100纳秒单位时间戳
     constexpr int FILETIME_HIGH_SHIFT_BITS = 32;  // FILETIME高32位左移位数
-    uint64_t file_time =
-        (static_cast<uint64_t>(ft.dwHighDateTime) << FILETIME_HIGH_SHIFT_BITS) | ft.dwLowDateTime;
+    int64_t file_time =
+        (static_cast<int64_t>(ft.dwHighDateTime) << FILETIME_HIGH_SHIFT_BITS) | ft.dwLowDateTime;
 
     // 转换为Unix时间戳（毫秒级）：
     // 1. 先将100纳秒单位转换为毫秒（除以10000，因1毫秒=10000×100纳秒）
     // 2. 减去Windows纪元到Unix纪元（1970-01-01 00:00:00）的毫秒差值，得到标准Unix时间戳
-    constexpr uint64_t HUNDRED_NANOSECONDS_PER_MILLISECOND = 10000;
-    return static_cast<TimestampMs>((file_time / HUNDRED_NANOSECONDS_PER_MILLISECOND)  // 转换为毫秒
-                                    - WINDOWS_EPOCH_TO_UNIX_EPOCH_MS  // 校正到Unix纪元
-    );
+    return file_time / HUNDRED_NANOSECONDS_PER_MILLISECOND  // 转换为毫秒
+           - WINDOWS_EPOCH_TO_UNIX_EPOCH_MS;                // 校正到Unix纪元
+
 #else
     std::chrono::time_point now = std::chrono::system_clock::now();
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch());

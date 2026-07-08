@@ -40,7 +40,7 @@ struct LogFileInfo {
     {
     }
 
-    std::string to_string() const
+    [[nodiscard]] std::string to_string() const
     {
         return std::format(
             "idx: {}, time: [{}], size: {}, file: \"{}\"",

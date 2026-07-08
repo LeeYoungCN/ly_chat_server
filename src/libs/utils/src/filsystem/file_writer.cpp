@@ -65,7 +65,7 @@ ErrorCode FileWriter::open_it(bool overwrite)
 
     _impl->stream = std::ofstream(_impl->file, _impl->mode);
 
-    date_time::sleep_ms(constants::filesystem::FILE_OPEN_INTERNAL_MS);
+    date_time::sleep_ms(constants::filesystem::FILE_OPEN_INTERVAL_MS);
 
     if (!_impl->stream.is_open()) {
         std::error_code ec(errno, std::generic_category());
