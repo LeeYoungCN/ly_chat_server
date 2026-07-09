@@ -120,7 +120,7 @@ RotatingFileSink::RotatingFileSink(std::string_view file, uint32_t maxFileSize, 
                     maxFiles);
     set_parameter(parameter);
 
-    init_file_list();
+    init_file_queue();
 
     if (rotateOnOpen) {
         rotate();
@@ -133,7 +133,7 @@ std::string RotatingFileSink::log_file()
     return _pimpl->_logWriter.full_path();
 }
 
-std::vector<std::string> RotatingFileSink::get_rotating_file_list()
+std::vector<std::string> RotatingFileSink::get_file_list()
 {
     std::lock_guard lock(sink_mutex());
     std::vector<std::string> rst;
@@ -197,7 +197,7 @@ void RotatingFileSink::sink_it(std::string_view message)
     _pimpl->_logWriter.write_line(message);
 }
 
-void RotatingFileSink::init_file_list()
+void RotatingFileSink::init_file_queue()
 {
     auto logDir = get_directory(_pimpl->_filePath);
 

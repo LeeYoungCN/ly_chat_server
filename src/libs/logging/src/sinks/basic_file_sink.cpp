@@ -1,13 +1,13 @@
 #include "logging/sinks/basic_file_sink.h"
 
 #include <format>
+#include <mutex>
 #include <stdexcept>
 
 #include "common/debug/debug_logger.h"
 #include "internal/logging_internal.h"
 #include "utils/file_writer.h"
 #include "utils/filesystem_utils.h"
-#include "utils/thread_utils.h"
 #include "utils/utils_error_code.h"
 
 namespace logging {
@@ -68,4 +68,9 @@ void BasicFileSink::flush_it()
     _pimpl->_fileWriter.flush();
 }
 
+std::string BasicFileSink::log_file()
+{
+    std::lock_guard lock(sink_mutex());
+    return _pimpl->_fileWriter.full_path();
+}
 }  // namespace logging

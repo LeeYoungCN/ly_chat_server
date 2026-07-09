@@ -125,7 +125,7 @@ void TestRotatingFileSink::TestRotate(testing::TestInfo* test_info, uint32_t sta
     EXPECT_LT(get_file_size(logFile), maxFileSize);
 
     uint32_t totalFileCount = existFileCount + rotateCount;
-    ASSERT_TRUE(sink.get_rotating_file_list().size() == totalFileCount);
+    ASSERT_TRUE(sink.get_file_list().size() == totalFileCount);
 
     for (uint32_t i = existFileCount; i < totalFileCount; i++) {
         uint32_t nextIdx = existFileIdxs[i];
@@ -159,7 +159,7 @@ void TestRotatingFileSink::TestRotateAndDelete(testing::TestInfo* test_info, uin
 
     AppendLogFileList(existFileIdxs, rotateCount);
 
-    ASSERT_TRUE(sink.get_rotating_file_list().size() <= maxFiles);
+    ASSERT_TRUE(sink.get_file_list().size() <= maxFiles);
 
     for (uint32_t i = 0; i < existFileIdxs.size(); ++i) {
         uint32_t idx = existFileIdxs[i];
@@ -216,7 +216,7 @@ TEST_F(TestRotatingFileSink, init_with_existing_files)
 
     RotatingFileSink sink(logFile, false);
 
-    auto fileList = sink.get_rotating_file_list();
+    auto fileList = sink.get_file_list();
     EXPECT_EQ(fileList.size(), validFileIdxs.size());
 
     for (uint32_t i = 0; i < validFileIdxs.size(); ++i) {

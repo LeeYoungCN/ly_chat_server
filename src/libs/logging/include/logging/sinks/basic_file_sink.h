@@ -13,6 +13,9 @@ public:
     ~BasicFileSink() override;
     explicit BasicFileSink(std::string_view file, bool overwrite = true);
 
+public:
+    std::string log_file();
+
 protected:
     void flush_it() override;
     void sink_it(std::string_view message) override;

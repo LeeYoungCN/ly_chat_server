@@ -29,8 +29,7 @@ public:
 
 public:
     std::string log_file();
-
-    std::vector<std::string> get_rotating_file_list();
+    std::vector<std::string> get_file_list();
 
     void set_max_file_size(uint32_t maxFileSize);
     [[nodiscard]] uint32_t max_file_size();
@@ -43,11 +42,9 @@ protected:
     void sink_it(std::string_view message) override;
 
 private:
-    void init_file_list();
     uint32_t parse_log_index(std::string_view file);
-
+    void init_file_queue();
     void rotate();
-
     void delete_overflow_file();
 
 private:
