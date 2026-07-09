@@ -11,13 +11,13 @@
 #include "common/types/date_time_types.h"
 
 namespace logging {
-struct LogFileInfo {
+struct RotatingLogSt {
     uint32_t idx{0};
     std::string file;
     TimestampMs modifyTime{0};
     size_t fileSize{0};
 
-    LogFileInfo(uint32_t i, std::string_view f);
+    RotatingLogSt(uint32_t i, std::string_view f);
 
     [[nodiscard]] std::string to_string() const;
 };
@@ -37,8 +37,8 @@ protected:
 
     void dequeue();
 
-    const LogFileInfo& back();
-    const LogFileInfo& front();
+    const RotatingLogSt& back();
+    const RotatingLogSt& front();
 
 protected:
     virtual void init_file_queue() = 0;
@@ -50,7 +50,7 @@ private:
     uint32_t _minIdx{0};
     uint32_t _maxIdx{0};
     bool _unlimited{false};
-    std::deque<LogFileInfo> _fileQue;
+    std::deque<RotatingLogSt> _fileQue;
     std::mutex _mtx;
 };
 

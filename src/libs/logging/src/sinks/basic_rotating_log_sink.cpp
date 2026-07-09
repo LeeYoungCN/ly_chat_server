@@ -18,12 +18,12 @@ namespace logging {
 constexpr uint32_t DELETE_FILE_RETRY = 3;
 constexpr uint32_t DELETE_FILE_SLEEP_MS = 10;
 
-LogFileInfo::LogFileInfo(uint32_t i, std::string_view f)
+RotateLogSt::RotateLogSt(uint32_t i, std::string_view f)
     : idx(i), file(f), modifyTime(get_file_modify_time(f)), fileSize(get_file_size(f))
 {
 }
 
-[[nodiscard]] std::string LogFileInfo::to_string() const
+[[nodiscard]] std::string RotateLogSt::to_string() const
 {
     return std::format("idx: {}, time: [{}], size: {}, file: \"{}\".",
                        idx,
@@ -78,13 +78,13 @@ void BasicRotatingLogSink::dequeue()
     _fileQue.pop_front();
 }
 
-const LogFileInfo& BasicRotatingLogSink::back()
+const RotateLogSt& BasicRotatingLogSink::back()
 {
     std::lock_guard lock(_mtx);
     return _fileQue.back();
 }
 
-const LogFileInfo& BasicRotatingLogSink::front()
+const RotateLogSt& BasicRotatingLogSink::front()
 {
     std::lock_guard lock(_mtx);
     return _fileQue.front();
@@ -100,7 +100,7 @@ void BasicRotatingLogSink::delete_overflow_file()
         return;
     }
 
-    std::deque<LogFileInfo> failedQueue;
+    std::deque<RotateLogSt> failedQueue;
 
     // 保证剩余文件不超过最大文件数量，直到把能删除的都删了。
     while (_fileQue.size() + failedQueue.size() > _maxFiles && !_fileQue.empty()) {
