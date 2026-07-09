@@ -15,11 +15,11 @@ std::tm TimestampToTimeInfo(TimestampMs ts);
 void TestTimeBuffer(const std::string_view& format, uint32_t length, TimestampMs timestamp);
 
 void TestTimeBuffer(const std::string_view& format, uint32_t length, std::tm timeInfo,
-                    const TimeComponent& timeComp);
+                    const DateTimeSt& dateTime);
 
 void TestTimeString(const std::string_view& format, TimestampMs timestamp);
 
 void TestTimeString(const std::string_view& format, std::tm timeInfo,
-                    const TimeComponent& timeComp);
+                    const DateTimeSt& dateTime);
 }  // namespace test::test_utils::test_date_time_utils
 #endif  // TEST_UTILS_TEST_DATE_TIME_UTILS_COMMON_H

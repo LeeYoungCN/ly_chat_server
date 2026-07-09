@@ -81,6 +81,12 @@ namespace constants::date_time {
 [[maybe_unused]] constexpr uint32_t MIN_WEEKDAY = 0;
 [[maybe_unused]] constexpr uint32_t MAX_WEEKDAY = 6;
 
+[[maybe_unused]] constexpr uint32_t MIN_MINUTE = 0;
+[[maybe_unused]] constexpr uint32_t MAX_MINUTE = 59;
+
+[[maybe_unused]] constexpr uint32_t MIN_HOUR = 0;
+[[maybe_unused]] constexpr uint32_t MAX_HOUR = 23;
+
 }  // namespace constants::date_time
 
 #endif  // COMMON_CONSTANTS_DATE_TIME_CONSTANTS_H

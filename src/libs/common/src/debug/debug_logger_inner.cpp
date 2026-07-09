@@ -29,7 +29,7 @@
 #include <iostream>
 
 namespace {
-int64_t get_now_time_stamp_ms()
+int64_t get_now_timestamp_ms()
 {
 #if OS_WINDOWS
     FILETIME ft;
@@ -60,7 +60,7 @@ std::string time_string()
 {
     constexpr int64_t MILLIS_PER_SECOND = 1000;
 
-    auto timestamp = get_now_time_stamp_ms();
+    auto timestamp = get_now_timestamp_ms();
     auto timer = static_cast<std::time_t>(timestamp / MILLIS_PER_SECOND);
     auto millis = static_cast<int32_t>(timestamp % MILLIS_PER_SECOND);
 

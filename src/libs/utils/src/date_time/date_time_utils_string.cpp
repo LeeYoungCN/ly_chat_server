@@ -141,14 +141,14 @@ std::string_view get_weekday_abbr_name(uint32_t weekday)
 std::string format_time_string(TimestampMs timestamp, const std::string_view& format,
                                TimeZone timeZone)
 {
-    auto timeComp = time_stamp_ms_to_component(timestamp, timeZone);
-    return format_time_string(timeComp, format);
+    auto dateTime = timestamp_to_date_time(timestamp, timeZone);
+    return format_time_string(dateTime, format);
 }
 
-std::string format_time_string(const TimeComponent& timeComp, const std::string_view& format)
+std::string format_time_string(const DateTimeSt& dateTime, const std::string_view& format)
 {
     std::string timeString(MAX_TIME_STR_LEN, '\0');
-    size_t len = format_time_buffer(timeString.data(), timeString.capacity(), timeComp, format);
+    size_t len = format_time_buffer(timeString.data(), timeString.capacity(), dateTime, format);
 
     if (len <= 0 || len > timeString.capacity()) {
         DEBUG_LOGGER_ERR("Time format failed or buffer overflow. len: {}.", len);
@@ -162,11 +162,11 @@ std::string format_time_string(const TimeComponent& timeComp, const std::string_
 size_t format_time_buffer(char* buffer, size_t bufferSize, TimestampMs timestamp,
                           const std::string_view& format, TimeZone timeZone)
 {
-    auto timeComp = time_stamp_ms_to_component(timestamp, timeZone);
-    return format_time_buffer(buffer, bufferSize, timeComp, format);
+    auto dateTime = timestamp_to_date_time(timestamp, timeZone);
+    return format_time_buffer(buffer, bufferSize, dateTime, format);
 }
 
-size_t format_time_buffer(char* buffer, size_t bufferSize, const TimeComponent& timeComp,
+size_t format_time_buffer(char* buffer, size_t bufferSize, const DateTimeSt& dateTime,
                           const std::string_view& format)
 {
     if (buffer == nullptr || bufferSize == 0) {
@@ -225,38 +225,38 @@ size_t format_time_buffer(char* buffer, size_t bufferSize, const TimeComponent& 
         bool success = true;
         switch (format[formatIdx]) {
             case 'Y':
-                success = insertDateTimeNumber(timeComp.year, 4);
+                success = insertDateTimeNumber(dateTime.year, 4);
                 break;
             case 'y':
-                success = insertDateTimeNumber(timeComp.year, 2);
+                success = insertDateTimeNumber(dateTime.year, 2);
                 break;
             case 'm':
-                success = insertDateTimeNumber(timeComp.month, 2);
+                success = insertDateTimeNumber(dateTime.month, 2);
                 break;
             case 'd':
-                success = insertDateTimeNumber(timeComp.day, 2);
+                success = insertDateTimeNumber(dateTime.day, 2);
                 break;
             case 'H':
-                success = insertDateTimeNumber(timeComp.hour, 2);
+                success = insertDateTimeNumber(dateTime.hour, 2);
                 break;
             case 'M':
-                success = insertDateTimeNumber(timeComp.minute, 2);
+                success = insertDateTimeNumber(dateTime.minute, 2);
                 break;
             case 'S':
-                success = insertDateTimeNumber(timeComp.second, 2);
+                success = insertDateTimeNumber(dateTime.second, 2);
                 break;
             case 'B':  // 完整月份名称
-                success = insertString(get_month_full_name(timeComp.month));
+                success = insertString(get_month_full_name(dateTime.month));
                 break;
             case 'b':  // 缩写月份名称
             case 'h':  // 缩写月份名称
-                success = insertString(get_month_abbr_name(timeComp.month));
+                success = insertString(get_month_abbr_name(dateTime.month));
                 break;
             case 'A':  // 完整星期名称
-                success = insertString(get_weekday_full_name(timeComp.wday));
+                success = insertString(get_weekday_full_name(dateTime.wday));
                 break;
             case 'a':  // 缩写星期名称
-                success = insertString(get_weekday_abbr_name(timeComp.wday));
+                success = insertString(get_weekday_abbr_name(dateTime.wday));
                 break;
             case '%':
                 buffer[bufferIdx++] = '%';
@@ -264,7 +264,7 @@ size_t format_time_buffer(char* buffer, size_t bufferSize, const TimeComponent& 
             case '3':
                 if (formatIdx + 1 < format.length() && format[formatIdx + 1] == 'f') {
                     formatIdx++;
-                    success = insertDateTimeNumber(timeComp.millis, 3);
+                    success = insertDateTimeNumber(dateTime.millis, 3);
                 } else {
                     success = insertString(std::string_view(format.data() + formatIdx - 1, 1));
                 }

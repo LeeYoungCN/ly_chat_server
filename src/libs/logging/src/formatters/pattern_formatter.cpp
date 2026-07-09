@@ -67,7 +67,7 @@ void PatternFormatter::log_msg_to_content(char symbol, const details::LogMsg& lo
 {
     switch (symbol) {
         case 'd':  // datetime
-            content.append(format_time_string(logMsg.timeStamp, _pimpl->timePattern));
+            content.append(format_time_string(logMsg.timestamp, _pimpl->timePattern));
             break;
         case 'n':  // logger name
             content.append(logMsg.loggerName);

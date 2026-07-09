@@ -24,7 +24,7 @@ namespace {
 using namespace ::utils::date_time;
 using namespace ::constants::date_time;
 
-bool SafeLocalTime(time_t timer, tm& timeInfo)
+bool safe_localtime(time_t timer, tm& timeInfo)
 {
 #if OS_WINDOWS
     // Windows 使用 localtime_s
@@ -52,7 +52,7 @@ bool SafeLocalTime(time_t timer, tm& timeInfo)
     return true;
 }
 
-bool SafeGmtime(time_t timer, tm& timeInfo)
+bool safe_gmtime(time_t timer, tm& timeInfo)
 {
 #if OS_WINDOWS
     // Windows下使用gmtime_s，增加负数时间戳检查
@@ -80,23 +80,23 @@ bool SafeGmtime(time_t timer, tm& timeInfo)
     return true;
 }
 
-void ConvertTmToTimeComp(const std::tm timeInfo, int32_t millis, TimeComponent& timeComp)
+void ConvertTmToDateTime(const std::tm timeInfo, int32_t millis, DateTimeSt& dateTime)
 {
-    timeComp.year = static_cast<uint32_t>(TIME_COMP_START_YEAR + timeInfo.tm_year);
-    timeComp.month = static_cast<uint32_t>(TIME_COMP_START_MONTH + timeInfo.tm_mon);
-    timeComp.day = static_cast<uint32_t>(timeInfo.tm_mday);
-    timeComp.hour = static_cast<uint32_t>(timeInfo.tm_hour);
-    timeComp.minute = static_cast<uint32_t>(timeInfo.tm_min);
-    timeComp.second = static_cast<uint32_t>(timeInfo.tm_sec);
-    timeComp.millis = static_cast<uint32_t>(millis);
-    timeComp.wday = static_cast<uint32_t>(timeInfo.tm_wday);
-    timeComp.yday = static_cast<uint32_t>(timeInfo.tm_yday);
+    dateTime.year = static_cast<uint32_t>(TIME_COMP_START_YEAR + timeInfo.tm_year);
+    dateTime.month = static_cast<uint32_t>(TIME_COMP_START_MONTH + timeInfo.tm_mon);
+    dateTime.day = static_cast<uint32_t>(timeInfo.tm_mday);
+    dateTime.hour = static_cast<uint32_t>(timeInfo.tm_hour);
+    dateTime.minute = static_cast<uint32_t>(timeInfo.tm_min);
+    dateTime.second = static_cast<uint32_t>(timeInfo.tm_sec);
+    dateTime.millis = static_cast<uint32_t>(millis);
+    dateTime.wday = static_cast<uint32_t>(timeInfo.tm_wday);
+    dateTime.yday = static_cast<uint32_t>(timeInfo.tm_yday);
 }
 }  // namespace
 
 namespace utils::date_time {
 
-TimestampMs get_now_time_stamp_ms()
+TimestampMs get_now_timestamp_ms()
 {
     set_thread_last_err(ERR_COMM_SUCCESS);
 #if OS_WINDOWS
@@ -122,36 +122,36 @@ TimestampMs get_now_time_stamp_ms()
 #endif
 }
 
-TimeComponent get_now_time_comp()
+DateTimeSt get_now_date_time()
 {
-    return time_stamp_ms_to_component(get_now_time_stamp_ms());
+    return timestamp_to_date_time(get_now_timestamp_ms());
 }
 
-TimeComponent local_time_component(TimestampMs timestamp)
+DateTimeSt local_date_time(TimestampMs timestamp)
 {
-    return time_stamp_ms_to_component(timestamp, TimeZone::LOCAL);
+    return timestamp_to_date_time(timestamp, TimeZone::LOCAL);
 }
 
-TimeComponent utc_time_component(TimestampMs timestamp)
+DateTimeSt utc_date_time(TimestampMs timestamp)
 {
-    return time_stamp_ms_to_component(timestamp, TimeZone::UTC);
+    return timestamp_to_date_time(timestamp, TimeZone::UTC);
 }
 
-TimeComponent time_stamp_ms_to_component(TimestampMs timestamp, TimeZone timeZone)
+DateTimeSt timestamp_to_date_time(TimestampMs timestamp, TimeZone timeZone)
 {
     auto timer = static_cast<std::time_t>(timestamp / MILLIS_PER_SECOND);
     auto millis = static_cast<int32_t>(timestamp % MILLIS_PER_SECOND);
 
     std::tm timeInfo{};
-    TimeComponent timeComp{};
+    DateTimeSt dateTime{};
     bool rst = false;
     switch (timeZone) {
         case TimeZone::UTC:
-            rst = SafeGmtime(timer, timeInfo);
+            rst = safe_gmtime(timer, timeInfo);
             break;
         case TimeZone::LOCAL:
         default:
-            rst = SafeLocalTime(timer, timeInfo);
+            rst = safe_localtime(timer, timeInfo);
     }
 
     if (!rst) {
@@ -159,10 +159,10 @@ TimeComponent time_stamp_ms_to_component(TimestampMs timestamp, TimeZone timeZon
                          GetTimeZoneString(timeZone),
                          get_thread_last_err_msg());
     } else {
-        ConvertTmToTimeComp(timeInfo, millis, timeComp);
+        ConvertTmToDateTime(timeInfo, millis, dateTime);
         set_thread_last_err(ERR_COMM_SUCCESS);
     }
-    return timeComp;
+    return dateTime;
 }
 
 void sleep_ms(DurationMs ms)

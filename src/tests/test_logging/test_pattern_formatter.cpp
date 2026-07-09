@@ -46,10 +46,10 @@ TEST_F(TestPatternFormatter, date_time)
 {
     PatternFormatter formatter("%d");
     LogMsg msg;
-    msg.timeStamp = get_now_time_stamp_ms();
+    msg.timestamp = get_now_timestamp_ms();
     std::string content;
     formatter.format(msg, content);
-    EXPECT_EQ(content, format_time_string(msg.timeStamp, FORMATTER_DEFAULT_TIME_PATTERN));
+    EXPECT_EQ(content, format_time_string(msg.timestamp, FORMATTER_DEFAULT_TIME_PATTERN));
 }
 
 TEST_F(TestPatternFormatter, logger_name)
@@ -178,7 +178,7 @@ TEST_F(TestPatternFormatter, default_pattern)
     // "[%d][%L][%s:%#]: %v"
     std::string expect =
         std::format("[{}][{}][{}:{}]: {}",
-                    format_time_string(msg.timeStamp, FORMATTER_DEFAULT_TIME_PATTERN),
+                    format_time_string(msg.timestamp, FORMATTER_DEFAULT_TIME_PATTERN),
                     log_level_to_string(msg.level, false),
                     get_file_name(msg.source.file),
                     msg.source.line,

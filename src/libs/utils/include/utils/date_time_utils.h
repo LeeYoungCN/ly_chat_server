@@ -24,41 +24,40 @@ namespace utils::date_time {
  * @return TimestampMs 毫秒级时间戳
  * @note 跨平台实现：Windows使用GetSystemTimeAsFileTime，Linux/macOS使用std::chrono
  */
-TimestampMs get_now_time_stamp_ms();
+TimestampMs get_now_timestamp_ms();
 
 /**
  * @brief 获取当前系统时间的时间组件
  * @details
- * 直接返回分解后的时间信息（年、月、日等），等价于Timestamp2Component(get_now_time_stamp_ms())
- * @return TimeComponent 当前时间的分解结构
+ * 直接返回分解后的时间信息（年、月、日等），等价于Timestamp2Component(get_now_timestamp_ms())
+ * @return DateTime 当前时间的分解结构
  */
-TimeComponent get_now_time_comp();
+DateTimeSt get_now_date_time();
 
 /**
  * @brief 将毫秒级时间戳转换为本地时间的时间组件
  * @param[in] timestamp 待转换的毫秒级时间戳（Unix纪元基准）
- * @return TimeComponent 转换后的时间组件
+ * @return DateTime 转换后的时间组件
  *         失败时返回所有字段为0的结构
  */
-TimeComponent local_time_component(TimestampMs timestamp);
+DateTimeSt local_date_time(TimestampMs timestamp);
 
 /**
  * @brief 将毫秒级时间戳转换为UTC时间的时间组件
  * @param[in] timestamp 待转换的毫秒级时间戳（Unix纪元基准）
- * @return TimeComponent 转换后的时间组件
+ * @return DateTime 转换后的时间组件
  *         失败时返回所有字段为0的结构
  */
-TimeComponent utc_time_component(TimestampMs timestamp);
+DateTimeSt utc_date_time(TimestampMs timestamp);
 
 /**
  * @brief 将毫秒级时间戳转换为时间组件
  * @param[in] timestamp 待转换的毫秒级时间戳（Unix纪元基准）
  * @param[in] timeZone: 时区
- * @return TimeComponent 转换后的时间组件
+ * @return DateTime 转换后的时间组件
  *         失败时返回所有字段为0的结构
  */
-TimeComponent time_stamp_ms_to_component(TimestampMs timestamp,
-                                         TimeZone timeZone = TimeZone::LOCAL);
+DateTimeSt timestamp_to_date_time(TimestampMs timestamp, TimeZone timeZone = TimeZone::LOCAL);
 
 /**
  * @brief 获取月份的完整英文名称
@@ -106,14 +105,14 @@ std::string format_time_string(
 
 /**
  * @brief 将时间组件按指定格式转换为字符串
- * @param[in] timeComp 待格式化的时间组件
+ * @param[in] dateTime 待格式化的时间组件
  * @param[in] format 格式字符串（支持占位符，如%Y表示4位年份）
  *                   默认值：common::constants::date_time::DEFAULT_TIME_FMT（"%Y-%m-%d %H:%M:%S"）
  * @return std::string 格式化后的时间字符串
  *         若格式化失败或参数无效，返回空字符串
  */
 std::string format_time_string(
-    const TimeComponent& timeComp,
+    const DateTimeSt& dateTime,
     const std::string_view& format = constants::date_time::DEFAULT_TIME_FMT);
 
 /**
@@ -136,13 +135,13 @@ size_t format_time_buffer(char* buffer, size_t bufferSize, TimestampMs timestamp
  * @details 直接写入用户提供的缓冲区，减少内存分配，适合高频调用场景
  * @param[out] buffer 目标缓冲区（需提前分配内存，不可为nullptr）
  * @param[in] bufferSize 缓冲区大小（字节），建议不小于256
- * @param[in] timeComp 待格式化的时间组件
+ * @param[in] dateTime 待格式化的时间组件
  * @param[in] format 格式字符串（支持占位符）
  *                   默认值：common::constants::date_time::DEFAULT_TIME_FMT（"%Y-%m-%d %H:%M:%S"）
  * @return size_t 成功写入的字符数（不含终止符'\0'）
  *         若失败（缓冲区无效/空间不足/格式错误），返回0
  */
-size_t format_time_buffer(char* buffer, size_t bufferSize, const TimeComponent& timeComp,
+size_t format_time_buffer(char* buffer, size_t bufferSize, const DateTimeSt& dateTime,
                           const std::string_view& format = constants::date_time::DEFAULT_TIME_FMT);
 
 // ------------------------------ 系统时间操作 ------------------------------

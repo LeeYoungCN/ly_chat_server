@@ -36,22 +36,22 @@ protected:
     void TearDown() override {};
 };
 
-TEST_P(TestDateTimeUtilsFmtTimeCompBuffer, TimeComponent)
+TEST_P(TestDateTimeUtilsFmtTimeCompBuffer, DateTimeSt)
 {
     auto format = std::get<0>(GetParam());
     auto length = std::get<1>(GetParam());
     auto month = std::get<2>(GetParam());
     auto wday = std::get<3>(GetParam());
 
-    auto ts = get_now_time_stamp_ms();
-    auto timeComp = local_time_component(ts);
+    auto ts = get_now_timestamp_ms();
+    auto dateTime = local_date_time(ts);
     auto timeInfo = TimestampToTimeInfo(ts);
-    timeComp.month = month;
-    timeComp.wday = wday;
+    dateTime.month = month;
+    dateTime.wday = wday;
     timeInfo.tm_mon = static_cast<int32_t>(month - TIME_COMP_START_MONTH);
     timeInfo.tm_wday = static_cast<int32_t>(wday);
 
-    TestTimeBuffer(format, length, timeInfo, timeComp);
+    TestTimeBuffer(format, length, timeInfo, dateTime);
 }
 
 INSTANTIATE_TEST_SUITE_P(
@@ -80,21 +80,21 @@ protected:
     void TearDown() override {};
 };
 
-TEST_P(TestDateTimeUtilsTimeCompStr, TimeComponent)
+TEST_P(TestDateTimeUtilsTimeCompStr, DateTimeSt)
 {
     auto format = std::get<0>(GetParam());
     auto month = std::get<1>(GetParam());
     auto wday = std::get<2>(GetParam());
 
-    auto ts = get_now_time_stamp_ms();
-    auto timeComp = local_time_component(ts);
+    auto ts = get_now_timestamp_ms();
+    auto dateTime = local_date_time(ts);
     auto timeInfo = TimestampToTimeInfo(ts);
-    timeComp.month = month;
-    timeComp.wday = wday;
+    dateTime.month = month;
+    dateTime.wday = wday;
     timeInfo.tm_mon = static_cast<int32_t>(month - TIME_COMP_START_MONTH);
     timeInfo.tm_wday = static_cast<int32_t>(wday);
 
-    TestTimeString(format, timeInfo, timeComp);
+    TestTimeString(format, timeInfo, dateTime);
 }
 
 INSTANTIATE_TEST_SUITE_P(LINUX_AND_APPLE_MONTH, TestDateTimeUtilsTimeCompStr,

@@ -53,7 +53,7 @@ namespace common::types::date_time {
 ```
 
 - **用途**：存储人类可读的分解时间信息，用于格式化和展示
-- **关联关系**：通常由 `TimestampMs` 通过 `local_time_component`、 `utc_time_component` 转换生成
+- **关联关系**：通常由 `TimestampMs` 通过 `local_date_time`、 `utc_time_info` 转换生成
 
 
 ## 二、核心常量
@@ -76,7 +76,7 @@ namespace common::types::date_time {
 
 ### 3.1 时间获取接口
 
-#### 3.1.1 `get_now_time_stamp_ms`
+#### 3.1.1 `get_now_timestamp_ms`
 
 ```cpp
 /**
@@ -85,11 +85,11 @@ namespace common::types::date_time {
  * @return common::types::date_timeTimestampMs 
  *         当前时间戳（Unix纪元基准，如1722057600000表示2024-07-27 00:00:00）
  */
-common::types::date_timeTimestampMs get_now_time_stamp_ms();
+common::types::date_timeTimestampMs get_now_timestamp_ms();
 ```
 
 
-#### 3.1.2 `get_now_time_comp`
+#### 3.1.2 `get_now_date_time`
 
 ```cpp
 /**
@@ -98,13 +98,13 @@ common::types::date_timeTimestampMs get_now_time_stamp_ms();
  * @return common::types::date_time::TimeComponent 
  *         当前时间的分解信息（年、月、日、时、分、秒等）
  */
-common::types::date_time::TimeComponent get_now_time_comp();
+common::types::date_time::TimeComponent get_now_date_time();
 ```
 
 
 ### 3.2 时间转换接口
 
-#### 3.2.1 `local_time_component`
+#### 3.2.1 `local_date_time`
 
 ```cpp
 /**
@@ -114,13 +114,13 @@ common::types::date_time::TimeComponent get_now_time_comp();
  * @return common::types::date_time::TimeComponent 
  *         转换后的时间组件（失败时返回字段全为0的结构）
  */
-common::types::date_time::TimeComponent local_time_component(
+common::types::date_time::TimeComponent local_date_time(
     const common::types::date_timeTimestampMs& timestamp
 );
 ```
 
 
-#### 3.2.2 `utc_time_component`
+#### 3.2.2 `utc_time_info`
 
 ```cpp
 /**
@@ -130,7 +130,7 @@ common::types::date_time::TimeComponent local_time_component(
  * @return common::types::date_time::TimeComponent 
  *         转换后的时间组件（失败时返回字段全为0的结构）
  */
-common::types::date_time::TimeComponent utc_time_component(
+common::types::date_time::TimeComponent utc_time_info(
     const common::types::date_timeTimestampMs& timestamp
 );
 ```
@@ -166,12 +166,12 @@ std::string format_time_string(
 /**
  * @brief 按指定格式将时间组件转换为字符串
  * 
- * @param timeComp 待格式化的时间组件（`common::types::date_time::TimeComponent` 类型）
+ * @param dateTime 待格式化的时间组件（`common::types::date_time::TimeComponent` 类型）
  * @param format 格式字符串
  * @return std::string 格式化后的字符串（失败返回空字符串）
  */
 std::string format_time_string(
-    const common::types::date_time::TimeComponent& timeComp, 
+    const common::types::date_time::TimeComponent& dateTime, 
     const std::string_view& format
 );
 ```
@@ -185,7 +185,7 @@ std::string format_time_string(
  * 
  * @param buffer 目标缓冲区（需提前分配，不可为nullptr）
  * @param bufferSize 缓冲区大小（字节，建议≥256）
- * @param timestamp / timeComp 待格式化的时间
+ * @param timestamp / dateTime 待格式化的时间
  * @param format 格式字符串
  * @return size_t 成功写入的字符数（不含终止符`\0`）；失败返回0
  */
@@ -199,7 +199,7 @@ size_t format_time_buffer(
 size_t format_time_buffer(
     char* buffer, 
     size_t bufferSize, 
-    const common::types::date_time::TimeComponent& timeComp, 
+    const common::types::date_time::TimeComponent& dateTime, 
     const std::string_view& format
 );
 ```
@@ -240,7 +240,7 @@ size_t format_time_buffer(
 |----------|----------|------|
 | `common::types::date_time` | `TimestampMs`、`TimeComponent` 类型定义 | `common::types::date_timeTimestampMs` |
 | `common::constants::date_time` | 时间相关常量（如 `MILLIS_PER_SECOND`） | `common::constants::date_time::MAX_TIME_STR_LEN` |
-| `common::utils::date_time` | 所有工具接口（`get_now_time_stamp_ms` 等） | `common::utils::date_time::format_time_string` |
+| `common::utils::date_time` | 所有工具接口（`get_now_timestamp_ms` 等） | `common::utils::date_time::format_time_string` |
 
 
 ### 4.3 命名空间使用建议
@@ -271,11 +271,11 @@ int main() {
     using namespace common::utils::date_time;
 
     // 1. 获取当前时间戳
-    TimestampMs now_ts = get_now_time_stamp_ms();
+    TimestampMs now_ts = get_now_timestamp_ms();
     std::cout << "当前时间戳: " << now_ts << " ms" << std::endl;
 
     // 2. 转换为时间组件
-    TimeComponent now_comp = local_time_component(now_ts);
+    TimeComponent now_comp = local_date_time(now_ts);
     std::cout << "当前时间: " << now_comp.year << "-" 
               << now_comp.month << "-" << now_comp.day << std::endl;
 
@@ -328,7 +328,7 @@ int main() {
 
 2. **错误判断**：
    - 格式化接口返回空字符串（或0）时，表示失败。
-   - `local_time_component` 返回 `year == 0` 时，表示转换失败。
+   - `local_date_time` 返回 `year == 0` 时，表示转换失败。
 
 3. **性能建议**：
    - 高频格式化场景（如日志），优先使用 `format_time_buffer`（减少字符串分配）。

@@ -31,7 +31,7 @@ typedef int64_t DurationMs;   // 毫秒级间隔
  * 该结构体将时间分解为年、月、日、时、分、秒、毫秒等独立字段，
  * 方便时间的格式化、计算和展示。
  */
-struct TimeComponent {
+struct DateTimeSt {
     uint32_t year = 0;    ///< 年份（4位完整年份，如2024）
     uint32_t month = 0;   ///< 月份（1-12，1表示一月，12表示十二月）
     uint32_t day = 0;     ///< 日期（1-31，当月的第几天）
