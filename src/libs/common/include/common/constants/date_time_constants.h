@@ -19,8 +19,8 @@
 
 namespace constants::date_time {
 
-[[maybe_unused]] constexpr int32_t TIME_COMP_START_YEAR = 1900;
-[[maybe_unused]] constexpr int32_t TIME_COMP_START_MONTH = 1;
+[[maybe_unused]] constexpr int32_t DATE_TIME_START_YEAR = 1900;
+[[maybe_unused]] constexpr int32_t DATE_TIME_START_MONTH = 1;
 
 // 1970-01-01 00:00:00 UTC对应的时间戳（毫秒）
 [[maybe_unused]] constexpr TimestampMs UNIX_EPOCH_MS = 0;

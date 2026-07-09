@@ -3,6 +3,7 @@
 #include <string_view>
 
 #include "common/constants/date_time_constants.h"
+#include "common/types/date_time_types.h"
 #include "gtest/gtest.h"
 #include "utils/date_time_utils.h"
 
@@ -38,4 +39,15 @@ TEST(TestDateTimeUtilsWeekdayName, case)
         }
     }
 }
+
+TEST(TestTimestampAndDateTimeSt, case)
+{
+    for (uint32_t i = 0; i < 100; i++) {
+        TimestampMs nowTime = utils::date_time::get_now_timestamp_ms();
+        DateTimeSt nowDateTime = utils::date_time::timestamp_to_date_time(nowTime);
+        EXPECT_EQ(utils::date_time::date_time_to_timestamp(nowDateTime), nowTime);
+        utils::date_time::sleep_ms(10);
+    }
+}
+
 }  // namespace test::test_utils::test_date_time_utils

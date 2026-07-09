@@ -80,10 +80,10 @@ bool safe_gmtime(time_t timer, tm& timeInfo)
     return true;
 }
 
-void ConvertTmToDateTime(const std::tm timeInfo, int32_t millis, DateTimeSt& dateTime)
+void std_tm_2_date_time_st(const std::tm timeInfo, int32_t millis, DateTimeSt& dateTime)
 {
-    dateTime.year = static_cast<uint32_t>(TIME_COMP_START_YEAR + timeInfo.tm_year);
-    dateTime.month = static_cast<uint32_t>(TIME_COMP_START_MONTH + timeInfo.tm_mon);
+    dateTime.year = static_cast<uint32_t>(DATE_TIME_START_YEAR + timeInfo.tm_year);
+    dateTime.month = static_cast<uint32_t>(DATE_TIME_START_MONTH + timeInfo.tm_mon);
     dateTime.day = static_cast<uint32_t>(timeInfo.tm_mday);
     dateTime.hour = static_cast<uint32_t>(timeInfo.tm_hour);
     dateTime.minute = static_cast<uint32_t>(timeInfo.tm_min);
@@ -92,6 +92,19 @@ void ConvertTmToDateTime(const std::tm timeInfo, int32_t millis, DateTimeSt& dat
     dateTime.wday = static_cast<uint32_t>(timeInfo.tm_wday);
     dateTime.yday = static_cast<uint32_t>(timeInfo.tm_yday);
 }
+
+void date_time_st_to_std_tm(const DateTimeSt& dateTime, std::tm& timeInfo)
+{
+    timeInfo.tm_year = static_cast<int32_t>(dateTime.year - DATE_TIME_START_YEAR);
+    timeInfo.tm_mon = static_cast<int32_t>(dateTime.month - DATE_TIME_START_MONTH);
+    timeInfo.tm_mday = static_cast<int32_t>(dateTime.day);
+    timeInfo.tm_hour = static_cast<int32_t>(dateTime.hour);
+    timeInfo.tm_min = static_cast<int32_t>(dateTime.minute);
+    timeInfo.tm_sec = static_cast<int32_t>(dateTime.second);
+    timeInfo.tm_wday = static_cast<int32_t>(dateTime.wday);
+    timeInfo.tm_yday = static_cast<int32_t>(dateTime.yday);
+}
+
 }  // namespace
 
 namespace utils::date_time {
@@ -159,10 +172,21 @@ DateTimeSt timestamp_to_date_time(TimestampMs timestamp, TimeZone timeZone)
                          GetTimeZoneString(timeZone),
                          get_thread_last_err_msg());
     } else {
-        ConvertTmToDateTime(timeInfo, millis, dateTime);
+        std_tm_2_date_time_st(timeInfo, millis, dateTime);
         set_thread_last_err(ERR_COMM_SUCCESS);
     }
     return dateTime;
+}
+
+TimestampMs date_time_to_timestamp(const DateTimeSt& dateTime)
+{
+    std::tm tm{};
+    date_time_st_to_std_tm(dateTime, tm);
+    std::time_t secStamp = std::mktime(&tm);
+    if (secStamp == -1) {
+        return -1;
+    }
+    return static_cast<TimestampMs>(secStamp) * MILLIS_PER_SECOND + dateTime.millis;
 }
 
 void sleep_ms(DurationMs ms)

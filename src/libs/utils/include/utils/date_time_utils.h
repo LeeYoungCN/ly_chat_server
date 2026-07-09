@@ -60,6 +60,13 @@ DateTimeSt utc_date_time(TimestampMs timestamp);
 DateTimeSt timestamp_to_date_time(TimestampMs timestamp, TimeZone timeZone = TimeZone::LOCAL);
 
 /**
+ * @brief 将时间组件转换为毫秒级时间戳
+ * @param[in] dateTime 待转换的时间组件
+ * @return TimestampMs 毫秒级时间戳
+ */
+TimestampMs date_time_to_timestamp(const DateTimeSt& dateTime);
+
+/**
  * @brief 获取月份的完整英文名称
  * @param[in] month 月份（1-12，1表示一月，12表示十二月）
  * @return std::string_view 完整月份名称（如"January"）

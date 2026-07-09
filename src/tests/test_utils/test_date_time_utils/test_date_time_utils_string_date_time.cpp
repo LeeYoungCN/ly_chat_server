@@ -48,7 +48,7 @@ TEST_P(TestDateTimeUtilsFmtTimeCompBuffer, DateTimeSt)
     auto timeInfo = TimestampToTimeInfo(ts);
     dateTime.month = month;
     dateTime.wday = wday;
-    timeInfo.tm_mon = static_cast<int32_t>(month - TIME_COMP_START_MONTH);
+    timeInfo.tm_mon = static_cast<int32_t>(month - DATE_TIME_START_MONTH);
     timeInfo.tm_wday = static_cast<int32_t>(wday);
 
     TestTimeBuffer(format, length, timeInfo, dateTime);
@@ -91,7 +91,7 @@ TEST_P(TestDateTimeUtilsTimeCompStr, DateTimeSt)
     auto timeInfo = TimestampToTimeInfo(ts);
     dateTime.month = month;
     dateTime.wday = wday;
-    timeInfo.tm_mon = static_cast<int32_t>(month - TIME_COMP_START_MONTH);
+    timeInfo.tm_mon = static_cast<int32_t>(month - DATE_TIME_START_MONTH);
     timeInfo.tm_wday = static_cast<int32_t>(wday);
 
     TestTimeString(format, timeInfo, dateTime);

@@ -13,7 +13,7 @@
 #ifndef COMMON_TYPES_DATE_TIME_TYPES_H
 #define COMMON_TYPES_DATE_TIME_TYPES_H
 
-#include <stdint.h>
+#include <cstdint>
 
 // 时间戳(ms)
 typedef int64_t TimestampSec;  // 秒级时间戳（自UTC epoch）
