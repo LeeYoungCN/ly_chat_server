@@ -181,14 +181,14 @@ size_t FileWriter::size() const
     return _impl->stream.is_open() ? _impl->currSize : get_file_size(_impl->file);
 }
 
-std::string FileWriter::file_name_stem() const
+std::string FileWriter::filename_stem() const
 {
-    return get_file_name_stem(_impl->file);
+    return get_filename_stem(_impl->file);
 }
 
-std::string FileWriter::file_name() const
+std::string FileWriter::filename() const
 {
-    return get_file_name(_impl->file);
+    return get_filename(_impl->file);
 }
 
 std::string FileWriter::directory() const

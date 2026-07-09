@@ -43,35 +43,24 @@ namespace constants::date_time {
 [[maybe_unused]] constexpr int64_t HUNDRED_NANOSECONDS_PER_MILLISECOND = 10000;
 
 // 增加纪元时间戳常量，便于直接使用
-[[maybe_unused]] constexpr int64_t UNIX_EPOCH_TIMESTAMP_SEC = 0;       // 纪元时间的秒级时间戳
-[[maybe_unused]] constexpr int64_t UNIX_EPOCH_TIMESTAMP_MS = 0;        // 纪元时间的毫秒级时间戳
-[[maybe_unused]] constexpr int64_t WINDOWS_EPOCH_TIMESTAMP_100NS = 0;  // Windows纪元的100纳秒级时间戳
+[[maybe_unused]] constexpr int64_t UNIX_EPOCH_TIMESTAMP_SEC = 0;  // 纪元时间的秒级时间戳
+[[maybe_unused]] constexpr int64_t UNIX_EPOCH_TIMESTAMP_MS = 0;   // 纪元时间的毫秒级时间戳
+[[maybe_unused]] constexpr int64_t WINDOWS_EPOCH_TIMESTAMP_100NS =
+    0;  // Windows纪元的100纳秒级时间戳
 
 [[maybe_unused]] constexpr const char* DEFAULT_TIME_FMT = "%Y-%m-%d %H:%M:%S";
 [[maybe_unused]] constexpr const char* MILLIS_PLACEHOLDER = "%3f";
 [[maybe_unused]] constexpr const char* DEFAULT_TIME_FMT_MS = "%Y-%m-%d %H:%M:%S.%3f";
 [[maybe_unused]] constexpr uint32_t MAX_TIME_STR_LEN = 256;
 
-/**
- * @brief 1秒包含的毫秒数
- *
- * 用于时间戳单位转换（毫秒 → 秒），例如：
- * - 毫秒时间戳转秒级时间戳：ts_ms / MILLIS_PER_SECOND
- * - 秒级时间戳转毫秒：ts_sec * MILLIS_PER_SECOND
- *
- * 替代直接使用硬编码的1000，增强代码可读性和可维护性
- */
-[[maybe_unused]] constexpr int64_t MILLIS_PER_SECOND = 1000;
-
-/**
- * @brief 1秒包含的微秒数（扩展定义，常用于更高精度转换）
- */
-[[maybe_unused]] constexpr int64_t MICROS_PER_SECOND = 1000000;
-
-/**
- * @brief 1毫秒包含的微秒数
- */
+[[maybe_unused]] constexpr int64_t MILLIS_PER_SEC = 1000;
 [[maybe_unused]] constexpr int64_t MICROS_PER_MILLI = 1000;
+[[maybe_unused]] constexpr int64_t MICROS_PER_SEC = MILLIS_PER_SEC * MICROS_PER_MILLI;
+[[maybe_unused]] constexpr int64_t HOUR_PER_DAY = 24;
+[[maybe_unused]] constexpr int64_t MINUTE_PER_HOUR = 60;
+[[maybe_unused]] constexpr int64_t SEC_PER_MINUTE = 60;
+[[maybe_unused]] constexpr int64_t MILLIS_PER_DAY =
+    HOUR_PER_DAY * MINUTE_PER_HOUR * SEC_PER_MINUTE * MILLIS_PER_SEC;
 
 [[maybe_unused]] constexpr uint32_t MONTHS_PER_YEAR = 12;
 [[maybe_unused]] constexpr uint32_t MIN_MONTH = 1;

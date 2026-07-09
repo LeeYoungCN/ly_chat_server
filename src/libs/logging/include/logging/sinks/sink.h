@@ -30,6 +30,9 @@ public:
     [[nodiscard]] LogLevel level() const;
 
 protected:
+    explicit Sink(std::string_view parameter);
+
+protected:
     std::mutex& sink_mutex();
     std::unique_ptr<Formatter>& formatter();
     void set_parameter(std::string_view paramStr);

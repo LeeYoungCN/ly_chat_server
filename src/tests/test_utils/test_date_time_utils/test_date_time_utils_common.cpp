@@ -21,7 +21,7 @@ using namespace utils::date_time;
 
 tm TimestampToTimeInfo(TimestampMs ts)
 {
-    auto timer = static_cast<std::time_t>(ts / MILLIS_PER_SECOND);
+    auto timer = static_cast<std::time_t>(ts / MILLIS_PER_SEC);
     std::tm timeInfo{};
 
 #if OS_WINDOWS

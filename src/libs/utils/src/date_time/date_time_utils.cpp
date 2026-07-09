@@ -152,8 +152,8 @@ DateTimeSt utc_date_time(TimestampMs timestamp)
 
 DateTimeSt timestamp_to_date_time(TimestampMs timestamp, TimeZone timeZone)
 {
-    auto timer = static_cast<std::time_t>(timestamp / MILLIS_PER_SECOND);
-    auto millis = static_cast<int32_t>(timestamp % MILLIS_PER_SECOND);
+    auto timer = static_cast<std::time_t>(timestamp / MILLIS_PER_SEC);
+    auto millis = static_cast<int32_t>(timestamp % MILLIS_PER_SEC);
 
     std::tm timeInfo{};
     DateTimeSt dateTime{};
@@ -186,7 +186,7 @@ TimestampMs date_time_to_timestamp(const DateTimeSt& dateTime)
     if (secStamp == -1) {
         return -1;
     }
-    return static_cast<TimestampMs>(secStamp) * MILLIS_PER_SECOND + dateTime.millis;
+    return static_cast<TimestampMs>(secStamp) * MILLIS_PER_SEC + dateTime.millis;
 }
 
 void sleep_ms(DurationMs ms)

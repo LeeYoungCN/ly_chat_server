@@ -28,6 +28,8 @@ public:
                      bool rotateOnOpen = false);
 
 public:
+    std::string log_file();
+
     std::vector<std::string> get_rotating_file_list();
 
     void set_max_file_size(uint32_t maxFileSize);

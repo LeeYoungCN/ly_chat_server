@@ -14,7 +14,7 @@ std::string get_default_log_file(std::string_view suffix)
 {
     std::string process = get_proc_path();
     return join_paths(
-        {get_directory(process), "logs", get_file_name_stem(process) + "." + std::string(suffix)});
+        {get_directory(process), "logs", get_filename_stem(process) + "." + std::string(suffix)});
 }
 
 bool delete_file(std::string_view file, uint32_t maxRetry, uint32_t sleepMs)

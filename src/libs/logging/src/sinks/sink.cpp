@@ -13,14 +13,19 @@ struct Sink::Impl {
     std::unique_ptr<Formatter> formatter{std::make_unique<PatternFormatter>()};
     std::mutex sinkMtx;
     std::string paramStr{"unknown"};
+
+    Impl() = default;
+    explicit Impl(std::string_view parameter) : paramStr(parameter) {}
 };
 
 Sink::Sink() : _pimpl(std::make_unique<Impl>()) {}
 
+Sink::Sink(std::string_view parameter) : _pimpl(std::make_unique<Impl>(parameter)) {}
+
 Sink::~Sink()
 {
     if (_pimpl != nullptr) {
-        DEBUG_LOGGER_DBG("Sink release. {}.", _pimpl->paramStr);
+        DEBUG_LOGGER_DBG("Sink release. {}", _pimpl->paramStr);
         _pimpl.reset();
     }
 }

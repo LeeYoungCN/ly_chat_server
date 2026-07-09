@@ -99,7 +99,7 @@ std::string normalize_path(std::string_view path)
 std::string to_absolute_path(std::string_view relPath, std::string_view baseDir)
 {
     if (relPath.empty()) {
-        return get_curr_working_dir();
+        return "";
     }
     fs::path base = fs::path(baseDir.empty() ? get_curr_working_dir() : baseDir);
     fs::path relative(relPath);
@@ -133,14 +133,14 @@ std::string get_directory(std::string_view path)
     return proc.parent_path().string();
 }
 
-std::string get_file_name(std::string_view path)
+std::string get_filename(std::string_view path)
 {
     fs::path p(path);
     set_thread_last_err(ERR_COMM_SUCCESS);
     return p.filename().string();
 }
 
-std::string get_file_name_stem(std::string_view path)
+std::string get_filename_stem(std::string_view path)
 {
     fs::path p(path);
     set_thread_last_err(ERR_COMM_SUCCESS);

@@ -23,7 +23,7 @@ protected:
     void TearDown() override;
 
 protected:
-    std::string m_fileName{"test_file"};
+    std::string m_filename{"test_file"};
     std::string m_suffix{".log"};
     std::string m_directory;
     std::string m_testFile;
@@ -33,7 +33,7 @@ protected:
 void TestFileAppender::SetUp()
 {
     m_directory = join_paths({get_proc_directory(), "file_writer"});
-    m_testFile = join_paths({m_directory, m_fileName + m_suffix});
+    m_testFile = join_paths({m_directory, m_filename + m_suffix});
 }
 
 void TestFileAppender::TearDown()
@@ -52,8 +52,8 @@ TEST_F(TestFileAppender, file_name_empty)
 TEST_F(TestFileAppender, file_name_process)
 {
     m_appender = std::make_shared<FileWriter>(m_testFile);
-    EXPECT_EQ(m_appender->file_name(), m_fileName + m_suffix);
-    EXPECT_EQ(m_appender->file_name_stem(), m_fileName);
+    EXPECT_EQ(m_appender->filename(), m_filename + m_suffix);
+    EXPECT_EQ(m_appender->filename_stem(), m_filename);
     EXPECT_EQ(m_appender->directory(), m_directory);
 }
 

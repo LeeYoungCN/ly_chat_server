@@ -114,7 +114,7 @@ RotatingFileSink::RotatingFileSink(std::string_view file, uint32_t maxFileSize, 
     }
 
     std::string parameter =
-        std::format("RotatingFileSink, File: \"{}\", MaxFileSize: {}, MaxFiles: {}",
+        std::format("RotatingFileSink, File: \"{}\", MaxFileSize: {}, MaxFiles: {}.",
                     file,
                     maxFileSize,
                     maxFiles);
@@ -125,6 +125,12 @@ RotatingFileSink::RotatingFileSink(std::string_view file, uint32_t maxFileSize, 
     if (rotateOnOpen) {
         rotate();
     }
+}
+
+std::string RotatingFileSink::log_file()
+{
+    std::lock_guard lock(sink_mutex());
+    return _pimpl->_logWriter.full_path();
 }
 
 std::vector<std::string> RotatingFileSink::get_rotating_file_list()
@@ -225,36 +231,36 @@ void RotatingFileSink::init_file_list()
     }
 }
 
-uint32_t RotatingFileSink::parse_log_index(std::string_view fileName)
+uint32_t RotatingFileSink::parse_log_index(std::string_view filename)
 {
     constexpr uint32_t MIN_SUFFIX_LEN = 2;  // .1
     constexpr uint32_t MAX_SUFFIX_LEN = 6;  // .20000
 
-    const std::string& logFileName = _pimpl->_logWriter.file_name();
+    const std::string& logFilename = _pimpl->_logWriter.filename();
 
-    if (fileName.size() < logFileName.size() + MIN_SUFFIX_LEN ||
-        fileName.size() > logFileName.size() + MAX_SUFFIX_LEN) {
+    if (filename.size() < logFilename.size() + MIN_SUFFIX_LEN ||
+        filename.size() > logFilename.size() + MAX_SUFFIX_LEN) {
         return 0;
     }
 
     uint32_t i = 0;
-    for (; i < logFileName.length(); ++i) {
-        if (fileName.at(i) != logFileName.at(i)) {
+    for (; i < logFilename.length(); ++i) {
+        if (filename.at(i) != logFilename.at(i)) {
             return 0;
         }
     }
 
-    if (fileName.at(i++) != '.') {
+    if (filename.at(i++) != '.') {
         return 0;
     }
 
-    if (fileName.at(i) == '0') {
+    if (filename.at(i) == '0') {
         return 0;
     }
 
     uint32_t idx = 0;
-    for (; i < fileName.size(); ++i) {
-        auto c = fileName.at(i);
+    for (; i < filename.size(); ++i) {
+        auto c = filename.at(i);
         if (c >= '0' && c <= '9') {
             idx = idx * 10 + static_cast<uint32_t>(c - '0');
         } else {

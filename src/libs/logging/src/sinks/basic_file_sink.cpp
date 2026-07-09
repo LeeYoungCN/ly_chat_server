@@ -49,7 +49,7 @@ BasicFileSink::BasicFileSink(std::string_view file, bool overwrite)
     }
 
     set_parameter(
-        std::format("BasicFileSink, File: \"{}\", Mode: {}", file, get_file_mode_str(overwrite)));
+        std::format("BasicFileSink, file: \"{}\", mode: {}.", file, get_file_mode_str(overwrite)));
 }
 
 void BasicFileSink::sink_it(std::string_view message)

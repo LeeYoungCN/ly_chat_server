@@ -29,13 +29,13 @@ protected:
 
 protected:
     PathString m_testFile;
-    PathString m_testFileName{"test_file"};
+    PathString m_testFilename{"test_file"};
 };
 
 void TestFilesystemUtilsFile::SetUp()
 {
     TestFilesystemUtilsBase::SetUp();
-    m_testFile = to_absolute_path(m_testFileName, m_processDir);
+    m_testFile = to_absolute_path(m_testFilename, m_processDir);
 }
 
 void TestFilesystemUtilsFile::TearDown()
@@ -82,14 +82,14 @@ TEST_F(TestFilesystemUtilsFile, create_file_success)
 
 TEST_F(TestFilesystemUtilsFile, create_file_dir_nonexistent)
 {
-    auto newFile = to_absolute_path(m_testFileName, m_processDir + "/nonexistent");
+    auto newFile = to_absolute_path(m_testFilename, m_processDir + "/nonexistent");
     EXPECT_FALSE(utils::filesystem::create_file(newFile));
     EXPECT_EQ(get_thread_last_err(), ERR_UTILS_NOT_FOUND) << get_thread_last_err_msg();
 }
 
 TEST_F(TestFilesystemUtilsFile, delete_file_dir_nonexistent)
 {
-    auto newFile = to_absolute_path(m_testFileName, m_processDir + "/nonexistent");
+    auto newFile = to_absolute_path(m_testFilename, m_processDir + "/nonexistent");
     EXPECT_TRUE(delete_file(newFile));
     EXPECT_EQ(get_thread_last_err(), ERR_UTILS_NOT_FOUND) << get_thread_last_err_msg();
 }
