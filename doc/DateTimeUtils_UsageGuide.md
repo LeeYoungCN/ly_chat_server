@@ -76,7 +76,7 @@ namespace common::types::date_time {
 
 ### 3.1 时间获取接口
 
-#### 3.1.1 `get_current_time_stamp_ms`
+#### 3.1.1 `get_now_time_stamp_ms`
 
 ```cpp
 /**
@@ -85,11 +85,11 @@ namespace common::types::date_time {
  * @return common::types::date_timeTimestampMs 
  *         当前时间戳（Unix纪元基准，如1722057600000表示2024-07-27 00:00:00）
  */
-common::types::date_timeTimestampMs get_current_time_stamp_ms();
+common::types::date_timeTimestampMs get_now_time_stamp_ms();
 ```
 
 
-#### 3.1.2 `get_current_time_comp`
+#### 3.1.2 `get_now_time_comp`
 
 ```cpp
 /**
@@ -98,7 +98,7 @@ common::types::date_timeTimestampMs get_current_time_stamp_ms();
  * @return common::types::date_time::TimeComponent 
  *         当前时间的分解信息（年、月、日、时、分、秒等）
  */
-common::types::date_time::TimeComponent get_current_time_comp();
+common::types::date_time::TimeComponent get_now_time_comp();
 ```
 
 
@@ -240,7 +240,7 @@ size_t format_time_buffer(
 |----------|----------|------|
 | `common::types::date_time` | `TimestampMs`、`TimeComponent` 类型定义 | `common::types::date_timeTimestampMs` |
 | `common::constants::date_time` | 时间相关常量（如 `MILLIS_PER_SECOND`） | `common::constants::date_time::MAX_TIME_STR_LEN` |
-| `common::utils::date_time` | 所有工具接口（`get_current_time_stamp_ms` 等） | `common::utils::date_time::format_time_string` |
+| `common::utils::date_time` | 所有工具接口（`get_now_time_stamp_ms` 等） | `common::utils::date_time::format_time_string` |
 
 
 ### 4.3 命名空间使用建议
@@ -271,7 +271,7 @@ int main() {
     using namespace common::utils::date_time;
 
     // 1. 获取当前时间戳
-    TimestampMs now_ts = get_current_time_stamp_ms();
+    TimestampMs now_ts = get_now_time_stamp_ms();
     std::cout << "当前时间戳: " << now_ts << " ms" << std::endl;
 
     // 2. 转换为时间组件

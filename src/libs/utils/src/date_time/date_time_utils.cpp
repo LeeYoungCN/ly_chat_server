@@ -96,7 +96,7 @@ void ConvertTmToTimeComp(const std::tm timeInfo, int32_t millis, TimeComponent& 
 
 namespace utils::date_time {
 
-TimestampMs get_current_time_stamp_ms()
+TimestampMs get_now_time_stamp_ms()
 {
     set_thread_last_err(ERR_COMM_SUCCESS);
 #if OS_WINDOWS
@@ -122,9 +122,9 @@ TimestampMs get_current_time_stamp_ms()
 #endif
 }
 
-TimeComponent get_current_time_comp()
+TimeComponent get_now_time_comp()
 {
-    return time_stamp_ms_to_component(get_current_time_stamp_ms());
+    return time_stamp_ms_to_component(get_now_time_stamp_ms());
 }
 
 TimeComponent local_time_component(TimestampMs timestamp)

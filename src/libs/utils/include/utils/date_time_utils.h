@@ -24,15 +24,15 @@ namespace utils::date_time {
  * @return TimestampMs 毫秒级时间戳
  * @note 跨平台实现：Windows使用GetSystemTimeAsFileTime，Linux/macOS使用std::chrono
  */
-TimestampMs get_current_time_stamp_ms();
+TimestampMs get_now_time_stamp_ms();
 
 /**
  * @brief 获取当前系统时间的时间组件
  * @details
- * 直接返回分解后的时间信息（年、月、日等），等价于Timestamp2Component(get_current_time_stamp_ms())
+ * 直接返回分解后的时间信息（年、月、日等），等价于Timestamp2Component(get_now_time_stamp_ms())
  * @return TimeComponent 当前时间的分解结构
  */
-TimeComponent get_current_time_comp();
+TimeComponent get_now_time_comp();
 
 /**
  * @brief 将毫秒级时间戳转换为本地时间的时间组件

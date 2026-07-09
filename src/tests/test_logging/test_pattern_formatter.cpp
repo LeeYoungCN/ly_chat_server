@@ -46,7 +46,7 @@ TEST_F(TestPatternFormatter, date_time)
 {
     PatternFormatter formatter("%d");
     LogMsg msg;
-    msg.timeStamp = get_current_time_stamp_ms();
+    msg.timeStamp = get_now_time_stamp_ms();
     std::string content;
     formatter.format(msg, content);
     EXPECT_EQ(content, format_time_string(msg.timeStamp, FORMATTER_DEFAULT_TIME_PATTERN));
