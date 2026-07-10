@@ -12,6 +12,7 @@
 
 namespace logging {
 using namespace utils::filesystem;
+using namespace logging::details;
 
 struct BasicFileSink::Impl {
     explicit Impl(std::string_view file) : _fileWriter(file) {}
@@ -52,6 +53,26 @@ BasicFileSink::BasicFileSink(std::string_view file, bool overwrite)
         std::format("BasicFileSink, file: \"{}\", mode: {}.", file, get_file_mode_str(overwrite)));
 }
 
+void BasicFileSink::log(const LogMsg& logMsg)
+{
+    std::lock_guard lock(sink_mutex());
+    std::string content;
+    formatter()->format(logMsg, content);
+    sink_it(content);
+}
+
+void BasicFileSink::flush()
+{
+    std::lock_guard lock(sink_mutex());
+    flush_it();
+}
+
+std::string BasicFileSink::file()
+{
+    std::lock_guard lock(sink_mutex());
+    return _pimpl->_fileWriter.full_path();
+}
+
 void BasicFileSink::sink_it(std::string_view message)
 {
     if (_pimpl == nullptr) {
@@ -68,9 +89,4 @@ void BasicFileSink::flush_it()
     _pimpl->_fileWriter.flush();
 }
 
-std::string BasicFileSink::log_file()
-{
-    std::lock_guard lock(sink_mutex());
-    return _pimpl->_fileWriter.full_path();
-}
 }  // namespace logging

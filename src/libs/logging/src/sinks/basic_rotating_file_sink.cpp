@@ -1,4 +1,4 @@
-#include "logging/sinks/basic_rotating_log_sink.h"
+#include "logging/sinks/basic_rotating_file_sink.h"
 
 #include <cstdint>
 #include <deque>
@@ -18,12 +18,12 @@ namespace logging {
 constexpr uint32_t DELETE_FILE_RETRY = 3;
 constexpr uint32_t DELETE_FILE_SLEEP_MS = 10;
 
-RotateLogSt::RotateLogSt(uint32_t i, std::string_view f)
+RotatingFileSt::RotatingFileSt(uint32_t i, std::string_view f)
     : idx(i), file(f), modifyTime(get_file_modify_time(f)), fileSize(get_file_size(f))
 {
 }
 
-[[nodiscard]] std::string RotateLogSt::to_string() const
+[[nodiscard]] std::string RotatingFileSt::to_string() const
 {
     return std::format("idx: {}, time: [{}], size: {}, file: \"{}\".",
                        idx,
@@ -32,13 +32,13 @@ RotateLogSt::RotateLogSt(uint32_t i, std::string_view f)
                        file);
 }
 
-BasicRotatingLogSink::BasicRotatingLogSink(uint32_t maxFiles, uint32_t minIdx, uint32_t maxIdx,
+BasicRotatingFileSink::BasicRotatingFileSink(uint32_t maxFiles, uint32_t minIdx, uint32_t maxIdx,
                                            bool unlimited)
     : _maxFiles(maxFiles), _minIdx(minIdx), _maxIdx(maxIdx), _unlimited(unlimited)
 {
 }
 
-std::vector<std::string> BasicRotatingLogSink::get_file_list()
+std::vector<std::string> BasicRotatingFileSink::get_file_list()
 {
     std::lock_guard lock(_mtx);
     std::vector<std::string> rst;
@@ -49,7 +49,7 @@ std::vector<std::string> BasicRotatingLogSink::get_file_list()
     return rst;
 }
 
-uint32_t BasicRotatingLogSink::nextIdx()
+uint32_t BasicRotatingFileSink::nextIdx()
 {
     std::lock_guard lock(_mtx);
     uint32_t nextIdx = (_fileQue.empty() ? _minIdx : _fileQue.back().idx + 1);
@@ -60,37 +60,37 @@ uint32_t BasicRotatingLogSink::nextIdx()
     return nextIdx;
 }
 
-void BasicRotatingLogSink::enqueue(std::string_view file)
+void BasicRotatingFileSink::enqueue(std::string_view file)
 {
     enqueue(nextIdx(), file);
 }
 
-void BasicRotatingLogSink::enqueue(uint32_t idx, std::string_view file)
+void BasicRotatingFileSink::enqueue(uint32_t idx, std::string_view file)
 {
     std::lock_guard lock(_mtx);
     _fileQue.emplace_back(idx, file);
     DEBUG_LOGGER_DBG("Enqueue roating log file. {}", _fileQue.back().to_string());
 }
 
-void BasicRotatingLogSink::dequeue()
+void BasicRotatingFileSink::dequeue()
 {
     std::lock_guard lock(_mtx);
     _fileQue.pop_front();
 }
 
-const RotateLogSt& BasicRotatingLogSink::back()
+const RotatingFileSt& BasicRotatingFileSink::back()
 {
     std::lock_guard lock(_mtx);
     return _fileQue.back();
 }
 
-const RotateLogSt& BasicRotatingLogSink::front()
+const RotatingFileSt& BasicRotatingFileSink::front()
 {
     std::lock_guard lock(_mtx);
     return _fileQue.front();
 }
 
-void BasicRotatingLogSink::delete_overflow_file()
+void BasicRotatingFileSink::delete_overflow_file()
 {
     std::lock_guard lock(_mtx);
     if (_unlimited) {
@@ -100,7 +100,7 @@ void BasicRotatingLogSink::delete_overflow_file()
         return;
     }
 
-    std::deque<RotateLogSt> failedQueue;
+    std::deque<RotatingFileSt> failedQueue;
 
     // 保证剩余文件不超过最大文件数量，直到把能删除的都删了。
     while (_fileQue.size() + failedQueue.size() > _maxFiles && !_fileQue.empty()) {

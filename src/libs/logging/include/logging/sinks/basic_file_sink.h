@@ -2,23 +2,27 @@
 #ifndef LOGGINGL_LOG_BASIC_SINK_H
 #define LOGGINGL_LOG_BASIC_SINK_H
 
+#include <string>
 #include <string_view>
 
-#include "logging/sinks/base_sink.h"
+#include "logging/sinks/sink.h"
 
 namespace logging {
-class BasicFileSink : public BaseSink {
+class BasicFileSink : public Sink {
 public:
     BasicFileSink();
     ~BasicFileSink() override;
     explicit BasicFileSink(std::string_view file, bool overwrite = true);
 
 public:
-    std::string log_file();
+    void log(const logging::details::LogMsg& logMsg) override;
+    void flush() override;
+
+    std::string file();
 
 protected:
-    void flush_it() override;
-    void sink_it(std::string_view message) override;
+    virtual void flush_it();
+    virtual void sink_it(std::string_view message);
 
 private:
     struct Impl;

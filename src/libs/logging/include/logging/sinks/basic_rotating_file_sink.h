@@ -1,5 +1,5 @@
-#ifndef LOGGING_SINKS_BASIC_ROTATING_LOG_SINK_H
-#define LOGGING_SINKS_BASIC_ROTATING_LOG_SINK_H
+#ifndef LOGGING_SINKS_BASIC_ROTATING_FILE_SINK_H
+#define LOGGING_SINKS_BASIC_ROTATING_FILE_SINK_H
 
 #include <cstdint>
 #include <deque>
@@ -11,24 +11,25 @@
 #include "common/types/date_time_types.h"
 
 namespace logging {
-struct RotatingLogSt {
+struct RotatingFileSt {
     uint32_t idx{0};
     std::string file;
     TimestampMs modifyTime{0};
     size_t fileSize{0};
 
-    RotatingLogSt(uint32_t i, std::string_view f);
+    RotatingFileSt(uint32_t i, std::string_view f);
 
     [[nodiscard]] std::string to_string() const;
 };
 
-class BasicRotatingLogSink {
+class BasicRotatingFileSink {
 public:
-    BasicRotatingLogSink(uint32_t maxFiles, uint32_t minIdx, uint32_t maxIdx, bool unlimited = false);
-    ~BasicRotatingLogSink() = default;
+    BasicRotatingFileSink(uint32_t maxFiles, uint32_t minIdx, uint32_t maxIdx, bool unlimited = false);
+    ~BasicRotatingFileSink() = default;
 
 public:
     std::vector<std::string> get_file_list();
+
 protected:
     uint32_t nextIdx();
 
@@ -37,8 +38,8 @@ protected:
 
     void dequeue();
 
-    const RotatingLogSt& back();
-    const RotatingLogSt& front();
+    const RotatingFileSt& back();
+    const RotatingFileSt& front();
 
 protected:
     virtual void init_file_queue() = 0;
@@ -50,10 +51,10 @@ private:
     uint32_t _minIdx{0};
     uint32_t _maxIdx{0};
     bool _unlimited{false};
-    std::deque<RotatingLogSt> _fileQue;
+    std::deque<RotatingFileSt> _fileQue;
     std::mutex _mtx;
 };
 
 }  // namespace logging
 
-#endif  // LOGGING_SINKS_BASIC_ROTATING_LOG_SINK_H
+#endif  // LOGGING_SINKS_BASIC_ROTATING_FILE_SINK_H
