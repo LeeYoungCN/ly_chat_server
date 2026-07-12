@@ -7,13 +7,13 @@
 #include <string_view>
 
 #include "common/types/date_time_types.h"
-#include "logging/sinks/basic_rotating_file_sink.h"
+#include "logging/sinks/base_rotating_file_sink.h"
 
 namespace logging {
 /**
  * @brief: 按照日期滚动日志。
  */
-class DailyFileSink : public BasicRotatingFileSink {
+class DailyFileSink : public BaseRotatingFileSink {
 public:
     static constexpr uint32_t DEFAULT_ROTATION_HOUR = 0;
     static constexpr uint32_t DEFAULT_ROTATION_MINUTE = 0;
@@ -29,11 +29,8 @@ public:
 
     ~DailyFileSink() override = default;
 
-public:
-    void log(const details::LogMsg& logMsg) override;
-    void flush() override;
-
 protected:
+    void log_it(const details::LogMsg& logMsg) override;
     void init_file_queue() override;
 
 private:

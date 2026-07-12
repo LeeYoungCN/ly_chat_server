@@ -17,23 +17,26 @@ enum class RotatingPolicy {
     RENAME
 };
 
-class BasicRotatingFileSink : public Sink {
+class BaseRotatingFileSink : public Sink {
 public:
-    BasicRotatingFileSink(std::string_view logFile, uint32_t maxFiles,
-                          RotatingPolicy rotatingPolicy, std::string_view itemName,
-                          std::string_view paramStr);
-    ~BasicRotatingFileSink() override;
+    BaseRotatingFileSink(std::string_view logFile, uint32_t maxFiles, RotatingPolicy rotatingPolicy,
+                         std::string_view itemName, std::string_view paramStr);
+    ~BaseRotatingFileSink() override;
 
 public:
-    void log(const details::LogMsg& logMsg) override = 0;
-    void flush() override = 0;
+    void log(const details::LogMsg& logMsg) final;
+    void flush() final;
 
     std::string log_file();
     std::vector<std::string> get_file_list();
 
 protected:
-    virtual void init_file_queue() = 0;
+    std::shared_ptr<utils::filesystem::FileWriter> _fileWriter;
+    virtual void log_it(const details::LogMsg& logMsg) = 0;
+    virtual void sink_it(std::string_view message);
+    virtual void flush_it();
 
+    virtual void init_file_queue() = 0;
     void push_back_file(std::string_view file);
     void rotate(std::string_view newFile);
     void delete_overflow_file();
@@ -42,8 +45,6 @@ protected:
     [[nodiscard]] const std::string& directory_it() const;
     [[nodiscard]] const std::string& filename_stem_it() const;
     [[nodiscard]] const std::string& extention_it() const;
-
-    std::shared_ptr<utils::filesystem::FileWriter> _fileWriter;
 
 private:
     void rotate_open_new(std::string_view newFile);
@@ -54,8 +55,8 @@ private:
     const std::string _fileStem;
     const std::string _extention;
     uint32_t _maxFiles{0};
-
     std::string _itemName;
+
     RotatingPolicy _policy{RotatingPolicy::OPEN_NEW};
 
     std::deque<std::string> _fileQue;

@@ -1,4 +1,4 @@
-#include "logging/sinks/basic_rotating_file_sink.h"
+#include "logging/sinks/base_rotating_file_sink.h"
 
 #include <cstdint>
 #include <deque>
@@ -19,9 +19,9 @@ constexpr uint32_t DELETE_FILE_SLEEP_MS = 10;
 constexpr uint32_t RENAME_FILE_RETRY = 3;
 constexpr uint32_t RENAME_FILE_SLEEP_MS = 10;
 
-BasicRotatingFileSink::BasicRotatingFileSink(std::string_view logFile, uint32_t maxFiles,
-                                             RotatingPolicy rotatingPolicy,
-                                             std::string_view itemName, std::string_view paramStr)
+BaseRotatingFileSink::BaseRotatingFileSink(std::string_view logFile, uint32_t maxFiles,
+                                           RotatingPolicy rotatingPolicy, std::string_view itemName,
+                                           std::string_view paramStr)
     : Sink(paramStr),
       _baseFile(to_absolute_path(logFile)),
       _directory(get_directory(_baseFile)),
@@ -33,7 +33,7 @@ BasicRotatingFileSink::BasicRotatingFileSink(std::string_view logFile, uint32_t 
 {
 }
 
-BasicRotatingFileSink::~BasicRotatingFileSink()
+BaseRotatingFileSink::~BaseRotatingFileSink()
 {
     if (_fileWriter == nullptr) {
         return;
@@ -43,13 +43,13 @@ BasicRotatingFileSink::~BasicRotatingFileSink()
     _fileWriter->close();
 }
 
-std::string BasicRotatingFileSink::log_file()
+std::string BaseRotatingFileSink::log_file()
 {
     std::lock_guard lock(sink_mutex());
     return _fileWriter->full_path();
 }
 
-std::vector<std::string> BasicRotatingFileSink::get_file_list()
+std::vector<std::string> BaseRotatingFileSink::get_file_list()
 {
     std::lock_guard lock(sink_mutex());
     std::vector<std::string> rst;
@@ -60,13 +60,35 @@ std::vector<std::string> BasicRotatingFileSink::get_file_list()
     return rst;
 }
 
-void BasicRotatingFileSink::push_back_file(std::string_view file)
+void BaseRotatingFileSink::log(const details::LogMsg& logMsg)
+{
+    std::lock_guard lock(sink_mutex());
+    log_it(logMsg);
+}
+
+void BaseRotatingFileSink::flush()
+{
+    std::lock_guard lock(sink_mutex());
+    flush_it();
+}
+
+void BaseRotatingFileSink::sink_it(std::string_view message)
+{
+    _fileWriter->write_line(message);
+}
+
+void BaseRotatingFileSink::flush_it()
+{
+    _fileWriter->flush();
+}
+
+void BaseRotatingFileSink::push_back_file(std::string_view file)
 {
     _fileQue.emplace_back(file);
     DEBUG_LOGGER_TRACE("Enqueue {}. {}", _itemName, file);
 }
 
-void BasicRotatingFileSink::rotate(std::string_view newFile)
+void BaseRotatingFileSink::rotate(std::string_view newFile)
 {
     if (_policy == RotatingPolicy::OPEN_NEW) {
         rotate_open_new(newFile);
@@ -75,7 +97,7 @@ void BasicRotatingFileSink::rotate(std::string_view newFile)
     }
 }
 
-void BasicRotatingFileSink::rotate_open_new(std::string_view newFile)
+void BaseRotatingFileSink::rotate_open_new(std::string_view newFile)
 {
     _fileWriter->close();
     _fileWriter = std::make_shared<utils::filesystem::FileWriter>(newFile);
@@ -84,7 +106,7 @@ void BasicRotatingFileSink::rotate_open_new(std::string_view newFile)
     delete_overflow_file();
 }
 
-void BasicRotatingFileSink::rotate_replace(std::string_view newFile)
+void BaseRotatingFileSink::rotate_replace(std::string_view newFile)
 {
     std::string src = _fileWriter->full_path();
     _fileWriter->close();
@@ -100,7 +122,7 @@ void BasicRotatingFileSink::rotate_replace(std::string_view newFile)
     delete_overflow_file();
 }
 
-void BasicRotatingFileSink::delete_overflow_file()
+void BaseRotatingFileSink::delete_overflow_file()
 {
     if (_fileQue.empty() || _fileQue.size() <= _maxFiles) {
         return;
@@ -118,21 +140,21 @@ void BasicRotatingFileSink::delete_overflow_file()
     }
 }
 
-const std::string& BasicRotatingFileSink::base_file_it() const
+const std::string& BaseRotatingFileSink::base_file_it() const
 {
     return _baseFile;
 }
 
-const std::string& BasicRotatingFileSink::directory_it() const
+const std::string& BaseRotatingFileSink::directory_it() const
 {
     return _directory;
 }
-const std::string& BasicRotatingFileSink::filename_stem_it() const
+const std::string& BaseRotatingFileSink::filename_stem_it() const
 {
     return _fileStem;
 }
 
-const std::string& BasicRotatingFileSink::extention_it() const
+const std::string& BaseRotatingFileSink::extention_it() const
 {
     return _extention;
 }

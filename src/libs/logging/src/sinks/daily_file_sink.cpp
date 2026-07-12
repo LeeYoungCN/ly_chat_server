@@ -5,7 +5,6 @@
 #include <filesystem>
 #include <format>
 #include <memory>
-#include <mutex>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -16,7 +15,7 @@
 #include "common/debug/debug_logger.h"
 #include "common/types/date_time_types.h"
 #include "internal/logging_internal.h"
-#include "logging/sinks/basic_rotating_file_sink.h"
+#include "logging/sinks/base_rotating_file_sink.h"
 #include "utils/date_time_utils.h"
 #include "utils/file_writer.h"
 #include "utils/filesystem_utils.h"
@@ -43,7 +42,7 @@ DailyFileSink::DailyFileSink(std::string_view baseFile)
 
 DailyFileSink::DailyFileSink(std::string_view baseFile, uint32_t hour, uint32_t minute,
                              uint32_t maxFiles)
-    : BasicRotatingFileSink(
+    : BaseRotatingFileSink(
           baseFile, maxFiles, RotatingPolicy::OPEN_NEW, "daliy log file",
           std::format("DailyFileSink. file: \"{}\", hour: {}, minute: {}, maxFiles: {}.", baseFile,
                       hour, minute, maxFiles)),
@@ -96,9 +95,8 @@ DailyFileSink::DailyFileSink(std::string_view baseFile, uint32_t hour, uint32_t 
     init_file_queue();
 }
 
-void DailyFileSink::log(const details::LogMsg& logMsg)
+void DailyFileSink::log_it(const details::LogMsg& logMsg)
 {
-    std::lock_guard lock(sink_mutex());
     if (logMsg.timestamp > _rotateTime) {
         while (_rotateTime < logMsg.timestamp) {
             _rotateTime += MILLIS_PER_DAY;
@@ -110,15 +108,8 @@ void DailyFileSink::log(const details::LogMsg& logMsg)
 
     std::string content;
     formatter()->format(logMsg, content);
-    _fileWriter->write_line(content);
+    sink_it(content);
 }
-
-void DailyFileSink::flush()
-{
-    std::lock_guard lock(sink_mutex());
-    _fileWriter->flush();
-}
-
 
 TimestampMs DailyFileSink::parse_log_timestamp(std::string_view filename)
 {
