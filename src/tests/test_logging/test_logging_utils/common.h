@@ -16,7 +16,7 @@ const std::vector<logging::LogLevel> LOG_LEVELS = {logging::LogLevel::TRACE,
                                                    logging::LogLevel::FATAL,
                                                    logging::LogLevel::OFF};
 
-std::string get_logger_name(testing::TestInfo* test_info);
+std::string get_logger_name(const testing::TestInfo* test_info);
 
 std::string get_log_dir();
 

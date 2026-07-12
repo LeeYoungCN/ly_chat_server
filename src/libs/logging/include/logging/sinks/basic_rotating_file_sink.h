@@ -8,50 +8,30 @@
 #include <string_view>
 #include <vector>
 
-#include "common/types/date_time_types.h"
-
 namespace logging {
-struct RotatingFileSt {
-    uint32_t idx{0};
-    std::string file;
-    TimestampMs modifyTime{0};
-    size_t fileSize{0};
-
-    RotatingFileSt(uint32_t i, std::string_view f);
-
-    [[nodiscard]] std::string to_string() const;
-};
-
 class BasicRotatingFileSink {
 public:
-    BasicRotatingFileSink(uint32_t maxFiles, uint32_t minIdx, uint32_t maxIdx, bool unlimited = false);
+    BasicRotatingFileSink(std::string_view itemName, uint32_t maxFiles);
     ~BasicRotatingFileSink() = default;
 
 public:
     std::vector<std::string> get_file_list();
 
 protected:
-    uint32_t nextIdx();
+    void push_back_file(std::string_view file);
 
-    void enqueue(std::string_view file);
-    void enqueue(uint32_t idx, std::string_view file);
-
-    void dequeue();
-
-    const RotatingFileSt& back();
-    const RotatingFileSt& front();
+    const std::string& back();
+    const std::string& front();
 
 protected:
     virtual void init_file_queue() = 0;
-    virtual void rotate() = 0;
+    virtual void rotate(std::string_view newFile) = 0;
     virtual void delete_overflow_file();
 
 private:
+    std::string _itemName;
     uint32_t _maxFiles{0};
-    uint32_t _minIdx{0};
-    uint32_t _maxIdx{0};
-    bool _unlimited{false};
-    std::deque<RotatingFileSt> _fileQue;
+    std::deque<std::string> _fileQue;
     std::mutex _mtx;
 };
 

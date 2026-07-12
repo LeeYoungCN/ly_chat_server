@@ -92,7 +92,7 @@ RotatingFileSink::RotatingFileSink(std::string_view file, uint32_t maxFileSize, 
 {
     if (maxFileSize == 0) {
         DEBUG_LOGGER_ERR("Create RotatingFileSink failed. maxFileSize is 0.");
-        set_thread_last_err(ERR_COMM_PARAM_INVALID);
+        set_thread_last_err(ERR_COMM_PARAM_OUT_OF_RANGE);
         throw std::invalid_argument("maxFileSize is 0.");
     }
 
@@ -288,11 +288,11 @@ void RotatingFileSink::rotate()
         DEBUG_LOGGER_DBG("Rotate log file wrap around. nextIdx: {}.", nextIdx);
     }
 
-    std::string nextFile = _pimpl->_filePath + "." + std::to_string(nextIdx);
+    std::string newFile = _pimpl->_filePath + "." + std::to_string(nextIdx);
 
     if (internal::rename_file(
-            _pimpl->_filePath, nextFile, true, RENAME_FILE_RETRY, RENAME_FILE_SLEEP_MS)) {
-        _pimpl->_logQueue.emplace_back(nextIdx, nextFile);
+            _pimpl->_filePath, newFile, true, RENAME_FILE_RETRY, RENAME_FILE_SLEEP_MS)) {
+        _pimpl->_logQueue.emplace_back(nextIdx, newFile);
         _pimpl->_logWriter.reopen(true);
         DEBUG_LOGGER_DBG("Rotate log file success. {}", _pimpl->_logQueue.back().to_string());
     } else {
