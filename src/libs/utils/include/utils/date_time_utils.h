@@ -67,6 +67,18 @@ DateTimeSt timestamp_to_date_time(TimestampMs timestamp, TimeZone timeZone = Tim
 TimestampMs date_time_to_timestamp(const DateTimeSt& dateTime);
 
 /**
+ * @brief 比较两个毫秒级时间戳之间毫秒级时间差
+ * @return DurationMs 毫秒级时间差
+ */
+DurationMs diff_timestamp(TimestampMs x, TimestampMs y);
+
+/**
+ * @brief 比较两个时间组件之间毫秒级时间差
+ * @return DurationMs 毫秒级时间差
+ */
+DurationMs diff_date_time(const DateTimeSt& x, const DateTimeSt& y);
+
+/**
  * @brief 获取月份的完整英文名称
  * @param[in] month 月份（1-12，1表示一月，12表示十二月）
  * @return std::string_view 完整月份名称（如"January"）

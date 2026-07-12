@@ -240,7 +240,6 @@ ByteVector read_binary_file(std::string_view path)
     if (!file.is_open()) {
         std::error_code ec(errno, std::generic_category());
         set_thread_last_err(ConvertSysEcToErrorCode(ec));
-        ;
         DEBUG_LOGGER_ERR(
             "Read binary file failed. file: \"{}\". msg: \"{}\".", path, get_thread_last_err_msg());
         return {};

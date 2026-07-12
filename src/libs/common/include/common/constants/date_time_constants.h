@@ -53,14 +53,17 @@ namespace constants::date_time {
 [[maybe_unused]] constexpr const char* DEFAULT_TIME_FMT_MS = "%Y-%m-%d %H:%M:%S.%3f";
 [[maybe_unused]] constexpr uint32_t MAX_TIME_STR_LEN = 256;
 
-[[maybe_unused]] constexpr int64_t MILLIS_PER_SEC = 1000;
 [[maybe_unused]] constexpr int64_t MICROS_PER_MILLI = 1000;
-[[maybe_unused]] constexpr int64_t MICROS_PER_SEC = MILLIS_PER_SEC * MICROS_PER_MILLI;
-[[maybe_unused]] constexpr int64_t HOUR_PER_DAY = 24;
-[[maybe_unused]] constexpr int64_t MINUTE_PER_HOUR = 60;
+[[maybe_unused]] constexpr int64_t MILLIS_PER_SEC = 1000;
 [[maybe_unused]] constexpr int64_t SEC_PER_MINUTE = 60;
-[[maybe_unused]] constexpr int64_t MILLIS_PER_DAY =
-    HOUR_PER_DAY * MINUTE_PER_HOUR * SEC_PER_MINUTE * MILLIS_PER_SEC;
+[[maybe_unused]] constexpr int64_t MINUTE_PER_HOUR = 60;
+[[maybe_unused]] constexpr int64_t HOUR_PER_DAY = 24;
+
+[[maybe_unused]] constexpr int64_t MICROS_PER_SEC = MILLIS_PER_SEC * MICROS_PER_MILLI;
+
+[[maybe_unused]] constexpr int64_t MILLIS_PER_MINUTE = MILLIS_PER_SEC * SEC_PER_MINUTE;
+[[maybe_unused]] constexpr int64_t MILLIS_PER_HOUR = MILLIS_PER_MINUTE * MINUTE_PER_HOUR;
+[[maybe_unused]] constexpr int64_t MILLIS_PER_DAY = MILLIS_PER_HOUR * HOUR_PER_DAY;
 
 [[maybe_unused]] constexpr uint32_t MONTHS_PER_YEAR = 12;
 [[maybe_unused]] constexpr uint32_t MIN_MONTH = 1;

@@ -189,6 +189,16 @@ TimestampMs date_time_to_timestamp(const DateTimeSt& dateTime)
     return static_cast<TimestampMs>(secStamp) * MILLIS_PER_SEC + dateTime.millis;
 }
 
+DurationMs diff_timestamp(TimestampMs x, TimestampMs y)
+{
+    return x - y;
+}
+
+DurationMs diff_date_time(const DateTimeSt& x, const DateTimeSt& y)
+{
+    return date_time_to_timestamp(x) - date_time_to_timestamp(y);
+}
+
 void sleep_ms(DurationMs ms)
 {
 #if OS_WINDOWS
