@@ -10,19 +10,48 @@
 
 #include "common/debug/debug_logger.h"
 #include "internal/logging_internal.h"
+#include "utils/filesystem_utils.h"
 
 namespace logging {
+using namespace utils::filesystem;
 constexpr uint32_t DELETE_FILE_RETRY = 3;
 constexpr uint32_t DELETE_FILE_SLEEP_MS = 10;
+constexpr uint32_t RENAME_FILE_RETRY = 3;
+constexpr uint32_t RENAME_FILE_SLEEP_MS = 10;
 
-BasicRotatingFileSink::BasicRotatingFileSink(std::string_view itemName, uint32_t maxFiles)
-    : _itemName(itemName), _maxFiles(maxFiles)
+BasicRotatingFileSink::BasicRotatingFileSink(std::string_view logFile, uint32_t maxFiles,
+                                             RotatingPolicy rotatingPolicy,
+                                             std::string_view itemName, std::string_view paramStr)
+    : Sink(paramStr),
+      _baseFile(to_absolute_path(logFile)),
+      _directory(get_directory(_baseFile)),
+      _fileStem(get_filename_stem(_baseFile)),
+      _extention(get_extension(_baseFile)),
+      _maxFiles(maxFiles),
+      _itemName(itemName),
+      _policy(rotatingPolicy)
 {
+}
+
+BasicRotatingFileSink::~BasicRotatingFileSink()
+{
+    if (_fileWriter == nullptr) {
+        return;
+    }
+
+    _fileWriter->flush();
+    _fileWriter->close();
+}
+
+std::string BasicRotatingFileSink::log_file()
+{
+    std::lock_guard lock(sink_mutex());
+    return _fileWriter->full_path();
 }
 
 std::vector<std::string> BasicRotatingFileSink::get_file_list()
 {
-    std::lock_guard lock(_mtx);
+    std::lock_guard lock(sink_mutex());
     std::vector<std::string> rst;
     rst.reserve(_fileQue.size());
     for (auto& i : _fileQue) {
@@ -33,27 +62,46 @@ std::vector<std::string> BasicRotatingFileSink::get_file_list()
 
 void BasicRotatingFileSink::push_back_file(std::string_view file)
 {
-    std::lock_guard lock(_mtx);
     _fileQue.emplace_back(file);
     DEBUG_LOGGER_TRACE("Enqueue {}. {}", _itemName, file);
 }
 
-const std::string& BasicRotatingFileSink::back()
+void BasicRotatingFileSink::rotate(std::string_view newFile)
 {
-    std::lock_guard lock(_mtx);
-    return _fileQue.back();
+    if (_policy == RotatingPolicy::OPEN_NEW) {
+        rotate_open_new(newFile);
+    } else {
+        rotate_replace(newFile);
+    }
 }
 
-const std::string& BasicRotatingFileSink::front()
+void BasicRotatingFileSink::rotate_open_new(std::string_view newFile)
 {
-    std::lock_guard lock(_mtx);
-    return _fileQue.front();
+    _fileWriter->close();
+    _fileWriter = std::make_shared<utils::filesystem::FileWriter>(newFile);
+    _fileWriter->open(true);
+    push_back_file(newFile);
+    delete_overflow_file();
+}
+
+void BasicRotatingFileSink::rotate_replace(std::string_view newFile)
+{
+    std::string src = _fileWriter->full_path();
+    _fileWriter->close();
+
+    if (internal::rename_file(src, newFile, true, RENAME_FILE_RETRY, RENAME_FILE_SLEEP_MS)) {
+        _fileWriter->reopen(true);
+        push_back_file(newFile);
+        DEBUG_LOGGER_DBG("Rotate log file success. {}", newFile);
+    } else {
+        _fileWriter->reopen(false);
+    }
+
+    delete_overflow_file();
 }
 
 void BasicRotatingFileSink::delete_overflow_file()
 {
-    std::lock_guard lock(_mtx);
-
     if (_fileQue.empty() || _fileQue.size() <= _maxFiles) {
         return;
     }
@@ -68,6 +116,25 @@ void BasicRotatingFileSink::delete_overflow_file()
         }
         _fileQue.pop_front();
     }
+}
+
+const std::string& BasicRotatingFileSink::base_file_it() const
+{
+    return _baseFile;
+}
+
+const std::string& BasicRotatingFileSink::directory_it() const
+{
+    return _directory;
+}
+const std::string& BasicRotatingFileSink::filename_stem_it() const
+{
+    return _fileStem;
+}
+
+const std::string& BasicRotatingFileSink::extention_it() const
+{
+    return _extention;
 }
 
 }  // namespace logging

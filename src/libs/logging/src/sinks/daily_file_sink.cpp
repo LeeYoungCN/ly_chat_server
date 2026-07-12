@@ -43,18 +43,14 @@ DailyFileSink::DailyFileSink(std::string_view baseFile)
 
 DailyFileSink::DailyFileSink(std::string_view baseFile, uint32_t hour, uint32_t minute,
                              uint32_t maxFiles)
-    : Sink(std::format("DailyFileSink, File: \"{}\", hour: {}, minute: {}, maxFiles: {}.", baseFile,
-                       hour, minute, maxFiles)),
-      BasicRotatingFileSink("daliy log file", maxFiles),
-      _file(to_absolute_path(baseFile)),
+    : BasicRotatingFileSink(
+          baseFile, maxFiles, RotatingPolicy::OPEN_NEW, "daliy log file",
+          std::format("DailyFileSink. file: \"{}\", hour: {}, minute: {}, maxFiles: {}.", baseFile,
+                      hour, minute, maxFiles)),
       _hour(hour),
-      _minute(minute),
-      _maxFiles(maxFiles),
-      _directory(get_directory(_file)),
-      _fileStem(get_filename_stem(_file)),
-      _extention(get_extension(_file))
+      _minute(minute)
 {
-    if (_file.empty()) {
+    if (base_file_it().empty()) {
         set_thread_last_err(ERR_COMM_PARAM_EMPTY);
         DEBUG_LOGGER_ERR("Create DailyFileSink failed. baseFile empty.");
         throw std::invalid_argument("baseFile empty.");
@@ -62,7 +58,7 @@ DailyFileSink::DailyFileSink(std::string_view baseFile, uint32_t hour, uint32_t 
 
     if (_hour < MIN_HOUR || _hour > MAX_HOUR) {
         set_thread_last_err(ERR_COMM_PARAM_OUT_OF_RANGE);
-        DEBUG_LOGGER_ERR("Create DailyFileSink failed. hour invalid: {}.", hour);
+        DEBUG_LOGGER_ERR("Create DailyFileSink failed. hour invalid: {}.", _hour);
         throw std::out_of_range("hour out of range.");
     }
 
@@ -123,11 +119,6 @@ void DailyFileSink::flush()
     _fileWriter->flush();
 }
 
-std::string DailyFileSink::log_file()
-{
-    std::lock_guard lock(sink_mutex());
-    return _fileWriter->full_path();
-}
 
 TimestampMs DailyFileSink::parse_log_timestamp(std::string_view filename)
 {
@@ -135,13 +126,14 @@ TimestampMs DailyFileSink::parse_log_timestamp(std::string_view filename)
         return 0;
     }
 
-    if (get_extension(filename) != _extention) {
+    if (get_extension(filename) != extention_it()) {
         return 0;
     }
 
     uint32_t idx = 0;
-    for (; idx < _fileStem.size(); ++idx) {
-        if (filename[idx] != _fileStem[idx]) {
+    auto fileStem = filename_stem_it();
+    for (; idx < fileStem.size(); ++idx) {
+        if (filename[idx] != fileStem[idx]) {
             return 0;
         }
     }
@@ -175,19 +167,19 @@ std::string DailyFileSink::calc_log_file(TimestampMs time)
 {
     auto dateTime = timestamp_to_date_time(time);
     auto filename = std::format("{}{}{:04}{:02}{:02}{}",
-                                _fileStem,
+                                filename_stem_it(),
                                 SPLIT_CHAR,
                                 dateTime.year,
                                 dateTime.month,
                                 dateTime.day,
-                                _extention);
-    return join_paths({_directory, filename});
+                                extention_it());
+    return join_paths({directory_it(), filename});
 }
 
 void DailyFileSink::init_file_queue()
 {
     std::vector<std::pair<TimestampMs, std::string>> logList;
-    for (const auto& entry : std::filesystem::directory_iterator(_directory)) {
+    for (const auto& entry : std::filesystem::directory_iterator(directory_it())) {
         if (!entry.is_regular_file()) {
             continue;
         }
@@ -208,15 +200,6 @@ void DailyFileSink::init_file_queue()
         push_back_file(fileInfo.second);
         DEBUG_LOGGER_DBG("Find daily log file. file: \"{}\"", fileInfo.second);
     }
-}
-
-void DailyFileSink::rotate(std::string_view newFile)
-{
-    _fileWriter->close();
-    _fileWriter = std::make_shared<FileWriter>(newFile);
-    _fileWriter->open(false);
-    push_back_file(newFile);
-    delete_overflow_file();
 }
 
 }  // namespace logging

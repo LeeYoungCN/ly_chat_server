@@ -3,36 +3,62 @@
 
 #include <cstdint>
 #include <deque>
-#include <mutex>
+#include <memory>
 #include <string>
 #include <string_view>
 #include <vector>
 
+#include "logging/sinks/sink.h"
+#include "utils/file_writer.h"
+
 namespace logging {
-class BasicRotatingFileSink {
+enum class RotatingPolicy {
+    OPEN_NEW = 0,
+    RENAME
+};
+
+class BasicRotatingFileSink : public Sink {
 public:
-    BasicRotatingFileSink(std::string_view itemName, uint32_t maxFiles);
-    ~BasicRotatingFileSink() = default;
+    BasicRotatingFileSink(std::string_view logFile, uint32_t maxFiles,
+                          RotatingPolicy rotatingPolicy, std::string_view itemName,
+                          std::string_view paramStr);
+    ~BasicRotatingFileSink() override;
 
 public:
+    void log(const details::LogMsg& logMsg) override = 0;
+    void flush() override = 0;
+
+    std::string log_file();
     std::vector<std::string> get_file_list();
 
 protected:
-    void push_back_file(std::string_view file);
-
-    const std::string& back();
-    const std::string& front();
-
-protected:
     virtual void init_file_queue() = 0;
-    virtual void rotate(std::string_view newFile) = 0;
-    virtual void delete_overflow_file();
+
+    void push_back_file(std::string_view file);
+    void rotate(std::string_view newFile);
+    void delete_overflow_file();
+
+    [[nodiscard]] const std::string& base_file_it() const;
+    [[nodiscard]] const std::string& directory_it() const;
+    [[nodiscard]] const std::string& filename_stem_it() const;
+    [[nodiscard]] const std::string& extention_it() const;
+
+    std::shared_ptr<utils::filesystem::FileWriter> _fileWriter;
 
 private:
-    std::string _itemName;
+    void rotate_open_new(std::string_view newFile);
+    void rotate_replace(std::string_view newFile);
+
+    const std::string _baseFile;
+    const std::string _directory;
+    const std::string _fileStem;
+    const std::string _extention;
     uint32_t _maxFiles{0};
+
+    std::string _itemName;
+    RotatingPolicy _policy{RotatingPolicy::OPEN_NEW};
+
     std::deque<std::string> _fileQue;
-    std::mutex _mtx;
 };
 
 }  // namespace logging
