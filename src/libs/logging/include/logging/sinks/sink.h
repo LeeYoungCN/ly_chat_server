@@ -17,8 +17,8 @@ public:
     Sink();
     virtual ~Sink();
 
-    virtual void log(const details::LogMsg& logMsg) = 0;
-    virtual void flush() = 0;
+    void log(const details::LogMsg& logMsg);
+    void flush();
 
     void set_pattern(
         std::string_view pattern = logging::details::FORMATTER_DEFAULT_PATTERN,
@@ -30,9 +30,12 @@ public:
     [[nodiscard]] LogLevel level() const;
 
 protected:
-    explicit Sink(std::string_view parameter);
+    virtual void log_it(const details::LogMsg& logMsg) = 0;
+    virtual void flush_it() = 0;
 
 protected:
+    explicit Sink(std::string_view parameter);
+
     std::mutex& sink_mutex();
     std::unique_ptr<Formatter>& formatter();
     void set_parameter(std::string_view paramStr);

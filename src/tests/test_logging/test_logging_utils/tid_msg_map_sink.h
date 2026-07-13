@@ -13,8 +13,8 @@ public:
     TidMsgMapSink() = default;
     ~TidMsgMapSink() override = default;
 
-    void log(const logging::details::LogMsg& logMsg) override;
-    void flush() override {}
+    void log_it(const logging::details::LogMsg& logMsg) override;
+    void flush_it() override {}
 
     const std::map<ThreadId, logging::details::LogMsg>& buffer();
 

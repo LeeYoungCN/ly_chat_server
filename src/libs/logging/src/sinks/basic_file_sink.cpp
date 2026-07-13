@@ -6,6 +6,7 @@
 
 #include "common/debug/debug_logger.h"
 #include "internal/logging_internal.h"
+#include "logging/sinks/sink.h"
 #include "utils/file_writer.h"
 #include "utils/filesystem_utils.h"
 #include "utils/utils_error_code.h"
@@ -36,8 +37,10 @@ BasicFileSink::~BasicFileSink()
 BasicFileSink::BasicFileSink() : BasicFileSink(internal::get_default_log_file("log"), true) {}
 
 BasicFileSink::BasicFileSink(std::string_view file, bool overwrite)
+    : Sink(
+          std::format("BasicFileSink. file: \"{}\", mode: {}.", file, get_file_mode_str(overwrite)))
 {
-    _pimpl = std::make_unique<Impl>(file);
+    _pimpl = std::make_unique<Impl>(to_absolute_path(file));
     _pimpl->_fileWriter.open(overwrite);
 
     if (_pimpl->_fileWriter.get_last_error() != ERR_COMM_SUCCESS) {
@@ -53,39 +56,25 @@ BasicFileSink::BasicFileSink(std::string_view file, bool overwrite)
         std::format("BasicFileSink, file: \"{}\", mode: {}.", file, get_file_mode_str(overwrite)));
 }
 
-void BasicFileSink::log(const LogMsg& logMsg)
+std::string BasicFileSink::file()
 {
-    std::lock_guard lock(sink_mutex());
+    return _pimpl->_fileWriter.full_path();
+}
+
+void BasicFileSink::log_it(const LogMsg& logMsg)
+{
     std::string content;
     formatter()->format(logMsg, content);
     sink_it(content);
 }
 
-void BasicFileSink::flush()
-{
-    std::lock_guard lock(sink_mutex());
-    flush_it();
-}
-
-std::string BasicFileSink::file()
-{
-    std::lock_guard lock(sink_mutex());
-    return _pimpl->_fileWriter.full_path();
-}
-
 void BasicFileSink::sink_it(std::string_view message)
 {
-    if (_pimpl == nullptr) {
-        return;
-    }
     _pimpl->_fileWriter.write_line(message);
 }
 
 void BasicFileSink::flush_it()
 {
-    if (_pimpl == nullptr) {
-        return;
-    }
     _pimpl->_fileWriter.flush();
 }
 

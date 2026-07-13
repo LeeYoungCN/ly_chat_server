@@ -60,18 +60,6 @@ std::vector<std::string> BaseRotatingFileSink::get_file_list()
     return rst;
 }
 
-void BaseRotatingFileSink::log(const details::LogMsg& logMsg)
-{
-    std::lock_guard lock(sink_mutex());
-    log_it(logMsg);
-}
-
-void BaseRotatingFileSink::flush()
-{
-    std::lock_guard lock(sink_mutex());
-    flush_it();
-}
-
 void BaseRotatingFileSink::sink_it(std::string_view message)
 {
     _fileWriter->write_line(message);

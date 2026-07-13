@@ -30,6 +30,18 @@ Sink::~Sink()
     }
 }
 
+void Sink::log(const details::LogMsg& logMsg)
+{
+    std::lock_guard lock(sink_mutex());
+    log_it(logMsg);
+}
+
+void Sink::flush()
+{
+    std::lock_guard lock(sink_mutex());
+    flush_it();
+}
+
 bool Sink::should_log(LogLevel level) const
 {
     if (level == LogLevel::OFF) {

@@ -5,7 +5,7 @@
 
 int main(int argc, char *argv[])
 {
-    common::debug::set_common_debug_logger_level(DEBUG_LVL_INFO);
+    common::debug::set_common_debug_logger_level(DEBUG_LVL_DEBUG);
     DEBUG_LOGGER_INFO("Running main() from {}", __FILE__);
 
     common::debug::working_env::ShowWorkingEnv();

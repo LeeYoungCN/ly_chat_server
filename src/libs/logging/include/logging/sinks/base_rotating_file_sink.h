@@ -23,18 +23,14 @@ public:
                          std::string_view itemName, std::string_view paramStr);
     ~BaseRotatingFileSink() override;
 
-public:
-    void log(const details::LogMsg& logMsg) final;
-    void flush() final;
-
     std::string log_file();
     std::vector<std::string> get_file_list();
 
 protected:
     std::shared_ptr<utils::filesystem::FileWriter> _fileWriter;
-    virtual void log_it(const details::LogMsg& logMsg) = 0;
-    virtual void sink_it(std::string_view message);
-    virtual void flush_it();
+    void log_it(const details::LogMsg& logMsg) override = 0;
+    void sink_it(std::string_view message);
+    void flush_it() override;
 
     virtual void init_file_queue() = 0;
     void push_back_file(std::string_view file);

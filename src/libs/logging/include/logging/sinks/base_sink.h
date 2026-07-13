@@ -13,12 +13,10 @@ public:
     BaseSink() = default;
     ~BaseSink() override = default;
 
-    void log(const logging::details::LogMsg& logMsg) override;
-    void flush() override;
-
 protected:
+    void log_it(const details::LogMsg& logMsg) override;
     virtual void sink_it(std::string_view message) = 0;
-    virtual void flush_it() = 0;
+    void flush_it() override = 0;
 };
 }  // namespace logging
 

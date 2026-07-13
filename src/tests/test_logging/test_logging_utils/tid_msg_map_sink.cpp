@@ -6,9 +6,8 @@ using namespace logging;
 using namespace logging::details;
 
 namespace test::test_logging {
-void TidMsgMapSink::log(const LogMsg& logMsg)
+void TidMsgMapSink::log_it(const LogMsg& logMsg)
 {
-    std::lock_guard<std::mutex> lock(sink_mutex());
     _buffer[logMsg.threadId] = logMsg;
 }
 

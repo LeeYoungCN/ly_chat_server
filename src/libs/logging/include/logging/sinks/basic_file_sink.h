@@ -5,6 +5,7 @@
 #include <string>
 #include <string_view>
 
+#include "logging/details/log_msg.h"
 #include "logging/sinks/sink.h"
 
 namespace logging {
@@ -14,14 +15,11 @@ public:
     ~BasicFileSink() override;
     explicit BasicFileSink(std::string_view file, bool overwrite = true);
 
-public:
-    void log(const logging::details::LogMsg& logMsg) override;
-    void flush() override;
-
     std::string file();
 
 protected:
-    virtual void flush_it();
+    void log_it(const details::LogMsg& logMsg) override;
+    void flush_it() override;
     virtual void sink_it(std::string_view message);
 
 private:
