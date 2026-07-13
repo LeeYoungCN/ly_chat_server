@@ -43,7 +43,7 @@ DailyFileSink::DailyFileSink(std::string_view baseFile)
 DailyFileSink::DailyFileSink(std::string_view baseFile, uint32_t hour, uint32_t minute,
                              uint32_t maxFiles)
     : BaseRotatingFileSink(
-          baseFile, maxFiles, RotatingPolicy::OPEN_NEW, "daliy log file",
+          baseFile, maxFiles, RotatingPolicy::RENAME, "daliy log file",
           std::format("DailyFileSink. file: \"{}\", hour: {}, minute: {}, maxFiles: {}.", baseFile,
                       hour, minute, maxFiles)),
       _hour(hour),
@@ -84,7 +84,7 @@ DailyFileSink::DailyFileSink(std::string_view baseFile, uint32_t hour, uint32_t 
     }
     _fileTime = _rotateTime - MILLIS_PER_DAY;
 
-    _fileWriter = std::make_shared<FileWriter>(calc_log_file(_fileTime));
+    _fileWriter = std::make_shared<FileWriter>(base_file_it());
     _fileWriter->open(false);
     if (_fileWriter->get_last_error() != ERR_COMM_SUCCESS) {
         DEBUG_LOGGER_ERR("Create DailyFileSink failed. Open file failed. file: {}.",
@@ -98,12 +98,14 @@ DailyFileSink::DailyFileSink(std::string_view baseFile, uint32_t hour, uint32_t 
 void DailyFileSink::log_it(const details::LogMsg& logMsg)
 {
     if (logMsg.timestamp > _rotateTime) {
+        if (_fileWriter->size() > 0) {
+            std::string newFile = calc_log_file(_fileTime);
+            rotate(newFile);
+        }
         while (_rotateTime < logMsg.timestamp) {
             _rotateTime += MILLIS_PER_DAY;
         }
         _fileTime = _rotateTime - MILLIS_PER_DAY;
-        std::string newFile = calc_log_file(_fileTime);
-        rotate(newFile);
     }
 
     std::string content;
@@ -113,7 +115,7 @@ void DailyFileSink::log_it(const details::LogMsg& logMsg)
 
 TimestampMs DailyFileSink::parse_log_timestamp(std::string_view filename)
 {
-    if (filename.size() != _fileWriter->filename().size()) {
+    if (filename.size() != get_filename(base_file_it()).size() + 9) {
         return 0;
     }
 
@@ -176,7 +178,7 @@ void DailyFileSink::init_file_queue()
         }
 
         TimestampMs timestamp = parse_log_timestamp(entry.path().filename().string());
-        if (timestamp > _rotateTime - MILLIS_PER_DAY) {
+        if (timestamp > _fileTime) {
             continue;
         }
 
