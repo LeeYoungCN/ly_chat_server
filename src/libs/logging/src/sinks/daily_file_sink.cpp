@@ -77,6 +77,8 @@ DailyFileSink::DailyFileSink(std::string_view baseFile, uint32_t hour, uint32_t 
     DateTimeSt dateTime = timestamp_to_date_time(now);
     dateTime.hour = _hour;
     dateTime.minute = _minute;
+    dateTime.second = 0;
+    dateTime.millis = 0;
     _rotateTime = date_time_to_timestamp(dateTime);
 
     if (_rotateTime < now) {
