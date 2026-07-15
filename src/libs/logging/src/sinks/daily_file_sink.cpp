@@ -49,7 +49,7 @@ DailyFileSink::DailyFileSink(std::string_view baseFile, uint32_t hour, uint32_t 
       _hour(hour),
       _minute(minute)
 {
-    if (file().empty()) {
+    if (baseFile.empty()) {
         set_thread_last_err(ERR_COMM_PARAM_EMPTY);
         DEBUG_LOGGER_ERR("Create DailyFileSink failed. baseFile empty.");
         throw std::invalid_argument("baseFile empty.");
@@ -92,7 +92,7 @@ DailyFileSink::DailyFileSink(std::string_view baseFile, uint32_t hour, uint32_t 
 void DailyFileSink::log_it(const details::LogMsg& logMsg)
 {
     if (logMsg.timestamp > _rotateTime) {
-        if (file_writer_it().size() > 0) {
+        if (_fileWriter.size() > 0) {
             std::string newFile = calc_log_file(_fileTime);
             rotate(newFile);
         }
@@ -103,24 +103,23 @@ void DailyFileSink::log_it(const details::LogMsg& logMsg)
     }
 
     std::string content;
-    formatter()->format(logMsg, content);
+    _formatter->format(logMsg, content);
     sink_it(content);
 }
 
 TimestampMs DailyFileSink::parse_log_timestamp(std::string_view filename)
 {
-    if (filename.size() != this->filename().size() + 9) {
+    if (filename.size() != _filename.size() + 9) {
         return 0;
     }
 
-    if (get_extension(filename) != extention()) {
+    if (get_extension(filename) != _extention) {
         return 0;
     }
 
     uint32_t idx = 0;
-    const auto& fileStem = filename_stem();
-    for (; idx < fileStem.size(); ++idx) {
-        if (filename[idx] != fileStem[idx]) {
+    for (; idx < _filenameStem.size(); ++idx) {
+        if (filename[idx] != _filenameStem[idx]) {
             return 0;
         }
     }
@@ -154,19 +153,19 @@ std::string DailyFileSink::calc_log_file(TimestampMs time)
 {
     auto dateTime = timestamp_to_date_time(time);
     auto filename = std::format("{}{}{:04}{:02}{:02}{}",
-                                filename_stem(),
+                                _filenameStem,
                                 SPLIT_CHAR,
                                 dateTime.year,
                                 dateTime.month,
                                 dateTime.day,
-                                extention());
-    return join_paths({directory(), filename});
+                                _extention);
+    return join_paths({_directory, filename});
 }
 
 void DailyFileSink::init_file_queue()
 {
     std::vector<std::pair<TimestampMs, std::string>> logList;
-    for (const auto& entry : std::filesystem::directory_iterator(directory())) {
+    for (const auto& entry : std::filesystem::directory_iterator(_directory)) {
         if (!entry.is_regular_file()) {
             continue;
         }

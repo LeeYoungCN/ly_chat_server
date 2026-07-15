@@ -27,15 +27,13 @@ protected:
     void log_it(const details::LogMsg& logMsg) override;
     void flush_it() override;
     void sink_it(std::string_view message);
-    utils::filesystem::FileWriter& file_writer_it();
 
-private:
-    std::string _file;
-    std::string _directory;
-    std::string _filename;
-    std::string _filename_stem;
-    std::string _extention;
-
+    const std::string _file;
+    const std::string _directory;
+    const std::string _filename;
+    const std::string _filenameStem;
+    const std::string _extention;
+    bool _overwrite{false};
     utils::filesystem::FileWriter _fileWriter;
 };
 

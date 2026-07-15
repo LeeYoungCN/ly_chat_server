@@ -34,19 +34,20 @@ BasicFileSink::BasicFileSink(std::string_view file, bool overwrite, std::string_
       _file(to_absolute_path(file)),
       _directory(get_directory(_file)),
       _filename(get_filename(_file)),
-      _filename_stem(get_filename_stem(_file)),
+      _filenameStem(get_filename_stem(_file)),
       _extention(get_extension(_file)),
+      _overwrite(overwrite),
       _fileWriter(_file)
 {
     if (_file.empty()) {
         throw std::invalid_argument("file empty");
     }
 
-    _fileWriter.open(overwrite);
+    _fileWriter.open(_overwrite);
     if (_fileWriter.get_last_error() != ERR_COMM_SUCCESS) {
         DEBUG_LOGGER_ERR("Create BasicFileSink failed. File: \"{}\", mode: {}. msg: \"{}\".",
                          file,
-                         get_file_mode_str(overwrite),
+                         get_file_mode_str(_overwrite),
                          get_utils_err_msg(_fileWriter.get_last_error()));
 
         throw std::runtime_error("Failed to open file: " + std::string(file));
@@ -70,7 +71,7 @@ const std::string& BasicFileSink::filename() const
 
 const std::string& BasicFileSink::filename_stem() const
 {
-    return _filename_stem;
+    return _filenameStem;
 }
 
 const std::string& BasicFileSink::extention() const
@@ -78,15 +79,10 @@ const std::string& BasicFileSink::extention() const
     return _extention;
 }
 
-FileWriter& BasicFileSink::file_writer_it()
-{
-    return _fileWriter;
-}
-
 void BasicFileSink::log_it(const LogMsg& logMsg)
 {
     std::string content;
-    formatter()->format(logMsg, content);
+    _formatter->format(logMsg, content);
     sink_it(content);
 }
 

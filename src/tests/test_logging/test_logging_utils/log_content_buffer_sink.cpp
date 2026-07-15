@@ -5,7 +5,7 @@
 namespace test::test_logging {
 LogContentBufferSink::LogContentBufferSink() : LogContentBufferSink(1024)
 {
-    set_parameter("LogContentBufferSink, Capacity: " + std::to_string(_capacity));
+    _paramStr = std::string("LogContentBufferSink, Capacity: ") + std::to_string(_capacity);
 }
 
 LogContentBufferSink::LogContentBufferSink(uint32_t capacity) : _capacity(capacity)
@@ -20,13 +20,13 @@ uint32_t LogContentBufferSink::capacity() const
 
 const std::vector<std::string>& LogContentBufferSink::buffer()
 {
-    std::lock_guard<std::mutex> lock(sink_mutex());
+    std::lock_guard<std::mutex> lock(_sinkMtx);
     return _buffer;
 }
 
 const std::vector<std::string>& LogContentBufferSink::disk()
 {
-    std::lock_guard<std::mutex> lock(sink_mutex());
+    std::lock_guard<std::mutex> lock(_sinkMtx);
     return _disk;
 }
 

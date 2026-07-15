@@ -8,7 +8,7 @@ namespace logging {
 void BaseSink::log_it(const details::LogMsg& logMsg)
 {
     std::string content;
-    formatter()->format(logMsg, content);
+    _formatter->format(logMsg, content);
     sink_it(content);
 }
 

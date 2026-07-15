@@ -27,7 +27,7 @@ BaseRotatingFileSink::BaseRotatingFileSink(std::string_view file, bool overwrite
 
 std::vector<std::string> BaseRotatingFileSink::get_file_list()
 {
-    std::lock_guard lock(sink_mutex());
+    std::lock_guard lock(_sinkMtx);
     std::vector<std::string> rst;
     rst.reserve(_fileQue.size());
     for (auto& i : _fileQue) {
@@ -53,14 +53,14 @@ void BaseRotatingFileSink::push_back_file(std::string_view file)
 
 void BaseRotatingFileSink::rotate(std::string_view newFile)
 {
-    file_writer_it().close();
+    _fileWriter.close();
 
     if (internal::rename_file(file(), newFile, true, RENAME_FILE_RETRY, RENAME_FILE_SLEEP_MS)) {
-        file_writer_it().reopen(true);
+        _fileWriter.reopen(true);
         push_back_file(newFile);
         DEBUG_LOGGER_DBG("Rotate log file success. {}", newFile);
     } else {
-        file_writer_it().reopen(false);
+        _fileWriter.reopen(false);
     }
 
     delete_overflow_file();

@@ -2,6 +2,7 @@
 #ifndef LOGGINGL_LOG_SINK_H
 #define LOGGINGL_LOG_SINK_H
 
+#include <atomic>
 #include <memory>
 #include <mutex>
 #include <string_view>
@@ -9,13 +10,14 @@
 #include "logging/details/constants.h"
 #include "logging/details/log_msg.h"
 #include "logging/formatters/formatter.h"
+#include "logging/formatters/pattern_formatter.h"
 #include "logging/log_level.h"
 
 namespace logging {
 class Sink {
 public:
-    Sink();
-    virtual ~Sink();
+    Sink() = default;
+    virtual ~Sink() = default;
 
     void log(const details::LogMsg& logMsg);
     void flush();
@@ -30,19 +32,15 @@ public:
     [[nodiscard]] LogLevel level() const;
 
 protected:
+    explicit Sink(std::string_view parameter);
     virtual void log_it(const details::LogMsg& logMsg) = 0;
     virtual void flush_it() = 0;
 
 protected:
-    explicit Sink(std::string_view parameter);
-
-    std::mutex& sink_mutex();
-    std::unique_ptr<Formatter>& formatter();
-    void set_parameter(std::string_view paramStr);
-
-private:
-    struct Impl;
-    std::unique_ptr<Impl> _pimpl;
+    std::atomic<LogLevel> _level{LogLevel::INFO};
+    std::unique_ptr<Formatter> _formatter{std::make_unique<PatternFormatter>()};
+    std::mutex _sinkMtx;
+    std::string _paramStr{"unknown"};
 };
 }  // namespace logging
 

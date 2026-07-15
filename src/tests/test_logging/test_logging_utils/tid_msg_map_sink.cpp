@@ -13,7 +13,7 @@ void TidMsgMapSink::log_it(const LogMsg& logMsg)
 
 const std::map<ThreadId, LogMsg>& TidMsgMapSink::buffer()
 {
-    std::lock_guard<std::mutex> lock(sink_mutex());
+    std::lock_guard<std::mutex> lock(_sinkMtx);
     return _buffer;
 }
 }  // namespace test::test_logging

@@ -81,7 +81,7 @@ RotatingFileSink::RotatingFileSink(std::string_view file, uint32_t maxFileSize, 
 
 void RotatingFileSink::set_max_file_size(uint32_t maxFileSize)
 {
-    std::lock_guard lock(sink_mutex());
+    std::lock_guard lock(_sinkMtx);
     if (maxFileSize > 0) {
         _maxFileSize = maxFileSize;
     } else {
@@ -91,13 +91,13 @@ void RotatingFileSink::set_max_file_size(uint32_t maxFileSize)
 
 uint32_t RotatingFileSink::max_file_size()
 {
-    std::lock_guard lock(sink_mutex());
+    std::lock_guard lock(_sinkMtx);
     return _maxFileSize;
 }
 
 void RotatingFileSink::set_max_files(uint32_t maxFiles)
 {
-    std::lock_guard lock(sink_mutex());
+    std::lock_guard lock(_sinkMtx);
     if (maxFiles <= RotatingFileSink::MAX_FILES) {
         set_max_files_it(maxFiles);
     } else {
@@ -115,9 +115,9 @@ uint32_t RotatingFileSink::max_files()
 void RotatingFileSink::log_it(const details::LogMsg& logMsg)
 {
     std::string content;
-    formatter()->format(logMsg, content);
+    _formatter->format(logMsg, content);
 
-    if (content.size() + file_writer_it().size() > _maxFileSize) {
+    if (content.size() + _fileWriter.size() > _maxFileSize) {
         rotate(get_next_file());
     }
     sink_it(content);
@@ -149,7 +149,6 @@ void RotatingFileSink::init_file_queue()
             };
         });
 
-
     set_next_idx(logList.empty() ? MIN_INDEX : logList.back().idx + 1);
     for (const auto& logInfo : logList) {
         DEBUG_LOGGER_DBG("Find rotating log file. {}", logInfo.to_string());
@@ -159,7 +158,7 @@ void RotatingFileSink::init_file_queue()
 
 std::string RotatingFileSink::get_next_file()
 {
-    return file() + "." + std::to_string(get_next_idx());
+    return _file + "." + std::to_string(get_next_idx());
 }
 
 void RotatingFileSink::set_next_idx(uint32_t idx)
@@ -187,16 +186,14 @@ uint32_t RotatingFileSink::parse_log_index(std::string_view filename)
     constexpr uint32_t MIN_SUFFIX_LEN = 2;  // .1
     constexpr uint32_t MAX_SUFFIX_LEN = 6;  // .20000
 
-    const std::string& logFilename = this->filename();
-
-    if (filename.size() < logFilename.size() + MIN_SUFFIX_LEN ||
-        filename.size() > logFilename.size() + MAX_SUFFIX_LEN) {
+    if (filename.size() < _filename.size() + MIN_SUFFIX_LEN ||
+        filename.size() > _filename.size() + MAX_SUFFIX_LEN) {
         return 0;
     }
 
     uint32_t i = 0;
-    for (; i < logFilename.length(); ++i) {
-        if (filename.at(i) != logFilename.at(i)) {
+    for (; i < _filename.length(); ++i) {
+        if (filename.at(i) != _filename.at(i)) {
             return 0;
         }
     }
