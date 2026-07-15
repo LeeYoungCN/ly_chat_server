@@ -176,12 +176,13 @@ void TestRotatingFileSink::TestRotateAndDelete(testing::TestInfo* test_info, uin
 
 TEST_F(TestRotatingFileSink, invalid_param)
 {
+    std::string logFile = join_paths({_dir, get_logger_name(test_info_) + ".log"});
     EXPECT_THROW(RotatingFileSink(""), std::invalid_argument);
-    EXPECT_THROW(RotatingFileSink("test.log", 0, RotatingFileSink::DEFAULT_MAX_FILES),
+    EXPECT_THROW(RotatingFileSink(logFile, 0, RotatingFileSink::DEFAULT_MAX_FILES),
                  std::invalid_argument);
     EXPECT_THROW(
         RotatingFileSink(
-            "test.log", RotatingFileSink::DEFAULT_MAX_FILE_SIZE, RotatingFileSink::MAX_INDEX + 1),
+            logFile, RotatingFileSink::DEFAULT_MAX_FILE_SIZE, RotatingFileSink::MAX_INDEX + 1),
         std::out_of_range);
 }
 

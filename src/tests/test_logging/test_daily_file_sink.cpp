@@ -147,23 +147,23 @@ TEST_F(TestDailyFileSink, create_normal)
 {
     std::string logFile = join_paths({_dir, get_logger_name(test_info_) + ".log"});
     DailyFileSink sink(logFile);
-    EXPECT_TRUE(file_exists(sink.log_file()));
-    EXPECT_EQ(sink.log_file(), logFile);
+    EXPECT_TRUE(file_exists(sink.file()));
+    EXPECT_EQ(sink.file(), logFile);
 }
-
 
 TEST_F(TestDailyFileSink, create_when_param_invalid)
 {
+    std::string baseFile = join_paths({_dir, get_logger_name(test_info_) + ".log"});
     EXPECT_THROW(DailyFileSink(""), std::invalid_argument);
 
-    EXPECT_THROW(DailyFileSink("test.log", MAX_HOUR + 1, 0, DailyFileSink::DEFAULT_MAX_FILES),
+    EXPECT_THROW(DailyFileSink(baseFile, MAX_HOUR + 1, 0, DailyFileSink::DEFAULT_MAX_FILES),
                  std::out_of_range);
 
-    EXPECT_THROW(DailyFileSink("test.log", 0, MAX_MINUTE + 1, DailyFileSink::DEFAULT_MAX_FILES),
+    EXPECT_THROW(DailyFileSink(baseFile, 0, MAX_MINUTE + 1, DailyFileSink::DEFAULT_MAX_FILES),
                  std::out_of_range);
-    EXPECT_THROW(DailyFileSink("test.log", 0, MAX_MINUTE + 1, DailyFileSink::MAX_FILES + 1),
+    EXPECT_THROW(DailyFileSink(baseFile, 0, MAX_MINUTE + 1, DailyFileSink::MAX_FILES + 1),
                  std::out_of_range);
-    EXPECT_THROW(DailyFileSink("test.log", 0, MAX_MINUTE + 1, DailyFileSink::MIN_FILES - 1),
+    EXPECT_THROW(DailyFileSink(baseFile, 0, MAX_MINUTE + 1, DailyFileSink::MIN_FILES - 1),
                  std::out_of_range);
 }
 

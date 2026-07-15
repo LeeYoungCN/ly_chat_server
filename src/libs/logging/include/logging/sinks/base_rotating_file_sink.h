@@ -1,63 +1,39 @@
-#ifndef LOGGING_SINKS_BASIC_ROTATING_FILE_SINK_H
-#define LOGGING_SINKS_BASIC_ROTATING_FILE_SINK_H
+#ifndef LOGGING_SINKS_BASE_ROTATING_FILE_SINK_H
+#define LOGGING_SINKS_BASE_ROTATING_FILE_SINK_H
 
+#include <atomic>
 #include <cstdint>
 #include <deque>
-#include <memory>
 #include <string>
 #include <string_view>
 #include <vector>
 
-#include "logging/sinks/sink.h"
-#include "utils/file_writer.h"
+#include "logging/sinks/basic_file_sink.h"
 
 namespace logging {
-enum class RotatingPolicy {
-    OPEN_NEW = 0,
-    RENAME
-};
 
-class BaseRotatingFileSink : public Sink {
+class BaseRotatingFileSink : public BasicFileSink {
 public:
-    BaseRotatingFileSink(std::string_view logFile, uint32_t maxFiles, RotatingPolicy rotatingPolicy,
+    BaseRotatingFileSink(std::string_view file, bool overwrite, uint32_t maxFiles,
                          std::string_view itemName, std::string_view paramStr);
-    ~BaseRotatingFileSink() override;
+    ~BaseRotatingFileSink() override = default;
 
-    std::string log_file();
     std::vector<std::string> get_file_list();
 
 protected:
-    std::shared_ptr<utils::filesystem::FileWriter> _fileWriter;
-    void log_it(const details::LogMsg& logMsg) override = 0;
-    void sink_it(std::string_view message);
-    void flush_it() override;
-
     virtual void init_file_queue() = 0;
+    void set_max_files_it(uint32_t maxFiles);
+    [[nodiscard]] uint32_t max_files_it();
     void push_back_file(std::string_view file);
     void rotate(std::string_view newFile);
     void delete_overflow_file();
 
-    [[nodiscard]] const std::string& base_file_it() const;
-    [[nodiscard]] const std::string& directory_it() const;
-    [[nodiscard]] const std::string& filename_stem_it() const;
-    [[nodiscard]] const std::string& extention_it() const;
-
 private:
-    void rotate_open_new(std::string_view newFile);
-    void rotate_replace(std::string_view newFile);
-
-    const std::string _baseFile;
-    const std::string _directory;
-    const std::string _fileStem;
-    const std::string _extention;
-    uint32_t _maxFiles{0};
+    std::atomic<uint32_t> _maxFiles{0};
     std::string _itemName;
-
-    RotatingPolicy _policy{RotatingPolicy::OPEN_NEW};
-
     std::deque<std::string> _fileQue;
 };
 
 }  // namespace logging
 
-#endif  // LOGGING_SINKS_BASIC_ROTATING_FILE_SINK_H
+#endif  // LOGGING_SINKS_BASE_ROTATING_FILE_SINK_H
