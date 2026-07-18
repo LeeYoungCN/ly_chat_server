@@ -6,12 +6,13 @@
 #include <cstdint>
 #include <vector>
 
-#include "logging/sinks/base_sink.h"
+#include "logging/details/log_msg.h"
+#include "logging/sinks/sink.h"
 
 using namespace logging;
 
 namespace test::test_logging {
-class LogContentBufferSink : public BaseSink {
+class LogContentBufferSink : public Sink {
 public:
     LogContentBufferSink();
     ~LogContentBufferSink() override = default;
@@ -23,8 +24,10 @@ public:
     void clear();
 
 protected:
-    void sink_it(std::string_view message) override;
+    void log_it(const details::LogMsg& logMsg) override;
     void flush_it() override;
+
+    void sink_it(std::string_view message);
 
 private:
     uint32_t _capacity;

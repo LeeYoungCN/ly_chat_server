@@ -36,6 +36,13 @@ void LogContentBufferSink::clear()
     _disk.clear();
 }
 
+void LogContentBufferSink::log_it(const details::LogMsg& logMsg)
+{
+    std::string content;
+    _formatter->format(logMsg, content);
+    sink_it(content);
+}
+
 void LogContentBufferSink::sink_it(std::string_view message)
 {
     _buffer.emplace_back(message);
