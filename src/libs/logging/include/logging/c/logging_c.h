@@ -44,7 +44,7 @@ void logging_logger_flush_on(LoggerSt *logger, LoggingLevel level);
 bool logging_logger_should_flush(LoggerSt *logger, LoggingLevel level);
 LoggingLevel logging_logger_flush_level(LoggerSt *logger);
 
-void logging_logger_set_pattern(LoggerSt *logger, const char *pattern, const char *timePattern);
+void logging_logger_set_pattern(LoggerSt *logger, const char *pattern);
 void logging_logger_set_formatter(LoggerSt *logger, const FormatterSt *formatter);
 
 void logging_logger_flush(LoggerSt *logger);
@@ -63,12 +63,12 @@ void logging_sink_set_level(SinkSt *sink, LoggingLevel level);
 bool logging_sink_should_log(SinkSt *sink, LoggingLevel level);
 LoggingLevel logging_sink_level(SinkSt *sink);
 
-void logging_sink_set_pattern(SinkSt *sink, const char *pattern, const char *timePattern);
+void logging_sink_set_pattern(SinkSt *sink, const char *pattern);
 void logging_sink_set_formatter(SinkSt *sink, const FormatterSt *formatter);
 #pragma endregion
 
 #pragma region Formatter
-FormatterSt *logging_create_pattern_formatter(const char *pattern, const char *timePattern);
+FormatterSt *logging_create_pattern_formatter(const char *pattern);
 void logging_destroy_formatter(FormatterSt *formatter);
 #pragma endregion
 
@@ -89,7 +89,7 @@ void logging_flush_on(LoggingLevel level);
 bool logging_should_flush(LoggingLevel level);
 LoggingLevel logging_flush_level();
 
-void logging_set_pattern(const char *pattern, const char *timePattern);
+void logging_set_pattern(const char *pattern);
 void logging_set_formatter(const FormatterSt *formatter);
 
 void logging_flush();

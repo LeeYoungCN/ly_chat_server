@@ -44,8 +44,7 @@ public:
     [[nodiscard]] LogLevel flush_level() const;
     [[nodiscard]] bool should_flush(LogLevel level) const;
 
-    void set_pattern(std::string_view pattern = details::FORMATTER_DEFAULT_PATTERN,
-                     std::string_view timePattern = details::FORMATTER_DEFAULT_TIME_PATTERN);
+    void set_pattern(std::string_view pattern = details::FORMATTER_DEFAULT_PATTERN);
     void set_formatter(const std::unique_ptr<logging::Formatter>& formatter);
 
     void flush();

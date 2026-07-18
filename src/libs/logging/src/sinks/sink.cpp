@@ -39,9 +39,9 @@ LogLevel Sink::level() const
     return _level.load(std::memory_order_relaxed);
 }
 
-void Sink::set_pattern(std::string_view pattern, std::string_view timePattern)
+void Sink::set_pattern(std::string_view pattern)
 {
-    set_formatter(std::make_unique<PatternFormatter>(pattern, timePattern));
+    set_formatter(std::make_unique<PatternFormatter>(pattern));
 }
 
 void Sink::set_formatter(std::unique_ptr<Formatter> formatter)

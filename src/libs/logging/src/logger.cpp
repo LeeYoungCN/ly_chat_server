@@ -90,9 +90,9 @@ bool Logger::should_flush(LogLevel level) const
     return (level != LogLevel::OFF && level >= this->flush_level());
 }
 
-void Logger::set_pattern(std::string_view pattern, std::string_view timePattern)
+void Logger::set_pattern(std::string_view pattern)
 {
-    set_formatter(std::make_unique<PatternFormatter>(pattern, timePattern));
+    set_formatter(std::make_unique<PatternFormatter>(pattern));
 }
 
 void Logger::set_formatter(const std::unique_ptr<Formatter>& formatter)

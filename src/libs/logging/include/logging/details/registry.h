@@ -30,8 +30,7 @@ public:
     void initialize_logger(const std::shared_ptr<Logger>& logger, bool autoRegister = true);
     void set_level_all(LogLevel level);
     void flush_on_all(LogLevel level);
-    void set_pattern_all(std::string_view pattern = FORMATTER_DEFAULT_PATTERN,
-                         std::string_view timePattern = FORMATTER_DEFAULT_TIME_PATTERN);
+    void set_pattern_all(std::string_view pattern = FORMATTER_DEFAULT_PATTERN);
     void set_formatter_all(std::unique_ptr<Formatter> formatter);
     void flush_all();
     void shutdown();

@@ -73,10 +73,10 @@ void Registry::flush_on_all(LogLevel level)
     }
 }
 
-void Registry::set_pattern_all(std::string_view pattern, std::string_view timePattern)
+void Registry::set_pattern_all(std::string_view pattern)
 {
     std::lock_guard<std::mutex> lock(_loggerMapMtx);
-    set_formatter_all(std::make_unique<PatternFormatter>(pattern, timePattern));
+    set_formatter_all(std::make_unique<PatternFormatter>(pattern));
 }
 
 void Registry::set_formatter_all(std::unique_ptr<Formatter> formatter)

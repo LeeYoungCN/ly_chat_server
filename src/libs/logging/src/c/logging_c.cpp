@@ -37,11 +37,9 @@ LoggingLevel logging_level()
     return log_to_logging_level(ROOT_LOGGER->level());
 }
 
-void logging_set_pattern(const char *pattern, const char *timePattern)
+void logging_set_pattern(const char *pattern)
 {
-    ROOT_LOGGER->set_pattern(
-        (pattern == nullptr ? FORMATTER_DEFAULT_PATTERN : pattern),
-        (timePattern == nullptr ? FORMATTER_DEFAULT_TIME_PATTERN : timePattern));
+    ROOT_LOGGER->set_pattern((pattern == nullptr ? FORMATTER_DEFAULT_PATTERN : pattern));
 }
 
 void logging_flush()

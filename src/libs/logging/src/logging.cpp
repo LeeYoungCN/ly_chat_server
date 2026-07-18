@@ -41,9 +41,9 @@ void flush_on(LogLevel level)
     root_logger_raw()->flush_on(level);
 }
 
-void set_pattern(std::string_view pattern, std::string_view timePattern)
+void set_pattern(std::string_view pattern)
 {
-    root_logger_raw()->set_pattern(pattern, timePattern);
+    root_logger_raw()->set_pattern(pattern);
 }
 
 void set_formatter(const std::unique_ptr<Formatter>& formatter)
@@ -74,9 +74,9 @@ void flush_on_all(LogLevel level)
     REGISTRY.flush_on_all(level);
 }
 
-void set_pattern_all(std::string_view pattern, std::string_view timePattern)
+void set_pattern_all(std::string_view pattern)
 {
-    REGISTRY.set_pattern_all(pattern, timePattern);
+    REGISTRY.set_pattern_all(pattern);
 }
 
 void set_formatter_all(std::unique_ptr<Formatter> formatter)

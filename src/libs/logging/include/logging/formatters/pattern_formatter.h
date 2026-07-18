@@ -3,6 +3,7 @@
 
 #include <memory>
 
+#include "logging/details/constants.h"
 #include "logging/details/log_msg.h"
 #include "logging/formatters/formatter.h"
 
@@ -24,22 +25,20 @@ namespace logging {
  */
 class PatternFormatter : public Formatter {
 public:
-    PatternFormatter();
-    ~PatternFormatter() override;
+    PatternFormatter() = default;
+    ~PatternFormatter()  override = default;
 
     explicit PatternFormatter(std::string_view pattern);
-
-    PatternFormatter(std::string_view pattern, std::string_view timePattern);
 
     void format(const details::LogMsg& logMsg, std::string& logContent) override;
     [[nodiscard]] std::unique_ptr<Formatter> clone() const override;
 
 private:
     void log_msg_to_content(char symbol, const details::LogMsg& logMsg, std::string& logContent);
+    void format_time(const details::LogMsg& logMsg, std::string& logContent);
 
 private:
-    struct Impl;
-    std::unique_ptr<Impl> _pimpl;
+    const std::string _pattern{details::FORMATTER_DEFAULT_PATTERN};
 };
 }  // namespace logging
 

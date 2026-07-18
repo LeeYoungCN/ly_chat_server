@@ -22,9 +22,7 @@ public:
     void log(const details::LogMsg& logMsg);
     void flush();
 
-    void set_pattern(
-        std::string_view pattern = logging::details::FORMATTER_DEFAULT_PATTERN,
-        std::string_view timePattern = logging::details::FORMATTER_DEFAULT_TIME_PATTERN);
+    void set_pattern(std::string_view pattern);
     void set_formatter(std::unique_ptr<Formatter> formatter);
 
     [[nodiscard]] bool should_log(LogLevel level) const;
