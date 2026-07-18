@@ -1,20 +1,20 @@
-#ifndef UTILS_FILE_WRITER_H
-#define UTILS_FILE_WRITER_H
-
+#ifndef UTILS_IMPL_FILE_WRITER_IMPL_H
+#define UTILS_IMPL_FILE_WRITER_IMPL_H
 #include <cstddef>
-#include <memory>
+#include <fstream>
 #include <string>
 #include <string_view>
 
+#include "common/common_error_code.h"
 #include "common/types/error_code_types.h"
 
 namespace utils::filesystem {
-class FileWriterImpl;
-class FileWriter {
+
+class FileWriterImpl {
 public:
-    FileWriter() = delete;
-    explicit FileWriter(std::string_view file);
-    ~FileWriter();
+    FileWriterImpl() = delete;
+    explicit FileWriterImpl(std::string_view file);
+    ~FileWriterImpl() = default;
 
     ErrorCode open(bool overwrite = true);
     ErrorCode reopen(bool overwrite = true);
@@ -23,7 +23,7 @@ public:
     void write_line(std::string_view str);
     void flush();
 
-    [[nodiscard]] size_t size() const;
+    [[nodiscard]] size_t size();
     [[nodiscard]] std::string filename_stem() const;
     [[nodiscard]] std::string filename() const;
     [[nodiscard]] std::string directory() const;
@@ -32,9 +32,15 @@ public:
     [[nodiscard]] ErrorCode get_last_error() const;
 
 private:
-    std::unique_ptr<FileWriterImpl> _pimpl;
+    ErrorCode open_it(bool overwrite);
+    [[nodiscard]] size_t get_file_size_it();
+
+private:
+    std::string _file;
+    std::ofstream _stream;
+    std::ios::openmode _mode{(std::ios::out | std::ios::trunc)};
+    ErrorCode _errcode{ERR_COMM_SUCCESS};
+    size_t _currSize{0};
 };
-
 }  // namespace utils::filesystem
-
-#endif  // UTILS_FILE_WRITER_H
+#endif  // UTILS_IMPL_FILE_WRITER_IMPL_H
