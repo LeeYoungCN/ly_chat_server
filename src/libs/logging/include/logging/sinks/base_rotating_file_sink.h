@@ -14,6 +14,7 @@ namespace logging {
 
 class BaseRotatingFileSink : public BasicFileSink {
 public:
+    BaseRotatingFileSink() = delete;
     BaseRotatingFileSink(std::string_view file, bool overwrite, uint32_t maxFiles,
                          std::string_view itemName, std::string_view paramStr);
     ~BaseRotatingFileSink() override = default;

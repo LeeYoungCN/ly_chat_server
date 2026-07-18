@@ -13,7 +13,7 @@ namespace logging {
 class BasicFileSink : public Sink {
 public:
     BasicFileSink();
-    ~BasicFileSink() override;
+    ~BasicFileSink() override = default;
     explicit BasicFileSink(std::string_view file, bool overwrite = true);
 
     [[nodiscard]] const std::string& file() const;

@@ -7,7 +7,6 @@
 #include <mutex>
 #include <string_view>
 
-#include "logging/details/constants.h"
 #include "logging/details/log_msg.h"
 #include "logging/formatters/formatter.h"
 #include "logging/formatters/pattern_formatter.h"

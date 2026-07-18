@@ -14,12 +14,6 @@ namespace logging {
 using namespace utils::filesystem;
 using namespace logging::details;
 
-BasicFileSink::~BasicFileSink()
-{
-    _fileWriter.flush();
-    _fileWriter.close();
-}
-
 BasicFileSink::BasicFileSink() : BasicFileSink(internal::get_default_log_file("log"), true) {}
 
 BasicFileSink::BasicFileSink(std::string_view file, bool overwrite)

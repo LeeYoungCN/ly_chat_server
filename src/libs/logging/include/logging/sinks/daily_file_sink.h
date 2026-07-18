@@ -23,9 +23,9 @@ public:
 
 public:
     DailyFileSink();
-    explicit DailyFileSink(std::string_view baseFile);
-    DailyFileSink(std::string_view baseFile, uint32_t hour, uint32_t minute,
-                  uint32_t maxFiles = DEFAULT_MAX_FILES);
+    explicit DailyFileSink(std::string_view file, bool overwrite = false);
+    DailyFileSink(std::string_view file, uint32_t hour, uint32_t minute,
+                  uint32_t maxFiles = DEFAULT_MAX_FILES, bool overwrite = false);
 
     ~DailyFileSink() override = default;
 

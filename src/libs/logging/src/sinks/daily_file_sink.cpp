@@ -31,25 +31,26 @@ constexpr char SPLIT_CHAR = '.';
 
 DailyFileSink::DailyFileSink()
     : DailyFileSink(get_default_log_file(), DEFAULT_ROTATION_HOUR, DEFAULT_ROTATION_MINUTE,
-                    DEFAULT_MAX_FILES)
+                    DEFAULT_MAX_FILES, false)
 {
 }
 
-DailyFileSink::DailyFileSink(std::string_view baseFile)
-    : DailyFileSink(baseFile, DEFAULT_ROTATION_HOUR, DEFAULT_ROTATION_MINUTE, DEFAULT_MAX_FILES)
+DailyFileSink::DailyFileSink(std::string_view file, bool overwrite)
+    : DailyFileSink(file, DEFAULT_ROTATION_HOUR, DEFAULT_ROTATION_MINUTE, DEFAULT_MAX_FILES,
+                    overwrite)
 {
 }
 
-DailyFileSink::DailyFileSink(std::string_view baseFile, uint32_t hour, uint32_t minute,
-                             uint32_t maxFiles)
+DailyFileSink::DailyFileSink(std::string_view file, uint32_t hour, uint32_t minute,
+                             uint32_t maxFiles, bool overwrite)
     : BaseRotatingFileSink(
-          baseFile, false, maxFiles, "daliy log file",
-          std::format("DailyFileSink. file: \"{}\", hour: {}, minute: {}, maxFiles: {}.", baseFile,
+          file, overwrite, maxFiles, "daliy log file",
+          std::format("DailyFileSink. file: \"{}\", hour: {}, minute: {}, maxFiles: {}.", file,
                       hour, minute, maxFiles)),
       _hour(hour),
       _minute(minute)
 {
-    if (baseFile.empty()) {
+    if (file.empty()) {
         set_thread_last_err(ERR_COMM_PARAM_EMPTY);
         DEBUG_LOGGER_ERR("Create DailyFileSink failed. baseFile empty.");
         throw std::invalid_argument("baseFile empty.");
@@ -109,7 +110,8 @@ void DailyFileSink::log_it(const details::LogMsg& logMsg)
 
 TimestampMs DailyFileSink::parse_log_timestamp(std::string_view filename)
 {
-    if (filename.size() != _filename.size() + 9) {
+    constexpr uint32_t TIME_STR_LEN = 9;
+    if (filename.size() != _filename.size() + TIME_STR_LEN) {
         return 0;
     }
 

@@ -65,7 +65,7 @@ ErrorCode FileWriterImpl::open_it(bool overwrite)
 size_t FileWriterImpl::get_file_size_it()
 {
 #if OS_WINDOWS
-    return get_file_size(file);
+    return get_file_size(_file);
 #else
     // tellp() returns a signed position type (std::streampos); handle possible -1 and avoid
     // implicit conversion to unsigned size_t which would change signedness.
