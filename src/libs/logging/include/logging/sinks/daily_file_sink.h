@@ -1,48 +1,37 @@
 #pragma once
-
 #ifndef LOGGING_SINKS_DAILY_FILE_SINK_H
 #define LOGGING_SINKS_DAILY_FILE_SINK_H
 #include <cstdint>
 #include <string>
 #include <string_view>
+#include <vector>
 
-#include "common/types/date_time_types.h"
-#include "logging/sinks/base_rotating_file_sink.h"
+#include "logging/sinks/base_sink.h"
 
 namespace logging {
 /**
  * @brief: 按照日期滚动日志。
  */
-class DailyFileSink : public BaseRotatingFileSink {
+class DailyFileSink : public BaseSink {
 public:
     static constexpr uint32_t DEFAULT_ROTATION_HOUR = 0;
     static constexpr uint32_t DEFAULT_ROTATION_MINUTE = 0;
     static constexpr uint32_t DEFAULT_MAX_FILES = 30;
-    static constexpr uint32_t MIN_FILES = 1;
     static constexpr uint32_t MAX_FILES = 20000;
 
 public:
     DailyFileSink();
     explicit DailyFileSink(std::string_view file, bool overwrite = false);
-    DailyFileSink(std::string_view file, uint32_t hour, uint32_t minute,
-                  uint32_t maxFiles = DEFAULT_MAX_FILES, bool overwrite = false);
-
+    DailyFileSink(std::string_view file, uint32_t hour, uint32_t minute, bool overwrite = false);
+    DailyFileSink(std::string_view file, uint32_t hour, uint32_t minute, uint32_t maxFiles,
+                  bool overwrite = false);
     ~DailyFileSink() override = default;
 
-protected:
-    void log_it(const details::LogMsg& logMsg) override;
-    void init_file_queue() override;
+    [[nodiscard]] std::string file() const;
+    [[nodiscard]] std::vector<std::string> get_file_list();
 
-private:
-    TimestampMs parse_log_timestamp(std::string_view filename);
-    std::string calc_log_file(TimestampMs time);
-
-private:
-    uint32_t _hour{DEFAULT_ROTATION_HOUR};
-    uint32_t _minute{DEFAULT_ROTATION_MINUTE};
-
-    TimestampMs _fileTime{0};
-    TimestampMs _rotateTime{0};
+    void set_max_files(uint32_t maxFiles);
+    [[nodiscard]] uint32_t max_files() const;
 };
 
 }  // namespace logging

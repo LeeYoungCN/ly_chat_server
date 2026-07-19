@@ -163,8 +163,6 @@ TEST_F(TestDailyFileSink, create_when_param_invalid)
                  std::out_of_range);
     EXPECT_THROW(DailyFileSink(baseFile, 0, MAX_MINUTE + 1, DailyFileSink::MAX_FILES + 1),
                  std::out_of_range);
-    EXPECT_THROW(DailyFileSink(baseFile, 0, MAX_MINUTE + 1, DailyFileSink::MIN_FILES - 1),
-                 std::out_of_range);
 }
 
 TEST_F(TestDailyFileSink, init_with_existing_files)

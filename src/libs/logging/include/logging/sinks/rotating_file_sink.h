@@ -1,15 +1,14 @@
 #ifndef LOGGING_SINKS_ROTATING_FILE_SINK_H
 #define LOGGING_SINKS_ROTATING_FILE_SINK_H
 
-#include <sys/types.h>
-
 #include <cstdint>
 #include <string_view>
+#include <vector>
 
-#include "logging/sinks/base_rotating_file_sink.h"
+#include "logging/sinks/base_sink.h"
 
 namespace logging {
-class RotatingFileSink : public BaseRotatingFileSink {
+class RotatingFileSink : public BaseSink {
 public:
     static constexpr uint32_t DEFAULT_MAX_FILE_SIZE = 10 * 1024 * 1024;  // 10MB;
     static constexpr uint32_t DEFAULT_MAX_FILES = 100;                   // 最大保留100个日志文件;
@@ -27,25 +26,14 @@ public:
                      bool rotateOnOpen = false);
 
 public:
+    [[nodiscard]] std::string file() const;
+    [[nodiscard]] std::vector<std::string> get_file_list();
+
     void set_max_file_size(uint32_t maxFileSize);
-    [[nodiscard]] uint32_t max_file_size();
+    [[nodiscard]] uint32_t max_file_size() const;
 
     void set_max_files(uint32_t maxFiles);
-    [[nodiscard]] uint32_t max_files();
-
-protected:
-    void log_it(const details::LogMsg& logMsg) override;
-
-private:
-    std::string get_next_file();
-    uint32_t get_next_idx();
-    void set_next_idx(uint32_t idx);
-    uint32_t parse_log_index(std::string_view file);
-    void init_file_queue() override;
-
-private:
-    uint32_t _maxFileSize{0};
-    uint32_t _nextIdx{MIN_INDEX};
+    [[nodiscard]] uint32_t max_files() const;
 };
 }  // namespace logging
 #endif  // LOGGING_SINKS_ROTATING_FILE_SINK_H

@@ -2,21 +2,34 @@
 #ifndef LOGGING_SINKS_BASE_SINK_H
 #define LOGGING_SINKS_BASE_SINK_H
 
+#include <memory>
 #include <string_view>
 
 #include "logging/details/log_msg.h"
+#include "logging/formatters/formatter.h"
+#include "logging/log_level.h"
 #include "logging/sinks/sink.h"
 
 namespace logging {
 class BaseSink : public Sink {
 public:
-    BaseSink() = default;
-    ~BaseSink() override = default;
+    BaseSink() = delete;
+    ~BaseSink() override;
+    explicit BaseSink(std::unique_ptr<Sink> pImpl);
+
+    void log(const details::LogMsg& logMsg) override;
+    void flush() override;
+
+    void set_pattern(std::string_view pattern) override;
+    void set_formatter(std::unique_ptr<Formatter> formatter) override;
+
+    [[nodiscard]] bool should_log(LogLevel level) const override;
+    void set_level(LogLevel level) override;
+    [[nodiscard]] LogLevel level() const override;
 
 protected:
-    void log_it(const details::LogMsg& logMsg) override;
-    virtual void sink_it(std::string_view message) = 0;
-    void flush_it() override = 0;
+    void throw_if_pimpl_null() const;
+    std::unique_ptr<Sink> _pImpl;
 };
 }  // namespace logging
 

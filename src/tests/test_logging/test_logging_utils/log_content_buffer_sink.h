@@ -7,12 +7,12 @@
 #include <vector>
 
 #include "logging/details/log_msg.h"
-#include "logging/sinks/sink.h"
+#include "base_test_sink.h"
 
 using namespace logging;
 
 namespace test::test_logging {
-class LogContentBufferSink : public Sink {
+class LogContentBufferSink : public BaseTestSink {
 public:
     LogContentBufferSink();
     ~LogContentBufferSink() override = default;
