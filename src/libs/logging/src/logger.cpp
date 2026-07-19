@@ -107,7 +107,12 @@ void Logger::flush()
     flush_it();
 }
 
-void Logger::sink_it(const details::LogMsg& logMsg)
+void Logger::log(const details::LogMsg& logMsg)
+{
+    log_it(logMsg);
+}
+
+void Logger::log_it(const details::LogMsg& logMsg)
 {
     sinks_log_it(logMsg);
 

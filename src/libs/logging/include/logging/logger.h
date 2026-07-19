@@ -59,7 +59,7 @@ public:
             return;
         }
         details::LogMsg logMsg(source, name(), level, utils::string::type_to_string(message));
-        sink_it(logMsg);
+        log(logMsg);
     }
 
     template <typename... Args>
@@ -71,8 +71,10 @@ public:
         }
         details::LogMsg logMsg(
             source, name(), level, std::format(format, std::forward<Args>(args)...));
-        sink_it(logMsg);
+        log(logMsg);
     }
+
+    void log(const details::LogMsg& logMsg);
 
     DEFINE_LOGGER_LOG_FUNCTION(trace, logging::LogLevel::TRACE)
 
@@ -88,7 +90,7 @@ public:
 #pragma endregion
 
 protected:
-    virtual void sink_it(const details::LogMsg& logMsg);
+    virtual void log_it(const details::LogMsg& logMsg);
     virtual void flush_it();
 
     void sinks_log_it(const details::LogMsg& logMsg);

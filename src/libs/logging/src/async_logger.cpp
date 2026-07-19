@@ -44,7 +44,7 @@ AsyncLogger::AsyncLogger(std::string_view name,
 {
 }
 
-void AsyncLogger::sink_it(const LogMsg& logMsg)
+void AsyncLogger::log_it(const LogMsg& logMsg)
 {
     _pimpl->taskPool.lock()->log(shared_from_this(), logMsg);
 }

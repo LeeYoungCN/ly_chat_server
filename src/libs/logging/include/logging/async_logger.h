@@ -30,7 +30,7 @@ public:
                 const std::weak_ptr<logging::details::TaskPool>& pool);
 
 protected:
-    void sink_it(const logging::details::LogMsg& logMsg) override;
+    void log_it(const logging::details::LogMsg& logMsg) override;
     void flush_it() override;
 
 protected:  // friend
