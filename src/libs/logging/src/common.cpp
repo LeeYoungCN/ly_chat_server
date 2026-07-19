@@ -1,4 +1,4 @@
-#include "logging_internal.h"
+#include "internal/common.h"
 
 #include "common/debug/debug_logger.h"
 #include "utils/date_time_utils.h"

@@ -12,7 +12,7 @@
 
 #include "common/common_error_code.h"
 #include "common/debug/debug_logger.h"
-#include "internal/logging_internal.h"
+#include "internal/common.h"
 #include "logging/details/log_msg.h"
 #include "logging/sinks/base_rotating_file_sink.h"
 #include "utils/date_time_utils.h"

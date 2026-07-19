@@ -9,7 +9,7 @@
 #include <vector>
 
 #include "common/debug/debug_logger.h"
-#include "internal/logging_internal.h"
+#include "internal/common.h"
 #include "logging/sinks/basic_file_sink.h"
 
 namespace logging {

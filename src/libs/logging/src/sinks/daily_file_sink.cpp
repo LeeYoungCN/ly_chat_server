@@ -14,7 +14,7 @@
 #include "common/constants/date_time_constants.h"
 #include "common/debug/debug_logger.h"
 #include "common/types/date_time_types.h"
-#include "internal/logging_internal.h"
+#include "internal/common.h"
 #include "logging/sinks/base_rotating_file_sink.h"
 #include "utils/date_time_utils.h"
 #include "utils/file_writer.h"

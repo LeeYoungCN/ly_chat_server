@@ -4,7 +4,7 @@
 #include <stdexcept>
 
 #include "common/debug/debug_logger.h"
-#include "internal/logging_internal.h"
+#include "internal/common.h"
 #include "logging/sinks/sink.h"
 #include "utils/file_writer.h"
 #include "utils/filesystem_utils.h"
