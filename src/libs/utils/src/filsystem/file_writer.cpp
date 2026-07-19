@@ -2,7 +2,7 @@
 
 #include <string_view>
 
-#include "impl/file_writer_impl.h"
+#include "file_writer_impl.h"
 
 #define MODE_STR(mode) ((mode) ? "overwrite" : "append")
 
