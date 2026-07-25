@@ -6,10 +6,10 @@
 
 namespace logging {
 
-PatternFormatter::PatternFormatter() : Formatter(std::make_unique<PatternFormatterImpl>()) {}
+PatternFormatter::PatternFormatter() : BasicFormatter(std::make_unique<PatternFormatterImpl>()) {}
 
 PatternFormatter::PatternFormatter(std::string_view pattern)
-    : Formatter(std::make_unique<PatternFormatterImpl>(pattern))
+    : BasicFormatter(std::make_unique<PatternFormatterImpl>(pattern))
 {
 }
 

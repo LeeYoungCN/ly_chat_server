@@ -6,20 +6,15 @@
 #include "logging/details/log_msg.h"
 
 namespace logging {
-class FormatterImpl;
 
 class Formatter {
 public:
-    Formatter() = delete;
-    virtual ~Formatter();
-    explicit Formatter(std::unique_ptr<FormatterImpl> pimpl);
+    Formatter() = default;
+    virtual ~Formatter() = default;
 
-    void format(const details::LogMsg& logMsg, std::string& content);
+    virtual void format(const details::LogMsg& logMsg, std::string& content) = 0;
 
-    [[nodiscard]] std::unique_ptr<Formatter> clone() const;
-
-private:
-    std::unique_ptr<FormatterImpl> _pImpl;
+    [[nodiscard]] virtual std::unique_ptr<Formatter> clone() const = 0;
 };
 }  // namespace logging
 

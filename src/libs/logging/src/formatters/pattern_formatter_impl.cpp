@@ -6,6 +6,7 @@
 #include <string>
 
 #include "common/types/date_time_types.h"
+#include "logging/formatters/formatter.h"
 #include "logging/log_level.h"
 #include "utils/date_time_utils.h"
 #include "utils/filesystem_utils.h"
@@ -96,7 +97,7 @@ void PatternFormatterImpl::log_msg_to_content(char symbol, const details::LogMsg
     }
 }
 
-std::unique_ptr<FormatterImpl> PatternFormatterImpl::clone() const
+std::unique_ptr<Formatter> PatternFormatterImpl::clone() const
 {
     return std::make_unique<PatternFormatterImpl>(_pattern);
 }

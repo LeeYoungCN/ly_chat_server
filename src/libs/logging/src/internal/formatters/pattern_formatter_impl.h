@@ -3,9 +3,9 @@
 
 #include <memory>
 
-#include "internal/formatters/formatter_impl.h"
 #include "logging/details/constants.h"
 #include "logging/details/log_msg.h"
+#include "logging/formatters/formatter.h"
 
 namespace logging {
 /**
@@ -23,7 +23,7 @@ namespace logging {
  * P: Process ID;
  * v: Log message;
  */
-class PatternFormatterImpl : public FormatterImpl {
+class PatternFormatterImpl : public Formatter {
 public:
     PatternFormatterImpl() = default;
     ~PatternFormatterImpl() override = default;
@@ -31,7 +31,7 @@ public:
     explicit PatternFormatterImpl(std::string_view pattern);
 
     void format(const details::LogMsg& logMsg, std::string& logContent) override;
-    [[nodiscard]] std::unique_ptr<FormatterImpl> clone() const override;
+    [[nodiscard]] std::unique_ptr<Formatter> clone() const override;
 
 private:
     void log_msg_to_content(char symbol, const details::LogMsg& logMsg, std::string& logContent);
