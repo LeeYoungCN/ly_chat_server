@@ -1,5 +1,5 @@
-#ifndef LOGGING_INTERNAL_SINKS_BASE_ROTATING_FILE_SINK_IMPL_H
-#define LOGGING_INTERNAL_SINKS_BASE_ROTATING_FILE_SINK_IMPL_H
+#ifndef LOGGING_INTERNAL_SINKS_ROTATING_FILE_SINK_IMPL_BASE_H
+#define LOGGING_INTERNAL_SINKS_ROTATING_FILE_SINK_IMPL_BASE_H
 
 #include <atomic>
 #include <cstdint>
@@ -12,12 +12,12 @@
 
 namespace logging {
 
-class BaseRotatingFileSinkImpl : public BasicFileSinkImpl {
+class RotatingFileSinkImplBase : public BasicFileSinkImpl {
 public:
-    BaseRotatingFileSinkImpl() = delete;
-    BaseRotatingFileSinkImpl(std::string_view file, bool overwrite, uint32_t maxFiles,
+    RotatingFileSinkImplBase() = delete;
+    RotatingFileSinkImplBase(std::string_view file, bool overwrite, uint32_t maxFiles,
                              std::string_view itemName, std::string_view paramStr);
-    ~BaseRotatingFileSinkImpl() override = default;
+    ~RotatingFileSinkImplBase() override = default;
 
     [[nodiscard]] std::vector<std::string> get_file_list();
 
@@ -37,4 +37,4 @@ private:
 
 }  // namespace logging
 
-#endif  // LOGGING_INTERNAL_SINKS_BASE_ROTATING_FILE_SINK_IMPL_H
+#endif  // LOGGING_INTERNAL_SINKS_ROTATING_FILE_SINK_IMPL_BASE_H

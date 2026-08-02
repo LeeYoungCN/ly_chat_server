@@ -11,11 +11,11 @@
 #include "logging/sinks/sink.h"
 
 namespace logging {
-class BaseSink : public Sink {
+class SinkBase : public Sink {
 public:
-    BaseSink() = delete;
-    ~BaseSink() override;
-    explicit BaseSink(std::unique_ptr<Sink> pImpl);
+    SinkBase() = delete;
+    ~SinkBase() override;
+    explicit SinkBase(std::unique_ptr<Sink> pImpl);
 
     void log(const details::LogMsg& logMsg) override;
     void flush() override;

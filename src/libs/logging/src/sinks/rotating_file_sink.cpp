@@ -11,16 +11,16 @@
 namespace logging {
 using namespace utils::filesystem;
 
-RotatingFileSink::RotatingFileSink() : BaseSink(std::make_unique<RotatingFileSinkImpl>()) {}
+RotatingFileSink::RotatingFileSink() : SinkBase(std::make_unique<RotatingFileSinkImpl>()) {}
 
 RotatingFileSink::RotatingFileSink(std::string_view file, bool rotateOnOpen)
-    : BaseSink(std::make_unique<RotatingFileSinkImpl>(file, rotateOnOpen))
+    : SinkBase(std::make_unique<RotatingFileSinkImpl>(file, rotateOnOpen))
 {
 }
 
 RotatingFileSink::RotatingFileSink(std::string_view file, uint32_t maxFileSize, uint32_t maxFiles,
                                    bool rotateOnOpen)
-    : BaseSink(std::make_unique<RotatingFileSinkImpl>(file, maxFileSize, maxFiles, rotateOnOpen))
+    : SinkBase(std::make_unique<RotatingFileSinkImpl>(file, maxFileSize, maxFiles, rotateOnOpen))
 {
 }
 

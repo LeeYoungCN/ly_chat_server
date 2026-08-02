@@ -27,7 +27,7 @@ BasicFileSinkImpl::BasicFileSinkImpl(std::string_view file, bool overwrite)
 
 BasicFileSinkImpl::BasicFileSinkImpl(std::string_view file, bool overwrite,
                                      std::string_view paramStr)
-    : BaseSinkImpl(paramStr),
+    : SinkImplBase(paramStr),
       _file(to_absolute_path(file)),
       _directory(get_directory(_file)),
       _filename(get_filename(_file)),

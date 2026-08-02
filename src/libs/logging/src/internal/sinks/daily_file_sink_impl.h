@@ -6,13 +6,13 @@
 #include <string_view>
 
 #include "common/types/date_time_types.h"
-#include "internal/sinks/base_rotating_file_sink_impl.h"
+#include "internal/sinks/rotating_file_sink_impl_base.h"
 
 namespace logging {
 /**
  * @brief: 按照日期滚动日志。
  */
-class DailyFileSinkImpl : public BaseRotatingFileSinkImpl {
+class DailyFileSinkImpl : public RotatingFileSinkImplBase {
 public:
     DailyFileSinkImpl();
     explicit DailyFileSinkImpl(std::string_view file, bool overwrite = false);

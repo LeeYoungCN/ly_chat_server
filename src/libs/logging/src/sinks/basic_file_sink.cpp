@@ -3,14 +3,14 @@
 #include <memory>
 
 #include "internal/sinks/basic_file_sink_impl.h"
-#include "logging/sinks/base_sink.h"
+#include "logging/sinks/sink_base.h"
 
 namespace logging {
 
-BasicFileSink::BasicFileSink() : BaseSink(std::make_unique<BasicFileSinkImpl>()) {}
+BasicFileSink::BasicFileSink() : SinkBase(std::make_unique<BasicFileSinkImpl>()) {}
 
 BasicFileSink::BasicFileSink(std::string_view file, bool overwrite)
-    : BaseSink(std::make_unique<BasicFileSinkImpl>(file, overwrite))
+    : SinkBase(std::make_unique<BasicFileSinkImpl>(file, overwrite))
 {
 }
 

@@ -5,10 +5,10 @@
 #include <string_view>
 #include <vector>
 
-#include "logging/sinks/base_sink.h"
+#include "logging/sinks/sink_base.h"
 
 namespace logging {
-class RotatingFileSink : public BaseSink {
+class RotatingFileSink : public SinkBase {
 public:
     static constexpr uint32_t DEFAULT_MAX_FILE_SIZE = 10 * 1024 * 1024;  // 10MB;
     static constexpr uint32_t DEFAULT_MAX_FILES = 100;                   // 最大保留100个日志文件;

@@ -4,11 +4,11 @@
 #include <memory>
 
 #include "internal/sinks/stdout_sink_impl.h"
-#include "logging/sinks/base_sink.h"
+#include "logging/sinks/sink_base.h"
 
 namespace logging {
-StdoutSink::StdoutSink() : BaseSink(std::make_unique<StdoutSinkImpl>()) {}
+StdoutSink::StdoutSink() : SinkBase(std::make_unique<StdoutSinkImpl>()) {}
 
-StdoutSink::StdoutSink(FILE *file) : BaseSink(std::make_unique<StdoutSinkImpl>(file)) {}
+StdoutSink::StdoutSink(FILE *file) : SinkBase(std::make_unique<StdoutSinkImpl>(file)) {}
 
 }  // namespace logging

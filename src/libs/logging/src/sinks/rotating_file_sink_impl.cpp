@@ -58,7 +58,7 @@ RotatingFileSinkImpl::RotatingFileSinkImpl(std::string_view file, bool rotateOnO
 
 RotatingFileSinkImpl::RotatingFileSinkImpl(std::string_view file, uint32_t maxFileSize,
                                            uint32_t maxFiles, bool rotateOnOpen)
-    : BaseRotatingFileSinkImpl(
+    : RotatingFileSinkImplBase(
           file, false, maxFiles, "rotating log file",
           std::format("RotatingFileSinkImpl, File: \"{}\", MaxFileSize: {}, MaxFiles: {}.", file,
                       maxFileSize, maxFiles)),

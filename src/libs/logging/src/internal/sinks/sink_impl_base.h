@@ -13,10 +13,10 @@
 #include "logging/sinks/sink.h"
 
 namespace logging {
-class BaseSinkImpl : public Sink {
+class SinkImplBase : public Sink {
 public:
-    BaseSinkImpl() = default;
-    ~BaseSinkImpl() override;
+    SinkImplBase() = default;
+    ~SinkImplBase() override;
 
     void log(const details::LogMsg& logMsg) override;
     void flush() override;
@@ -29,7 +29,7 @@ public:
     [[nodiscard]] LogLevel level() const override;
 
 protected:
-    explicit BaseSinkImpl(std::string_view parameter);
+    explicit SinkImplBase(std::string_view parameter);
     virtual void log_it(const details::LogMsg& logMsg) = 0;
     virtual void flush_it() = 0;
 

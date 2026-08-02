@@ -1,4 +1,4 @@
-#include "internal/sinks/base_sink_impl.h"
+#include "internal/sinks/sink_impl_base.h"
 
 #include <atomic>
 #include <mutex>
@@ -9,29 +9,29 @@
 
 namespace logging {
 
-BaseSinkImpl::~BaseSinkImpl()
+SinkImplBase::~SinkImplBase()
 {
     DEBUG_LOGGER_DBG("Release Sink. {}", _paramStr);
 }
 
-BaseSinkImpl::BaseSinkImpl(std::string_view parameter) : _paramStr(parameter)
+SinkImplBase::SinkImplBase(std::string_view parameter) : _paramStr(parameter)
 {
     DEBUG_LOGGER_DBG("Create Sink. {}", _paramStr);
 }
 
-void BaseSinkImpl::log(const details::LogMsg& logMsg)
+void SinkImplBase::log(const details::LogMsg& logMsg)
 {
     std::lock_guard lock(_sinkMtx);
     log_it(logMsg);
 }
 
-void BaseSinkImpl::flush()
+void SinkImplBase::flush()
 {
     std::lock_guard lock(_sinkMtx);
     flush_it();
 }
 
-bool BaseSinkImpl::should_log(LogLevel level) const
+bool SinkImplBase::should_log(LogLevel level) const
 {
     if (level == LogLevel::OFF) {
         return false;
@@ -39,22 +39,22 @@ bool BaseSinkImpl::should_log(LogLevel level) const
     return level >= _level.load(std::memory_order_relaxed);
 }
 
-void BaseSinkImpl::set_level(LogLevel level)
+void SinkImplBase::set_level(LogLevel level)
 {
     _level.store(level, std::memory_order_relaxed);
 };
 
-LogLevel BaseSinkImpl::level() const
+LogLevel SinkImplBase::level() const
 {
     return _level.load(std::memory_order_relaxed);
 }
 
-void BaseSinkImpl::set_pattern(std::string_view pattern)
+void SinkImplBase::set_pattern(std::string_view pattern)
 {
     set_formatter(std::make_unique<PatternFormatter>(pattern));
 }
 
-void BaseSinkImpl::set_formatter(std::unique_ptr<Formatter> formatter)
+void SinkImplBase::set_formatter(std::unique_ptr<Formatter> formatter)
 {
     std::lock_guard lock(_sinkMtx);
     _formatter = std::move(formatter);

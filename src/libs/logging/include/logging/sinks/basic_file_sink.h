@@ -5,10 +5,10 @@
 #include <string>
 #include <string_view>
 
-#include "logging/sinks/base_sink.h"
+#include "logging/sinks/sink_base.h"
 
 namespace logging {
-class BasicFileSink : public BaseSink {
+class BasicFileSink : public SinkBase {
 public:
     BasicFileSink();
     ~BasicFileSink() override = default;

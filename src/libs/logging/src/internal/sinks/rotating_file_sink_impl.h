@@ -5,10 +5,10 @@
 #include <cstdint>
 #include <string_view>
 
-#include "internal/sinks/base_rotating_file_sink_impl.h"
+#include "internal/sinks/rotating_file_sink_impl_base.h"
 
 namespace logging {
-class RotatingFileSinkImpl : public BaseRotatingFileSinkImpl {
+class RotatingFileSinkImpl : public RotatingFileSinkImplBase {
 public:
     RotatingFileSinkImpl();
     ~RotatingFileSinkImpl() override = default;

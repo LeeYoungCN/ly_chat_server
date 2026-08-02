@@ -5,12 +5,12 @@
 #include <string>
 #include <string_view>
 
-#include "internal/sinks/base_sink_impl.h"
+#include "internal/sinks/sink_impl_base.h"
 #include "logging/details/log_msg.h"
 #include "utils/file_writer.h"
 
 namespace logging {
-class BasicFileSinkImpl : public BaseSinkImpl {
+class BasicFileSinkImpl : public SinkImplBase {
 public:
     BasicFileSinkImpl();
     ~BasicFileSinkImpl() override = default;

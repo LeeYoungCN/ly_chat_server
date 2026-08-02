@@ -4,10 +4,10 @@
 
 #include <cstdio>
 
-#include "logging/sinks/base_sink.h"
+#include "logging/sinks/sink_base.h"
 
 namespace logging {
-class StdoutSink : public BaseSink {
+class StdoutSink : public SinkBase {
 public:
     StdoutSink();
     ~StdoutSink() override = default;

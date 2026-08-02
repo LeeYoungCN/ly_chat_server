@@ -9,21 +9,21 @@
 
 namespace logging {
 
-DailyFileSink::DailyFileSink() : BaseSink(std::make_unique<DailyFileSinkImpl>()) {}
+DailyFileSink::DailyFileSink() : SinkBase(std::make_unique<DailyFileSinkImpl>()) {}
 
 DailyFileSink::DailyFileSink(std::string_view file, bool overwrite)
-    : BaseSink(std::make_unique<DailyFileSinkImpl>(file, overwrite))
+    : SinkBase(std::make_unique<DailyFileSinkImpl>(file, overwrite))
 {
 }
 
 DailyFileSink::DailyFileSink(std::string_view file, uint32_t hour, uint32_t minute, bool overwrite)
-    : BaseSink(std::make_unique<DailyFileSinkImpl>(file, hour, minute, overwrite))
+    : SinkBase(std::make_unique<DailyFileSinkImpl>(file, hour, minute, overwrite))
 {
 }
 
 DailyFileSink::DailyFileSink(std::string_view file, uint32_t hour, uint32_t minute,
                              uint32_t maxFiles, bool overwrite)
-    : BaseSink(std::make_unique<DailyFileSinkImpl>(file, hour, minute, maxFiles, overwrite))
+    : SinkBase(std::make_unique<DailyFileSinkImpl>(file, hour, minute, maxFiles, overwrite))
 
 {
 }

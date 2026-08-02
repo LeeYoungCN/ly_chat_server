@@ -15,7 +15,7 @@
 #include "common/debug/debug_logger.h"
 #include "common/types/date_time_types.h"
 #include "internal/common.h"
-#include "internal/sinks/base_rotating_file_sink_impl.h"
+#include "internal/sinks/rotating_file_sink_impl_base.h"
 #include "logging/sinks/daily_file_sink.h"
 #include "utils/date_time_utils.h"
 #include "utils/file_writer.h"
@@ -52,7 +52,7 @@ DailyFileSinkImpl::DailyFileSinkImpl(std::string_view file, uint32_t hour, uint3
 
 DailyFileSinkImpl::DailyFileSinkImpl(std::string_view file, uint32_t hour, uint32_t minute,
                                      uint32_t maxFiles, bool overwrite)
-    : BaseRotatingFileSinkImpl(
+    : RotatingFileSinkImplBase(
           file, overwrite, maxFiles, "daliy log file",
           std::format("DailyFileSinkImpl. file: \"{}\", hour: {}, minute: {}, maxFiles: {}.", file,
                       hour, minute, maxFiles)),

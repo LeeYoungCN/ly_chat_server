@@ -6,13 +6,13 @@
 #include <string_view>
 #include <vector>
 
-#include "logging/sinks/base_sink.h"
+#include "logging/sinks/sink_base.h"
 
 namespace logging {
 /**
  * @brief: 按照日期滚动日志。
  */
-class DailyFileSink : public BaseSink {
+class DailyFileSink : public SinkBase {
 public:
     static constexpr uint32_t DEFAULT_ROTATION_HOUR = 0;
     static constexpr uint32_t DEFAULT_ROTATION_MINUTE = 0;

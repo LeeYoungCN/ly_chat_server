@@ -5,10 +5,10 @@
 #include <cstdio>
 #include <string_view>
 
-#include "internal/sinks/base_sink_impl.h"
+#include "internal/sinks/sink_impl_base.h"
 
 namespace logging {
-class StdoutSinkImpl : public BaseSinkImpl {
+class StdoutSinkImpl : public SinkImplBase {
 public:
     StdoutSinkImpl();
     ~StdoutSinkImpl() override = default;
