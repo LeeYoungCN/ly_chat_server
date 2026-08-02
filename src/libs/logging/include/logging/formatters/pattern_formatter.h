@@ -1,7 +1,7 @@
 #ifndef LOGGING_FORMATTERS_PATTERN_FORMATTER_H
 #define LOGGING_FORMATTERS_PATTERN_FORMATTER_H
 
-#include "logging/formatters/basic_formatter.h"
+#include "logging/formatters/formatter_base.h"
 
 namespace logging {
 /**
@@ -19,7 +19,7 @@ namespace logging {
  * P: Process ID;
  * v: Log message;
  */
-class PatternFormatter : public BasicFormatter {
+class PatternFormatter : public FormatterBase {
 public:
     PatternFormatter();
     ~PatternFormatter() override = default;

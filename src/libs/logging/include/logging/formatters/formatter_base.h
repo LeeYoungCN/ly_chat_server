@@ -1,5 +1,5 @@
-#ifndef LOGGING_FORMATTERS_BASIC_FORMATTER_H
-#define LOGGING_FORMATTERS_BASIC_FORMATTER_H
+#ifndef LOGGING_FORMATTERS_FORMATTER_BASE_H
+#define LOGGING_FORMATTERS_FORMATTER_BASE_H
 
 #include <memory>
 
@@ -7,11 +7,11 @@
 #include "logging/formatters/formatter.h"
 
 namespace logging {
-class BasicFormatter : public Formatter {
+class FormatterBase : public Formatter {
 public:
-    BasicFormatter() = delete;
-    ~BasicFormatter() override;
-    explicit BasicFormatter(std::unique_ptr<Formatter> pimpl);
+    FormatterBase() = delete;
+    ~FormatterBase() override;
+    explicit FormatterBase(std::unique_ptr<Formatter> pimpl);
 
     void format(const details::LogMsg& logMsg, std::string& content) override;
 
@@ -25,4 +25,4 @@ private:
 };
 }  // namespace logging
 
-#endif  // LOGGING_FORMATTERS_BASIC_FORMATTER_H
+#endif  // LOGGING_FORMATTERS_FORMATTER_BASE_H
