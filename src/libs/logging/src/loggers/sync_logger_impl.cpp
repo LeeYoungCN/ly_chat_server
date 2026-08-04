@@ -1,0 +1,45 @@
+#include "internal/loggers/sync_logger_impl.h"
+
+#include <initializer_list>
+#include <memory>
+#include <string_view>
+#include <vector>
+
+#include "internal/loggers/logger_impl.h"
+#include "logging/details/log_msg.h"
+#include "logging/sinks/sink.h"
+
+namespace logging {
+
+SyncLoggerImpl::SyncLoggerImpl(std::string_view name) : LoggerImpl(name) {}
+
+SyncLoggerImpl::SyncLoggerImpl(std::string_view name, const std::shared_ptr<logging::Sink>& sink)
+    : LoggerImpl(name, sink)
+{
+}
+
+SyncLoggerImpl::SyncLoggerImpl(std::string_view name,
+                               const std::vector<std::shared_ptr<logging::Sink>>& sinks)
+    : LoggerImpl(name, sinks)
+{
+}
+SyncLoggerImpl::SyncLoggerImpl(std::string_view name,
+                               const std::initializer_list<std::shared_ptr<logging::Sink>>& sinks)
+    : LoggerImpl(name, sinks)
+{
+}
+
+void SyncLoggerImpl::log_it(const details::LogMsg& logMsg)
+{
+    backend_log(logMsg);
+
+    if (should_flush(logMsg.level)) {
+        backend_flush();
+    }
+}
+
+void SyncLoggerImpl::flush_it()
+{
+    backend_flush();
+}
+}  // namespace logging

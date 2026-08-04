@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "gtest/gtest.h"
-#include "logging/async_logger.h"
+#include "logging/loggers/async_logger.h"
 #include "logging/details/log_source.h"
 #include "logging/formatters/formatter.h"
 #include "logging/formatters/pattern_formatter.h"
@@ -28,7 +28,7 @@ protected:
     void TearDown() override {};
 
 protected:
-    std::shared_ptr<AsyncLogger> _logger;
+    std::shared_ptr<Logger> _logger;
     std::shared_ptr<LogContentBufferSink> _sink = std::make_shared<LogContentBufferSink>();
     std::shared_ptr<logging::details::TaskPool> _taskPool =
         std::make_shared<logging::details::TaskPool>(1024, 4);

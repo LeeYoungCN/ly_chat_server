@@ -1,6 +1,6 @@
 #pragma once
-#ifndef LOGGING_DETAILS_LOG_TASK_H
-#define LOGGING_DETAILS_LOG_TASK_H
+#ifndef LOGGING_INTERNAL_LOG_TASK_H
+#define LOGGING_INTERNAL_LOG_TASK_H
 
 #include <memory>
 #include <utility>
@@ -8,9 +8,8 @@
 #include "logging/details/log_msg.h"
 
 namespace logging {
-class AsyncLogger;
+class AsyncLoggerImpl;
 
-namespace details {
 enum class TaskType {
     LOG,
     FLUSH,
@@ -19,22 +18,23 @@ enum class TaskType {
 
 struct LogTask {
     TaskType type = TaskType::SHUTDOWN;
-    LogMsg logMsg;
-    std::shared_ptr<AsyncLogger> logger;
+    details::LogMsg logMsg;
+    std::shared_ptr<AsyncLoggerImpl> logger;
 
     LogTask() = default;
     explicit LogTask(TaskType type) : type(type) {}
 
-    LogTask(TaskType type, const std::shared_ptr<AsyncLogger>& logger) : type(type), logger(logger)
+    LogTask(TaskType type, const std::shared_ptr<AsyncLoggerImpl>& logger)
+        : type(type), logger(logger)
     {
     }
 
-    LogTask(TaskType type, const std::shared_ptr<AsyncLogger>& logger, LogMsg logMsg)
+    LogTask(TaskType type, const std::shared_ptr<AsyncLoggerImpl>& logger, details::LogMsg logMsg)
         : type(type), logMsg(std::move(logMsg)), logger(logger)
     {
     }
 };
-}  // namespace details
+
 }  // namespace logging
 
-#endif  // LOGGING_DETAILS_LOG_TASK_H
+#endif  // LOGGING_INTERNAL_LOG_TASK_H

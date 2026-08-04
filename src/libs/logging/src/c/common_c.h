@@ -8,7 +8,7 @@
 #include "logging/details/task_pool.h"
 #include "logging/formatters/formatter.h"
 #include "logging/log_level.h"
-#include "logging/sync_logger.h"
+#include "logging/loggers/sync_logger.h"
 #include "logging/sinks/sink.h"
 
 struct LoggerSt {

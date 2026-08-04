@@ -7,11 +7,9 @@
 #include <memory>
 
 #include "logging/details/log_msg.h"
-#include "logging/details/log_task.h"
 
 namespace logging {
-class AsyncLogger;
-
+class AsyncLoggerImpl;
 namespace details {
 
 class TaskPool {
@@ -24,8 +22,8 @@ public:
     explicit TaskPool(uint32_t capacity);
     TaskPool(uint32_t capacity, uint32_t threadCnt);
 
-    void log(const std::shared_ptr<AsyncLogger>& logger, const LogMsg& logMsg);
-    void flush(const std::shared_ptr<AsyncLogger>& logger);
+    void log(const std::shared_ptr<AsyncLoggerImpl>& logger, const LogMsg& logMsg);
+    void flush(const std::shared_ptr<AsyncLoggerImpl>& logger);
     [[nodiscard]] size_t task_count() const;
 
     void start();

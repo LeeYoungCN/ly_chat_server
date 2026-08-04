@@ -16,7 +16,7 @@ using namespace logging::c;
 #define ROOT_LOGGER (INST(Registry).root_logger())
 
 namespace {
-void logging_log_it(const std::shared_ptr<SyncLogger> &logger, const char *file, int line,
+void logging_log_it(const std::shared_ptr<Logger> &logger, const char *file, int line,
                     const char *func, LogLevel level, const char *format, va_list args)
 {
     if (logger->should_log(level)) {

@@ -9,26 +9,26 @@
 #include "logging/details/log_source.h"
 #include "logging/details/task_pool.h"
 #include "logging/log_level.h"
-#include "logging/sync_logger.h"
+#include "logging/loggers/sync_logger.h"
 
 namespace logging {
 
 template <typename SinkType, typename... SinkArgs>
-std::shared_ptr<SyncLogger> create_logger(std::string name, SinkArgs&&... sinkArgs)
+std::shared_ptr<Logger> create_logger(std::string name, SinkArgs&&... sinkArgs)
 {
     auto sink = std::make_shared<SinkType>(std::forward<SinkArgs>(sinkArgs)...);
     return std::make_shared<SyncLogger>(std::move(name), std::move(sink));
 }
 
 #pragma region Root logger
-std::shared_ptr<SyncLogger> root_logger();
-SyncLogger* root_logger_raw();
-void set_root_logger(std::shared_ptr<SyncLogger> logger);
+std::shared_ptr<Logger> root_logger();
+Logger* root_logger_raw();
+void set_root_logger(std::shared_ptr<Logger> logger);
 
 bool should_log(LogLevel level);
 void set_level(LogLevel level);
 void flush_on(LogLevel level);
-void set_pattern(std::string_view pattern = details::FORMATTER_DEFAULT_PATTERN);
+void set_pattern(std::string_view pattern);
 void set_formatter(const std::unique_ptr<Formatter>& formatter);
 void flush();
 
@@ -221,22 +221,25 @@ void fatal(const logging::details::LogSource& source, const T& message)
 #pragma endregion
 
 #pragma region Module manager
-void initialize_logger(const std::shared_ptr<SyncLogger>& logger);
+void initialize_logger(const std::shared_ptr<Logger>& logger);
 void set_level_all(LogLevel level);
 void flush_on_all(LogLevel level);
-void set_pattern_all(std::string_view pattern = details::FORMATTER_DEFAULT_PATTERN);
+void set_pattern_all(std::string_view pattern);
 void set_formatter_all(std::unique_ptr<Formatter> formatter);
 void flush_all();
 void shutdown();
 #pragma endregion
 
-#pragma region Container
-bool register_logger(std::shared_ptr<SyncLogger> logger);
-void register_or_replace_logger(std::shared_ptr<SyncLogger> logger);
+#pragma region Logger container
+bool register_logger(std::shared_ptr<Logger> logger);
+void register_or_replace_logger(std::shared_ptr<Logger> logger);
 void remove_logger(std::string_view name);
 void remove_all();
-std::shared_ptr<SyncLogger> get_logger(std::string_view name);
-void register_task_pool(std::shared_ptr<details::TaskPool> taskPool);
+std::shared_ptr<Logger> get_logger(std::string_view name);
+
+#pragma region Task pool container
+void init_task_pool(uint32_t capacity = details::TaskPool::DEFAULT_CAPACITY,
+                    uint32_t threadCnt = details::TaskPool::DEFAULT_THREAD_CNT);
 std::shared_ptr<details::TaskPool> get_task_pool();
 #pragma endregion
 

@@ -10,10 +10,9 @@
 
 #include "common/container/concurrent_blocking_queue.hpp"
 #include "common/debug/debug_logger.h"
-#include "logging/async_logger.h"
-#include "logging/details/constants.h"
+#include "internal/log_task.h"
+#include "internal/loggers/async_logger_impl.h"
 #include "logging/details/log_msg.h"
-#include "logging/details/log_task.h"
 
 namespace logging::details {
 using namespace common::container;
@@ -46,7 +45,7 @@ TaskPool::~TaskPool()
     DEBUG_LOGGER_DBG("Log thread pool release.");
 }
 
-void TaskPool::log(const std::shared_ptr<AsyncLogger>& logger, const LogMsg& logMsg)
+void TaskPool::log(const std::shared_ptr<AsyncLoggerImpl>& logger, const LogMsg& logMsg)
 {
     if (!_pimpl->isThreadRunning.load()) {
         DEBUG_LOGGER_ERR("Log failed. Task pool shutdown");
@@ -54,7 +53,7 @@ void TaskPool::log(const std::shared_ptr<AsyncLogger>& logger, const LogMsg& log
     _pimpl->buffer.enqueue_wait(LogTask(TaskType::LOG, logger, logMsg));
 }
 
-void TaskPool::flush(const std::shared_ptr<AsyncLogger>& logger)
+void TaskPool::flush(const std::shared_ptr<AsyncLoggerImpl>& logger)
 {
     if (!_pimpl->isThreadRunning.load()) {
         DEBUG_LOGGER_ERR("Flush failed. Task pool shutdown");

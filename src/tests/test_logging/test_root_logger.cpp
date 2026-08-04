@@ -2,7 +2,7 @@
 
 #include "gtest/gtest.h"
 #include "logging/formatters/pattern_formatter.h"
-#include "logging/sync_logger.h"
+#include "logging/loggers/sync_logger.h"
 #include "logging/logging.h"
 #include "test_logging_utils/common.h"
 #include "test_logging_utils/log_content_buffer_sink.h"
@@ -28,7 +28,7 @@ void TestRootLogger::TearDown()
 TEST_F(TestRootLogger, should_log_and_set_level)
 {
     const std::string name = get_logger_name(test_info_);
-    std::shared_ptr<SyncLogger> logger = create_logger<LogContentBufferSink>(name);
+    std::shared_ptr<Logger> logger = create_logger<LogContentBufferSink>(name);
     set_root_logger(logger);
     EXPECT_EQ(root_logger()->name(), name);
     EXPECT_EQ(root_logger_raw()->name(), name);
@@ -47,7 +47,7 @@ TEST_F(TestRootLogger, should_log_and_set_level)
 TEST_F(TestRootLogger, create_logger)
 {
     const std::string name = get_logger_name(test_info_);
-    std::shared_ptr<SyncLogger> logger = create_logger<LogContentBufferSink>(name);
+    std::shared_ptr<Logger> logger = create_logger<LogContentBufferSink>(name);
     EXPECT_NE(logger, nullptr);
     EXPECT_EQ(logger->name(), name);
     EXPECT_EQ(logger->sinks().size(), 1);
@@ -58,7 +58,7 @@ TEST_F(TestRootLogger, create_logger)
 TEST_F(TestRootLogger, set_root_logger)
 {
     const std::string name = get_logger_name(test_info_);
-    std::shared_ptr<SyncLogger> logger = create_logger<LogContentBufferSink>(name);
+    std::shared_ptr<Logger> logger = create_logger<LogContentBufferSink>(name);
     set_root_logger(logger);
     EXPECT_EQ(root_logger()->name(), name);
     EXPECT_EQ(root_logger_raw()->name(), name);
@@ -67,7 +67,7 @@ TEST_F(TestRootLogger, set_root_logger)
 TEST_F(TestRootLogger, get_root_logger)
 {
     const std::string name = get_logger_name(test_info_);
-    std::shared_ptr<SyncLogger> logger = create_logger<LogContentBufferSink>(name);
+    std::shared_ptr<Logger> logger = create_logger<LogContentBufferSink>(name);
     set_root_logger(logger);
     EXPECT_EQ(root_logger()->name(), name);
     EXPECT_EQ(root_logger_raw()->name(), name);
@@ -82,7 +82,7 @@ TEST_F(TestRootLogger, get_root_logger)
 TEST_F(TestRootLogger, log)
 {
     const std::string name = get_logger_name(test_info_);
-    std::shared_ptr<SyncLogger> logger = create_logger<LogContentBufferSink>(name);
+    std::shared_ptr<Logger> logger = create_logger<LogContentBufferSink>(name);
     set_root_logger(logger);
     root_logger()->set_level(LogLevel::TRACE);
     trace(LOG_SRC_LOCAL, "trace {}", name);
@@ -118,7 +118,7 @@ TEST_F(TestRootLogger, flush)
 {
     const std::string name = get_logger_name(test_info_);
     auto sink = std::make_shared<LogContentBufferSink>();
-    std::shared_ptr<SyncLogger> logger = std::make_shared<SyncLogger>(name, sink);
+    std::shared_ptr<Logger> logger = std::make_shared<SyncLogger>(name, sink);
     set_root_logger(logger);
 
     root_logger()->set_level(LogLevel::TRACE);
@@ -139,7 +139,7 @@ TEST_F(TestRootLogger, flush_on)
     const std::string name = get_logger_name(test_info_);
     auto sink = std::make_shared<LogContentBufferSink>();
     sink->set_level(LogLevel::TRACE);
-    std::shared_ptr<SyncLogger> logger = std::make_shared<SyncLogger>(name, sink);
+    std::shared_ptr<Logger> logger = std::make_shared<SyncLogger>(name, sink);
     set_root_logger(logger);
     root_logger()->set_level(LogLevel::TRACE);
     for (auto flushLevel : LOG_LEVELS) {

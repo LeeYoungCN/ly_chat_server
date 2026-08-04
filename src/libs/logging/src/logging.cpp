@@ -11,17 +11,17 @@ namespace logging {
 using namespace logging::details;
 
 #pragma region Root logger
-std::shared_ptr<SyncLogger> root_logger()
+std::shared_ptr<Logger> root_logger()
 {
     return REGISTRY.root_logger();
 }
 
-SyncLogger* root_logger_raw()
+Logger* root_logger_raw()
 {
     return REGISTRY.root_logger_raw();
 }
 
-void set_root_logger(std::shared_ptr<SyncLogger> logger)
+void set_root_logger(std::shared_ptr<Logger> logger)
 {
     REGISTRY.set_root_logger(std::move(logger));
 }
@@ -59,7 +59,7 @@ void flush()
 #pragma endregion
 
 #pragma region Module manager
-void initialize_logger(const std::shared_ptr<SyncLogger>& logger)
+void initialize_logger(const std::shared_ptr<Logger>& logger)
 {
     REGISTRY.initialize_logger(logger);
 }
@@ -96,12 +96,12 @@ void shutdown()
 #pragma endregion
 
 #pragma region Registry
-bool register_logger(std::shared_ptr<SyncLogger> logger)
+bool register_logger(std::shared_ptr<Logger> logger)
 {
     return REGISTRY.register_logger(std::move(logger));
 }
 
-void register_or_replace_logger(std::shared_ptr<SyncLogger> logger)
+void register_or_replace_logger(std::shared_ptr<Logger> logger)
 {
     REGISTRY.register_or_replace_logger(std::move(logger));
 }
@@ -116,14 +116,14 @@ void remove_all()
     REGISTRY.remove_all();
 }
 
-std::shared_ptr<SyncLogger> get_logger(std::string_view name)
+std::shared_ptr<Logger> get_logger(std::string_view name)
 {
     return REGISTRY.get_logger(name);
 }
 
-void register_task_pool(std::shared_ptr<details::TaskPool> taskPool)
+void init_task_pool(uint32_t capacity, uint32_t threadCnt)
 {
-    REGISTRY.register_task_pool(std::move(taskPool));
+    REGISTRY.init_task_pool(capacity, threadCnt);
 }
 
 std::shared_ptr<details::TaskPool> get_task_pool()

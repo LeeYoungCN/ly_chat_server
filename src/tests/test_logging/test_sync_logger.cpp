@@ -9,7 +9,7 @@
 #include "logging/formatters/formatter.h"
 #include "logging/formatters/pattern_formatter.h"
 #include "logging/log_level.h"
-#include "logging/sync_logger.h"
+#include "logging/loggers/sync_logger.h"
 #include "test_logging_utils/common.h"
 #include "test_logging_utils/log_content_buffer_sink.h"
 
