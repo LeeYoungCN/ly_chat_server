@@ -9,7 +9,7 @@
 #include "logging/formatters/formatter.h"
 #include "logging/formatters/pattern_formatter.h"
 #include "logging/log_level.h"
-#include "logging/logger.h"
+#include "logging/sync_logger.h"
 #include "test_logging_utils/common.h"
 #include "test_logging_utils/log_content_buffer_sink.h"
 
@@ -19,7 +19,7 @@ using namespace logging::details;
 
 namespace test::test_logging {
 
-class TestLogger : public ::testing::Test {
+class TestSyncLogger : public ::testing::Test {
 protected:
     static void SetUpTestSuite() {}
     static void TearDownTestSuite() {}
@@ -27,14 +27,14 @@ protected:
     void TearDown() override {};
 
 protected:
-    std::shared_ptr<Logger> _logger;
+    std::shared_ptr<SyncLogger> _logger;
     std::shared_ptr<LogContentBufferSink> _sink = std::make_shared<LogContentBufferSink>();
 };
 
-TEST_F(TestLogger, create_single_sink)
+TEST_F(TestSyncLogger, create_single_sink)
 {
     const std::string name = get_logger_name(test_info_);
-    _logger = std::make_shared<Logger>(name, _sink);
+    _logger = std::make_shared<SyncLogger>(name, _sink);
     EXPECT_EQ(_sink.use_count(), 2);
     EXPECT_EQ(_logger->name(), name);
     EXPECT_EQ(_logger->sinks().size(), 1);
@@ -42,31 +42,31 @@ TEST_F(TestLogger, create_single_sink)
     EXPECT_EQ(sinkPtr->buffer().size(), 0);
 }
 
-TEST_F(TestLogger, create_initializer_list)
+TEST_F(TestSyncLogger, create_initializer_list)
 {
     const std::string name = get_logger_name(test_info_);
     auto sinks = std::initializer_list<std::shared_ptr<Sink>>{_sink, _sink, _sink};
-    _logger = std::make_shared<Logger>(name, sinks);
+    _logger = std::make_shared<SyncLogger>(name, sinks);
     EXPECT_EQ(_logger->name(), name);
     EXPECT_EQ(_logger->sinks().size(), sinks.size());
     EXPECT_EQ(_sink.use_count(), 2 * sinks.size() + 1);
 }
 
-TEST_F(TestLogger, create_vector)
+TEST_F(TestSyncLogger, create_vector)
 {
     const std::string name = get_logger_name(test_info_);
     auto sinks = std::vector<std::shared_ptr<Sink>>{_sink, _sink};
     sinks.push_back(_sink);
-    _logger = std::make_shared<Logger>(name, sinks);
+    _logger = std::make_shared<SyncLogger>(name, sinks);
     EXPECT_EQ(_logger->name(), name);
     EXPECT_EQ(_logger->sinks().size(), sinks.size());
     EXPECT_EQ(_sink.use_count(), 2 * sinks.size() + 1);
 }
 
-TEST_F(TestLogger, log_level)
+TEST_F(TestSyncLogger, log_level)
 {
     const std::string name = get_logger_name(test_info_);
-    _logger = std::make_shared<Logger>(name, _sink);
+    _logger = std::make_shared<SyncLogger>(name, _sink);
 
     for (LogLevel level : LOG_LEVELS) {
         _logger->set_level(level);
@@ -79,10 +79,10 @@ TEST_F(TestLogger, log_level)
     }
 }
 
-TEST_F(TestLogger, flush_level)
+TEST_F(TestSyncLogger, flush_level)
 {
     const std::string name = get_logger_name(test_info_);
-    _logger = std::make_shared<Logger>(name, _sink);
+    _logger = std::make_shared<SyncLogger>(name, _sink);
 
     for (LogLevel level : LOG_LEVELS) {
         _logger->flush_on(level);
@@ -95,11 +95,11 @@ TEST_F(TestLogger, flush_level)
     }
 }
 
-TEST_F(TestLogger, log_log)
+TEST_F(TestSyncLogger, log_log)
 {
     const std::string name = get_logger_name(test_info_);
     _sink->set_level(LOG_LEVELS.at(0));
-    _logger = std::make_shared<Logger>(name, _sink);
+    _logger = std::make_shared<SyncLogger>(name, _sink);
     for (auto filterLevel : LOG_LEVELS) {
         _logger->set_level(filterLevel);
         for (auto logLevel : LOG_LEVELS) {
@@ -115,11 +115,11 @@ TEST_F(TestLogger, log_log)
     }
 }
 
-TEST_F(TestLogger, log_flush)
+TEST_F(TestSyncLogger, log_flush)
 {
     const std::string name = get_logger_name(test_info_);
     _sink->set_level(LOG_LEVELS.at(0));
-    _logger = std::make_shared<Logger>(name, _sink);
+    _logger = std::make_shared<SyncLogger>(name, _sink);
     constexpr uint32_t MAX_ITEM_CNT = 100;
     for (uint32_t i = 0; i < MAX_ITEM_CNT; ++i) {
         _logger->error(LOG_SRC_LOCAL, i);
@@ -131,11 +131,11 @@ TEST_F(TestLogger, log_flush)
     EXPECT_EQ(_sink->disk().size(), MAX_ITEM_CNT);
 }
 
-TEST_F(TestLogger, log_flush_on)
+TEST_F(TestSyncLogger, log_flush_on)
 {
     const std::string name = get_logger_name(test_info_);
     _sink->set_level(LOG_LEVELS.at(0));
-    _logger = std::make_shared<Logger>(name, _sink);
+    _logger = std::make_shared<SyncLogger>(name, _sink);
     _logger->set_level(LOG_LEVELS.at(0));
 
     for (auto flushLevel : LOG_LEVELS) {
@@ -159,11 +159,11 @@ TEST_F(TestLogger, log_flush_on)
     }
 }
 
-TEST_F(TestLogger, log_function)
+TEST_F(TestSyncLogger, log_function)
 {
     const std::string name = get_logger_name(test_info_);
     _sink->set_level(LOG_LEVELS.at(0));
-    _logger = std::make_shared<Logger>(name, _sink);
+    _logger = std::make_shared<SyncLogger>(name, _sink);
     _logger->set_level(LOG_LEVELS.at(0));
     uint32_t logCount = 100;
     for (uint32_t i = 0; i < logCount; ++i) {
@@ -204,10 +204,10 @@ TEST_F(TestLogger, log_function)
     EXPECT_EQ(_sink->disk().size(), logCount * (LOG_LEVELS.size() - 1) * 4);
 }
 
-TEST_F(TestLogger, set_pattern)
+TEST_F(TestSyncLogger, set_pattern)
 {
     const std::string name = get_logger_name(test_info_);
-    _logger = std::make_shared<Logger>(name, _sink);
+    _logger = std::make_shared<SyncLogger>(name, _sink);
     _logger->set_pattern("%v");
     for (uint32_t i = 0; i < 100; i++) {
         _logger->error(i);
@@ -215,11 +215,11 @@ TEST_F(TestLogger, set_pattern)
     }
 }
 
-TEST_F(TestLogger, set_formatter)
+TEST_F(TestSyncLogger, set_formatter)
 {
     const std::string name = get_logger_name(test_info_);
     _sink->set_level(LOG_LEVELS.at(0));
-    _logger = std::make_shared<Logger>(name, _sink);
+    _logger = std::make_shared<SyncLogger>(name, _sink);
     _logger->set_level(LOG_LEVELS.at(0));
     std::unique_ptr<Formatter> formatter = std::make_unique<PatternFormatter>("%v");
     _logger->set_formatter(formatter);

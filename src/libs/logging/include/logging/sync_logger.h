@@ -1,5 +1,5 @@
-#ifndef LOGGING_LOGGER_H
-#define LOGGING_LOGGER_H
+#ifndef LOGGING_SYNC_LOGGER_H
+#define LOGGING_SYNC_LOGGER_H
 
 #include <format>
 #include <initializer_list>
@@ -19,33 +19,33 @@
 #include "utils/string_utils.h"
 
 namespace logging {
-class Logger {
+class SyncLogger {
 public:
-    Logger() = delete;
-    virtual ~Logger();
+    SyncLogger() = delete;
+    virtual ~SyncLogger();
 
-    explicit Logger(std::string_view name);
+    explicit SyncLogger(std::string_view name);
 
-    Logger(std::string_view name, const std::shared_ptr<logging::Sink>& sink);
+    SyncLogger(std::string_view name, const std::shared_ptr<logging::Sink>& sink);
 
-    Logger(std::string_view name, const std::vector<std::shared_ptr<logging::Sink>>& sinks);
+    SyncLogger(std::string_view name, const std::vector<std::shared_ptr<logging::Sink>>& sinks);
 
-    Logger(std::string_view name,
+    SyncLogger(std::string_view name,
            const std::initializer_list<std::shared_ptr<logging::Sink>>& sinks);
 
     [[nodiscard]] std::string_view name() const;
     [[nodiscard]] const std::vector<std::shared_ptr<logging::Sink>>& sinks() const;
 
-    void set_level(LogLevel level);
+    void set_level(LogLevel level) const;
     [[nodiscard]] LogLevel level() const;
     [[nodiscard]] bool should_log(LogLevel level) const;
 
-    void flush_on(LogLevel level);
+    void flush_on(LogLevel level) const;
     [[nodiscard]] LogLevel flush_level() const;
     [[nodiscard]] bool should_flush(LogLevel level) const;
 
-    void set_pattern(std::string_view pattern = details::FORMATTER_DEFAULT_PATTERN);
-    void set_formatter(const std::unique_ptr<logging::Formatter>& formatter);
+    void set_pattern(std::string_view pattern = details::FORMATTER_DEFAULT_PATTERN) const;
+    void set_formatter(const std::unique_ptr<logging::Formatter>& formatter) const;
 
     void flush();
 
@@ -53,12 +53,12 @@ public:
 
     template <class T,
               std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
-    void log(details::LogSource source, LogLevel level, const T& message)
+    void log(const details::LogSource source, LogLevel level, const T& message)
     {
         if (!should_log(level)) {
             return;
         }
-        details::LogMsg logMsg(source, name(), level, utils::string::type_to_string(message));
+        const details::LogMsg logMsg(source, name(), level, utils::string::type_to_string(message));
         log(logMsg);
     }
 
@@ -102,4 +102,4 @@ private:
 };
 }  // namespace logging
 
-#endif  // LOGGING_LOGGER_H
+#endif  // LOGGING_SYNC_LOGGER_H

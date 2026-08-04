@@ -1,4 +1,4 @@
-#include "logging/logger.h"
+#include "logging/sync_logger.h"
 
 #include <atomic>
 #include <memory>
@@ -13,7 +13,7 @@
 namespace logging {
 using namespace details;
 
-struct Logger::Impl {
+struct SyncLogger::Impl {
     std::string name;
     std::vector<std::shared_ptr<Sink>> sinks;
     std::atomic<LogLevel> level{LogLevel::INFO};
@@ -27,92 +27,92 @@ struct Logger::Impl {
     }
 };
 
-Logger::~Logger()
+SyncLogger::~SyncLogger()
 {
     DEBUG_LOGGER_DBG("Logger release. Name: \"{}\", SinkCount: {}.", name(), _pimpl->sinks.size());
     _pimpl.reset();
 }
 
-Logger::Logger(std::string_view name) : _pimpl(std::make_unique<Impl>(name)) {}
+SyncLogger::SyncLogger(std::string_view name) : _pimpl(std::make_unique<Impl>(name)) {}
 
-Logger::Logger(std::string_view name, const std::shared_ptr<Sink>& sink)
+SyncLogger::SyncLogger(std::string_view name, const std::shared_ptr<Sink>& sink)
     : _pimpl(std::make_unique<Impl>(name, std::vector<std::shared_ptr<Sink>>{sink}))
 {
 }
 
-Logger::Logger(std::string_view name, const std::vector<std::shared_ptr<Sink>>& sinks)
+SyncLogger::SyncLogger(std::string_view name, const std::vector<std::shared_ptr<Sink>>& sinks)
     : _pimpl(std::make_unique<Impl>(name, sinks))
 {
 }
 
-Logger::Logger(std::string_view name, const std::initializer_list<std::shared_ptr<Sink>>& sinks)
+SyncLogger::SyncLogger(std::string_view name, const std::initializer_list<std::shared_ptr<Sink>>& sinks)
     : _pimpl(std::make_unique<Impl>(name, std::vector<std::shared_ptr<Sink>>(sinks)))
 {
 }
 
-std::string_view Logger::name() const
+std::string_view SyncLogger::name() const
 {
     return _pimpl->name;
 }
 
-const std::vector<std::shared_ptr<Sink>>& Logger::sinks() const
+const std::vector<std::shared_ptr<Sink>>& SyncLogger::sinks() const
 {
     return _pimpl->sinks;
 }
 
-void Logger::set_level(LogLevel level)
+void SyncLogger::set_level(LogLevel level) const
 {
     _pimpl->level.store(level, std::memory_order_relaxed);
 }
 
-LogLevel Logger::level() const
+LogLevel SyncLogger::level() const
 {
     return _pimpl->level.load(std::memory_order_relaxed);
 }
 
-bool Logger::should_log(LogLevel level) const
+bool SyncLogger::should_log(LogLevel level) const
 {
     return (level != LogLevel::OFF && level >= this->level());
 }
 
-void Logger::flush_on(LogLevel level)
+void SyncLogger::flush_on(LogLevel level) const
 {
     _pimpl->flushLevel.store(level, std::memory_order_relaxed);
 }
 
-LogLevel Logger::flush_level() const
+LogLevel SyncLogger::flush_level() const
 {
     return _pimpl->flushLevel.load(std::memory_order_relaxed);
 }
 
-bool Logger::should_flush(LogLevel level) const
+bool SyncLogger::should_flush(LogLevel level) const
 {
     return (level != LogLevel::OFF && level >= this->flush_level());
 }
 
-void Logger::set_pattern(std::string_view pattern)
+void SyncLogger::set_pattern(std::string_view pattern) const
 {
     set_formatter(std::make_unique<PatternFormatter>(pattern));
 }
 
-void Logger::set_formatter(const std::unique_ptr<Formatter>& formatter)
+void SyncLogger::set_formatter(const std::unique_ptr<Formatter>& formatter) const
 {
     for (auto& sink : _pimpl->sinks) {
         sink->set_formatter(formatter->clone());
     }
 }
 
-void Logger::flush()
+void SyncLogger::flush()
 {
     flush_it();
 }
 
-void Logger::log(const details::LogMsg& logMsg)
+void SyncLogger::log(const details::LogMsg& logMsg)
 {
     log_it(logMsg);
 }
 
-void Logger::log_it(const details::LogMsg& logMsg)
+void SyncLogger::log_it(const details::LogMsg& logMsg)
 {
     sinks_log_it(logMsg);
 
@@ -121,12 +121,12 @@ void Logger::log_it(const details::LogMsg& logMsg)
     }
 }
 
-void Logger::flush_it()
+void SyncLogger::flush_it()
 {
     sinks_flush_it();
 }
 
-void Logger::sinks_log_it(const LogMsg& logMsg)
+void SyncLogger::sinks_log_it(const LogMsg& logMsg)
 {
     for (const auto& sink : _pimpl->sinks) {
         if (sink->should_log(logMsg.level)) {
@@ -135,7 +135,7 @@ void Logger::sinks_log_it(const LogMsg& logMsg)
     }
 }
 
-void Logger::sinks_flush_it()
+void SyncLogger::sinks_flush_it()
 {
     for (const auto& sink : _pimpl->sinks) {
         sink->flush();

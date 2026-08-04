@@ -3,7 +3,7 @@
 
 namespace test::test_logging {
 
-class TestLogger : public ::testing::Test {
+class TestSyncLogger : public ::testing::Test {
 protected:
     static void SetUpTestSuite() {}
     static void TearDownTestSuite() {}

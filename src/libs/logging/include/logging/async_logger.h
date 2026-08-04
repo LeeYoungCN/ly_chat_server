@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "logging/details/task_pool.h"
-#include "logging/logger.h"
+#include "logging/sync_logger.h"
 
 namespace logging {
 
@@ -13,7 +13,7 @@ namespace details {
 class TaskPool;
 }
 
-class AsyncLogger : public Logger, public std::enable_shared_from_this<AsyncLogger> {
+class AsyncLogger : public SyncLogger, public std::enable_shared_from_this<AsyncLogger> {
     friend class logging::details::TaskPool;
 
 public:

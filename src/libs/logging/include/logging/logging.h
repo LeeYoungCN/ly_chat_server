@@ -9,21 +9,21 @@
 #include "logging/details/log_source.h"
 #include "logging/details/task_pool.h"
 #include "logging/log_level.h"
-#include "logging/logger.h"
+#include "logging/sync_logger.h"
 
 namespace logging {
 
 template <typename SinkType, typename... SinkArgs>
-std::shared_ptr<Logger> create_logger(std::string name, SinkArgs&&... sinkArgs)
+std::shared_ptr<SyncLogger> create_logger(std::string name, SinkArgs&&... sinkArgs)
 {
     auto sink = std::make_shared<SinkType>(std::forward<SinkArgs>(sinkArgs)...);
-    return std::make_shared<Logger>(std::move(name), std::move(sink));
+    return std::make_shared<SyncLogger>(std::move(name), std::move(sink));
 }
 
 #pragma region Root logger
-std::shared_ptr<Logger> root_logger();
-Logger* root_logger_raw();
-void set_root_logger(std::shared_ptr<Logger> logger);
+std::shared_ptr<SyncLogger> root_logger();
+SyncLogger* root_logger_raw();
+void set_root_logger(std::shared_ptr<SyncLogger> logger);
 
 bool should_log(LogLevel level);
 void set_level(LogLevel level);
@@ -221,7 +221,7 @@ void fatal(const logging::details::LogSource& source, const T& message)
 #pragma endregion
 
 #pragma region Module manager
-void initialize_logger(const std::shared_ptr<Logger>& logger);
+void initialize_logger(const std::shared_ptr<SyncLogger>& logger);
 void set_level_all(LogLevel level);
 void flush_on_all(LogLevel level);
 void set_pattern_all(std::string_view pattern = details::FORMATTER_DEFAULT_PATTERN);
@@ -231,11 +231,11 @@ void shutdown();
 #pragma endregion
 
 #pragma region Container
-bool register_logger(std::shared_ptr<Logger> logger);
-void register_or_replace_logger(std::shared_ptr<Logger> logger);
+bool register_logger(std::shared_ptr<SyncLogger> logger);
+void register_or_replace_logger(std::shared_ptr<SyncLogger> logger);
 void remove_logger(std::string_view name);
 void remove_all();
-std::shared_ptr<Logger> get_logger(std::string_view name);
+std::shared_ptr<SyncLogger> get_logger(std::string_view name);
 void register_task_pool(std::shared_ptr<details::TaskPool> taskPool);
 std::shared_ptr<details::TaskPool> get_task_pool();
 #pragma endregion

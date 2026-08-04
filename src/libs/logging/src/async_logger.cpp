@@ -6,7 +6,7 @@
 
 #include "common/debug/debug_logger.h"
 #include "logging/details/task_pool.h"
-#include "logging/logger.h"
+#include "logging/sync_logger.h"
 
 namespace logging {
 
@@ -27,20 +27,20 @@ AsyncLogger::~AsyncLogger()
 
 AsyncLogger::AsyncLogger(std::string_view name, const std::shared_ptr<Sink>& sink,
                          const std::weak_ptr<TaskPool>& pool)
-    : Logger(name, sink), _pimpl(std::make_unique<Impl>(pool))
+    : SyncLogger(name, sink), _pimpl(std::make_unique<Impl>(pool))
 {
 }
 
 AsyncLogger::AsyncLogger(std::string_view name, const std::vector<std::shared_ptr<Sink>>& sinks,
                          const std::weak_ptr<TaskPool>& pool)
-    : Logger(name, sinks), _pimpl(std::make_unique<Impl>(pool))
+    : SyncLogger(name, sinks), _pimpl(std::make_unique<Impl>(pool))
 {
 }
 
 AsyncLogger::AsyncLogger(std::string_view name,
                          const std::initializer_list<std::shared_ptr<Sink>>& sinks,
                          const std::weak_ptr<TaskPool>& pool)
-    : Logger(name, sinks), _pimpl(std::make_unique<Impl>(pool))
+    : SyncLogger(name, sinks), _pimpl(std::make_unique<Impl>(pool))
 {
 }
 

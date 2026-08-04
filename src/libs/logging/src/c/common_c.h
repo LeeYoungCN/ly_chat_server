@@ -8,14 +8,14 @@
 #include "logging/details/task_pool.h"
 #include "logging/formatters/formatter.h"
 #include "logging/log_level.h"
-#include "logging/logger.h"
+#include "logging/sync_logger.h"
 #include "logging/sinks/sink.h"
 
 struct LoggerSt {
-    std::shared_ptr<logging::Logger> ptr;
+    std::shared_ptr<logging::SyncLogger> ptr;
 
-    explicit LoggerSt(std::shared_ptr<logging::Logger> ptr) : ptr(std::move(ptr)) {}
-    explicit LoggerSt(logging::Logger *ptr) : ptr(ptr) {}
+    explicit LoggerSt(std::shared_ptr<logging::SyncLogger> ptr) : ptr(std::move(ptr)) {}
+    explicit LoggerSt(logging::SyncLogger *ptr) : ptr(ptr) {}
 };
 
 struct SinkSt {

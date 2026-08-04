@@ -35,7 +35,7 @@
     }
 
 /**
- * @brief logger.h
+ * @brief sync_logger.h
  *
  */
 #define DEFINE_LOGGER_LOG_FUNCTION(Name, Level)                                                 \

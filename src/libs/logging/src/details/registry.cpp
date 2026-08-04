@@ -13,24 +13,24 @@
 namespace logging::details {
 Registry::Registry() : _globalFormatter(new PatternFormatter())
 {
-    _root = std::make_shared<Logger>(ROOT_LOGGER_NAME, std::make_shared<StdoutSink>());
+    _root = std::make_shared<SyncLogger>(ROOT_LOGGER_NAME, std::make_shared<StdoutSink>());
     _loggers[ROOT_LOGGER_NAME] = _root;
 }
 
 #pragma region Root logger
-std::shared_ptr<Logger> Registry::root_logger()
+std::shared_ptr<SyncLogger> Registry::root_logger()
 {
     std::lock_guard<std::mutex> lock(_loggerMapMtx);
     return _root;
 }
 
-Logger* Registry::root_logger_raw()
+SyncLogger* Registry::root_logger_raw()
 {
     std::lock_guard<std::mutex> lock(_loggerMapMtx);
     return _root.get();
 }
 
-void Registry::set_root_logger(std::shared_ptr<Logger> newLogger)
+void Registry::set_root_logger(std::shared_ptr<SyncLogger> newLogger)
 {
     std::lock_guard<std::mutex> lock(_loggerMapMtx);
     if (newLogger != nullptr) {
@@ -41,7 +41,7 @@ void Registry::set_root_logger(std::shared_ptr<Logger> newLogger)
 #pragma endregion
 
 #pragma region Module manager
-void Registry::initialize_logger(const std::shared_ptr<Logger>& logger, bool autoRegister)
+void Registry::initialize_logger(const std::shared_ptr<SyncLogger>& logger, bool autoRegister)
 {
     std::lock_guard<std::mutex> lock(_loggerMapMtx);
     logger->set_formatter(_globalFormatter->clone());
@@ -110,13 +110,13 @@ void Registry::shutdown()
 #pragma endregion
 
 #pragma region Container
-bool Registry::register_logger(std::shared_ptr<Logger> logger)
+bool Registry::register_logger(std::shared_ptr<SyncLogger> logger)
 {
     std::lock_guard<std::mutex> lock(_loggerMapMtx);
     return register_logger_it(std::move(logger));
 }
 
-void Registry::register_or_replace_logger(std::shared_ptr<Logger> logger)
+void Registry::register_or_replace_logger(std::shared_ptr<SyncLogger> logger)
 {
     std::lock_guard<std::mutex> lock(_loggerMapMtx);
     register_or_replace_logger_it(std::move(logger));
@@ -144,7 +144,7 @@ void Registry::remove_all()
     DEBUG_LOG_DBG("Remove all loggers.");
 }
 
-std::shared_ptr<Logger> Registry::get_logger(std::string_view name)
+std::shared_ptr<SyncLogger> Registry::get_logger(std::string_view name)
 {
     std::lock_guard<std::mutex> lock(_loggerMapMtx);
     auto it = _loggers.find(name);
@@ -171,7 +171,7 @@ std::shared_ptr<TaskPool> Registry::get_task_pool()
 #pragma endregion
 
 #pragma region private
-bool Registry::register_logger_it(std::shared_ptr<Logger> logger)
+bool Registry::register_logger_it(std::shared_ptr<SyncLogger> logger)
 {
     if (exist_it(logger->name())) {
         DEBUG_LOGGER_ERR("Logger already exist. LoggerName: {}.", logger->name());
@@ -181,7 +181,7 @@ bool Registry::register_logger_it(std::shared_ptr<Logger> logger)
     return true;
 }
 
-void Registry::register_or_replace_logger_it(std::shared_ptr<Logger> logger)
+void Registry::register_or_replace_logger_it(std::shared_ptr<SyncLogger> logger)
 {
     _loggers[logger->name()] = std::move(logger);
 }
