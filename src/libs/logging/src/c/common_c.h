@@ -4,8 +4,8 @@
 #include <memory>
 #include <vector>
 
+#include "internal/task_pool.h"
 #include "logging/c/logging_c.h"
-#include "logging/details/task_pool.h"
 #include "logging/formatters/formatter.h"
 #include "logging/log_level.h"
 #include "logging/loggers/sync_logger.h"
@@ -35,13 +35,10 @@ struct FormatterSt {
 };
 
 struct TaskPoolSt {
-    std::shared_ptr<logging::details::TaskPool> ptr;
+    std::shared_ptr<logging::TaskPool> ptr;
 
-    explicit TaskPoolSt(std::shared_ptr<logging::details::TaskPool> taskPool)
-        : ptr(std::move(taskPool))
-    {
-    }
-    explicit TaskPoolSt(logging::details::TaskPool *taskPool) : ptr(taskPool) {}
+    explicit TaskPoolSt(std::shared_ptr<logging::TaskPool> taskPool) : ptr(std::move(taskPool)) {}
+    explicit TaskPoolSt(logging::TaskPool *taskPool) : ptr(taskPool) {}
 };
 
 namespace logging::c {

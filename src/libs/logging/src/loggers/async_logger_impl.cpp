@@ -6,9 +6,9 @@
 #include <vector>
 
 #include "internal/loggers/logger_impl.h"
+#include "internal/registry.h"
+#include "internal/task_pool.h"
 #include "logging/details/log_msg.h"
-#include "logging/details/registry.h"
-#include "logging/details/task_pool.h"
 #include "logging/sinks/sink.h"
 
 namespace logging {
@@ -16,37 +16,37 @@ namespace logging {
 AsyncLoggerImpl::AsyncLoggerImpl(std::string_view name, const std::shared_ptr<logging::Sink>& sink)
     : LoggerImpl(name, sink)
 {
-    if (details::Registry::instance().get_task_pool() == nullptr) {
+    if (REGISTRY.task_pool() == nullptr) {
         throw std::runtime_error(
             "Async logger requires a task pool to be registered in the registry.");
     }
-    _taskPool = details::Registry::instance().get_task_pool();
+    _taskPool = REGISTRY.task_pool();
 }
 
 AsyncLoggerImpl::AsyncLoggerImpl(std::string_view name,
                                  const std::vector<std::shared_ptr<logging::Sink>>& sinks)
     : LoggerImpl(name, sinks)
 {
-    if (details::Registry::instance().get_task_pool() == nullptr) {
+    if (REGISTRY.task_pool() == nullptr) {
         throw std::runtime_error(
             "Async logger requires a task pool to be registered in the registry.");
     }
-    _taskPool = details::Registry::instance().get_task_pool();
+    _taskPool = REGISTRY.task_pool();
 }
 
 AsyncLoggerImpl::AsyncLoggerImpl(std::string_view name,
                                  const std::initializer_list<std::shared_ptr<logging::Sink>>& sinks)
     : LoggerImpl(name, sinks)
 {
-    if (details::Registry::instance().get_task_pool() == nullptr) {
+    if (REGISTRY.task_pool() == nullptr) {
         throw std::runtime_error(
             "Async logger requires a task pool to be registered in the registry.");
     }
-    _taskPool = details::Registry::instance().get_task_pool();
+    _taskPool = REGISTRY.task_pool();
 }
 
 AsyncLoggerImpl::AsyncLoggerImpl(std::string_view name, const std::shared_ptr<logging::Sink>& sink,
-                                 const std::weak_ptr<logging::details::TaskPool>& pool)
+                                 const std::weak_ptr<logging::TaskPool>& pool)
     : LoggerImpl(name, sink), _taskPool(pool)
 {
     if (pool.expired()) {
@@ -56,7 +56,7 @@ AsyncLoggerImpl::AsyncLoggerImpl(std::string_view name, const std::shared_ptr<lo
 
 AsyncLoggerImpl::AsyncLoggerImpl(std::string_view name,
                                  const std::vector<std::shared_ptr<logging::Sink>>& sinks,
-                                 const std::weak_ptr<logging::details::TaskPool>& pool)
+                                 const std::weak_ptr<logging::TaskPool>& pool)
     : LoggerImpl(name, sinks), _taskPool(pool)
 {
     if (pool.expired()) {
@@ -66,7 +66,7 @@ AsyncLoggerImpl::AsyncLoggerImpl(std::string_view name,
 
 AsyncLoggerImpl::AsyncLoggerImpl(std::string_view name,
                                  const std::initializer_list<std::shared_ptr<logging::Sink>>& sinks,
-                                 const std::weak_ptr<logging::details::TaskPool>& pool)
+                                 const std::weak_ptr<logging::TaskPool>& pool)
     : LoggerImpl(name, sinks), _taskPool(pool)
 {
     if (pool.expired()) {

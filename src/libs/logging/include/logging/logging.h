@@ -7,7 +7,6 @@
 #include <utility>
 
 #include "logging/details/log_source.h"
-#include "logging/details/task_pool.h"
 #include "logging/log_level.h"
 #include "logging/loggers/sync_logger.h"
 
@@ -238,9 +237,10 @@ void remove_all();
 std::shared_ptr<Logger> get_logger(std::string_view name);
 
 #pragma region Task pool container
-void init_task_pool(uint32_t capacity = details::TaskPool::DEFAULT_CAPACITY,
-                    uint32_t threadCnt = details::TaskPool::DEFAULT_THREAD_CNT);
-std::shared_ptr<details::TaskPool> get_task_pool();
+class TaskPool;
+void init_root_task_pool(uint32_t capacity, uint32_t threadCnt);
+std::shared_ptr<TaskPool> root_task_pool();
+std::shared_ptr<TaskPool> create_task_pool(uint32_t capacity, uint32_t threadCnt);
 #pragma endregion
 
 }  // namespace logging

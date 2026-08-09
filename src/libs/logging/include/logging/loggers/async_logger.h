@@ -3,10 +3,10 @@
 
 #include <memory>
 
-#include "logging/details/task_pool.h"
 #include "logging/loggers/logger_base.h"
 
 namespace logging {
+class TaskPool;
 
 class AsyncLogger : public LoggerBase {
 public:
@@ -20,13 +20,13 @@ public:
     AsyncLogger(std::string_view name, const std::initializer_list<std::shared_ptr<Sink>>& sinks);
 
     AsyncLogger(std::string_view name, const std::shared_ptr<Sink>& sink,
-                const std::weak_ptr<logging::details::TaskPool>& pool);
+                const std::weak_ptr<logging::TaskPool>& pool);
 
     AsyncLogger(std::string_view name, const std::vector<std::shared_ptr<Sink>>& sinks,
-                const std::weak_ptr<logging::details::TaskPool>& pool);
+                const std::weak_ptr<logging::TaskPool>& pool);
 
     AsyncLogger(std::string_view name, const std::initializer_list<std::shared_ptr<Sink>>& sinks,
-                const std::weak_ptr<logging::details::TaskPool>& pool);
+                const std::weak_ptr<logging::TaskPool>& pool);
 };
 }  // namespace logging
 

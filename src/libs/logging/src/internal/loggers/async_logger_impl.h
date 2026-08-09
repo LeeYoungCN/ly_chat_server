@@ -7,8 +7,8 @@
 #include <vector>
 
 #include "internal/loggers/logger_impl.h"
+#include "internal/task_pool.h"
 #include "logging/details/log_msg.h"
-#include "logging/details/task_pool.h"
 #include "logging/sinks/sink.h"
 
 namespace logging {
@@ -24,19 +24,19 @@ public:
                     const std::initializer_list<std::shared_ptr<logging::Sink>>& sinks);
 
     AsyncLoggerImpl(std::string_view name, const std::shared_ptr<logging::Sink>& sink,
-                    const std::weak_ptr<logging::details::TaskPool>& pool);
+                    const std::weak_ptr<logging::TaskPool>& pool);
     AsyncLoggerImpl(std::string_view name, const std::vector<std::shared_ptr<logging::Sink>>& sinks,
-                    const std::weak_ptr<logging::details::TaskPool>& pool);
+                    const std::weak_ptr<logging::TaskPool>& pool);
     AsyncLoggerImpl(std::string_view name,
                     const std::initializer_list<std::shared_ptr<logging::Sink>>& sinks,
-                    const std::weak_ptr<logging::details::TaskPool>& pool);
+                    const std::weak_ptr<logging::TaskPool>& pool);
 
 protected:
     void log_it(const details::LogMsg& logMsg) override;
     void flush_it() override;
 
 private:
-    std::weak_ptr<logging::details::TaskPool> _taskPool;
+    std::weak_ptr<logging::TaskPool> _taskPool;
 };
 }  // namespace logging
 

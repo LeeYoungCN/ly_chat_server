@@ -1,4 +1,4 @@
-#include "logging/details/registry.h"
+#include "internal/registry.h"
 
 #include <memory>
 #include <mutex>
@@ -8,27 +8,28 @@
 #include "common/debug/debug_logger.h"
 #include "logging/details/constants.h"
 #include "logging/formatters/pattern_formatter.h"
-#include "logging/sinks/stdout_sink.h"
 #include "logging/loggers/sync_logger.h"
+#include "logging/sinks/stdout_sink.h"
 
-namespace logging::details {
+namespace logging {
+using namespace logging::details;
 Registry::Registry() : _globalFormatter(new PatternFormatter())
 {
-    _root = std::make_shared<SyncLogger>(ROOT_LOGGER_NAME, std::make_shared<StdoutSink>());
-    _loggers[ROOT_LOGGER_NAME] = _root;
+    _rootLogger = std::make_shared<SyncLogger>(ROOT_LOGGER_NAME, std::make_shared<StdoutSink>());
+    _loggers[ROOT_LOGGER_NAME] = _rootLogger;
 }
 
 #pragma region Root logger
 std::shared_ptr<Logger> Registry::root_logger()
 {
     std::lock_guard<std::mutex> lock(_loggerMapMtx);
-    return _root;
+    return _rootLogger;
 }
 
 Logger* Registry::root_logger_raw()
 {
     std::lock_guard<std::mutex> lock(_loggerMapMtx);
-    return _root.get();
+    return _rootLogger.get();
 }
 
 void Registry::set_root_logger(std::shared_ptr<Logger> newLogger)
@@ -37,7 +38,7 @@ void Registry::set_root_logger(std::shared_ptr<Logger> newLogger)
     if (newLogger != nullptr) {
         register_or_replace_logger_it(newLogger);
     }
-    _root = std::move(newLogger);
+    _rootLogger = std::move(newLogger);
 }
 #pragma endregion
 
@@ -102,8 +103,8 @@ void Registry::shutdown()
     remove_all();
     {
         std::lock_guard<std::recursive_mutex> lock(_taskPoolMtx);
-        if (_globalTaskPool != nullptr) {
-            _globalTaskPool.reset();
+        if (_rootTaskPool != nullptr) {
+            _rootTaskPool.reset();
         }
     }
     DEBUG_LOG_DBG("Logging module shutdown.");
@@ -126,10 +127,10 @@ void Registry::register_or_replace_logger(std::shared_ptr<Logger> logger)
 void Registry::remove_logger(std::string_view name)
 {
     std::lock_guard<std::mutex> lock(_loggerMapMtx);
-    bool isDefaultLogger = (_root != nullptr && _root->name() == name);
+    bool isDefaultLogger = (_rootLogger != nullptr && _rootLogger->name() == name);
     _loggers.erase(name);
     if (isDefaultLogger) {
-        _root.reset();
+        _rootLogger.reset();
     }
 }
 
@@ -137,8 +138,8 @@ void Registry::remove_all()
 {
     {
         std::lock_guard<std::mutex> lock(_loggerMapMtx);
-        if (_root != nullptr) {
-            _root.reset();
+        if (_rootLogger != nullptr) {
+            _rootLogger.reset();
         }
         _loggers.clear();
     }
@@ -158,20 +159,20 @@ bool Registry::exist(std::string_view name)
     return exist_it(name);
 }
 
-void Registry::init_task_pool(uint32_t capacity, uint32_t threadCnt)
+void Registry::init_root_task_pool(uint32_t capacity, uint32_t threadCnt)
 {
     std::lock_guard<std::recursive_mutex> lock(_taskPoolMtx);
-    if (_globalTaskPool != nullptr) {
+    if (_rootTaskPool != nullptr) {
         DEBUG_LOGGER_ERR("Task pool already initialized.");
         return;
     }
-    _globalTaskPool = std::make_shared<TaskPool>(capacity, threadCnt);
+    _rootTaskPool = std::make_shared<TaskPool>(capacity, threadCnt);
 }
 
-std::shared_ptr<TaskPool> Registry::get_task_pool()
+std::shared_ptr<TaskPool> Registry::task_pool()
 {
     std::lock_guard<std::recursive_mutex> lock(_taskPoolMtx);
-    return _globalTaskPool;
+    return _rootTaskPool;
 }
 #pragma endregion
 
@@ -196,4 +197,4 @@ bool Registry::exist_it(std::string_view name)
     return (_loggers.find(name) != _loggers.end());
 }
 #pragma endregion
-}  // namespace logging::details
+}  // namespace logging

@@ -2,10 +2,8 @@
 
 #include <utility>
 
-#include "common/base/singleton.h"
-#include "logging/details/registry.h"
-
-#define REGISTRY INST(logging::details::Registry)
+#include "internal/registry.h"
+#include "internal/task_pool.h"
 
 namespace logging {
 using namespace logging::details;
@@ -121,14 +119,19 @@ std::shared_ptr<Logger> get_logger(std::string_view name)
     return REGISTRY.get_logger(name);
 }
 
-void init_task_pool(uint32_t capacity, uint32_t threadCnt)
+void init_root_task_pool(uint32_t capacity, uint32_t threadCnt)
 {
-    REGISTRY.init_task_pool(capacity, threadCnt);
+    REGISTRY.init_root_task_pool(capacity, threadCnt);
 }
 
-std::shared_ptr<details::TaskPool> get_task_pool()
+std::shared_ptr<TaskPool> root_task_pool()
 {
-    return REGISTRY.get_task_pool();
+    return REGISTRY.task_pool();
+}
+
+std::shared_ptr<TaskPool> create_task_pool(uint32_t capacity, uint32_t threadCnt)
+{
+    return std::make_shared<TaskPool>(capacity, threadCnt);
 }
 
 #pragma endregion

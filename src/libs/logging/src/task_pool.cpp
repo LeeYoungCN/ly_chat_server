@@ -1,4 +1,4 @@
-#include "logging/details/task_pool.h"
+#include "internal/task_pool.h"
 
 #include <atomic>
 #include <cstdint>
@@ -14,73 +14,69 @@
 #include "internal/loggers/async_logger_impl.h"
 #include "logging/details/log_msg.h"
 
-namespace logging::details {
+namespace logging {
 using namespace common::container;
-
-struct TaskPool::Impl {
-    ConcurrentBlockingQueue<LogTask> buffer;
-    uint32_t threadCnt = 0;
-    std::vector<std::thread> threadPool;
-    std::mutex threadPoolMtx;
-    std::atomic<bool> isThreadRunning{false};
-
-    Impl(uint32_t capacity, uint32_t threadCnt) : buffer(capacity), threadCnt(threadCnt) {}
-};
 
 TaskPool::TaskPool() : TaskPool(TaskPool::DEFAULT_CAPACITY, TaskPool::DEFAULT_THREAD_CNT) {}
 
 TaskPool::TaskPool(uint32_t capacity) : TaskPool(capacity, TaskPool::DEFAULT_THREAD_CNT) {}
 
 TaskPool::TaskPool(uint32_t capacity, uint32_t threadCnt)
-    : _pimpl(std::make_unique<Impl>(capacity, threadCnt))
+    : _buffer(ConcurrentBlockingQueue<LogTask>(capacity)), _threadCnt(threadCnt)
 {
-    _pimpl->threadPool.reserve(_pimpl->threadCnt);
+    if (capacity == 0) {
+        throw std::invalid_argument("Capacity must be greater than zero.");
+    }
+
+    if (_threadCnt == 0) {
+        throw std::invalid_argument("Thread count must be greater than zero.");
+    }
+    _threadPool.reserve(_threadCnt);
     start();
 }
 
 TaskPool::~TaskPool()
 {
     shutdown();
-    _pimpl.reset();
     DEBUG_LOGGER_DBG("Log thread pool release.");
 }
 
-void TaskPool::log(const std::shared_ptr<AsyncLoggerImpl>& logger, const LogMsg& logMsg)
+void TaskPool::log(const std::shared_ptr<AsyncLoggerImpl>& logger, const details::LogMsg& logMsg)
 {
-    if (!_pimpl->isThreadRunning.load()) {
+    if (!_isThreadRunning.load()) {
         DEBUG_LOGGER_ERR("Log failed. Task pool shutdown");
     }
-    _pimpl->buffer.enqueue_wait(LogTask(TaskType::LOG, logger, logMsg));
+    _buffer.enqueue_wait(LogTask(TaskType::LOG, logger, logMsg));
 }
 
 void TaskPool::flush(const std::shared_ptr<AsyncLoggerImpl>& logger)
 {
-    if (!_pimpl->isThreadRunning.load()) {
+    if (!_isThreadRunning.load()) {
         DEBUG_LOGGER_ERR("Flush failed. Task pool shutdown");
     }
-    _pimpl->buffer.enqueue_wait(LogTask(TaskType::FLUSH, logger, LogMsg()));
+    _buffer.enqueue_wait(LogTask(TaskType::FLUSH, logger, details::LogMsg()));
 }
 
-[[nodiscard]] size_t TaskPool::task_count() const
+[[nodiscard]] size_t TaskPool::task_count()
 {
-    return _pimpl->buffer.size();
+    return _buffer.size();
 }
 
 void TaskPool::start()
 {
-    if (_pimpl->isThreadRunning.load()) {
+    if (_isThreadRunning.load()) {
         DEBUG_LOGGER_DBG("Task pool already running.");
         return;
     }
     {
-        std::lock_guard<std::mutex> lock(_pimpl->threadPoolMtx);
-        if (_pimpl->isThreadRunning.load()) {
+        std::lock_guard<std::mutex> lock(_threadPoolMtx);
+        if (_isThreadRunning.load()) {
             return;
         }
-        _pimpl->isThreadRunning.store(true);
+        _isThreadRunning.store(true);
 
-        for (uint32_t i = 0; i < _pimpl->threadCnt; i++) {
-            _pimpl->threadPool.emplace_back(&TaskPool::worker_loop, this, i + 1);
+        for (uint32_t i = 0; i < _threadCnt; i++) {
+            _threadPool.emplace_back(&TaskPool::worker_loop, this, i + 1);
         }
     }
 
@@ -89,33 +85,33 @@ void TaskPool::start()
 
 void TaskPool::shutdown()
 {
-    if (!_pimpl->isThreadRunning.load()) {
+    if (!_isThreadRunning.load()) {
         DEBUG_LOGGER_DBG("Task pool already shutdown.");
         return;
     }
     {
-        std::lock_guard<std::mutex> lock(_pimpl->threadPoolMtx);
+        std::lock_guard<std::mutex> lock(_threadPoolMtx);
 
-        if (!_pimpl->isThreadRunning.load()) {
+        if (!_isThreadRunning.load()) {
             return;
         }
-        _pimpl->isThreadRunning.store(false);
+        _isThreadRunning.store(false);
 
-        for (uint32_t i = 0; i < _pimpl->threadPool.size(); i++) {
-            _pimpl->buffer.enqueue_wait(LogTask(TaskType::SHUTDOWN));
+        for (uint32_t i = 0; i < _threadPool.size(); i++) {
+            _buffer.enqueue_wait(LogTask(TaskType::SHUTDOWN));
         }
 
-        for (auto& t : _pimpl->threadPool) {
+        for (auto& t : _threadPool) {
             if (t.joinable()) {
                 t.join();
             }
         }
 
-        if (!_pimpl->buffer.empty()) {
-            DEBUG_LOGGER_ERR("Buffer not empty. size: {}.", _pimpl->buffer.size())
+        if (!_buffer.empty()) {
+            DEBUG_LOGGER_ERR("Buffer not empty. size: {}.", _buffer.size())
         }
 
-        _pimpl->threadPool.clear();
+        _threadPool.clear();
     }
 
     DEBUG_LOGGER_DBG("Task pool shutdown success.");
@@ -123,11 +119,11 @@ void TaskPool::shutdown()
 
 void TaskPool::worker_loop(uint32_t idx)
 {
-    DEBUG_LOGGER_DBG("Log thread pool worker loop start. [{}/{}]", idx, _pimpl->threadCnt);
+    DEBUG_LOGGER_DBG("Log thread pool worker loop start. [{}/{}]", idx, _threadCnt);
     bool isRunning = true;
     while (isRunning) {
         LogTask task;
-        _pimpl->buffer.dequeue_wait(task);
+        _buffer.dequeue_wait(task);
         try {
             switch (task.type) {
                 case TaskType::LOG:
@@ -145,6 +141,6 @@ void TaskPool::worker_loop(uint32_t idx)
             DEBUG_LOGGER_ERR("[Exception]: {}.", ex.what());
         }
     }
-    DEBUG_LOGGER_DBG("Log task pool worker loop shutdown. [{}/{}]", idx, _pimpl->threadCnt);
+    DEBUG_LOGGER_DBG("Log task pool worker loop shutdown. [{}/{}]", idx, _threadCnt);
 }
-}  // namespace logging::details
+}  // namespace logging

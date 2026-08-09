@@ -1,8 +1,8 @@
 #include <memory>
 
 #include "c/common_c.h"
+#include "internal/task_pool.h"
 #include "logging/c/logging_c.h"
-#include "logging/details/task_pool.h"
 
 using namespace logging;
 using namespace logging::details;

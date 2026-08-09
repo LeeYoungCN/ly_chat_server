@@ -4,8 +4,8 @@
 #include <memory>
 
 #include "c/common_c.h"
+#include "internal/registry.h"
 #include "logging/details/constants.h"
-#include "logging/details/registry.h"
 #include "logging/log_level.h"
 #include "utils/string_utils.h"
 

@@ -9,13 +9,14 @@
 #include <unordered_map>
 
 #include "common/base/singleton.h"
-#include "logging/details/constants.h"
-#include "logging/details/task_pool.h"
+#include "internal/task_pool.h"
 #include "logging/formatters/formatter.h"
 #include "logging/log_level.h"
 #include "logging/loggers/logger.h"
 
-namespace logging::details {
+#define REGISTRY (Registry::instance())
+
+namespace logging {
 class Registry : public common::base::SingletonBase<Registry> {
     friend common::base::SingletonBase<Registry>;
 
@@ -30,7 +31,7 @@ public:
     void initialize_logger(const std::shared_ptr<Logger>& logger, bool autoRegister = true);
     void set_level_all(LogLevel level);
     void flush_on_all(LogLevel level);
-    void set_pattern_all(std::string_view pattern = FORMATTER_DEFAULT_PATTERN);
+    void set_pattern_all(std::string_view pattern);
     void set_formatter_all(std::unique_ptr<Formatter> formatter);
     void flush_all();
     void shutdown();
@@ -46,9 +47,8 @@ public:
 #pragma endregion
 
 #pragma region Task pool container
-    void init_task_pool(uint32_t capacity = TaskPool::DEFAULT_CAPACITY,
-                        uint32_t threadCnt = TaskPool::DEFAULT_THREAD_CNT);
-    std::shared_ptr<TaskPool> get_task_pool();
+    void init_root_task_pool(uint32_t capacity, uint32_t threadCnt);
+    std::shared_ptr<TaskPool> task_pool();
 #pragma endregion
 
 private:
@@ -62,7 +62,7 @@ protected:
 
 private:
     // root logger
-    std::shared_ptr<Logger> _root;
+    std::shared_ptr<Logger> _rootLogger;
 
     // container
     std::unordered_map<std::string_view, std::shared_ptr<Logger>> _loggers;
@@ -73,8 +73,8 @@ private:
     LogLevel _globalFlushLevel{LogLevel::OFF};
     std::unique_ptr<Formatter> _globalFormatter;
     std::recursive_mutex _taskPoolMtx;
-    std::shared_ptr<TaskPool> _globalTaskPool;
+    std::shared_ptr<TaskPool> _rootTaskPool;
 };
-}  // namespace logging::details
+}  // namespace logging
 
 #endif  // LOGGING_DETAILS_REGISTRY_H
