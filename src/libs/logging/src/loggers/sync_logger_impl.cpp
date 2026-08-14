@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "internal/loggers/logger_impl.h"
-#include "logging/details/log_msg.h"
+#include "logging/log_msg.h"
 #include "logging/sinks/sink.h"
 
 namespace logging {
@@ -29,7 +29,7 @@ SyncLoggerImpl::SyncLoggerImpl(std::string_view name,
 {
 }
 
-void SyncLoggerImpl::log_it(const details::LogMsg& logMsg)
+void SyncLoggerImpl::log_it(const LogMsg& logMsg)
 {
     backend_log(logMsg);
 

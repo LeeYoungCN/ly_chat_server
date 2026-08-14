@@ -9,8 +9,6 @@
 
 namespace logging {
 
-using namespace logging::details;
-
 AsyncLogger::AsyncLogger(std::string_view name, const std::shared_ptr<Sink>& sink)
     : LoggerBase(std::make_shared<AsyncLoggerImpl>(name, sink))
 {

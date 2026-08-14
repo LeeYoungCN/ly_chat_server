@@ -1,6 +1,6 @@
 #pragma once
-#ifndef LOGGINGL_DETAILS_LOG_MSG_H
-#define LOGGINGL_DETAILS_LOG_MSG_H
+#ifndef LOGGING_LOG_MSG_H
+#define LOGGING_LOG_MSG_H
 
 #include <string>
 #include <string_view>
@@ -8,10 +8,10 @@
 #include "common/types/date_time_types.h"
 #include "common/types/process_types.h"
 #include "common/types/thread_types.h"
-#include "logging/details/log_source.h"
 #include "logging/log_level.h"
+#include "logging/log_source.h"
 
-namespace logging::details {
+namespace logging {
 struct LogMsg {
     std::string loggerName;
     LogLevel level{LogLevel::DEBUG};
@@ -25,5 +25,5 @@ struct LogMsg {
     LogMsg(LogSource source, std::string_view loggerName, LogLevel level, std::string_view message);
 };
 
-}  // namespace logging::details
-#endif  // LOGGINGL_DETAILS_LOG_MSG_H
+}  // namespace logging
+#endif  // LOGGING_LOG_MSG_H

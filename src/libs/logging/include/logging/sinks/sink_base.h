@@ -5,9 +5,9 @@
 #include <memory>
 #include <string_view>
 
-#include "logging/details/log_msg.h"
 #include "logging/formatters/formatter.h"
 #include "logging/log_level.h"
+#include "logging/log_msg.h"
 #include "logging/sinks/sink.h"
 
 namespace logging {
@@ -17,7 +17,7 @@ public:
     ~SinkBase() override;
     explicit SinkBase(std::unique_ptr<Sink> pImpl);
 
-    void log(const details::LogMsg& logMsg) override;
+    void log(const LogMsg& logMsg) override;
     void flush() override;
 
     void set_pattern(std::string_view pattern) override;

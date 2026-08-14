@@ -14,11 +14,14 @@
 #include "logging/log_level.h"
 #include "logging/loggers/logger.h"
 
-#define REGISTRY (Registry::instance())
+#define REGISTRY (logging::Registry::instance())
 
 namespace logging {
 class Registry : public common::base::SingletonBase<Registry> {
     friend common::base::SingletonBase<Registry>;
+
+public:
+    static constexpr std::string_view ROOT_LOGGER_NAME = "__root_logger__";
 
 public:
 #pragma region Root logger

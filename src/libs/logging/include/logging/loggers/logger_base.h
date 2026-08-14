@@ -4,9 +4,9 @@
 #include <string_view>
 #include <vector>
 
-#include "logging/details/log_source.h"
 #include "logging/formatters/formatter.h"
 #include "logging/log_level.h"
+#include "logging/log_source.h"
 #include "logging/loggers/logger.h"
 #include "logging/sinks/sink.h"
 
@@ -35,8 +35,7 @@ public:
     void flush() override;
 
 protected:
-    void log_it(const details::LogSource& source, LogLevel level,
-                std::string_view message) override;
+    void log_it(const LogSource& source, LogLevel level, std::string_view message) override;
 
 protected:
     void throw_if_pimpl_null() const;

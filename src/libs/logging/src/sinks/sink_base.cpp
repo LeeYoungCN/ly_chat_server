@@ -11,7 +11,7 @@ SinkBase::SinkBase(std::unique_ptr<Sink> pImpl) : _pImpl(std::move(pImpl))
     throw_if_pimpl_null();
 }
 
-void SinkBase::log(const details::LogMsg& logMsg)
+void SinkBase::log(const LogMsg& logMsg)
 {
     throw_if_pimpl_null();
     _pImpl->log(logMsg);

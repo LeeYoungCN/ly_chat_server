@@ -5,9 +5,9 @@
 #include <vector>
 
 #include "internal/loggers/logger_impl.h"
-#include "logging/details/log_source.h"
 #include "logging/formatters/formatter.h"
 #include "logging/log_level.h"
+#include "logging/log_source.h"
 #include "logging/sinks/sink.h"
 
 namespace logging {
@@ -83,7 +83,7 @@ void LoggerBase::flush()
     _pimpl->flush();
 }
 
-void LoggerBase::log_it(const details::LogSource& source, LogLevel level, std::string_view message)
+void LoggerBase::log_it(const LogSource& source, LogLevel level, std::string_view message)
 {
     throw_if_pimpl_null();
     _pimpl->log(source, level, message);

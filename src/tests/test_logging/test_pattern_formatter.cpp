@@ -2,10 +2,9 @@
 #include <string>
 
 #include "gtest/gtest.h"
-#include "logging/details/constants.h"
-#include "logging/details/log_msg.h"
 #include "logging/formatters/pattern_formatter.h"
 #include "logging/log_level.h"
+#include "logging/log_msg.h"
 #include "test_logging_utils/common.h"
 #include "utils/date_time_utils.h"
 #include "utils/filesystem_utils.h"
@@ -15,13 +14,14 @@
 namespace test::test_logging {
 
 using namespace logging;
-using namespace logging::details;
+
 using namespace utils::date_time;
 using namespace utils::process;
 using namespace utils::filesystem;
 
 class TestPatternFormatter : public ::testing::Test {
 protected:
+    static constexpr std::string_view FORMATTER_DEFAULT_TIME_PATTERN = "%Y-%m-%d %H:%M:%S.%3f";
     static void SetUpTestSuite() {}
     static void TearDownTestSuite() {}
     void SetUp() override {};

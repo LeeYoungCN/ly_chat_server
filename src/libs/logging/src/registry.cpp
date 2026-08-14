@@ -6,13 +6,12 @@
 
 #include "common/debug/debug_log.h"
 #include "common/debug/debug_logger.h"
-#include "logging/details/constants.h"
 #include "logging/formatters/pattern_formatter.h"
 #include "logging/loggers/sync_logger.h"
 #include "logging/sinks/stdout_sink.h"
 
 namespace logging {
-using namespace logging::details;
+
 Registry::Registry() : _globalFormatter(new PatternFormatter())
 {
     _rootLogger = std::make_shared<SyncLogger>(ROOT_LOGGER_NAME, std::make_shared<StdoutSink>());

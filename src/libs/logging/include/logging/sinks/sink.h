@@ -5,9 +5,9 @@
 #include <memory>
 #include <string_view>
 
-#include "logging/details/log_msg.h"
 #include "logging/formatters/formatter.h"
 #include "logging/log_level.h"
+#include "logging/log_msg.h"
 
 namespace logging {
 class Sink {
@@ -15,7 +15,7 @@ public:
     Sink() = default;
     virtual ~Sink() = default;
 
-    virtual void log(const details::LogMsg& logMsg) = 0;
+    virtual void log(const LogMsg& logMsg) = 0;
     virtual void flush() = 0;
 
     virtual void set_pattern(std::string_view pattern) = 0;

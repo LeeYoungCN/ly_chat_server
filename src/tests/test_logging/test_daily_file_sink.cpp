@@ -10,9 +10,9 @@
 #include "common/constants/date_time_constants.h"
 #include "common/types/date_time_types.h"
 #include "gtest/gtest.h"
-#include "logging/details/log_msg.h"
-#include "logging/details/log_source.h"
 #include "logging/log_level.h"
+#include "logging/log_msg.h"
+#include "logging/log_source.h"
 #include "logging/sinks/daily_file_sink.h"
 #include "test_logging_utils/common.h"
 #include "utils/date_time_utils.h"
@@ -77,7 +77,7 @@ void TestDailyFileSink::TestRotate(const testing::TestInfo* testInfo, uint32_t h
     sink.set_pattern("[%d][%l][%n]: %v");
     sink.set_level(LogLevel::TRACE);
 
-    details::LogMsg logMsg(LOG_SRC_LOCAL, testInfo->name(), LogLevel::ERR, "");
+    LogMsg logMsg(LOG_SRC_LOCAL, testInfo->name(), LogLevel::ERR, "");
     std::vector<std::string> expectFiles;
 
     for (uint32_t i = 0; i <= rotationDays; ++i) {
@@ -118,7 +118,7 @@ void TestDailyFileSink::TestRotateAndDelete(const testing::TestInfo* testInfo, u
     sink.set_pattern("[%d][%l][%n]: %v");
     sink.set_level(LogLevel::TRACE);
 
-    details::LogMsg logMsg(LOG_SRC_LOCAL, testInfo->name(), LogLevel::ERR, "");
+    LogMsg logMsg(LOG_SRC_LOCAL, testInfo->name(), LogLevel::ERR, "");
 
     for (uint32_t i = 0; i <= rotationDays; ++i) {
         logMsg.timestamp = now + i * MILLIS_PER_DAY;

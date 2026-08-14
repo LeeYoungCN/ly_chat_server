@@ -21,6 +21,9 @@ namespace logging {
  */
 class PatternFormatter : public FormatterBase {
 public:
+    static constexpr std::string_view DEFAULT_PATTERN = "[%d][%l][%s:%#]: %v";
+
+public:
     PatternFormatter();
     ~PatternFormatter() override = default;
 

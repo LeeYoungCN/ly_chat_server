@@ -6,10 +6,10 @@
 #include <mutex>
 #include <string_view>
 
-#include "logging/details/log_msg.h"
 #include "logging/formatters/formatter.h"
 #include "logging/formatters/pattern_formatter.h"
 #include "logging/log_level.h"
+#include "logging/log_msg.h"
 #include "logging/sinks/sink.h"
 
 namespace logging {
@@ -18,7 +18,7 @@ public:
     SinkImplBase() = default;
     ~SinkImplBase() override;
 
-    void log(const details::LogMsg& logMsg) override;
+    void log(const LogMsg& logMsg) override;
     void flush() override;
 
     void set_pattern(std::string_view pattern) override;
@@ -30,7 +30,7 @@ public:
 
 protected:
     explicit SinkImplBase(std::string_view parameter);
-    virtual void log_it(const details::LogMsg& logMsg) = 0;
+    virtual void log_it(const LogMsg& logMsg) = 0;
     virtual void flush_it() = 0;
 
 protected:

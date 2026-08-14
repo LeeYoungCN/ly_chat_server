@@ -17,7 +17,7 @@ BaseTestSink::~BaseTestSink()
 
 BaseTestSink::BaseTestSink(std::string_view parameter) : _paramStr(parameter) {}
 
-void BaseTestSink::log(const details::LogMsg& logMsg)
+void BaseTestSink::log(const LogMsg& logMsg)
 {
     std::lock_guard lock(_sinkMtx);
     log_it(logMsg);
@@ -58,4 +58,4 @@ void BaseTestSink::set_formatter(std::unique_ptr<Formatter> formatter)
     _formatter = std::move(formatter);
 }
 
-}  // namespace logging
+}  // namespace test::test_logging

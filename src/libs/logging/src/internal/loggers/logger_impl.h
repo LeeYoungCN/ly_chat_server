@@ -7,10 +7,10 @@
 #include <string_view>
 #include <vector>
 
-#include "logging/details/log_msg.h"
-#include "logging/details/log_source.h"
 #include "logging/formatters/formatter.h"
 #include "logging/log_level.h"
+#include "logging/log_msg.h"
+#include "logging/log_source.h"
 #include "logging/sinks/sink.h"
 
 namespace logging {
@@ -43,13 +43,13 @@ public:
     void set_formatter(const std::unique_ptr<logging::Formatter>& formatter) const;
 
     void flush();
-    void log(const details::LogSource& source, LogLevel level, std::string_view message);
+    void log(const LogSource& source, LogLevel level, std::string_view message);
 
-    void backend_log(const details::LogMsg& logMsg);
+    void backend_log(const LogMsg& logMsg);
     void backend_flush();
 
 protected:
-    virtual void log_it(const details::LogMsg& logMsg) = 0;
+    virtual void log_it(const LogMsg& logMsg) = 0;
     virtual void flush_it() = 0;
 
 protected:

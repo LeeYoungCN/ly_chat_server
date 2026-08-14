@@ -14,7 +14,7 @@
 #include "common/constants/date_time_constants.h"
 #include "common/debug/debug_logger.h"
 #include "common/types/date_time_types.h"
-#include "internal/common.h"
+#include "internal/details/common.h"
 #include "internal/sinks/rotating_file_sink_impl_base.h"
 #include "logging/sinks/daily_file_sink.h"
 #include "utils/date_time_utils.h"
@@ -25,13 +25,12 @@
 namespace logging {
 using namespace utils::filesystem;
 using namespace utils::date_time;
-using namespace logging::internal;
 using namespace constants::date_time;
 
 constexpr char SPLIT_CHAR = '.';
 
 DailyFileSinkImpl::DailyFileSinkImpl()
-    : DailyFileSinkImpl(get_default_log_file(), DailyFileSink::DEFAULT_ROTATION_HOUR,
+    : DailyFileSinkImpl(details::get_default_log_file(), DailyFileSink::DEFAULT_ROTATION_HOUR,
                         DailyFileSink::DEFAULT_ROTATION_MINUTE, DailyFileSink::DEFAULT_MAX_FILES,
                         false)
 {
@@ -114,7 +113,7 @@ uint32_t DailyFileSinkImpl::max_files() const
     return max_files_it();
 }
 
-void DailyFileSinkImpl::log_it(const details::LogMsg& logMsg)
+void DailyFileSinkImpl::log_it(const LogMsg& logMsg)
 {
     if (logMsg.timestamp > _rotateTime) {
         if (_fileWriter.size() > 0) {

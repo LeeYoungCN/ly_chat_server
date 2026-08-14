@@ -3,8 +3,8 @@
 
 #include <memory>
 
-#include "logging/details/log_msg.h"
 #include "logging/formatters/formatter.h"
+#include "logging/log_msg.h"
 
 namespace logging {
 class FormatterBase : public Formatter {
@@ -13,7 +13,7 @@ public:
     ~FormatterBase() override;
     explicit FormatterBase(std::unique_ptr<Formatter> pimpl);
 
-    void format(const details::LogMsg& logMsg, std::string& content) override;
+    void format(const LogMsg& logMsg, std::string& content) override;
 
     [[nodiscard]] std::unique_ptr<Formatter> clone() const override;
 

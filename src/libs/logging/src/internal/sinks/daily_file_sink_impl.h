@@ -26,7 +26,7 @@ public:
     [[nodiscard]] uint32_t max_files() const;
 
 protected:
-    void log_it(const details::LogMsg& logMsg) override;
+    void log_it(const LogMsg& logMsg) override;
     void init_file_queue() override;
 
 private:

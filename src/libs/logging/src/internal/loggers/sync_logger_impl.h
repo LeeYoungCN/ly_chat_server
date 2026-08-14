@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "internal/loggers/logger_impl.h"
-#include "logging/details/log_msg.h"
+#include "logging/log_msg.h"
 #include "logging/sinks/sink.h"
 
 namespace logging {
@@ -23,7 +23,7 @@ public:
                    const std::initializer_list<std::shared_ptr<logging::Sink>>& sinks);
 
 protected:
-    void log_it(const details::LogMsg& logMsg) override;
+    void log_it(const LogMsg& logMsg) override;
     void flush_it() override;
 };
 }  // namespace logging

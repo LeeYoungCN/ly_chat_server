@@ -6,8 +6,8 @@
 #include <cstdint>
 #include <vector>
 
-#include "logging/details/log_msg.h"
 #include "base_test_sink.h"
+#include "logging/log_msg.h"
 
 using namespace logging;
 
@@ -24,7 +24,7 @@ public:
     void clear();
 
 protected:
-    void log_it(const details::LogMsg& logMsg) override;
+    void log_it(const LogMsg& logMsg) override;
     void flush_it() override;
 
     void sink_it(std::string_view message);

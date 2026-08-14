@@ -5,12 +5,10 @@
 
 #include "c/common_c.h"
 #include "internal/registry.h"
-#include "logging/details/constants.h"
 #include "logging/log_level.h"
 #include "utils/string_utils.h"
 
 using namespace logging;
-using namespace logging::details;
 using namespace logging::c;
 
 #define ROOT_LOGGER (INST(Registry).root_logger())
@@ -39,7 +37,10 @@ LoggingLevel logging_level()
 
 void logging_set_pattern(const char *pattern)
 {
-    ROOT_LOGGER->set_pattern((pattern == nullptr ? FORMATTER_DEFAULT_PATTERN : pattern));
+    if (pattern == nullptr) {
+        return;
+    }
+    ROOT_LOGGER->set_pattern(pattern);
 }
 
 void logging_flush()

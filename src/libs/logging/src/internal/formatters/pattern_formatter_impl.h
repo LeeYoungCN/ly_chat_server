@@ -3,9 +3,9 @@
 
 #include <memory>
 
-#include "logging/details/constants.h"
-#include "logging/details/log_msg.h"
 #include "logging/formatters/formatter.h"
+#include "logging/formatters/pattern_formatter.h"
+#include "logging/log_msg.h"
 
 namespace logging {
 /**
@@ -30,15 +30,15 @@ public:
 
     explicit PatternFormatterImpl(std::string_view pattern);
 
-    void format(const details::LogMsg& logMsg, std::string& logContent) override;
+    void format(const LogMsg& logMsg, std::string& logContent) override;
     [[nodiscard]] std::unique_ptr<Formatter> clone() const override;
 
 private:
-    void log_msg_to_content(char symbol, const details::LogMsg& logMsg, std::string& logContent);
-    void format_time(const details::LogMsg& logMsg, std::string& logContent);
+    void log_msg_to_content(char symbol, const LogMsg& logMsg, std::string& logContent);
+    void format_time(const LogMsg& logMsg, std::string& logContent);
 
 private:
-    const std::string _pattern{details::FORMATTER_DEFAULT_PATTERN};
+    const std::string _pattern{PatternFormatter::DEFAULT_PATTERN};
 };
 }  // namespace logging
 

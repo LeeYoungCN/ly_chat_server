@@ -15,7 +15,7 @@ public:
     explicit StdoutSinkImpl(FILE *file);
 
 private:
-    void log_it(const details::LogMsg &logMsg) override;
+    void log_it(const LogMsg &logMsg) override;
     void flush_it() override;
     void sink_it(std::string_view message);
 

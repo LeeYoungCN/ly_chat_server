@@ -6,7 +6,7 @@
 #include <string_view>
 
 #include "internal/sinks/sink_impl_base.h"
-#include "logging/details/log_msg.h"
+#include "logging/log_msg.h"
 #include "utils/file_writer.h"
 
 namespace logging {
@@ -20,7 +20,7 @@ public:
 
 protected:
     BasicFileSinkImpl(std::string_view file, bool overwrite, std::string_view paramStr);
-    void log_it(const details::LogMsg& logMsg) override;
+    void log_it(const LogMsg& logMsg) override;
     void flush_it() override;
     void sink_it(std::string_view message);
 

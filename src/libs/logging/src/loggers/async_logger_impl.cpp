@@ -8,7 +8,7 @@
 #include "internal/loggers/logger_impl.h"
 #include "internal/registry.h"
 #include "internal/task_pool.h"
-#include "logging/details/log_msg.h"
+#include "logging/log_msg.h"
 #include "logging/sinks/sink.h"
 
 namespace logging {
@@ -74,7 +74,7 @@ AsyncLoggerImpl::AsyncLoggerImpl(std::string_view name,
     }
 }
 
-void AsyncLoggerImpl::log_it(const details::LogMsg& logMsg)
+void AsyncLoggerImpl::log_it(const LogMsg& logMsg)
 {
     _taskPool.lock()->log(shared_from_this(), logMsg);
 }

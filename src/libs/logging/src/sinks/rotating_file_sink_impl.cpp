@@ -13,8 +13,8 @@
 
 #include "common/common_error_code.h"
 #include "common/debug/debug_logger.h"
-#include "internal/common.h"
-#include "logging/details/log_msg.h"
+#include "internal/details/common.h"
+#include "logging/log_msg.h"
 #include "logging/sinks/rotating_file_sink.h"
 #include "utils/date_time_utils.h"
 #include "utils/file_writer.h"
@@ -46,7 +46,7 @@ struct LogFileInfo {
 };
 
 RotatingFileSinkImpl::RotatingFileSinkImpl()
-    : RotatingFileSinkImpl(internal::get_default_log_file("log"))
+    : RotatingFileSinkImpl(details::get_default_log_file("log"))
 {
 }
 
@@ -114,7 +114,7 @@ uint32_t RotatingFileSinkImpl::max_files() const
     return max_files_it();
 }
 
-void RotatingFileSinkImpl::log_it(const details::LogMsg& logMsg)
+void RotatingFileSinkImpl::log_it(const LogMsg& logMsg)
 {
     std::string content;
     _formatter->format(logMsg, content);

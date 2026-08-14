@@ -4,17 +4,16 @@
 #include <stdexcept>
 
 #include "common/debug/debug_logger.h"
-#include "internal/common.h"
+#include "internal/details/common.h"
 #include "utils/file_writer.h"
 #include "utils/filesystem_utils.h"
 #include "utils/utils_error_code.h"
 
 namespace logging {
 using namespace utils::filesystem;
-using namespace logging::details;
 
 BasicFileSinkImpl::BasicFileSinkImpl()
-    : BasicFileSinkImpl(internal::get_default_log_file("log"), true)
+    : BasicFileSinkImpl(details::get_default_log_file("log"), true)
 {
 }
 

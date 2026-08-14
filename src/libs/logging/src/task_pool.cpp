@@ -12,7 +12,7 @@
 #include "common/debug/debug_logger.h"
 #include "internal/log_task.h"
 #include "internal/loggers/async_logger_impl.h"
-#include "logging/details/log_msg.h"
+#include "logging/log_msg.h"
 
 namespace logging {
 using namespace common::container;
@@ -41,7 +41,7 @@ TaskPool::~TaskPool()
     DEBUG_LOGGER_DBG("Log thread pool release.");
 }
 
-void TaskPool::log(const std::shared_ptr<AsyncLoggerImpl>& logger, const details::LogMsg& logMsg)
+void TaskPool::log(const std::shared_ptr<AsyncLoggerImpl>& logger, const LogMsg& logMsg)
 {
     if (!_isThreadRunning.load()) {
         DEBUG_LOGGER_ERR("Log failed. Task pool shutdown");
@@ -54,7 +54,7 @@ void TaskPool::flush(const std::shared_ptr<AsyncLoggerImpl>& logger)
     if (!_isThreadRunning.load()) {
         DEBUG_LOGGER_ERR("Flush failed. Task pool shutdown");
     }
-    _buffer.enqueue_wait(LogTask(TaskType::FLUSH, logger, details::LogMsg()));
+    _buffer.enqueue_wait(LogTask(TaskType::FLUSH, logger, LogMsg()));
 }
 
 [[nodiscard]] size_t TaskPool::task_count()

@@ -8,7 +8,7 @@
 
 #include "internal/loggers/logger_impl.h"
 #include "internal/task_pool.h"
-#include "logging/details/log_msg.h"
+#include "logging/log_msg.h"
 #include "logging/sinks/sink.h"
 
 namespace logging {
@@ -32,7 +32,7 @@ public:
                     const std::weak_ptr<logging::TaskPool>& pool);
 
 protected:
-    void log_it(const details::LogMsg& logMsg) override;
+    void log_it(const LogMsg& logMsg) override;
     void flush_it() override;
 
 private:

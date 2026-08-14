@@ -5,7 +5,6 @@
 #include "logging/c/logging_c.h"
 
 using namespace logging;
-using namespace logging::details;
 
 extern "C" {
 TaskPoolSt *logging_create_task_pool(uint32_t capacity, uint32_t threadCnt)

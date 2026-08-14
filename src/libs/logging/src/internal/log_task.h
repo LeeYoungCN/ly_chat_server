@@ -5,7 +5,7 @@
 #include <memory>
 #include <utility>
 
-#include "logging/details/log_msg.h"
+#include "logging/log_msg.h"
 
 namespace logging {
 class AsyncLoggerImpl;
@@ -18,7 +18,7 @@ enum class TaskType {
 
 struct LogTask {
     TaskType type = TaskType::SHUTDOWN;
-    details::LogMsg logMsg;
+    LogMsg logMsg;
     std::shared_ptr<AsyncLoggerImpl> logger;
 
     LogTask() = default;
@@ -29,7 +29,7 @@ struct LogTask {
     {
     }
 
-    LogTask(TaskType type, const std::shared_ptr<AsyncLoggerImpl>& logger, details::LogMsg logMsg)
+    LogTask(TaskType type, const std::shared_ptr<AsyncLoggerImpl>& logger, LogMsg logMsg)
         : type(type), logMsg(std::move(logMsg)), logger(logger)
     {
     }

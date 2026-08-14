@@ -12,7 +12,7 @@
 
 #include "common/container/concurrent_blocking_queue.hpp"
 #include "internal/log_task.h"
-#include "logging/details/log_msg.h"
+#include "logging/log_msg.h"
 
 namespace logging {
 class AsyncLoggerImpl;
@@ -27,7 +27,7 @@ public:
     explicit TaskPool(uint32_t capacity);
     TaskPool(uint32_t capacity, uint32_t threadCnt);
 
-    void log(const std::shared_ptr<AsyncLoggerImpl>& logger, const details::LogMsg& logMsg);
+    void log(const std::shared_ptr<AsyncLoggerImpl>& logger, const LogMsg& logMsg);
     void flush(const std::shared_ptr<AsyncLoggerImpl>& logger);
     [[nodiscard]] size_t task_count();
 

@@ -6,8 +6,6 @@
 #include "internal/task_pool.h"
 
 namespace logging {
-using namespace logging::details;
-
 #pragma region Root logger
 std::shared_ptr<Logger> root_logger()
 {

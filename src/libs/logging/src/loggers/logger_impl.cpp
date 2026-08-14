@@ -7,14 +7,14 @@
 #include <string_view>
 #include <vector>
 
-#include "logging/details/log_msg.h"
-#include "logging/details/log_source.h"
 #include "logging/formatters/formatter.h"
 #include "logging/formatters/pattern_formatter.h"
 #include "logging/log_level.h"
+#include "logging/log_msg.h"
+#include "logging/log_source.h"
 #include "logging/sinks/sink.h"
+
 namespace logging {
-using namespace details;
 
 LoggerImpl::LoggerImpl(std::string_view name) : _name(name)
 {
@@ -117,9 +117,9 @@ void LoggerImpl::set_formatter(const std::unique_ptr<Formatter>& formatter) cons
     }
 }
 
-void LoggerImpl::log(const details::LogSource& source, LogLevel level, std::string_view message)
+void LoggerImpl::log(const LogSource& source, LogLevel level, std::string_view message)
 {
-    log_it(details::LogMsg(source, name(), level, message));
+    log_it(LogMsg(source, name(), level, message));
 }
 
 void LoggerImpl::flush()

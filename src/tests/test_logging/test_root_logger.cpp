@@ -9,7 +9,6 @@
 
 using namespace test::test_logging;
 using namespace logging;
-using namespace logging::details;
 
 namespace test::test_logging {
 class TestRootLogger : public ::testing::Test {

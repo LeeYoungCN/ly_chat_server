@@ -13,7 +13,7 @@ FormatterBase::FormatterBase(std::unique_ptr<Formatter> pimpl) : _pImpl(std::mov
     throw_if_pimpl_null();
 }
 
-void FormatterBase::format(const details::LogMsg& logMsg, std::string& content)
+void FormatterBase::format(const LogMsg& logMsg, std::string& content)
 {
     throw_if_pimpl_null();
     _pImpl->format(logMsg, content);

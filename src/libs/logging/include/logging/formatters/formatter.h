@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include "logging/details/log_msg.h"
+#include "logging/log_msg.h"
 
 namespace logging {
 
@@ -12,7 +12,7 @@ public:
     Formatter() = default;
     virtual ~Formatter() = default;
 
-    virtual void format(const details::LogMsg& logMsg, std::string& content) = 0;
+    virtual void format(const LogMsg& logMsg, std::string& content) = 0;
 
     [[nodiscard]] virtual std::unique_ptr<Formatter> clone() const = 0;
 };

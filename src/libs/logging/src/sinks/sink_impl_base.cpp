@@ -19,7 +19,7 @@ SinkImplBase::SinkImplBase(std::string_view parameter) : _paramStr(parameter)
     DEBUG_LOGGER_DBG("Create Sink. {}", _paramStr);
 }
 
-void SinkImplBase::log(const details::LogMsg& logMsg)
+void SinkImplBase::log(const LogMsg& logMsg)
 {
     std::lock_guard lock(_sinkMtx);
     log_it(logMsg);

@@ -16,9 +16,14 @@ using namespace utils::filesystem;
 
 namespace logging {
 
-PatternFormatterImpl::PatternFormatterImpl(std::string_view pattern) : _pattern(pattern) {}
+PatternFormatterImpl::PatternFormatterImpl(std::string_view pattern) : _pattern(pattern)
+{
+    if (_pattern.empty()) {
+        throw std::invalid_argument("pattern is empty.");
+    }
+}
 
-void PatternFormatterImpl::format(const details::LogMsg& logMsg, std::string& content)
+void PatternFormatterImpl::format(const LogMsg& logMsg, std::string& content)
 {
     constexpr uint32_t LOG_CONTENT_DEFAULT_LEN = 256;
     content.reserve(LOG_CONTENT_DEFAULT_LEN);
@@ -35,7 +40,7 @@ void PatternFormatterImpl::format(const details::LogMsg& logMsg, std::string& co
     }
 }
 
-void PatternFormatterImpl::format_time(const details::LogMsg& logMsg, std::string& logContent)
+void PatternFormatterImpl::format_time(const LogMsg& logMsg, std::string& logContent)
 {
     DateTimeSt datetime = timestamp_to_date_time(logMsg.timestamp);
     std::format_to(std::back_insert_iterator(logContent),
@@ -49,7 +54,7 @@ void PatternFormatterImpl::format_time(const details::LogMsg& logMsg, std::strin
                    datetime.millis);
 }
 
-void PatternFormatterImpl::log_msg_to_content(char symbol, const details::LogMsg& logMsg,
+void PatternFormatterImpl::log_msg_to_content(char symbol, const LogMsg& logMsg,
                                               std::string& logContent)
 {
     switch (symbol) {

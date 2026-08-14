@@ -80,7 +80,7 @@ TEST_F(TestBasicFileSink, sink_log_and_flush)
 
     FileSize messageSize = logContent.size() + LF_LENGTH;
 
-    logging::details::LogMsg logMsg(LOG_SRC_LOCAL, "logger", LogLevel::INFO, message);
+    LogMsg logMsg(LOG_SRC_LOCAL, "logger", LogLevel::INFO, message);
 
     for (int i = 0; i < 100; ++i) {
         sink.log(logMsg);

@@ -18,7 +18,7 @@ StdoutSinkImpl::StdoutSinkImpl(FILE *file) : m_stream(file == nullptr ? stdout :
     }
 }
 
-void StdoutSinkImpl::log_it(const details::LogMsg &logMsg)
+void StdoutSinkImpl::log_it(const LogMsg &logMsg)
 {
     std::string content;
     _formatter->format(logMsg, content);

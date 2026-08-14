@@ -6,15 +6,15 @@
 
 #include "common/constants/filesystem_constants.h"
 #include "gtest/gtest.h"
-#include "logging/details/log_source.h"
 #include "logging/log_level.h"
+#include "logging/log_source.h"
 #include "logging/sinks/rotating_file_sink.h"
 #include "test_logging_utils/common.h"
 #include "utils/date_time_utils.h"
 #include "utils/filesystem_utils.h"
 
 using namespace logging;
-using namespace logging::details;
+
 using namespace utils::filesystem;
 using namespace constants::filesystem;
 

@@ -36,7 +36,7 @@ void LogContentBufferSink::clear()
     _disk.clear();
 }
 
-void LogContentBufferSink::log_it(const details::LogMsg& logMsg)
+void LogContentBufferSink::log_it(const LogMsg& logMsg)
 {
     std::string content;
     _formatter->format(logMsg, content);

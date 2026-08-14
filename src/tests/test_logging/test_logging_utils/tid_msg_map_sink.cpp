@@ -3,7 +3,6 @@
 #include <mutex>
 
 using namespace logging;
-using namespace logging::details;
 
 namespace test::test_logging {
 void TidMsgMapSink::log_it(const LogMsg& logMsg)
