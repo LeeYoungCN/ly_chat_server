@@ -1,12 +1,12 @@
 #pragma once
-#ifndef LOGGING_INTERNAL_SINKS_DAILY_FILE_SINK_IMPL_H
-#define LOGGING_INTERNAL_SINKS_DAILY_FILE_SINK_IMPL_H
+#ifndef LOGGING_SINKS_INTERNAL_DAILY_FILE_SINK_IMPL_H
+#define LOGGING_SINKS_INTERNAL_DAILY_FILE_SINK_IMPL_H
 #include <cstdint>
 #include <string>
 #include <string_view>
 
 #include "common/types/date_time_types.h"
-#include "internal/sinks/rotating_file_sink_impl_base.h"
+#include "sinks/internal/rotating_file_sink_impl_base.h"
 
 namespace logging {
 /**
@@ -43,4 +43,4 @@ private:
 
 }  // namespace logging
 
-#endif  // LOGGING_INTERNAL_SINKS_DAILY_FILE_SINK_IMPL_H
+#endif  // LOGGING_SINKS_INTERNAL_DAILY_FILE_SINK_IMPL_H

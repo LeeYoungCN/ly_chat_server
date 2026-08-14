@@ -1,6 +1,6 @@
 #pragma once
-#ifndef LOGGINGL_SINKS_BASIC_FILE_SINK_H
-#define LOGGINGL_SINKS_BASIC_FILE_SINK_H
+#ifndef LOGGING_SINKS_BASIC_FILE_SINK_H
+#define LOGGING_SINKS_BASIC_FILE_SINK_H
 
 #include <string>
 #include <string_view>
@@ -19,4 +19,4 @@ public:
 
 }  // namespace logging
 
-#endif  // LOGGINGL_SINKS_BASIC_FILE_SINK_H
+#endif  // LOGGING_SINKS_BASIC_FILE_SINK_H

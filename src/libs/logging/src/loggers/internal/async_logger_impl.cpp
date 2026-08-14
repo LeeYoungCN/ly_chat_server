@@ -1,13 +1,13 @@
-#include "internal/loggers/async_logger_impl.h"
+#include "loggers/internal/async_logger_impl.h"
 
 #include <initializer_list>
 #include <memory>
 #include <string_view>
 #include <vector>
 
-#include "internal/loggers/logger_impl.h"
 #include "internal/registry.h"
 #include "internal/task_pool.h"
+#include "loggers/internal/logger_impl.h"
 #include "logging/log_msg.h"
 #include "logging/sinks/sink.h"
 

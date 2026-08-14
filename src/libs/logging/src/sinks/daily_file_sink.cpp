@@ -5,7 +5,7 @@
 #include <string>
 #include <string_view>
 
-#include "internal/sinks/daily_file_sink_impl.h"
+#include "sinks/internal/daily_file_sink_impl.h"
 
 namespace logging {
 

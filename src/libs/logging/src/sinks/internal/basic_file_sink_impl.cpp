@@ -1,10 +1,10 @@
-#include "internal/sinks/basic_file_sink_impl.h"
+#include "sinks/internal/basic_file_sink_impl.h"
 
 #include <format>
 #include <stdexcept>
 
 #include "common/debug/debug_logger.h"
-#include "internal/details/common.h"
+#include "internal/common.h"
 #include "utils/file_writer.h"
 #include "utils/filesystem_utils.h"
 #include "utils/utils_error_code.h"
@@ -12,10 +12,7 @@
 namespace logging {
 using namespace utils::filesystem;
 
-BasicFileSinkImpl::BasicFileSinkImpl()
-    : BasicFileSinkImpl(details::get_default_log_file("log"), true)
-{
-}
+BasicFileSinkImpl::BasicFileSinkImpl() : BasicFileSinkImpl(get_default_log_file("log"), true) {}
 
 BasicFileSinkImpl::BasicFileSinkImpl(std::string_view file, bool overwrite)
     : BasicFileSinkImpl(file, overwrite,

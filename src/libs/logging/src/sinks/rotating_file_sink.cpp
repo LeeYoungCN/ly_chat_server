@@ -6,7 +6,7 @@
 #include <string_view>
 #include <vector>
 
-#include "internal/sinks/rotating_file_sink_impl.h"
+#include "sinks/internal/rotating_file_sink_impl.h"
 
 namespace logging {
 using namespace utils::filesystem;

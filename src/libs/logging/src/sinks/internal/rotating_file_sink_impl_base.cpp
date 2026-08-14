@@ -1,4 +1,4 @@
-#include "internal/sinks/rotating_file_sink_impl_base.h"
+#include "sinks/internal/rotating_file_sink_impl_base.h"
 
 #include <atomic>
 #include <cstdint>
@@ -10,7 +10,7 @@
 #include <vector>
 
 #include "common/debug/debug_logger.h"
-#include "internal/details/common.h"
+#include "internal/common.h"
 
 namespace logging {
 using namespace utils::filesystem;
@@ -57,7 +57,7 @@ void RotatingFileSinkImplBase::rotate(std::string_view newFile)
 {
     _fileWriter.close();
 
-    if (details::rename_file(file(), newFile, true, RENAME_FILE_RETRY, RENAME_FILE_SLEEP_MS)) {
+    if (rename_file(file(), newFile, true, RENAME_FILE_RETRY, RENAME_FILE_SLEEP_MS)) {
         _fileWriter.reopen(true);
         push_back_file(newFile);
         DEBUG_LOGGER_DBG("Rotate log file success. {}", newFile);
@@ -73,7 +73,7 @@ void RotatingFileSinkImplBase::delete_overflow_file()
     // 保证剩余文件不超过最大文件数量，直到把能删除的都删了。
     while (_fileQue.size() > _maxFiles.load()) {
         auto file = _fileQue.front();
-        if (!details::delete_file(file, DELETE_FILE_RETRY, DELETE_FILE_SLEEP_MS)) {
+        if (!delete_file(file, DELETE_FILE_RETRY, DELETE_FILE_SLEEP_MS)) {
             DEBUG_LOGGER_ERR("Delete {} failed. {}", _itemName, file);
         } else {
             DEBUG_LOGGER_DBG("Delete {} sucess. {}", _itemName, file);

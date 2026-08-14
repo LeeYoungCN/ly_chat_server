@@ -1,5 +1,5 @@
-#ifndef LOGGING_INTERNAL_LOGGERS_LOGGER_IMPL_H
-#define LOGGING_INTERNAL_LOGGERS_LOGGER_IMPL_H
+#ifndef LOGGING_LOGGERS_INTERNAL_LOGGER_IMPL_H
+#define LOGGING_LOGGERS_INTERNAL_LOGGER_IMPL_H
 
 #include <atomic>
 #include <initializer_list>
@@ -59,4 +59,4 @@ protected:
     std::atomic<LogLevel> _flushLevel{LogLevel::OFF};
 };
 }  // namespace logging
-#endif  // LOGGING_INTERNAL_LOGGERS_LOGGER_IMPL_H
+#endif  // LOGGING_LOGGERS_INTERNAL_LOGGER_IMPL_H

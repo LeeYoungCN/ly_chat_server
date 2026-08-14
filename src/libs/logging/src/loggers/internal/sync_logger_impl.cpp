@@ -1,11 +1,11 @@
-#include "internal/loggers/sync_logger_impl.h"
+#include "loggers/internal/sync_logger_impl.h"
 
 #include <initializer_list>
 #include <memory>
 #include <string_view>
 #include <vector>
 
-#include "internal/loggers/logger_impl.h"
+#include "loggers/internal/logger_impl.h"
 #include "logging/log_msg.h"
 #include "logging/sinks/sink.h"
 

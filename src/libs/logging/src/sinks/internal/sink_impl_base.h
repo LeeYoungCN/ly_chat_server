@@ -1,6 +1,6 @@
 #pragma once
-#ifndef LOGGING_INTERNAL_SINKS_BASE_SINK_IMPL_H
-#define LOGGING_INTERNAL_SINKS_BASE_SINK_IMPL_H
+#ifndef LOGGING_SINKS_INTERNAL_BASE_SINK_IMPL_H
+#define LOGGING_SINKS_INTERNAL_BASE_SINK_IMPL_H
 #include <atomic>
 #include <memory>
 #include <mutex>
@@ -41,4 +41,4 @@ protected:
 };
 }  // namespace logging
 
-#endif  // LOGGING_INTERNAL_SINKS_BASE_SINK_IMPL_H
+#endif  // LOGGING_SINKS_INTERNAL_BASE_SINK_IMPL_H

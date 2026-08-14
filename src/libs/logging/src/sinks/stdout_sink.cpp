@@ -3,7 +3,7 @@
 #include <cstdio>
 #include <memory>
 
-#include "internal/sinks/stdout_sink_impl.h"
+#include "sinks/internal/stdout_sink_impl.h"
 #include "logging/sinks/sink_base.h"
 
 namespace logging {

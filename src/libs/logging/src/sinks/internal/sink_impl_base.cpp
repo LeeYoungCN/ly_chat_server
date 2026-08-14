@@ -1,4 +1,4 @@
-#include "internal/sinks/sink_impl_base.h"
+#include "sinks/internal/sink_impl_base.h"
 
 #include <atomic>
 #include <mutex>

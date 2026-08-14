@@ -3,7 +3,7 @@
 #include <memory>
 #include <vector>
 
-#include "internal/loggers/sync_logger_impl.h"
+#include "loggers/internal/sync_logger_impl.h"
 #include "logging/loggers/logger_base.h"
 
 namespace logging {

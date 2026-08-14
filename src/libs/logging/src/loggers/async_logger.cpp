@@ -3,8 +3,8 @@
 #include <memory>
 #include <vector>
 
-#include "internal/loggers/async_logger_impl.h"
 #include "internal/task_pool.h"
+#include "loggers/internal/async_logger_impl.h"
 #include "logging/loggers/logger_base.h"
 
 namespace logging {

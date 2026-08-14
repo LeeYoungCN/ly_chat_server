@@ -1,4 +1,4 @@
-#include "internal/sinks/rotating_file_sink_impl.h"
+#include "sinks/internal/rotating_file_sink_impl.h"
 
 #include <algorithm>
 #include <atomic>
@@ -13,7 +13,7 @@
 
 #include "common/common_error_code.h"
 #include "common/debug/debug_logger.h"
-#include "internal/details/common.h"
+#include "internal/common.h"
 #include "logging/log_msg.h"
 #include "logging/sinks/rotating_file_sink.h"
 #include "utils/date_time_utils.h"
@@ -45,10 +45,7 @@ struct LogFileInfo {
     }
 };
 
-RotatingFileSinkImpl::RotatingFileSinkImpl()
-    : RotatingFileSinkImpl(details::get_default_log_file("log"))
-{
-}
+RotatingFileSinkImpl::RotatingFileSinkImpl() : RotatingFileSinkImpl(get_default_log_file("log")) {}
 
 RotatingFileSinkImpl::RotatingFileSinkImpl(std::string_view file, bool rotateOnOpen)
     : RotatingFileSinkImpl(file, RotatingFileSink::DEFAULT_MAX_FILE_SIZE,

@@ -1,4 +1,4 @@
-#include "internal/details/common.h"
+#include "internal/common.h"
 
 #include "common/debug/debug_logger.h"
 #include "utils/date_time_utils.h"
@@ -6,7 +6,7 @@
 #include "utils/process_utils.h"
 #include "utils/thread_utils.h"
 
-namespace logging::details {
+namespace logging {
 using namespace utils::filesystem;
 using namespace utils::process;
 

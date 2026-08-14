@@ -2,8 +2,8 @@
 
 #include <memory>
 
-#include "internal/sinks/basic_file_sink_impl.h"
 #include "logging/sinks/sink_base.h"
+#include "sinks/internal/basic_file_sink_impl.h"
 
 namespace logging {
 

@@ -1,12 +1,12 @@
 #pragma once
-#ifndef LOGGINGL_INTERNAL_SINKS_BASIC_FILE_SINK_IMPL_H
-#define LOGGINGL_INTERNAL_SINKS_BASIC_FILE_SINK_IMPL_H
+#ifndef LOGGING_SINKS_INTERNAL_BASIC_FILE_SINK_IMPL_H
+#define LOGGING_SINKS_INTERNAL_BASIC_FILE_SINK_IMPL_H
 
 #include <string>
 #include <string_view>
 
-#include "internal/sinks/sink_impl_base.h"
 #include "logging/log_msg.h"
+#include "sinks/internal/sink_impl_base.h"
 #include "utils/file_writer.h"
 
 namespace logging {
@@ -35,4 +35,4 @@ protected:
 
 }  // namespace logging
 
-#endif  // LOGGINGL_INTERNAL_SINKS_BASIC_FILE_SINK_IMPL_H
+#endif  // LOGGING_SINKS_INTERNAL_BASIC_FILE_SINK_IMPL_H

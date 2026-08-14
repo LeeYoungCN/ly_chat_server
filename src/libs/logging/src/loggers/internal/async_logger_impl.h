@@ -1,13 +1,13 @@
-#ifndef LOGGING_INTERNAL_LOGGERS_ASYNC_LOGGER_IMPL_H
-#define LOGGING_INTERNAL_LOGGERS_ASYNC_LOGGER_IMPL_H
+#ifndef LOGGING_LOGGERS_INTERNAL_ASYNC_LOGGER_IMPL_H
+#define LOGGING_LOGGERS_INTERNAL_ASYNC_LOGGER_IMPL_H
 
 #include <initializer_list>
 #include <memory>
 #include <string_view>
 #include <vector>
 
-#include "internal/loggers/logger_impl.h"
 #include "internal/task_pool.h"
+#include "loggers/internal/logger_impl.h"
 #include "logging/log_msg.h"
 #include "logging/sinks/sink.h"
 
@@ -40,4 +40,4 @@ private:
 };
 }  // namespace logging
 
-#endif  // LOGGING_INTERNAL_LOGGERS_ASYNC_LOGGER_IMPL_H
+#endif  // LOGGING_LOGGERS_INTERNAL_ASYNC_LOGGER_IMPL_H

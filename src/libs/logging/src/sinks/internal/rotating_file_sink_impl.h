@@ -1,11 +1,11 @@
-#ifndef LOGGING_INTERNAL_SINKS_ROTATING_FILE_SINK_IMPL_H
-#define LOGGING_INTERNAL_SINKS_ROTATING_FILE_SINK_IMPL_H
+#ifndef LOGGING_SINKS_INTERNAL_ROTATING_FILE_SINK_IMPL_H
+#define LOGGING_SINKS_INTERNAL_ROTATING_FILE_SINK_IMPL_H
 
 #include <atomic>
 #include <cstdint>
 #include <string_view>
 
-#include "internal/sinks/rotating_file_sink_impl_base.h"
+#include "sinks/internal/rotating_file_sink_impl_base.h"
 
 namespace logging {
 class RotatingFileSinkImpl : public RotatingFileSinkImplBase {
@@ -38,4 +38,4 @@ private:
     uint32_t _nextIdx{0};
 };
 }  // namespace logging
-#endif  // LOGGING_INTERNAL_SINKS_ROTATING_FILE_SINK_IMPL_H
+#endif  // LOGGING_SINKS_INTERNAL_ROTATING_FILE_SINK_IMPL_H

@@ -1,5 +1,5 @@
-#ifndef LOGGING_INTERNAL_SINKS_ROTATING_FILE_SINK_IMPL_BASE_H
-#define LOGGING_INTERNAL_SINKS_ROTATING_FILE_SINK_IMPL_BASE_H
+#ifndef LOGGING_SINKS_INTERNAL_ROTATING_FILE_SINK_IMPL_BASE_H
+#define LOGGING_SINKS_INTERNAL_ROTATING_FILE_SINK_IMPL_BASE_H
 
 #include <atomic>
 #include <cstdint>
@@ -8,7 +8,7 @@
 #include <string_view>
 #include <vector>
 
-#include "internal/sinks/basic_file_sink_impl.h"
+#include "sinks/internal/basic_file_sink_impl.h"
 
 namespace logging {
 
@@ -37,4 +37,4 @@ private:
 
 }  // namespace logging
 
-#endif  // LOGGING_INTERNAL_SINKS_ROTATING_FILE_SINK_IMPL_BASE_H
+#endif  // LOGGING_SINKS_INTERNAL_ROTATING_FILE_SINK_IMPL_BASE_H

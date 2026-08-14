@@ -4,7 +4,7 @@
 #include <string_view>
 #include <vector>
 
-#include "internal/loggers/logger_impl.h"
+#include "loggers/internal/logger_impl.h"
 #include "logging/formatters/formatter.h"
 #include "logging/log_level.h"
 #include "logging/log_source.h"

@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "internal/formatters/pattern_formatter_impl.h"
+#include "formatters/internal/pattern_formatter_impl.h"
 
 namespace logging {
 

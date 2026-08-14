@@ -1,11 +1,11 @@
 #pragma once
-#ifndef LOGGING_INTERNAL_SINKS_STDOUT_SINK_IMPL_H
-#define LOGGING_INTERNAL_SINKS_STDOUT_SINK_IMPL_H
+#ifndef LOGGING_SINKS_INTERNAL_STDOUT_SINK_IMPL_H
+#define LOGGING_SINKS_INTERNAL_STDOUT_SINK_IMPL_H
 
 #include <cstdio>
 #include <string_view>
 
-#include "internal/sinks/sink_impl_base.h"
+#include "sinks/internal/sink_impl_base.h"
 
 namespace logging {
 class StdoutSinkImpl : public SinkImplBase {
@@ -23,4 +23,4 @@ private:
     FILE *m_stream = stdout;
 };
 }  // namespace logging
-#endif  // LOGGING_INTERNAL_SINKS_STDOUT_SINK_IMPL_H
+#endif  // LOGGING_SINKS_INTERNAL_STDOUT_SINK_IMPL_H

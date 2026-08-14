@@ -1,4 +1,4 @@
-#include "internal/sinks/stdout_sink_impl.h"
+#include "sinks/internal/stdout_sink_impl.h"
 
 #include <cstdio>
 #include <string>

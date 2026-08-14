@@ -11,7 +11,7 @@
 #include "common/container/concurrent_blocking_queue.hpp"
 #include "common/debug/debug_logger.h"
 #include "internal/log_task.h"
-#include "internal/loggers/async_logger_impl.h"
+#include "loggers/internal/async_logger_impl.h"
 #include "logging/log_msg.h"
 
 namespace logging {
