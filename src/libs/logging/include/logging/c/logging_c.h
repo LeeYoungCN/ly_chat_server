@@ -14,7 +14,6 @@ typedef struct TaskPoolSt TaskPoolSt;
 
 #define LOGGING_LOGGER_ROOT_NAME               "__root_logger__"
 #define LOGGING_FORMATTER_DEFAULT_PATTERN      "[%d][%L][%s:%#]: %v"
-#define LOGGING_FORMATTER_DEFAULT_TIME_PATTERN "%Y-%m-%d %H:%M:%S.%3f"
 #define LOGGING_THREAD_POOL_DEFAULT_CAPACITY   (4096)
 #define LOGGING_THREAD_POOL_DEFAULT_THREAD_CNT (1)
 

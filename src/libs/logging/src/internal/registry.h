@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef LOGGING_DETAILS_REGISTRY_H
-#define LOGGING_DETAILS_REGISTRY_H
+#ifndef LOGGING_INTERNAL_REGISTRY_H
+#define LOGGING_INTERNAL_REGISTRY_H
 
 #include <memory>
 #include <mutex>
@@ -77,4 +77,4 @@ private:
 };
 }  // namespace logging
 
-#endif  // LOGGING_DETAILS_REGISTRY_H
+#endif  // LOGGING_INTERNAL_REGISTRY_H
