@@ -1,17 +1,15 @@
 #include "internal/task_pool.h"
 
-#include <atomic>
 #include <cstdint>
-#include <exception>
 #include <memory>
-#include <mutex>
+#include <stdexcept>
 #include <thread>
 #include <vector>
 
 #include "common/container/concurrent_blocking_queue.hpp"
 #include "common/debug/debug_logger.h"
 #include "internal/log_task.h"
-#include "loggers/internal/async_logger_impl.h"
+#include "loggers/internal/logger_impl.h"
 #include "logging/log_msg.h"
 
 namespace origin::logging {
