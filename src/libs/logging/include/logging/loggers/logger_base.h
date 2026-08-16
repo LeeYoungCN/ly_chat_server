@@ -19,7 +19,7 @@ public:
     ~LoggerBase() override;
 
     [[nodiscard]] std::string_view name() const override;
-    [[nodiscard]] std::vector<std::shared_ptr<logging::Sink>> sinks() const override;
+    [[nodiscard]] std::vector<std::shared_ptr<Sink>> sinks() const override;
 
     void set_level(LogLevel level) const override;
     [[nodiscard]] LogLevel level() const override;
@@ -30,7 +30,7 @@ public:
     [[nodiscard]] bool should_flush(LogLevel level) const override;
 
     void set_pattern(std::string_view pattern) const override;
-    void set_formatter(const std::unique_ptr<logging::Formatter>& formatter) const override;
+    void set_formatter(const std::unique_ptr<Formatter>& formatter) const override;
 
     void flush() override;
 
@@ -39,7 +39,7 @@ protected:
 
 protected:
     void throw_if_pimpl_null() const;
-    std::shared_ptr<LoggerImpl> _pimpl;
+    std::shared_ptr<LoggerImpl> _pImpl;
 };
 }  // namespace logging
 #endif  // LOGGING_LOGGERS_LOGGER_BASE_H

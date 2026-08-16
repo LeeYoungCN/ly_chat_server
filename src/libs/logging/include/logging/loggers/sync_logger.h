@@ -17,12 +17,12 @@ public:
 
     explicit SyncLogger(std::string_view name);
 
-    SyncLogger(std::string_view name, const std::shared_ptr<logging::Sink>& sink);
+    SyncLogger(std::string_view name, const std::shared_ptr<Sink>& sink);
 
-    SyncLogger(std::string_view name, const std::vector<std::shared_ptr<logging::Sink>>& sinks);
+    SyncLogger(std::string_view name, const std::vector<std::shared_ptr<Sink>>& sinks);
 
     SyncLogger(std::string_view name,
-               const std::initializer_list<std::shared_ptr<logging::Sink>>& sinks);
+               const std::initializer_list<std::shared_ptr<Sink>>& sinks);
 };
 }  // namespace logging
 

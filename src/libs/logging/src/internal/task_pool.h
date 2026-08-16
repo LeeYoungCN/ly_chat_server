@@ -2,11 +2,8 @@
 #ifndef LOGGING_INTERNAL_TASK_POOL_H
 #define LOGGING_INTERNAL_TASK_POOL_H
 
-#include <atomic>
-#include <cstddef>
 #include <cstdint>
 #include <memory>
-#include <mutex>
 #include <thread>
 #include <vector>
 
@@ -15,7 +12,7 @@
 #include "logging/log_msg.h"
 
 namespace logging {
-class AsyncLoggerImpl;
+class LoggerImpl;
 class TaskPool {
 public:
     static constexpr uint32_t DEFAULT_CAPACITY = 4096;
@@ -27,9 +24,8 @@ public:
     explicit TaskPool(uint32_t capacity);
     TaskPool(uint32_t capacity, uint32_t threadCnt);
 
-    void log(const std::shared_ptr<AsyncLoggerImpl>& logger, const LogMsg& logMsg);
-    void flush(const std::shared_ptr<AsyncLoggerImpl>& logger);
-    [[nodiscard]] size_t task_count();
+    void log(const std::shared_ptr<LoggerImpl>& logger, const LogMsg& logMsg);
+    void flush(const std::shared_ptr<LoggerImpl>& logger);
 
 private:
     void start();
@@ -38,10 +34,9 @@ private:
 
 private:
     common::container::ConcurrentBlockingQueue<LogTask> _buffer;
-    uint32_t _threadCnt = 0;
+    uint32_t _threadCnt{0};
     std::vector<std::thread> _threadPool;
-    std::mutex _threadPoolMtx;
-    std::atomic<bool> _isThreadRunning{false};
+    std::string _paramStr;
 };
 }  // namespace logging
 

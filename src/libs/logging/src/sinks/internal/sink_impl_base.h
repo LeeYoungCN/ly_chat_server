@@ -17,6 +17,7 @@ class SinkImplBase : public Sink {
 public:
     SinkImplBase() = default;
     ~SinkImplBase() override;
+    explicit SinkImplBase(std::string_view parameter);
 
     void log(const LogMsg& logMsg) override;
     void flush() override;
@@ -28,8 +29,9 @@ public:
     void set_level(LogLevel level) override;
     [[nodiscard]] LogLevel level() const override;
 
+    [[nodiscard]] std::string_view param_str() const override;
+
 protected:
-    explicit SinkImplBase(std::string_view parameter);
     virtual void log_it(const LogMsg& logMsg) = 0;
     virtual void flush_it() = 0;
 

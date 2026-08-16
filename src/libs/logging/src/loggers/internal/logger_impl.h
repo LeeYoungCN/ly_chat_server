@@ -21,15 +21,15 @@ public:
 
     explicit LoggerImpl(std::string_view name);
 
-    LoggerImpl(std::string_view name, const std::shared_ptr<logging::Sink>& sink);
+    LoggerImpl(std::string_view name, const std::shared_ptr<Sink>& sink);
 
-    LoggerImpl(std::string_view name, const std::vector<std::shared_ptr<logging::Sink>>& sinks);
+    LoggerImpl(std::string_view name, const std::vector<std::shared_ptr<Sink>>& sinks);
 
     LoggerImpl(std::string_view name,
-               const std::initializer_list<std::shared_ptr<logging::Sink>>& sinks);
+               const std::initializer_list<std::shared_ptr<Sink>>& sinks);
 
     [[nodiscard]] std::string_view name() const;
-    [[nodiscard]] const std::vector<std::shared_ptr<logging::Sink>>& sinks() const;
+    [[nodiscard]] const std::vector<std::shared_ptr<Sink>>& sinks() const;
 
     void set_level(LogLevel level);
     [[nodiscard]] LogLevel level() const;
@@ -40,7 +40,7 @@ public:
     [[nodiscard]] bool should_flush(LogLevel level) const;
 
     void set_pattern(std::string_view pattern) const;
-    void set_formatter(const std::unique_ptr<logging::Formatter>& formatter) const;
+    void set_formatter(const std::unique_ptr<Formatter>& formatter) const;
 
     void flush();
     void log(const LogSource& source, LogLevel level, std::string_view message);

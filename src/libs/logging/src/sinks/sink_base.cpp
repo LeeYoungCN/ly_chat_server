@@ -3,12 +3,22 @@
 #include <stdexcept>
 #include <utility>
 
+#include "common/debug/debug_logger.h"
+
 namespace logging {
-SinkBase::~SinkBase() = default;
+SinkBase::~SinkBase()
+{
+    if (_pImpl == nullptr) {
+        return;
+    }
+    DEBUG_LOGGER_DBG("Release Sink. {}", _pImpl->param_str());
+    _pImpl.reset();
+}
 
 SinkBase::SinkBase(std::unique_ptr<Sink> pImpl) : _pImpl(std::move(pImpl))
 {
     throw_if_pimpl_null();
+    DEBUG_LOGGER_DBG("Create Sink. {}", _pImpl->param_str());
 }
 
 void SinkBase::log(const LogMsg& logMsg)
@@ -51,6 +61,12 @@ LogLevel SinkBase::level() const
 {
     throw_if_pimpl_null();
     return _pImpl->level();
+}
+
+std::string_view SinkBase::param_str() const
+{
+    throw_if_pimpl_null();
+    return _pImpl->param_str();
 }
 
 void SinkBase::throw_if_pimpl_null() const

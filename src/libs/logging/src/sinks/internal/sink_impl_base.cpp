@@ -11,24 +11,32 @@ namespace logging {
 
 SinkImplBase::~SinkImplBase()
 {
-    DEBUG_LOGGER_DBG("Release Sink. {}", _paramStr);
+    DEBUG_LOGGER_DBG("Release sink. {}", _paramStr);
 }
 
 SinkImplBase::SinkImplBase(std::string_view parameter) : _paramStr(parameter)
 {
-    DEBUG_LOGGER_DBG("Create Sink. {}", _paramStr);
+    DEBUG_LOGGER_DBG("Create sink. {}", _paramStr);
 }
 
 void SinkImplBase::log(const LogMsg& logMsg)
 {
     std::lock_guard lock(_sinkMtx);
-    log_it(logMsg);
+    try {
+        log_it(logMsg);
+    } catch (std::exception& ex) {
+        DEBUG_LOGGER_ERR("Sink log failed. [Param]: \"{}\". [Exception]: \"{}\".", _paramStr, ex.what());
+    }
 }
 
 void SinkImplBase::flush()
 {
     std::lock_guard lock(_sinkMtx);
-    flush_it();
+    try {
+        flush_it();
+    } catch (std::exception& ex) {
+        DEBUG_LOGGER_ERR("Sink flush failed. [Param]: \"{}\". [Exception]: \"{}\".", _paramStr, ex.what());
+    }
 }
 
 bool SinkImplBase::should_log(LogLevel level) const
@@ -58,6 +66,11 @@ void SinkImplBase::set_formatter(std::unique_ptr<Formatter> formatter)
 {
     std::lock_guard lock(_sinkMtx);
     _formatter = std::move(formatter);
+}
+
+std::string_view SinkImplBase::param_str() const
+{
+    return _paramStr;
 }
 
 }  // namespace logging

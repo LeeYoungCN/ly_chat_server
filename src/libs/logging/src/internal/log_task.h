@@ -8,8 +8,7 @@
 #include "logging/log_msg.h"
 
 namespace logging {
-class AsyncLoggerImpl;
-
+class LoggerImpl;
 enum class TaskType {
     LOG,
     FLUSH,
@@ -19,17 +18,17 @@ enum class TaskType {
 struct LogTask {
     TaskType type = TaskType::SHUTDOWN;
     LogMsg logMsg;
-    std::shared_ptr<AsyncLoggerImpl> logger;
+    std::shared_ptr<LoggerImpl> logger;
 
     LogTask() = default;
     explicit LogTask(TaskType type) : type(type) {}
 
-    LogTask(TaskType type, const std::shared_ptr<AsyncLoggerImpl>& logger)
+    LogTask(TaskType type, const std::shared_ptr<LoggerImpl>& logger)
         : type(type), logger(logger)
     {
     }
 
-    LogTask(TaskType type, const std::shared_ptr<AsyncLoggerImpl>& logger, LogMsg logMsg)
+    LogTask(TaskType type, const std::shared_ptr<LoggerImpl>& logger, LogMsg logMsg)
         : type(type), logMsg(std::move(logMsg)), logger(logger)
     {
     }

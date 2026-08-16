@@ -21,7 +21,7 @@ public:
     virtual ~Logger() = default;
 
     [[nodiscard]] virtual std::string_view name() const = 0;
-    [[nodiscard]] virtual std::vector<std::shared_ptr<logging::Sink>> sinks() const = 0;
+    [[nodiscard]] virtual std::vector<std::shared_ptr<Sink>> sinks() const = 0;
 
     void virtual set_level(LogLevel level) const = 0;
     [[nodiscard]] virtual LogLevel level() const = 0;
@@ -32,7 +32,7 @@ public:
     [[nodiscard]] virtual bool should_flush(LogLevel level) const = 0;
 
     virtual void set_pattern(std::string_view pattern) const = 0;
-    virtual void set_formatter(const std::unique_ptr<logging::Formatter>& formatter) const = 0;
+    virtual void set_formatter(const std::unique_ptr<Formatter>& formatter) const = 0;
 
     virtual void flush() = 0;
 
@@ -58,157 +58,157 @@ public:
     template <typename... Args>
     void trace(const LogSource& source, std::format_string<Args...> format, Args&&... args)
     {
-        log(source, logging::LogLevel::TRACE, format, std::forward<Args>(args)...);
+        log(source, LogLevel::TRACE, format, std::forward<Args>(args)...);
     }
 
     template <typename... Args>
     void debug(const LogSource& source, std::format_string<Args...> format, Args&&... args)
     {
-        log(source, logging::LogLevel::DEBUG, format, std::forward<Args>(args)...);
+        log(source, LogLevel::DEBUG, format, std::forward<Args>(args)...);
     }
 
     template <typename... Args>
     void info(const LogSource& source, std::format_string<Args...> format, Args&&... args)
     {
-        log(source, logging::LogLevel::INFO, format, std::forward<Args>(args)...);
+        log(source, LogLevel::INFO, format, std::forward<Args>(args)...);
     }
 
     template <typename... Args>
     void warn(const LogSource& source, std::format_string<Args...> format, Args&&... args)
     {
-        log(source, logging::LogLevel::WARN, format, std::forward<Args>(args)...);
+        log(source, LogLevel::WARN, format, std::forward<Args>(args)...);
     }
 
     template <typename... Args>
     void error(const LogSource& source, std::format_string<Args...> format, Args&&... args)
     {
-        log(source, logging::LogLevel::ERR, format, std::forward<Args>(args)...);
+        log(source, LogLevel::ERR, format, std::forward<Args>(args)...);
     }
 
     template <typename... Args>
     void fatal(const LogSource& source, std::format_string<Args...> format, Args&&... args)
     {
-        log(source, logging::LogLevel::FATAL, format, std::forward<Args>(args)...);
+        log(source, LogLevel::FATAL, format, std::forward<Args>(args)...);
     }
 
     template <typename... Args>
     void trace(std::format_string<Args...> format, Args&&... args)
     {
-        log(LogSource(), logging::LogLevel::TRACE, format, std::forward<Args>(args)...);
+        log(LogSource(), LogLevel::TRACE, format, std::forward<Args>(args)...);
     }
 
     template <typename... Args>
     void debug(std::format_string<Args...> format, Args&&... args)
     {
-        log(LogSource(), logging::LogLevel::DEBUG, format, std::forward<Args>(args)...);
+        log(LogSource(), LogLevel::DEBUG, format, std::forward<Args>(args)...);
     }
 
     template <typename... Args>
     void info(std::format_string<Args...> format, Args&&... args)
     {
-        log(LogSource(), logging::LogLevel::INFO, format, std::forward<Args>(args)...);
+        log(LogSource(), LogLevel::INFO, format, std::forward<Args>(args)...);
     }
 
     template <typename... Args>
     void warn(std::format_string<Args...> format, Args&&... args)
     {
-        log(LogSource(), logging::LogLevel::WARN, format, std::forward<Args>(args)...);
+        log(LogSource(), LogLevel::WARN, format, std::forward<Args>(args)...);
     }
 
     template <typename... Args>
     void error(std::format_string<Args...> format, Args&&... args)
     {
-        log(LogSource(), logging::LogLevel::ERR, format, std::forward<Args>(args)...);
+        log(LogSource(), LogLevel::ERR, format, std::forward<Args>(args)...);
     }
 
     template <typename... Args>
     void fatal(std::format_string<Args...> format, Args&&... args)
     {
-        log(LogSource(), logging::LogLevel::FATAL, format, std::forward<Args>(args)...);
+        log(LogSource(), LogLevel::FATAL, format, std::forward<Args>(args)...);
     }
 
     template <class T,
               std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
     void trace(const T& message)
     {
-        log(LogSource(), logging::LogLevel::TRACE, message);
+        log(LogSource(), LogLevel::TRACE, message);
     }
 
     template <class T,
               std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
     void debug(const T& message)
     {
-        log(LogSource(), logging::LogLevel::DEBUG, message);
+        log(LogSource(), LogLevel::DEBUG, message);
     }
 
     template <class T,
               std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
     void info(const T& message)
     {
-        log(LogSource(), logging::LogLevel::INFO, message);
+        log(LogSource(), LogLevel::INFO, message);
     }
 
     template <class T,
               std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
     void warn(const T& message)
     {
-        log(LogSource(), logging::LogLevel::WARN, message);
+        log(LogSource(), LogLevel::WARN, message);
     }
 
     template <class T,
               std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
     void error(const T& message)
     {
-        log(LogSource(), logging::LogLevel::ERR, message);
+        log(LogSource(), LogLevel::ERR, message);
     }
 
     template <class T,
               std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
     void fatal(const T& message)
     {
-        log(LogSource(), logging::LogLevel::FATAL, message);
+        log(LogSource(), LogLevel::FATAL, message);
     }
 
     template <class T,
               std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
     void trace(const LogSource& source, const T& message)
     {
-        log(source, logging::LogLevel::TRACE, message);
+        log(source, LogLevel::TRACE, message);
     }
 
     template <class T,
               std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
     void debug(const LogSource& source, const T& message)
     {
-        log(source, logging::LogLevel::DEBUG, message);
+        log(source, LogLevel::DEBUG, message);
     }
 
     template <class T,
               std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
     void info(const LogSource& source, const T& message)
     {
-        log(source, logging::LogLevel::INFO, message);
+        log(source, LogLevel::INFO, message);
     }
 
     template <class T,
               std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
     void warn(const LogSource& source, const T& message)
     {
-        log(source, logging::LogLevel::WARN, message);
+        log(source, LogLevel::WARN, message);
     }
 
     template <class T,
               std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
     void error(const LogSource& source, const T& message)
     {
-        log(source, logging::LogLevel::ERR, message);
+        log(source, LogLevel::ERR, message);
     }
 
     template <class T,
               std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
     void fatal(const LogSource& source, const T& message)
     {
-        log(source, logging::LogLevel::FATAL, message);
+        log(source, LogLevel::FATAL, message);
     }
 #pragma endregion
 

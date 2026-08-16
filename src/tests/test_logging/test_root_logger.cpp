@@ -27,7 +27,7 @@ void TestRootLogger::TearDown()
 TEST_F(TestRootLogger, should_log_and_set_level)
 {
     const std::string name = get_logger_name(test_info_);
-    std::shared_ptr<Logger> logger = create_logger<LogContentBufferSink>(name);
+    auto logger = create_logger<SyncLogger, LogContentBufferSink>(name);
     set_root_logger(logger);
     EXPECT_EQ(root_logger()->name(), name);
     EXPECT_EQ(root_logger_raw()->name(), name);
@@ -46,7 +46,7 @@ TEST_F(TestRootLogger, should_log_and_set_level)
 TEST_F(TestRootLogger, create_logger)
 {
     const std::string name = get_logger_name(test_info_);
-    std::shared_ptr<Logger> logger = create_logger<LogContentBufferSink>(name);
+    auto logger = create_logger<SyncLogger, LogContentBufferSink>(name);
     EXPECT_NE(logger, nullptr);
     EXPECT_EQ(logger->name(), name);
     EXPECT_EQ(logger->sinks().size(), 1);
@@ -57,7 +57,7 @@ TEST_F(TestRootLogger, create_logger)
 TEST_F(TestRootLogger, set_root_logger)
 {
     const std::string name = get_logger_name(test_info_);
-    std::shared_ptr<Logger> logger = create_logger<LogContentBufferSink>(name);
+    auto logger = create_logger<SyncLogger, LogContentBufferSink>(name);
     set_root_logger(logger);
     EXPECT_EQ(root_logger()->name(), name);
     EXPECT_EQ(root_logger_raw()->name(), name);
@@ -66,7 +66,7 @@ TEST_F(TestRootLogger, set_root_logger)
 TEST_F(TestRootLogger, get_root_logger)
 {
     const std::string name = get_logger_name(test_info_);
-    std::shared_ptr<Logger> logger = create_logger<LogContentBufferSink>(name);
+    auto logger = create_logger<SyncLogger, LogContentBufferSink>(name);
     set_root_logger(logger);
     EXPECT_EQ(root_logger()->name(), name);
     EXPECT_EQ(root_logger_raw()->name(), name);
@@ -81,7 +81,7 @@ TEST_F(TestRootLogger, get_root_logger)
 TEST_F(TestRootLogger, log)
 {
     const std::string name = get_logger_name(test_info_);
-    std::shared_ptr<Logger> logger = create_logger<LogContentBufferSink>(name);
+    auto logger = create_logger<SyncLogger, LogContentBufferSink>(name);
     set_root_logger(logger);
     root_logger()->set_level(LogLevel::TRACE);
     trace(LOG_SRC_LOCAL, "trace {}", name);
@@ -116,8 +116,8 @@ TEST_F(TestRootLogger, log)
 TEST_F(TestRootLogger, flush)
 {
     const std::string name = get_logger_name(test_info_);
-    auto sink = std::make_shared<LogContentBufferSink>();
-    std::shared_ptr<Logger> logger = std::make_shared<SyncLogger>(name, sink);
+    auto sink = create_sink<LogContentBufferSink>();
+    auto logger = create_logger<SyncLogger>(name, sink);
     set_root_logger(logger);
 
     root_logger()->set_level(LogLevel::TRACE);
@@ -136,9 +136,9 @@ TEST_F(TestRootLogger, flush)
 TEST_F(TestRootLogger, flush_on)
 {
     const std::string name = get_logger_name(test_info_);
-    auto sink = std::make_shared<LogContentBufferSink>();
+    auto sink = create_sink<LogContentBufferSink>();
     sink->set_level(LogLevel::TRACE);
-    std::shared_ptr<Logger> logger = std::make_shared<SyncLogger>(name, sink);
+    auto logger = create_logger<SyncLogger>(name, sink);
     set_root_logger(logger);
     root_logger()->set_level(LogLevel::TRACE);
     for (auto flushLevel : LOG_LEVELS) {
@@ -166,8 +166,8 @@ TEST_F(TestRootLogger, flush_on)
 TEST_F(TestRootLogger, set_pattern)
 {
     const std::string name = get_logger_name(test_info_);
-    auto sink = std::make_shared<LogContentBufferSink>();
-    auto logger = std::make_shared<SyncLogger>(name, sink);
+    auto sink = create_sink<LogContentBufferSink>();
+    auto logger = create_logger<SyncLogger>(name, sink);
     set_root_logger(logger);
     root_logger()->set_pattern("%v");
     for (uint32_t i = 0; i < 100; i++) {
@@ -179,10 +179,10 @@ TEST_F(TestRootLogger, set_pattern)
 TEST_F(TestRootLogger, set_formatter)
 {
     const std::string name = get_logger_name(test_info_);
-    auto sink = std::make_shared<LogContentBufferSink>();
-    auto logger = std::make_shared<SyncLogger>(name, sink);
+    auto sink = create_sink<LogContentBufferSink>();
+    auto logger = create_logger<SyncLogger>(name, sink);
     set_root_logger(logger);
-    std::unique_ptr<Formatter> formatter = std::make_unique<PatternFormatter>("%v");
+    auto formatter = create_formatter<PatternFormatter>("%v");
     root_logger()->set_formatter(formatter);
     for (uint32_t i = 0; i < 100; i++) {
         root_logger()->error(i);

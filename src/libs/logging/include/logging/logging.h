@@ -6,18 +6,57 @@
 #include <string_view>
 #include <utility>
 
+#include "logging/formatters/formatter.h"
 #include "logging/log_level.h"
 #include "logging/log_source.h"
-#include "logging/loggers/sync_logger.h"
+#include "logging/loggers/async_logger.h"
+#include "logging/loggers/logger.h"
+#include "logging/sinks/sink.h"
 
 namespace logging {
+class TaskPool;
+
+template <typename LoggerType, typename SinkType, typename... SinkArgs>
+std::shared_ptr<LoggerType> create_logger(std::string_view name, SinkArgs&&... sinkArgs)
+{
+    return std::make_shared<LoggerType>(
+        name, std::make_shared<SinkType>(std::forward<SinkArgs>(sinkArgs)...));
+}
+
+template <typename LoggerType>
+std::shared_ptr<LoggerType> create_logger(std::string_view name, std::shared_ptr<Sink> sink)
+{
+    return std::make_shared<LoggerType>(name, std::move(sink));
+}
+
+template <typename LoggerType>
+std::shared_ptr<LoggerType> create_logger(std::string_view name,
+                                          std::initializer_list<std::shared_ptr<Sink>> sinks)
+{
+    return std::make_shared<LoggerType>(name, sinks);
+}
+
+std::shared_ptr<Logger> create_async_logger(std::string_view name,
+                                            const std::shared_ptr<Sink>& sink,
+                                            const std::weak_ptr<TaskPool>& pool);
+
+std::shared_ptr<Logger> create_async_logger(std::string_view name,
+                                            std::initializer_list<std::shared_ptr<Sink>> sinks,
+                                            const std::weak_ptr<TaskPool>& pool);
 
 template <typename SinkType, typename... SinkArgs>
-std::shared_ptr<Logger> create_logger(std::string name, SinkArgs&&... sinkArgs)
+std::shared_ptr<SinkType> create_sink(SinkArgs&&... sinkArgs)
 {
-    auto sink = std::make_shared<SinkType>(std::forward<SinkArgs>(sinkArgs)...);
-    return std::make_shared<SyncLogger>(std::move(name), std::move(sink));
+    return std::make_shared<SinkType>(std::forward<SinkArgs>(sinkArgs)...);
 }
+
+template <typename FormatterType, typename... FormatterArgs>
+std::unique_ptr<Formatter> create_formatter(FormatterArgs&&... formatterArgs)
+{
+    return std::make_unique<FormatterType>(std::forward<FormatterArgs>(formatterArgs)...);
+}
+
+std::shared_ptr<TaskPool> create_task_pool(uint32_t capacity, uint32_t threadCnt);
 
 #pragma region Root logger
 std::shared_ptr<Logger> root_logger();
@@ -213,7 +252,7 @@ void fatal(const LogSource& source, const T& message)
 }
 #pragma endregion
 
-#pragma region Module manager
+#pragma region logging manager
 void initialize_logger(const std::shared_ptr<Logger>& logger);
 void set_level_all(LogLevel level);
 void flush_on_all(LogLevel level);
@@ -223,18 +262,15 @@ void flush_all();
 void shutdown();
 #pragma endregion
 
-#pragma region Logger container
+#pragma region registry
 bool register_logger(std::shared_ptr<Logger> logger);
 void register_or_replace_logger(std::shared_ptr<Logger> logger);
 void remove_logger(std::string_view name);
 void remove_all();
 std::shared_ptr<Logger> get_logger(std::string_view name);
 
-#pragma region Task pool container
-class TaskPool;
 void init_root_task_pool(uint32_t capacity, uint32_t threadCnt);
 std::shared_ptr<TaskPool> root_task_pool();
-std::shared_ptr<TaskPool> create_task_pool(uint32_t capacity, uint32_t threadCnt);
 #pragma endregion
 
 }  // namespace logging

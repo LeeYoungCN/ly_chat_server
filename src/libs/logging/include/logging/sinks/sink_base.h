@@ -26,6 +26,7 @@ public:
     [[nodiscard]] bool should_log(LogLevel level) const override;
     void set_level(LogLevel level) override;
     [[nodiscard]] LogLevel level() const override;
+    [[nodiscard]] std::string_view param_str() const override;
 
 protected:
     void throw_if_pimpl_null() const;

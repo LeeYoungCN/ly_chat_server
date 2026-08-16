@@ -6,7 +6,25 @@
 #include "internal/task_pool.h"
 
 namespace logging {
-#pragma region Root logger
+std::shared_ptr<Logger> create_async_logger(std::string_view name, const std::shared_ptr<Sink>& sink,
+                                      const std::weak_ptr<logging::TaskPool>& pool)
+{
+    return std::make_shared<AsyncLogger>(name, sink, pool);
+}
+
+std::shared_ptr<Logger> create_async_logger(std::string_view name,
+                                      std::initializer_list<std::shared_ptr<Sink>> sinks,
+                                      const std::weak_ptr<logging::TaskPool>& pool)
+{
+    return std::make_shared<AsyncLogger>(name, sinks, pool);
+}
+
+std::shared_ptr<TaskPool> create_task_pool(uint32_t capacity, uint32_t threadCnt)
+{
+    return std::make_shared<TaskPool>(capacity, threadCnt);
+}
+
+#pragma region root logger
 std::shared_ptr<Logger> root_logger()
 {
     return REGISTRY.root_logger();
@@ -54,7 +72,7 @@ void flush()
 
 #pragma endregion
 
-#pragma region Module manager
+#pragma region logging manager
 void initialize_logger(const std::shared_ptr<Logger>& logger)
 {
     REGISTRY.initialize_logger(logger);
@@ -91,7 +109,7 @@ void shutdown()
 }
 #pragma endregion
 
-#pragma region Registry
+#pragma region registry
 bool register_logger(std::shared_ptr<Logger> logger)
 {
     return REGISTRY.register_logger(std::move(logger));
@@ -126,12 +144,6 @@ std::shared_ptr<TaskPool> root_task_pool()
 {
     return REGISTRY.task_pool();
 }
-
-std::shared_ptr<TaskPool> create_task_pool(uint32_t capacity, uint32_t threadCnt)
-{
-    return std::make_shared<TaskPool>(capacity, threadCnt);
-}
-
 #pragma endregion
 
 }  // namespace logging

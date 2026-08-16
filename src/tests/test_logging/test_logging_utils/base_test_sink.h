@@ -19,7 +19,7 @@ namespace test::test_logging {
 class BaseTestSink : public logging::Sink {
 public:
     BaseTestSink() = default;
-    virtual ~BaseTestSink();
+    ~BaseTestSink() override;
 
     void log(const LogMsg& logMsg) override;
     void flush() override;
@@ -30,6 +30,7 @@ public:
     [[nodiscard]] bool should_log(logging::LogLevel level) const override;
     void set_level(logging::LogLevel level) override;
     [[nodiscard]] logging::LogLevel level() const override;
+    [[nodiscard]] std::string_view param_str() const override;
 
 protected:
     explicit BaseTestSink(std::string_view parameter);

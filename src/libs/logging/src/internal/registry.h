@@ -24,13 +24,13 @@ public:
     static constexpr std::string_view ROOT_LOGGER_NAME = "__root_logger__";
 
 public:
-#pragma region Root logger
+#pragma region root logger
     std::shared_ptr<Logger> root_logger();
     Logger* root_logger_raw();
     void set_root_logger(std::shared_ptr<Logger> newLogger);
 #pragma endregion root
 
-#pragma region Module manager
+#pragma region logging manager
     void initialize_logger(const std::shared_ptr<Logger>& logger, bool autoRegister = true);
     void set_level_all(LogLevel level);
     void flush_on_all(LogLevel level);
@@ -40,16 +40,14 @@ public:
     void shutdown();
 #pragma endregion
 
-#pragma region Logger container
+#pragma region registry
     bool register_logger(std::shared_ptr<Logger> logger);
     void register_or_replace_logger(std::shared_ptr<Logger> logger);
     void remove_logger(std::string_view name);
     void remove_all();
     std::shared_ptr<Logger> get_logger(std::string_view loggerName);
     bool exist(std::string_view loggerName);
-#pragma endregion
 
-#pragma region Task pool container
     void init_root_task_pool(uint32_t capacity, uint32_t threadCnt);
     std::shared_ptr<TaskPool> task_pool();
 #pragma endregion
