@@ -13,7 +13,7 @@
 #include "logging/log_source.h"
 #include "logging/sinks/sink.h"
 
-namespace logging {
+namespace origin::logging {
 class LoggerImpl {
 public:
     LoggerImpl() = delete;
@@ -25,8 +25,7 @@ public:
 
     LoggerImpl(std::string_view name, const std::vector<std::shared_ptr<Sink>>& sinks);
 
-    LoggerImpl(std::string_view name,
-               const std::initializer_list<std::shared_ptr<Sink>>& sinks);
+    LoggerImpl(std::string_view name, const std::initializer_list<std::shared_ptr<Sink>>& sinks);
 
     [[nodiscard]] std::string_view name() const;
     [[nodiscard]] const std::vector<std::shared_ptr<Sink>>& sinks() const;
@@ -58,5 +57,5 @@ protected:
     std::atomic<LogLevel> _level{LogLevel::INFO};
     std::atomic<LogLevel> _flushLevel{LogLevel::OFF};
 };
-}  // namespace logging
+}  // namespace origin::logging
 #endif  // LOGGING_LOGGERS_INTERNAL_LOGGER_IMPL_H

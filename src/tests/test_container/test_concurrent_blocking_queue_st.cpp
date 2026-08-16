@@ -7,7 +7,7 @@
 #include "utils/thread_utils.h"
 
 namespace test::test_container::test_concurrent_queue {
-using namespace common::container;
+using namespace origin::common::container;
 
 class TestConcurrentBlockingQueueSt : public ::testing::Test {
 protected:

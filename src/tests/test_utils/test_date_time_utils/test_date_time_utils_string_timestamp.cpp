@@ -12,8 +12,8 @@ namespace test::test_utils::test_date_time_utils {
 
 using TestBufferParam = std::tuple<std::string_view, int32_t>;
 
-using namespace utils::date_time;
-using namespace constants::date_time;
+using namespace origin::utils::date_time;
+using namespace origin::constants::date_time;
 
 const std::vector<std::string_view> TestMillisFormats = {"%Y-%y-%m-%d-%H:%M:%S-%A-%a-%B-%b-%h-%3f",
                                                          "%3f",
@@ -34,7 +34,7 @@ TEST_P(TestDateTimeUtilsTimestampBuffer, TimestampMs)
     constexpr int64_t MILLIS_PER_DAY = 86400000;
     const auto &format = std::get<0>(GetParam());
     auto day = std::get<1>(GetParam());
-    TimestampMs const currTs = utils::date_time::get_now_timestamp_ms() + day * MILLIS_PER_DAY;
+    TimestampMs const currTs = get_now_timestamp_ms() + day * MILLIS_PER_DAY;
 
     TestTimeBuffer(format, MAX_TIME_STR_LEN, currTs);
 }
@@ -60,7 +60,7 @@ protected:
 TEST_P(TestDateTimeUtilsTimestampStr, TimestampMs)
 {
     const auto &format = GetParam();
-    TimestampMs const currTs = utils::date_time::get_now_timestamp_ms();
+    TimestampMs const currTs = get_now_timestamp_ms();
     TestTimeString(format, currTs);
 }
 

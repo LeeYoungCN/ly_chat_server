@@ -5,7 +5,7 @@
 
 #include "logging/log_msg.h"
 
-namespace logging {
+namespace origin::logging {
 
 class Formatter {
 public:
@@ -16,6 +16,6 @@ public:
 
     [[nodiscard]] virtual std::unique_ptr<Formatter> clone() const = 0;
 };
-}  // namespace logging
+}  // namespace origin::logging
 
 #endif  // LOGGING_FORMATTERS_FORMATTER_H

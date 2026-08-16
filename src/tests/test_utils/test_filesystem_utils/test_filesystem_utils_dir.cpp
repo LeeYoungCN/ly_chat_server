@@ -8,7 +8,7 @@
 
 namespace test::test_utils::test_filesystem_utils {
 
-using namespace utils::filesystem;
+using namespace origin::utils::filesystem;
 
 class TestFilesystemUtilsDir : public TestFilesystemUtilsBase {
 protected:

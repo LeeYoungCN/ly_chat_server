@@ -81,7 +81,7 @@ std::string time_string()
 }
 }  // namespace
 
-namespace common::debug {
+namespace origin::common::debug {
 void DebugLoggerInner::set_debug_log_level(DebugLevel level)
 {
     _logLevel = level;
@@ -161,4 +161,4 @@ std::string DebugLoggerInner::va_list_to_string(const char* format, va_list args
     vsnprintf(message.data(), static_cast<uint32_t>(len) + 1, format, args);
     return message;
 }
-}  // namespace common::debug
+}  // namespace origin::common::debug

@@ -5,16 +5,17 @@
 #include "internal/registry.h"
 #include "internal/task_pool.h"
 
-namespace logging {
-std::shared_ptr<Logger> create_async_logger(std::string_view name, const std::shared_ptr<Sink>& sink,
-                                      const std::weak_ptr<logging::TaskPool>& pool)
+namespace origin::logging {
+std::shared_ptr<Logger> create_async_logger(std::string_view name,
+                                            const std::shared_ptr<Sink>& sink,
+                                            const std::weak_ptr<TaskPool>& pool)
 {
     return std::make_shared<AsyncLogger>(name, sink, pool);
 }
 
 std::shared_ptr<Logger> create_async_logger(std::string_view name,
-                                      std::initializer_list<std::shared_ptr<Sink>> sinks,
-                                      const std::weak_ptr<logging::TaskPool>& pool)
+                                            std::initializer_list<std::shared_ptr<Sink>> sinks,
+                                            const std::weak_ptr<TaskPool>& pool)
 {
     return std::make_shared<AsyncLogger>(name, sinks, pool);
 }
@@ -146,4 +147,4 @@ std::shared_ptr<TaskPool> root_task_pool()
 }
 #pragma endregion
 
-}  // namespace logging
+}  // namespace origin::logging

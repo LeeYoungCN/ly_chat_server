@@ -5,7 +5,7 @@
 #define INST(CLASS_NAME) CLASS_NAME::instance()
 #endif  // INST
 
-namespace common::base {
+namespace origin::common::base {
 template <typename T>
 class SingletonBase {
 public:
@@ -22,5 +22,5 @@ protected:
     SingletonBase() = default;
     virtual ~SingletonBase() = default;
 };
-}  // namespace common::base
+}  // namespace origin::common::base
 #endif  // COMMON_BASE_SINGLETON_H

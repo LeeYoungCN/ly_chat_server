@@ -10,7 +10,7 @@
 #include "common/debug/debug_level.h"
 #include "common/types/type_traits.h"
 
-namespace common::debug {
+namespace origin::common::debug {
 
 class DebugLoggerInner : public base::SingletonBase<DebugLoggerInner> {
     friend class base::SingletonBase<DebugLoggerInner>;
@@ -170,6 +170,6 @@ private:
     std::mutex _mtx;
 };
 
-}  // namespace common::debug
+}  // namespace origin::common::debug
 
 #endif  // COMMON_DEBUG_DEBUG_LOG_HPP

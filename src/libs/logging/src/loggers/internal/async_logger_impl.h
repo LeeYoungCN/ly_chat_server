@@ -11,33 +11,32 @@
 #include "logging/log_msg.h"
 #include "logging/sinks/sink.h"
 
-namespace logging {
+namespace origin::logging {
 class AsyncLoggerImpl : public LoggerImpl, public std::enable_shared_from_this<AsyncLoggerImpl> {
 public:
     AsyncLoggerImpl() = delete;
     ~AsyncLoggerImpl() override = default;
 
-    AsyncLoggerImpl(std::string_view name, const std::shared_ptr<logging::Sink>& sink);
+    AsyncLoggerImpl(std::string_view name, const std::shared_ptr<Sink>& sink);
+    AsyncLoggerImpl(std::string_view name, const std::vector<std::shared_ptr<Sink>>& sinks);
     AsyncLoggerImpl(std::string_view name,
-                    const std::vector<std::shared_ptr<logging::Sink>>& sinks);
-    AsyncLoggerImpl(std::string_view name,
-                    const std::initializer_list<std::shared_ptr<logging::Sink>>& sinks);
+                    const std::initializer_list<std::shared_ptr<Sink>>& sinks);
 
-    AsyncLoggerImpl(std::string_view name, const std::shared_ptr<logging::Sink>& sink,
-                    const std::weak_ptr<logging::TaskPool>& pool);
-    AsyncLoggerImpl(std::string_view name, const std::vector<std::shared_ptr<logging::Sink>>& sinks,
-                    const std::weak_ptr<logging::TaskPool>& pool);
+    AsyncLoggerImpl(std::string_view name, const std::shared_ptr<Sink>& sink,
+                    const std::weak_ptr<TaskPool>& pool);
+    AsyncLoggerImpl(std::string_view name, const std::vector<std::shared_ptr<Sink>>& sinks,
+                    const std::weak_ptr<TaskPool>& pool);
     AsyncLoggerImpl(std::string_view name,
-                    const std::initializer_list<std::shared_ptr<logging::Sink>>& sinks,
-                    const std::weak_ptr<logging::TaskPool>& pool);
+                    const std::initializer_list<std::shared_ptr<Sink>>& sinks,
+                    const std::weak_ptr<TaskPool>& pool);
 
 protected:
     void log_it(const LogMsg& logMsg) override;
     void flush_it() override;
 
 private:
-    std::weak_ptr<logging::TaskPool> _taskPool;
+    std::weak_ptr<TaskPool> _taskPool;
 };
-}  // namespace logging
+}  // namespace origin::logging
 
 #endif  // LOGGING_LOGGERS_INTERNAL_ASYNC_LOGGER_IMPL_H

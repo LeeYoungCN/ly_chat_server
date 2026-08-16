@@ -9,7 +9,7 @@
 #include "logging/loggers/logger_base.h"
 #include "logging/sinks/sink.h"
 
-namespace logging {
+namespace origin::logging {
 class SyncLogger : public LoggerBase {
 public:
     SyncLogger() = delete;
@@ -21,9 +21,8 @@ public:
 
     SyncLogger(std::string_view name, const std::vector<std::shared_ptr<Sink>>& sinks);
 
-    SyncLogger(std::string_view name,
-               const std::initializer_list<std::shared_ptr<Sink>>& sinks);
+    SyncLogger(std::string_view name, const std::initializer_list<std::shared_ptr<Sink>>& sinks);
 };
-}  // namespace logging
+}  // namespace origin::logging
 
 #endif  // LOGGING_LOGGERS_SYNC_LOGGER_H

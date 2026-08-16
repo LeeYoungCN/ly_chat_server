@@ -5,7 +5,7 @@
 
 #include "common/debug/debug_logger.h"
 
-namespace logging {
+namespace origin::logging {
 SinkBase::~SinkBase()
 {
     if (_pImpl == nullptr) {
@@ -76,4 +76,4 @@ void SinkBase::throw_if_pimpl_null() const
     }
 }
 
-}  // namespace logging
+}  // namespace origin::logging

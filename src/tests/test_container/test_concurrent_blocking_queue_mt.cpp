@@ -18,7 +18,8 @@ constexpr uint32_t MAX_NUM = 2048;
 }
 
 namespace test::test_container::test_concurrent_queue {
-using namespace common::container;
+using namespace origin::common::container;
+using namespace origin::utils::date_time;
 
 struct TestEntry {
     uint32_t num;
@@ -134,7 +135,7 @@ void TestConcurrentBlockingQueueMt::StartThread(uint32_t producerCnt, uint32_t c
 void TestConcurrentBlockingQueueMt::WaitFinish()
 {
     while (_totalConsumeItemCnt < _totalProduceItemCnt) {
-        utils::date_time::sleep_ms(1);
+        sleep_ms(1);
     }
     _isRunning = false;
 }

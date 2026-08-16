@@ -10,7 +10,7 @@
 
 #include "common/debug/debug_logger.h"
 
-namespace common::container {
+namespace origin::common::container {
 
 constexpr uint32_t BLOCKING_QUEUE_DEFAULT_CAPACITY = 1024;
 
@@ -171,6 +171,6 @@ private:
     size_t _overrun_counter = 0;
     allocator_type _alloc;
 };
-}  // namespace common::container
+}  // namespace origin::common::container
 
 #endif  // COMMON_CONTAINER_CIRCULAR_QUEUE_HPP

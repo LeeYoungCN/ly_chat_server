@@ -6,6 +6,7 @@
 #include "utils/process_utils.h"
 
 namespace test::test_logging {
+using namespace origin;
 std::string get_logger_name(const testing::TestInfo* test_info)
 {
     return std::format("{}.{}", test_info->test_suite_name(), test_info->name());

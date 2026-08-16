@@ -11,7 +11,7 @@
 #include "logging/log_level.h"
 #include "logging/log_source.h"
 
-namespace logging {
+namespace origin::logging {
 struct LogMsg {
     std::string loggerName;
     LogLevel level{LogLevel::DEBUG};
@@ -25,5 +25,5 @@ struct LogMsg {
     LogMsg(LogSource source, std::string_view loggerName, LogLevel level, std::string_view message);
 };
 
-}  // namespace logging
+}  // namespace origin::logging
 #endif  // LOGGING_LOG_MSG_H

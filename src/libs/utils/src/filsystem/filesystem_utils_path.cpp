@@ -33,10 +33,10 @@
 #include "utils/thread_utils.h"
 #include "utils/utils_error_code.h"
 
-namespace utils::filesystem {
+namespace origin::utils::filesystem {
 namespace fs = std::filesystem;
-using namespace utils::filesystem::internal;
-using namespace constants::filesystem;
+using namespace origin::utils::filesystem::internal;
+using namespace origin::constants::filesystem;
 
 // ------------------------------ 系统路径接口 ------------------------------
 
@@ -174,4 +174,4 @@ bool is_path_too_long(std::string_view path)
     return result;
 }
 
-}  // namespace utils::filesystem
+}  // namespace origin::utils::filesystem

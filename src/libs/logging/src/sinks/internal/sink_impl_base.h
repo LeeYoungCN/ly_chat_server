@@ -12,7 +12,7 @@
 #include "logging/log_msg.h"
 #include "logging/sinks/sink.h"
 
-namespace logging {
+namespace origin::logging {
 class SinkImplBase : public Sink {
 public:
     SinkImplBase() = default;
@@ -41,6 +41,6 @@ protected:
     std::mutex _sinkMtx;
     std::string _paramStr{"unknown"};
 };
-}  // namespace logging
+}  // namespace origin::logging
 
 #endif  // LOGGING_SINKS_INTERNAL_BASE_SINK_IMPL_H

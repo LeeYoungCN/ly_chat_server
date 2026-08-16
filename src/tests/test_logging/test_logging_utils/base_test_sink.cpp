@@ -8,7 +8,7 @@
 #include "logging/formatters/pattern_formatter.h"
 
 namespace test::test_logging {
-using namespace logging;
+using namespace origin::logging;
 
 BaseTestSink::~BaseTestSink()
 {

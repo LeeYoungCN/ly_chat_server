@@ -7,7 +7,7 @@
 #include "common/debug/debug_logger.h"
 #include "logging/formatters/pattern_formatter.h"
 
-namespace logging {
+namespace origin::logging {
 
 SinkImplBase::~SinkImplBase()
 {
@@ -25,7 +25,8 @@ void SinkImplBase::log(const LogMsg& logMsg)
     try {
         log_it(logMsg);
     } catch (std::exception& ex) {
-        DEBUG_LOGGER_ERR("Sink log failed. [Param]: \"{}\". [Exception]: \"{}\".", _paramStr, ex.what());
+        DEBUG_LOGGER_ERR(
+            "Sink log failed. [Param]: \"{}\". [Exception]: \"{}\".", _paramStr, ex.what());
     }
 }
 
@@ -35,7 +36,8 @@ void SinkImplBase::flush()
     try {
         flush_it();
     } catch (std::exception& ex) {
-        DEBUG_LOGGER_ERR("Sink flush failed. [Param]: \"{}\". [Exception]: \"{}\".", _paramStr, ex.what());
+        DEBUG_LOGGER_ERR(
+            "Sink flush failed. [Param]: \"{}\". [Exception]: \"{}\".", _paramStr, ex.what());
     }
 }
 
@@ -73,4 +75,4 @@ std::string_view SinkImplBase::param_str() const
     return _paramStr;
 }
 
-}  // namespace logging
+}  // namespace origin::logging

@@ -14,8 +14,8 @@
 #include "loggers/internal/async_logger_impl.h"
 #include "logging/log_msg.h"
 
-namespace logging {
-using namespace common::container;
+namespace origin::logging {
+using namespace origin::common::container;
 
 TaskPool::TaskPool() : TaskPool(TaskPool::DEFAULT_CAPACITY, TaskPool::DEFAULT_THREAD_CNT) {}
 
@@ -103,4 +103,4 @@ void TaskPool::worker_loop(uint32_t idx)
     }
     DEBUG_LOGGER_DBG("Log task pool worker loop shutdown. [{}/{}]", idx, _threadCnt);
 }
-}  // namespace logging
+}  // namespace origin::logging

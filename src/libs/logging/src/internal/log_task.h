@@ -7,7 +7,7 @@
 
 #include "logging/log_msg.h"
 
-namespace logging {
+namespace origin::logging {
 class LoggerImpl;
 enum class TaskType {
     LOG,
@@ -23,8 +23,7 @@ struct LogTask {
     LogTask() = default;
     explicit LogTask(TaskType type) : type(type) {}
 
-    LogTask(TaskType type, const std::shared_ptr<LoggerImpl>& logger)
-        : type(type), logger(logger)
+    LogTask(TaskType type, const std::shared_ptr<LoggerImpl>& logger) : type(type), logger(logger)
     {
     }
 
@@ -34,6 +33,6 @@ struct LogTask {
     }
 };
 
-}  // namespace logging
+}  // namespace origin::logging
 
 #endif  // LOGGING_INTERNAL_LOG_TASK_H

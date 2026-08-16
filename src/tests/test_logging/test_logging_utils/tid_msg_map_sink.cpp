@@ -2,7 +2,7 @@
 
 #include <mutex>
 
-using namespace logging;
+using namespace origin::logging;
 
 namespace test::test_logging {
 void TidMsgMapSink::log_it(const LogMsg& logMsg)

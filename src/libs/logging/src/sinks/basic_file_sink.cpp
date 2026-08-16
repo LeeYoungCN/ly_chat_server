@@ -5,7 +5,7 @@
 #include "logging/sinks/sink_base.h"
 #include "sinks/internal/basic_file_sink_impl.h"
 
-namespace logging {
+namespace origin::logging {
 
 BasicFileSink::BasicFileSink() : SinkBase(std::make_unique<BasicFileSinkImpl>()) {}
 
@@ -20,4 +20,4 @@ std::string BasicFileSink::file() const
     return dynamic_cast<const BasicFileSinkImpl*>(_pImpl.get())->file();
 }
 
-}  // namespace logging
+}  // namespace origin::logging

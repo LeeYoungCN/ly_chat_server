@@ -10,7 +10,7 @@
 #include "utils/process_utils.h"
 #include "utils/thread_utils.h"
 
-namespace logging {
+namespace origin::logging {
 LogMsg::LogMsg(LogSource source, std::string_view loggerName, LogLevel level,
                std::string_view message)
     : loggerName(loggerName),
@@ -22,4 +22,4 @@ LogMsg::LogMsg(LogSource source, std::string_view loggerName, LogLevel level,
       procId(utils::process::get_curr_proc_id())
 {
 }
-}  // namespace logging
+}  // namespace origin::logging

@@ -3,7 +3,7 @@
 #include <string_view>
 #include <unordered_map>
 
-namespace logging {
+namespace origin::logging {
 
 struct LogLvlStrInfo {
     std::string_view full;
@@ -23,4 +23,4 @@ std::string_view log_level_to_string(LogLevel level, bool full)
 
     return full ? LOG_STR_MAP[level].full : LOG_STR_MAP[level].abbr;
 }
-}  // namespace logging
+}  // namespace origin::logging

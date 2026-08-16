@@ -6,7 +6,7 @@
 #include "loggers/internal/sync_logger_impl.h"
 #include "logging/loggers/logger_base.h"
 
-namespace logging {
+namespace origin::logging {
 SyncLogger::SyncLogger(std::string_view name) : LoggerBase(std::make_shared<SyncLoggerImpl>(name))
 {
 }
@@ -27,4 +27,4 @@ SyncLogger::SyncLogger(std::string_view name,
 {
 }
 
-}  // namespace logging
+}  // namespace origin::logging

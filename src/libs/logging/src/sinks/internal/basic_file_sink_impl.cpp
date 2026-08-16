@@ -9,8 +9,8 @@
 #include "utils/filesystem_utils.h"
 #include "utils/utils_error_code.h"
 
-namespace logging {
-using namespace utils::filesystem;
+namespace origin::logging {
+using namespace origin::utils::filesystem;
 
 BasicFileSinkImpl::BasicFileSinkImpl() : BasicFileSinkImpl(get_default_log_file("log"), true) {}
 
@@ -69,4 +69,4 @@ void BasicFileSinkImpl::flush_it()
     _fileWriter.flush();
 }
 
-}  // namespace logging
+}  // namespace origin::logging

@@ -11,7 +11,7 @@
 #include "internal/log_task.h"
 #include "logging/log_msg.h"
 
-namespace logging {
+namespace origin::logging {
 class LoggerImpl;
 class TaskPool {
 public:
@@ -38,6 +38,6 @@ private:
     std::vector<std::thread> _threadPool;
     std::string _paramStr;
 };
-}  // namespace logging
+}  // namespace origin::logging
 
 #endif  // LOGGING_INTERNAL_TASK_POOL_H

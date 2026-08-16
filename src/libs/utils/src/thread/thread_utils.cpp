@@ -83,4 +83,4 @@ const char *get_thread_last_err_msg()
     return get_utils_err_msg(g_lastError);
 }
 
-}  // namespace common::utils::thread
+}  // namespace origin::common::utils::thread

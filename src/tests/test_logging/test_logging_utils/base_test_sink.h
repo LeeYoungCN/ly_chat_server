@@ -13,10 +13,10 @@
 #include "logging/log_msg.h"
 #include "logging/sinks/sink.h"
 
-using namespace logging;
+using namespace origin::logging;
 
 namespace test::test_logging {
-class BaseTestSink : public logging::Sink {
+class BaseTestSink : public Sink {
 public:
     BaseTestSink() = default;
     ~BaseTestSink() override;
@@ -25,11 +25,11 @@ public:
     void flush() override;
 
     void set_pattern(std::string_view pattern) override;
-    void set_formatter(std::unique_ptr<logging::Formatter> formatter) override;
+    void set_formatter(std::unique_ptr<Formatter> formatter) override;
 
-    [[nodiscard]] bool should_log(logging::LogLevel level) const override;
-    void set_level(logging::LogLevel level) override;
-    [[nodiscard]] logging::LogLevel level() const override;
+    [[nodiscard]] bool should_log(LogLevel level) const override;
+    void set_level(LogLevel level) override;
+    [[nodiscard]] LogLevel level() const override;
     [[nodiscard]] std::string_view param_str() const override;
 
 protected:
@@ -38,8 +38,8 @@ protected:
     virtual void flush_it() = 0;
 
 protected:
-    std::atomic<logging::LogLevel> _level{logging::LogLevel::INFO};
-    std::unique_ptr<logging::Formatter> _formatter{std::make_unique<logging::PatternFormatter>()};
+    std::atomic<LogLevel> _level{LogLevel::INFO};
+    std::unique_ptr<Formatter> _formatter{std::make_unique<PatternFormatter>()};
     std::mutex _sinkMtx;
     std::string _paramStr{"unknown"};
 };

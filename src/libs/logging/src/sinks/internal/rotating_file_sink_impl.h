@@ -7,7 +7,7 @@
 
 #include "sinks/internal/rotating_file_sink_impl_base.h"
 
-namespace logging {
+namespace origin::logging {
 class RotatingFileSinkImpl : public RotatingFileSinkImplBase {
 public:
     RotatingFileSinkImpl();
@@ -37,5 +37,5 @@ private:
     std::atomic<uint32_t> _maxFileSize{0};
     uint32_t _nextIdx{0};
 };
-}  // namespace logging
+}  // namespace origin::logging
 #endif  // LOGGING_SINKS_INTERNAL_ROTATING_FILE_SINK_IMPL_H

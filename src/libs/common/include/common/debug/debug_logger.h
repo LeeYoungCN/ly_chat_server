@@ -6,7 +6,7 @@
 
 #include "common/debug/debug_level.h"
 
-namespace common::debug {
+namespace origin::common::debug {
 
 void set_common_debug_logger_level(DebugLevel level);
 
@@ -21,7 +21,7 @@ void common_debug_logger_log(const char* file, int line, const char* func, Debug
         file, line, func, level, std::move(std::format(format, std::forward<Args>(args)...)));
 }
 
-}  // namespace common::debug
+}  // namespace origin::common::debug
 
 #if defined(NDEBUG) && !defined(ENABLE_TEST)
 // Release模式：空操作，显式消费所有参数避免警告
@@ -30,7 +30,7 @@ void common_debug_logger_log(const char* file, int line, const char* func, Debug
 // Debug模式：实际日志输出，支持所有级别
 #define DEBUG_LOGGER(level, format, ...)                                                 \
     do {                                                                                 \
-        common::debug::common_debug_logger_log(                                          \
+        origin::common::debug::common_debug_logger_log(                                  \
             __FILE__, __LINE__, __FUNCTION__, level, format __VA_OPT__(, ) __VA_ARGS__); \
     } while (0)
 #endif

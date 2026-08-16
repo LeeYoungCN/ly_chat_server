@@ -6,9 +6,9 @@
 #include "utils/process_utils.h"
 #include "utils/thread_utils.h"
 
-namespace logging {
-using namespace utils::filesystem;
-using namespace utils::process;
+namespace origin::logging {
+using namespace origin::utils::filesystem;
+using namespace origin::utils::process;
 
 std::string get_default_log_file(std::string_view suffix)
 {
@@ -48,4 +48,4 @@ bool rename_file(std::string_view src, std::string_view dest, bool overwrite, ui
     return false;
 }
 
-}  // namespace logging::internal
+}  // namespace origin::logging

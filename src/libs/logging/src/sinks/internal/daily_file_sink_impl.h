@@ -8,7 +8,7 @@
 #include "common/types/date_time_types.h"
 #include "sinks/internal/rotating_file_sink_impl_base.h"
 
-namespace logging {
+namespace origin::logging {
 /**
  * @brief: 按照日期滚动日志。
  */
@@ -41,6 +41,6 @@ private:
     TimestampMs _rotateTime{0};
 };
 
-}  // namespace logging
+}  // namespace origin::logging
 
 #endif  // LOGGING_SINKS_INTERNAL_DAILY_FILE_SINK_IMPL_H

@@ -9,22 +9,22 @@
 #include "logging/log_msg.h"
 #include "logging/sinks/sink.h"
 
-namespace logging {
+namespace origin::logging {
 
 SyncLoggerImpl::SyncLoggerImpl(std::string_view name) : LoggerImpl(name) {}
 
-SyncLoggerImpl::SyncLoggerImpl(std::string_view name, const std::shared_ptr<logging::Sink>& sink)
+SyncLoggerImpl::SyncLoggerImpl(std::string_view name, const std::shared_ptr<Sink>& sink)
     : LoggerImpl(name, sink)
 {
 }
 
 SyncLoggerImpl::SyncLoggerImpl(std::string_view name,
-                               const std::vector<std::shared_ptr<logging::Sink>>& sinks)
+                               const std::vector<std::shared_ptr<Sink>>& sinks)
     : LoggerImpl(name, sinks)
 {
 }
 SyncLoggerImpl::SyncLoggerImpl(std::string_view name,
-                               const std::initializer_list<std::shared_ptr<logging::Sink>>& sinks)
+                               const std::initializer_list<std::shared_ptr<Sink>>& sinks)
     : LoggerImpl(name, sinks)
 {
 }
@@ -42,4 +42,4 @@ void SyncLoggerImpl::flush_it()
 {
     backend_flush();
 }
-}  // namespace logging
+}  // namespace origin::logging

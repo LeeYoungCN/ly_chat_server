@@ -6,9 +6,9 @@
 #include "test_logging_utils/common.h"
 #include "utils/filesystem_utils.h"
 
-using namespace logging;
-using namespace utils::filesystem;
-using namespace constants::filesystem;
+using namespace origin::logging;
+using namespace origin::utils::filesystem;
+using namespace origin::constants::filesystem;
 
 namespace test::test_logging {
 class TestBasicFileSink : public ::testing::Test {

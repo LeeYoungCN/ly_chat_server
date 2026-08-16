@@ -14,7 +14,7 @@
 #include "test_logging_utils/log_content_buffer_sink.h"
 
 using namespace test::test_logging;
-using namespace logging;
+using namespace origin::logging;
 
 namespace test::test_logging {
 

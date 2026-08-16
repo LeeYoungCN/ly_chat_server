@@ -3,8 +3,8 @@
 #include "c/common_c.h"
 #include "logging/c/logging_c.h"
 
-using namespace logging;
-using namespace logging::c;
+using namespace origin::logging;
+using namespace origin::logging::c;
 
 extern "C" {
 

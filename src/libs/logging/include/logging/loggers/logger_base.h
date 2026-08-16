@@ -10,7 +10,7 @@
 #include "logging/loggers/logger.h"
 #include "logging/sinks/sink.h"
 
-namespace logging {
+namespace origin::logging {
 class LoggerImpl;
 class LoggerBase : public Logger {
 public:
@@ -41,5 +41,5 @@ protected:
     void throw_if_pimpl_null() const;
     std::shared_ptr<LoggerImpl> _pImpl;
 };
-}  // namespace logging
+}  // namespace origin::logging
 #endif  // LOGGING_LOGGERS_LOGGER_BASE_H

@@ -7,7 +7,7 @@
 
 #include "logging/sinks/sink_base.h"
 
-namespace logging {
+namespace origin::logging {
 class RotatingFileSink : public SinkBase {
 public:
     static constexpr uint32_t DEFAULT_MAX_FILE_SIZE = 10 * 1024 * 1024;  // 10MB;
@@ -35,5 +35,5 @@ public:
     void set_max_files(uint32_t maxFiles);
     [[nodiscard]] uint32_t max_files() const;
 };
-}  // namespace logging
+}  // namespace origin::logging
 #endif  // LOGGING_SINKS_ROTATING_FILE_SINK_H

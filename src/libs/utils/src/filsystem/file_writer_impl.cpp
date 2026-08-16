@@ -15,11 +15,10 @@
 
 #define MODE_STR(mode) ((mode) ? "overwrite" : "append")
 
-namespace utils::filesystem {
-using namespace utils::filesystem::internal;
+namespace origin::utils::filesystem {
+using namespace origin::utils::filesystem::internal;
 
-FileWriterImpl::FileWriterImpl(std::string_view file)
-    : _file(to_absolute_path(file))
+FileWriterImpl::FileWriterImpl(std::string_view file) : _file(to_absolute_path(file))
 {
     if (file.empty()) {
         _errcode = ERR_COMM_PARAM_EMPTY;
@@ -40,7 +39,7 @@ ErrorCode FileWriterImpl::open_it(bool overwrite)
 
     _stream = std::ofstream(_file, _mode);
 
-    date_time::sleep_ms(constants::filesystem::FILE_OPEN_INTERVAL_MS);
+    date_time::sleep_ms(origin::constants::filesystem::FILE_OPEN_INTERVAL_MS);
 
     if (!_stream.is_open()) {
         std::error_code ec(errno, std::generic_category());
@@ -138,7 +137,7 @@ void FileWriterImpl::write_line(std::string_view str)
     } else {
         _errcode = ERR_COMM_SUCCESS;
         _stream << str << '\n';
-        _currSize += str.length() + constants::filesystem::LF_LENGTH;
+        _currSize += str.length() + origin::constants::filesystem::LF_LENGTH;
     }
     set_thread_last_err(_errcode);
 }
@@ -185,4 +184,4 @@ ErrorCode FileWriterImpl::get_last_error() const
     return _errcode;
 }
 
-}  // namespace utils::filesystem
+}  // namespace origin::utils::filesystem

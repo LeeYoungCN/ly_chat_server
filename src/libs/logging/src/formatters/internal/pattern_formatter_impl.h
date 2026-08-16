@@ -7,7 +7,7 @@
 #include "logging/formatters/pattern_formatter.h"
 #include "logging/log_msg.h"
 
-namespace logging {
+namespace origin::logging {
 /**
  * @brief Format log message by pattern.
  *
@@ -40,6 +40,6 @@ private:
 private:
     const std::string _pattern{PatternFormatter::DEFAULT_PATTERN};
 };
-}  // namespace logging
+}  // namespace origin::logging
 
 #endif  // LOGGING_FORMATTERS_INTERNAL_PATTERN_FORMATTER_IMPL_H

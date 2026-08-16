@@ -172,7 +172,7 @@ const char* GetCppStandard()
 
 }  // namespace
 
-namespace common::debug::working_env {
+namespace origin::common::debug::working_env {
 void ShowWorkingEnv()
 {
     std::cout << "OS: " << GetOsName() << std::endl;
@@ -190,4 +190,4 @@ void ShowWorkingEnv()
     PrintEnvParams();
 }
 
-}  // namespace common::debug::working_env
+}  // namespace origin::common::debug::working_env

@@ -12,8 +12,8 @@
 #include "utils/process_utils.h"
 
 namespace test::test_utils::test_file_writer {
-using namespace utils::filesystem;
-using namespace utils::process;
+using namespace origin::utils::filesystem;
+using namespace origin::utils::process;
 
 class TestFileAppender : public ::testing::Test {
 protected:
@@ -98,7 +98,7 @@ TEST_F(TestFileAppender, append_line_size)
     size_t expectSize = 0;
     for (uint32_t i = 0; i < 1024; i++) {
         std::string line = "line" + std::to_string(i);
-        expectSize += line.length() + constants::filesystem::LF_LENGTH;
+        expectSize += line.length() + origin::constants::filesystem::LF_LENGTH;
         m_appender->write_line(line);
         EXPECT_EQ(m_appender->get_last_error(), ERR_COMM_SUCCESS);
         EXPECT_EQ(m_appender->size(), expectSize);
@@ -121,7 +121,7 @@ TEST_F(TestFileAppender, append_mode)
     size_t expectSize = 0;
     for (uint32_t i = 0; i < 64; i++) {
         std::string line = "line" + std::to_string(i);
-        expectSize += line.length() + constants::filesystem::LF_LENGTH;
+        expectSize += line.length() + origin::constants::filesystem::LF_LENGTH;
         m_appender->write_line(line);
         EXPECT_EQ(m_appender->get_last_error(), ERR_COMM_SUCCESS);
         m_appender->close();

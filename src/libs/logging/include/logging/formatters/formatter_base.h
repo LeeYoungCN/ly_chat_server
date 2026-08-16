@@ -6,7 +6,7 @@
 #include "logging/formatters/formatter.h"
 #include "logging/log_msg.h"
 
-namespace logging {
+namespace origin::logging {
 class FormatterBase : public Formatter {
 public:
     FormatterBase() = delete;
@@ -23,6 +23,6 @@ protected:
 private:
     std::unique_ptr<Formatter> _pImpl;
 };
-}  // namespace logging
+}  // namespace origin::logging
 
 #endif  // LOGGING_FORMATTERS_FORMATTER_BASE_H

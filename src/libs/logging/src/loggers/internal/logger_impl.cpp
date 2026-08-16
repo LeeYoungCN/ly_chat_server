@@ -14,7 +14,7 @@
 #include "logging/log_source.h"
 #include "logging/sinks/sink.h"
 
-namespace logging {
+namespace origin::logging {
 
 LoggerImpl::LoggerImpl(std::string_view name) : _name(name)
 {
@@ -23,7 +23,7 @@ LoggerImpl::LoggerImpl(std::string_view name) : _name(name)
     }
 }
 
-LoggerImpl::LoggerImpl(std::string_view name, const std::shared_ptr<logging::Sink>& sink)
+LoggerImpl::LoggerImpl(std::string_view name, const std::shared_ptr<Sink>& sink)
     : _name(name), _sinks{sink}
 {
     if (name.empty()) {
@@ -35,8 +35,7 @@ LoggerImpl::LoggerImpl(std::string_view name, const std::shared_ptr<logging::Sin
     }
 }
 
-LoggerImpl::LoggerImpl(std::string_view name,
-                       const std::vector<std::shared_ptr<logging::Sink>>& sinks)
+LoggerImpl::LoggerImpl(std::string_view name, const std::vector<std::shared_ptr<Sink>>& sinks)
     : _name(name), _sinks(sinks)
 {
     if (name.empty()) {
@@ -51,7 +50,7 @@ LoggerImpl::LoggerImpl(std::string_view name,
 }
 
 LoggerImpl::LoggerImpl(std::string_view name,
-                       const std::initializer_list<std::shared_ptr<logging::Sink>>& sinks)
+                       const std::initializer_list<std::shared_ptr<Sink>>& sinks)
     : _name(name), _sinks(sinks)
 {
     if (name.empty()) {
@@ -143,4 +142,4 @@ void LoggerImpl::backend_flush()
     }
 }
 
-}  // namespace logging
+}  // namespace origin::logging

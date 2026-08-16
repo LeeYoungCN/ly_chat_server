@@ -17,7 +17,7 @@
 #include "common/constants/date_time_constants.h"
 #include "common/types/date_time_types.h"
 
-namespace utils::date_time {
+namespace origin::utils::date_time {
 /**
  * @brief 获取当前系统时间的毫秒级时间戳
  * @details 以Unix纪元（1970-01-01 00:00:00 UTC）为基准，返回当前时间的毫秒数
@@ -114,25 +114,28 @@ std::string_view get_weekday_abbr_name(uint32_t weekday);
  * @brief 将时间戳按指定格式转换为字符串
  * @param[in] timestamp 待格式化的毫秒级时间戳
  * @param[in] format 格式字符串（支持占位符，如%Y表示4位年份）
- *                   默认值：common::constants::date_time::DEFAULT_TIME_FMT（"%Y-%m-%d %H:%M:%S"）
+ *                   默认值：common::origin::constants::date_time::DEFAULT_TIME_FMT（"%Y-%m-%d
+ * %H:%M:%S"）
  * @return std::string 格式化后的时间字符串
  *         若格式化失败或参数无效，返回空字符串
  */
 std::string format_time_string(
-    TimestampMs timestamp, const std::string_view& format = constants::date_time::DEFAULT_TIME_FMT,
+    TimestampMs timestamp,
+    const std::string_view& format = origin::constants::date_time::DEFAULT_TIME_FMT,
     TimeZone timeZone = TimeZone::LOCAL);
 
 /**
  * @brief 将时间组件按指定格式转换为字符串
  * @param[in] dateTime 待格式化的时间组件
  * @param[in] format 格式字符串（支持占位符，如%Y表示4位年份）
- *                   默认值：common::constants::date_time::DEFAULT_TIME_FMT（"%Y-%m-%d %H:%M:%S"）
+ *                   默认值：common::origin::constants::date_time::DEFAULT_TIME_FMT（"%Y-%m-%d
+ * %H:%M:%S"）
  * @return std::string 格式化后的时间字符串
  *         若格式化失败或参数无效，返回空字符串
  */
 std::string format_time_string(
     const DateTimeSt& dateTime,
-    const std::string_view& format = constants::date_time::DEFAULT_TIME_FMT);
+    const std::string_view& format = origin::constants::date_time::DEFAULT_TIME_FMT);
 
 /**
  * @brief 将时间戳按指定格式写入字符缓冲区（高性能）
@@ -141,13 +144,15 @@ std::string format_time_string(
  * @param[in] bufferSize 缓冲区大小（字节），建议不小于256
  * @param[in] timestamp 待格式化的毫秒级时间戳
  * @param[in] format 格式字符串（支持占位符）
- *                   默认值：common::constants::date_time::DEFAULT_TIME_FMT（"%Y-%m-%d %H:%M:%S"）
+ *                   默认值：common::origin::constants::date_time::DEFAULT_TIME_FMT（"%Y-%m-%d
+ * %H:%M:%S"）
  * @return size_t 成功写入的字符数（不含终止符'\0'）
  *         若失败（缓冲区无效/空间不足/格式错误），返回0
  */
-size_t format_time_buffer(char* buffer, size_t bufferSize, TimestampMs timestamp,
-                          const std::string_view& format = constants::date_time::DEFAULT_TIME_FMT,
-                          TimeZone timeZone = TimeZone::LOCAL);
+size_t format_time_buffer(
+    char* buffer, size_t bufferSize, TimestampMs timestamp,
+    const std::string_view& format = origin::constants::date_time::DEFAULT_TIME_FMT,
+    TimeZone timeZone = TimeZone::LOCAL);
 
 /**
  * @brief 将时间组件按指定格式写入字符缓冲区（高性能）
@@ -156,12 +161,14 @@ size_t format_time_buffer(char* buffer, size_t bufferSize, TimestampMs timestamp
  * @param[in] bufferSize 缓冲区大小（字节），建议不小于256
  * @param[in] dateTime 待格式化的时间组件
  * @param[in] format 格式字符串（支持占位符）
- *                   默认值：common::constants::date_time::DEFAULT_TIME_FMT（"%Y-%m-%d %H:%M:%S"）
+ *                   默认值：common::origin::constants::date_time::DEFAULT_TIME_FMT（"%Y-%m-%d
+ * %H:%M:%S"）
  * @return size_t 成功写入的字符数（不含终止符'\0'）
  *         若失败（缓冲区无效/空间不足/格式错误），返回0
  */
-size_t format_time_buffer(char* buffer, size_t bufferSize, const DateTimeSt& dateTime,
-                          const std::string_view& format = constants::date_time::DEFAULT_TIME_FMT);
+size_t format_time_buffer(
+    char* buffer, size_t bufferSize, const DateTimeSt& dateTime,
+    const std::string_view& format = origin::constants::date_time::DEFAULT_TIME_FMT);
 
 // ------------------------------ 系统时间操作 ------------------------------
 
@@ -171,5 +178,5 @@ size_t format_time_buffer(char* buffer, size_t bufferSize, const DateTimeSt& dat
  */
 void sleep_ms(DurationMs ms);
 
-}  // namespace utils::date_time
+}  // namespace origin::utils::date_time
 #endif  // UTILS_DATE_TIME_UTILS_H

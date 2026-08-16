@@ -7,7 +7,7 @@
 
 #include "common/types/type_traits.h"
 
-namespace utils::string {
+namespace origin::utils::string {
 std::string va_list_to_string(const char* format, va_list args);
 bool string_is_null_or_empty(const char* str);
 
@@ -23,6 +23,6 @@ std::string type_to_string(const T& type)
     return msg;
 }
 
-}  // namespace utils::string
+}  // namespace origin::utils::string
 
 #endif  // UTILS_STRING_UTILS_H

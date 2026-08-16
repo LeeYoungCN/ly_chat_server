@@ -6,12 +6,12 @@
 
 #include "logging/sinks/sink_base.h"
 
-namespace logging {
+namespace origin::logging {
 class StdoutSink : public SinkBase {
 public:
     StdoutSink();
     ~StdoutSink() override = default;
     explicit StdoutSink(FILE *file);
 };
-}  // namespace logging
+}  // namespace origin::logging
 #endif  // LOGGING_SINKS_STDOUT_SINK_H

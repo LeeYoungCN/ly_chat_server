@@ -8,8 +8,8 @@
 
 #include "sinks/internal/rotating_file_sink_impl.h"
 
-namespace logging {
-using namespace utils::filesystem;
+namespace origin::logging {
+using namespace origin::utils::filesystem;
 
 RotatingFileSink::RotatingFileSink() : SinkBase(std::make_unique<RotatingFileSinkImpl>()) {}
 
@@ -60,4 +60,4 @@ uint32_t RotatingFileSink::max_files() const
     return dynamic_cast<RotatingFileSinkImpl*>(_pImpl.get())->max_files();
 }
 
-}  // namespace logging
+}  // namespace origin::logging

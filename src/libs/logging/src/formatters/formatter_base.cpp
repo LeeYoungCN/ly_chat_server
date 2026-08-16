@@ -5,7 +5,7 @@
 
 #include "logging/formatters/formatter.h"
 
-namespace logging {
+namespace origin::logging {
 FormatterBase::~FormatterBase() = default;
 
 FormatterBase::FormatterBase(std::unique_ptr<Formatter> pimpl) : _pImpl(std::move(pimpl))
@@ -32,4 +32,4 @@ void FormatterBase::throw_if_pimpl_null() const
     }
 }
 
-}  // namespace logging
+}  // namespace origin::logging

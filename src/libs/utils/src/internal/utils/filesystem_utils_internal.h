@@ -16,12 +16,12 @@
 
 #include "common/types/error_code_types.h"
 
-namespace utils::filesystem::internal {
+namespace origin::utils::filesystem::internal {
 
 ErrorCode ConvertSysEcToErrorCode(const std::error_code& ec);
 
 ErrorCode ConvertExceptionToErrorCode(const std::exception& ex);
 
-}  // namespace utils::filesystem::internal
+}  // namespace origin::utils::filesystem::internal
 
 #endif  // UTILS_FILESYSTEM_UTILS_INTERNAL_H

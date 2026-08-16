@@ -13,10 +13,10 @@
 #include "utils/date_time_utils.h"
 #include "utils/filesystem_utils.h"
 
-using namespace logging;
-
-using namespace utils::filesystem;
-using namespace constants::filesystem;
+using namespace origin::logging;
+using namespace origin::utils::filesystem;
+using namespace origin::utils::date_time;
+using namespace origin::constants::filesystem;
 
 namespace test::test_logging {
 class TestRotatingFileSink : public ::testing::Test {
@@ -88,7 +88,7 @@ void TestRotatingFileSink::CreateLogFiles(const std::string& logFile,
     for (const auto& idx : existFileIdxs) {
         std::string file = logFile + "." + std::to_string(idx);
         create_file(file);
-        utils::date_time::sleep_ms(sleepMs);  // 确保文件修改时间不同
+        sleep_ms(sleepMs);  // 确保文件修改时间不同
     }
 }
 

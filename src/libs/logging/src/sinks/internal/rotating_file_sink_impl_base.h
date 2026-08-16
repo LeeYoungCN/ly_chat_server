@@ -10,7 +10,7 @@
 
 #include "sinks/internal/basic_file_sink_impl.h"
 
-namespace logging {
+namespace origin::logging {
 
 class RotatingFileSinkImplBase : public BasicFileSinkImpl {
 public:
@@ -35,6 +35,6 @@ private:
     std::deque<std::string> _fileQue;
 };
 
-}  // namespace logging
+}  // namespace origin::logging
 
 #endif  // LOGGING_SINKS_INTERNAL_ROTATING_FILE_SINK_IMPL_BASE_H

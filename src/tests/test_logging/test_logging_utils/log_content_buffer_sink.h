@@ -9,7 +9,7 @@
 #include "base_test_sink.h"
 #include "logging/log_msg.h"
 
-using namespace logging;
+using namespace origin::logging;
 
 namespace test::test_logging {
 class LogContentBufferSink : public BaseTestSink {

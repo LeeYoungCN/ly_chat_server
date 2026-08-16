@@ -10,7 +10,7 @@
 #include "logging/log_msg.h"
 #include "logging/sinks/sink.h"
 
-namespace logging {
+namespace origin::logging {
 class SinkBase : public Sink {
 public:
     SinkBase() = delete;
@@ -32,6 +32,6 @@ protected:
     void throw_if_pimpl_null() const;
     std::unique_ptr<Sink> _pImpl;
 };
-}  // namespace logging
+}  // namespace origin::logging
 
 #endif  // LOGGING_SINKS_BASE_SINK_H

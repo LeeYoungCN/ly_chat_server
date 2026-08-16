@@ -10,7 +10,7 @@
 #include "logging/loggers/sync_logger.h"
 #include "logging/sinks/stdout_sink.h"
 
-namespace logging {
+namespace origin::logging {
 
 Registry::Registry() : _globalFormatter(new PatternFormatter())
 {
@@ -196,4 +196,4 @@ bool Registry::exist_it(std::string_view name)
     return (_loggers.find(name) != _loggers.end());
 }
 #pragma endregion
-}  // namespace logging
+}  // namespace origin::logging

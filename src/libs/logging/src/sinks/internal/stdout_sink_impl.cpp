@@ -3,7 +3,7 @@
 #include <cstdio>
 #include <string>
 
-namespace logging {
+namespace origin::logging {
 StdoutSinkImpl::StdoutSinkImpl() : StdoutSinkImpl(stdout) {}
 
 StdoutSinkImpl::StdoutSinkImpl(FILE *file) : m_stream(file == nullptr ? stdout : file)
@@ -36,4 +36,4 @@ void StdoutSinkImpl::flush_it()
     std::fflush(m_stream);
 }
 
-}  // namespace logging
+}  // namespace origin::logging

@@ -7,7 +7,7 @@
 
 #include "sinks/internal/daily_file_sink_impl.h"
 
-namespace logging {
+namespace origin::logging {
 
 DailyFileSink::DailyFileSink() : SinkBase(std::make_unique<DailyFileSinkImpl>()) {}
 
@@ -52,4 +52,4 @@ uint32_t DailyFileSink::max_files() const
     return dynamic_cast<DailyFileSinkImpl*>(_pImpl.get())->max_files();
 }
 
-}  // namespace logging
+}  // namespace origin::logging

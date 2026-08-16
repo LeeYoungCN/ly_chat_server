@@ -22,10 +22,10 @@
 #include "utils/filesystem_utils.h"
 #include "utils/thread_utils.h"
 
-namespace logging {
-using namespace utils::filesystem;
-using namespace utils::date_time;
-using namespace constants::date_time;
+namespace origin::logging {
+using namespace origin::utils::filesystem;
+using namespace origin::utils::date_time;
+using namespace origin::constants::date_time;
 
 constexpr char SPLIT_CHAR = '.';
 
@@ -213,4 +213,4 @@ void DailyFileSinkImpl::init_file_queue()
     }
 }
 
-}  // namespace logging
+}  // namespace origin::logging

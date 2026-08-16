@@ -7,7 +7,7 @@
 #include "logging/c/logging_c.h"
 #include "logging/log_level.h"
 
-namespace logging::c {
+namespace origin::logging::c {
 LogLevel logging_to_log_level(LoggingLevel level)
 {
     switch (level) {
@@ -57,4 +57,4 @@ std::vector<std::shared_ptr<Sink>> sink_ptr_vector(const SinkSt* const sinks[], 
     }
     return sinkPtrs;
 }
-}  // namespace logging::c
+}  // namespace origin::logging::c

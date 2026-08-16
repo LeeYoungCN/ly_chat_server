@@ -7,7 +7,7 @@
 
 #include "sinks/internal/sink_impl_base.h"
 
-namespace logging {
+namespace origin::logging {
 class StdoutSinkImpl : public SinkImplBase {
 public:
     StdoutSinkImpl();
@@ -22,5 +22,5 @@ private:
 private:
     FILE *m_stream = stdout;
 };
-}  // namespace logging
+}  // namespace origin::logging
 #endif  // LOGGING_SINKS_INTERNAL_STDOUT_SINK_IMPL_H

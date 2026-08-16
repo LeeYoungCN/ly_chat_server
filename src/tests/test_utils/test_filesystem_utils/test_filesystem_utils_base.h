@@ -18,26 +18,27 @@
 #include "utils/utils_error_code.h"
 
 namespace test::test_utils::test_filesystem_utils {
-
+using namespace origin::utils::filesystem;
+using namespace origin::utils::process;
 class TestFilesystemUtilsBase : public ::testing::Test {
 protected:
     static void SetUpTestSuite() {}
     static void TearDownTestSuite() {}
     void SetUp() override
     {
-        m_process = utils::process::get_proc_path();
+        m_process = get_proc_path();
         EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
-        m_processDir = utils::filesystem::get_directory(m_process);
+        m_processDir = get_directory(m_process);
         EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
-        m_workDir = utils::filesystem::get_curr_working_dir();
+        m_workDir = get_curr_working_dir();
         EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
     };
     void TearDown() override {};
 
 protected:
-    utils::filesystem::PathString m_process;
-    utils::filesystem::PathString m_processDir;
-    utils::filesystem::PathString m_workDir;
+    PathString m_process;
+    PathString m_processDir;
+    PathString m_workDir;
 };
 
 }  // namespace test::test_utils::test_filesystem_utils

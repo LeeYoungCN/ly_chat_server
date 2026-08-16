@@ -12,8 +12,8 @@
 #include "common/debug/debug_logger.h"
 #include "internal/common.h"
 
-namespace logging {
-using namespace utils::filesystem;
+namespace origin::logging {
+using namespace origin::utils::filesystem;
 constexpr uint32_t DELETE_FILE_RETRY = 3;
 constexpr uint32_t DELETE_FILE_SLEEP_MS = 10;
 constexpr uint32_t RENAME_FILE_RETRY = 3;
@@ -82,4 +82,4 @@ void RotatingFileSinkImplBase::delete_overflow_file()
     }
 }
 
-}  // namespace logging
+}  // namespace origin::logging

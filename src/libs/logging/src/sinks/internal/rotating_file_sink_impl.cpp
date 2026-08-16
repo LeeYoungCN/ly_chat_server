@@ -21,8 +21,8 @@
 #include "utils/filesystem_utils.h"
 #include "utils/thread_utils.h"
 
-namespace logging {
-using namespace utils::filesystem;
+namespace origin::logging {
+using namespace origin::utils::filesystem;
 
 struct LogFileInfo {
     uint32_t idx{0};
@@ -218,4 +218,4 @@ uint32_t RotatingFileSinkImpl::parse_log_index(std::string_view filename)
     return idx;
 }
 
-}  // namespace logging
+}  // namespace origin::logging

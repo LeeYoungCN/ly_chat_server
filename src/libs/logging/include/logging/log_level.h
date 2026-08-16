@@ -15,7 +15,7 @@
 
 #include <string_view>
 
-namespace logging {
+namespace origin::logging {
 /**
  * @enum LogLevel
  * @brief 日志级别枚举
@@ -32,6 +32,6 @@ enum LogLevel {
 
 std::string_view log_level_to_string(LogLevel level, bool full = true);
 
-}  // namespace logging
+}  // namespace origin::logging
 
 #endif  // LOGGING_DETAILS_LOG_LEVEL_H

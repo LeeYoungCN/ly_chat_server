@@ -9,7 +9,7 @@
 #include "logging/log_level.h"
 #include "logging/log_msg.h"
 
-namespace logging {
+namespace origin::logging {
 class Sink {
 public:
     Sink() = default;
@@ -26,6 +26,6 @@ public:
     [[nodiscard]] virtual LogLevel level() const = 0;
     [[nodiscard]] virtual std::string_view param_str() const = 0;
 };
-}  // namespace logging
+}  // namespace origin::logging
 
 #endif  // LOGGING_SINKS_SINK_H

@@ -8,7 +8,7 @@
 
 #include "logging/sinks/sink_base.h"
 
-namespace logging {
+namespace origin::logging {
 /**
  * @brief: 按照日期滚动日志。
  */
@@ -34,6 +34,6 @@ public:
     [[nodiscard]] uint32_t max_files() const;
 };
 
-}  // namespace logging
+}  // namespace origin::logging
 
 #endif  // LOGGING_SINKS_DAILY_FILE_SINK_H

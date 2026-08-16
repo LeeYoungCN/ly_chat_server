@@ -19,10 +19,10 @@
 #include "utils/filesystem_utils.h"
 
 namespace test::test_logging {
-using namespace constants::date_time;
-using namespace logging;
-using namespace utils::filesystem;
-using namespace utils::date_time;
+using namespace origin::constants::date_time;
+using namespace origin::logging;
+using namespace origin::utils::filesystem;
+using namespace origin::utils::date_time;
 
 class TestDailyFileSink : public ::testing::Test {
 protected:

@@ -14,9 +14,9 @@
 #include "logging/log_level.h"
 #include "logging/loggers/logger.h"
 
-#define REGISTRY (logging::Registry::instance())
+#define REGISTRY (origin::logging::Registry::instance())
 
-namespace logging {
+namespace origin::logging {
 class Registry : public common::base::SingletonBase<Registry> {
     friend common::base::SingletonBase<Registry>;
 
@@ -76,6 +76,6 @@ private:
     std::recursive_mutex _taskPoolMtx;
     std::shared_ptr<TaskPool> _rootTaskPool;
 };
-}  // namespace logging
+}  // namespace origin::logging
 
 #endif  // LOGGING_INTERNAL_REGISTRY_H

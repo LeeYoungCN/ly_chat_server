@@ -21,8 +21,8 @@
 
 namespace {
 
-using namespace ::utils::date_time;
-using namespace ::constants::date_time;
+using namespace origin::utils::date_time;
+using namespace ::origin::constants::date_time;
 
 bool safe_localtime(time_t timer, tm& timeInfo)
 {
@@ -107,7 +107,7 @@ void date_time_st_to_std_tm(const DateTimeSt& dateTime, std::tm& timeInfo)
 
 }  // namespace
 
-namespace utils::date_time {
+namespace origin::utils::date_time {
 
 TimestampMs get_now_timestamp_ms()
 {
@@ -208,4 +208,4 @@ void sleep_ms(DurationMs ms)
 #endif
 }
 
-}  // namespace utils::date_time
+}  // namespace origin::utils::date_time

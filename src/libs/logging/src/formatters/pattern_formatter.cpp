@@ -4,7 +4,7 @@
 
 #include "formatters/internal/pattern_formatter_impl.h"
 
-namespace logging {
+namespace origin::logging {
 
 PatternFormatter::PatternFormatter() : FormatterBase(std::make_unique<PatternFormatterImpl>()) {}
 
@@ -13,4 +13,4 @@ PatternFormatter::PatternFormatter(std::string_view pattern)
 {
 }
 
-}  // namespace logging
+}  // namespace origin::logging

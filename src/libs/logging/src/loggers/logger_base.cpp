@@ -11,7 +11,7 @@
 #include "logging/log_source.h"
 #include "logging/sinks/sink.h"
 
-namespace logging {
+namespace origin::logging {
 LoggerBase::LoggerBase(std::shared_ptr<LoggerImpl> pImpl) : _pImpl(std::move(pImpl))
 {
     throw_if_pimpl_null();
@@ -104,4 +104,4 @@ void LoggerBase::throw_if_pimpl_null() const
     }
 }
 
-}  // namespace logging
+}  // namespace origin::logging

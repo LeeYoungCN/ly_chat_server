@@ -9,7 +9,7 @@
 #include "sinks/internal/sink_impl_base.h"
 #include "utils/file_writer.h"
 
-namespace logging {
+namespace origin::logging {
 class BasicFileSinkImpl : public SinkImplBase {
 public:
     BasicFileSinkImpl();
@@ -33,6 +33,6 @@ protected:
     utils::filesystem::FileWriter _fileWriter;
 };
 
-}  // namespace logging
+}  // namespace origin::logging
 
 #endif  // LOGGING_SINKS_INTERNAL_BASIC_FILE_SINK_IMPL_H

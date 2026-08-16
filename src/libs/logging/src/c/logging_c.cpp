@@ -8,8 +8,8 @@
 #include "logging/log_level.h"
 #include "utils/string_utils.h"
 
-using namespace logging;
-using namespace logging::c;
+using namespace origin::logging;
+using namespace origin::logging::c;
 
 #define ROOT_LOGGER (INST(Registry).root_logger())
 
@@ -18,8 +18,9 @@ void logging_log_it(const std::shared_ptr<Logger> &logger, const char *file, int
                     const char *func, LogLevel level, const char *format, va_list args)
 {
     if (logger->should_log(level)) {
-        logger->log(
-            LogSource(file, line, func), level, utils::string::va_list_to_string(format, args));
+        logger->log(LogSource(file, line, func),
+                    level,
+                    origin::utils::string::va_list_to_string(format, args));
     }
 }
 }  // namespace

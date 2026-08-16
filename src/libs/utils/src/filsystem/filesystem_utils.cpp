@@ -29,7 +29,7 @@
 #include "utils/thread_utils.h"
 #include "utils/utils_error_code.h"
 
-namespace utils::filesystem {
+namespace origin::utils::filesystem {
 namespace fs = std::filesystem;
 
 EntryType get_entry_type(std::string_view path)
@@ -92,4 +92,4 @@ const char* get_entry_type_str(EntryType type)
     }
 }
 
-}  // namespace utils::filesystem
+}  // namespace origin::utils::filesystem

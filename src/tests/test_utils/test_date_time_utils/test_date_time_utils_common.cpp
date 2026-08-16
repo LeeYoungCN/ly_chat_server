@@ -16,8 +16,8 @@
 
 namespace test::test_utils::test_date_time_utils {
 
-using namespace constants::date_time;
-using namespace utils::date_time;
+using namespace origin::constants::date_time;
+using namespace origin::utils::date_time;
 
 tm TimestampToTimeInfo(TimestampMs ts)
 {
@@ -59,7 +59,7 @@ void TestTimeBuffer(const std::string_view& format, uint32_t length, std::tm tim
                     const DateTimeSt& dateTime)
 {
     char bufferUtils[MAX_TIME_STR_LEN] = {'\0'};
-    auto sizeUtils = utils::date_time::format_time_buffer(bufferUtils, length, dateTime, format);
+    auto sizeUtils = format_time_buffer(bufferUtils, length, dateTime, format);
 
     char bufferStd[MAX_TIME_STR_LEN] = {'\0'};
     auto sizeStd = std::strftime(bufferStd, length, format.data(), &timeInfo);
@@ -80,7 +80,7 @@ void TestTimeString(const std::string_view& format, TimestampMs timestamp)
 
 void TestTimeString(const std::string_view& format, std::tm timeInfo, const DateTimeSt& dateTime)
 {
-    auto utilsStr = utils::date_time::format_time_string(dateTime, format);
+    auto utilsStr = format_time_string(dateTime, format);
     std::stringstream ss;
     ss << std::put_time(&timeInfo, format.data());
 

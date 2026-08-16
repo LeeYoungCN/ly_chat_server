@@ -1,4 +1,4 @@
-set(TEST_RUNTIME_NAME ly_chat_test)
+set(TEST_RUNTIME_NAME origin_test)
 add_executable(${TEST_RUNTIME_NAME})
 
 file(GLOB_RECURSE SRC_LIST "*.cpp")

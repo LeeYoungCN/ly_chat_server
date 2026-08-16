@@ -18,7 +18,7 @@
 
 #include "common/types/date_time_types.h"
 
-namespace utils::filesystem {
+namespace origin::utils::filesystem {
 enum class PathType {
     Nonexistent,  // 不存在
     File,         // 是文件
@@ -91,6 +91,6 @@ struct FileInfo {
     TimestampMs modifyTime;  ///< 最后修改时间戳
 };
 
-}  // namespace utils::filesystem
+}  // namespace origin::utils::filesystem
 
 #endif  // COMMON_TYPES_FILESYSTEM_TYPES_H

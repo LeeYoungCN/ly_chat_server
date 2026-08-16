@@ -13,11 +13,11 @@
 
 namespace test::test_logging {
 
-using namespace logging;
+using namespace origin::logging;
 
-using namespace utils::date_time;
-using namespace utils::process;
-using namespace utils::filesystem;
+using namespace origin::utils::date_time;
+using namespace origin::utils::process;
+using namespace origin::utils::filesystem;
 
 class TestPatternFormatter : public ::testing::Test {
 protected:

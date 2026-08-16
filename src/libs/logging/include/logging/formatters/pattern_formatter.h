@@ -3,7 +3,7 @@
 
 #include "logging/formatters/formatter_base.h"
 
-namespace logging {
+namespace origin::logging {
 /**
  * @brief Format log message by pattern.
  *
@@ -29,6 +29,6 @@ public:
 
     explicit PatternFormatter(std::string_view pattern);
 };
-}  // namespace logging
+}  // namespace origin::logging
 
 #endif  // LOGGING_FORMATTERS_PATTERN_FORMATTER_H

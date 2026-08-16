@@ -15,7 +15,7 @@
  * @date   当前日期
  */
 
-namespace common::type_traits {  // 放入项目公共命名空间，避免命名冲突
+namespace origin::common::type_traits {  // 放入项目公共命名空间，避免命名冲突
 
 // -------------------------- 内部辅助：移除 const/volatile/引用 修饰（C++17
 // 及以上）--------------------------
@@ -72,6 +72,6 @@ struct is_convertible_to_string
 template <typename T>
 constexpr bool is_convertible_to_string_v = is_convertible_to_string<T>::value;
 
-}  // namespace common::type_traits
+}  // namespace origin::common::type_traits
 
 #endif  // COMMON_TYPES_TYPE_TRAITS_H

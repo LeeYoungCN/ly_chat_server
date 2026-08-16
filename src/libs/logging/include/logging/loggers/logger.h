@@ -14,7 +14,7 @@
 #include "logging/sinks/sink.h"
 #include "utils/string_utils.h"
 
-namespace logging {
+namespace origin::logging {
 class Logger {
 public:
     Logger() = default;
@@ -215,6 +215,6 @@ public:
 protected:
     virtual void log_it(const LogSource& source, LogLevel level, std::string_view message) = 0;
 };
-}  // namespace logging
+}  // namespace origin::logging
 
 #endif  // LOGGING_LOGGERS_LOGGER_H

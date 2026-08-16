@@ -5,7 +5,7 @@
 #include "gtest/gtest.h"
 
 namespace test::test_container::test_blocking_queue {
-using namespace common::container;
+using namespace origin::common::container;
 
 class TestEmplaceEntry {
 public:

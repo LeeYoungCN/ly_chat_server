@@ -11,10 +11,10 @@
 #include "utils/date_time_utils.h"
 #include "utils/filesystem_utils.h"
 
-using namespace utils::date_time;
-using namespace utils::filesystem;
+using namespace origin::utils::date_time;
+using namespace origin::utils::filesystem;
 
-namespace logging {
+namespace origin::logging {
 
 PatternFormatterImpl::PatternFormatterImpl(std::string_view pattern) : _pattern(pattern)
 {
@@ -106,4 +106,4 @@ std::unique_ptr<Formatter> PatternFormatterImpl::clone() const
 {
     return std::make_unique<PatternFormatterImpl>(_pattern);
 }
-}  // namespace logging
+}  // namespace origin::logging

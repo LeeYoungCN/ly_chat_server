@@ -8,7 +8,7 @@
 
 #include "common/types/error_code_types.h"
 
-namespace utils::filesystem {
+namespace origin::utils::filesystem {
 class FileWriterImpl;
 class FileWriter {
 public:
@@ -35,6 +35,6 @@ private:
     std::unique_ptr<FileWriterImpl> _pimpl;
 };
 
-}  // namespace utils::filesystem
+}  // namespace origin::utils::filesystem
 
 #endif  // UTILS_FILE_WRITER_H

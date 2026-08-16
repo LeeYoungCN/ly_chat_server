@@ -13,7 +13,7 @@
 #include "logging/loggers/logger.h"
 #include "logging/sinks/sink.h"
 
-namespace logging {
+namespace origin::logging {
 class TaskPool;
 
 template <typename LoggerType, typename SinkType, typename... SinkArgs>
@@ -273,6 +273,6 @@ void init_root_task_pool(uint32_t capacity, uint32_t threadCnt);
 std::shared_ptr<TaskPool> root_task_pool();
 #pragma endregion
 
-}  // namespace logging
+}  // namespace origin::logging
 
 #endif  // LOGGING_LOGGING_H

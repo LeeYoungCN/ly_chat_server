@@ -8,13 +8,13 @@
 #include "logging/log_level.h"
 
 namespace test::test_logging {
-const std::vector<logging::LogLevel> LOG_LEVELS = {logging::LogLevel::TRACE,
-                                                   logging::LogLevel::DEBUG,
-                                                   logging::LogLevel::INFO,
-                                                   logging::LogLevel::WARN,
-                                                   logging::LogLevel::ERR,
-                                                   logging::LogLevel::FATAL,
-                                                   logging::LogLevel::OFF};
+const std::vector<origin::logging::LogLevel> LOG_LEVELS = {origin::logging::LogLevel::TRACE,
+                                                           origin::logging::LogLevel::DEBUG,
+                                                           origin::logging::LogLevel::INFO,
+                                                           origin::logging::LogLevel::WARN,
+                                                           origin::logging::LogLevel::ERR,
+                                                           origin::logging::LogLevel::FATAL,
+                                                           origin::logging::LogLevel::OFF};
 
 std::string get_logger_name(const testing::TestInfo* test_info);
 

@@ -2,7 +2,7 @@
 #include "logging/sinks/basic_file_sink.h"
 #include "logging/sinks/stdout_sink.h"
 
-using namespace logging;
+using namespace origin::logging;
 
 extern "C" {
 SinkSt *logging_create_stdout_sink(FILE *file)

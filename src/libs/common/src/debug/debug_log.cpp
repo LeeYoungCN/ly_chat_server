@@ -4,7 +4,7 @@
 
 #include "debug_logger_inner.h"
 
-using namespace common::debug;
+using namespace origin::common::debug;
 
 extern "C" {
 void common_debug_log(const char* file, int line, const char* func, DebugLevel level,

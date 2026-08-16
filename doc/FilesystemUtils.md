@@ -217,7 +217,7 @@ auto configPath = utils::filesystem::join_paths(parts);
 
 | 接口名              | 功能描述                          | 参数说明                                  | 返回值类型                                   |
 |---------------------|-----------------------------------|-------------------------------------------|----------------------------------------------|
-| `GetLastError`      | 获取最后一次操作的错误码          | 无                                        | `constants::filesystem::ErrorCode`           |
+| `GetLastError`      | 获取最后一次操作的错误码          | 无                                        | `origin::constants::filesystem::ErrorCode`           |
 | `GetErrorString`    | 将错误码转换为描述字符串          | `ErrorCode code`                          | `std::string`                                |
 
 ## 五、完整使用示例

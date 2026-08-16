@@ -19,8 +19,8 @@
 
 namespace test::test_utils::test_filesystem_utils {
 
-using namespace utils::filesystem;
-using namespace constants::filesystem;
+using namespace origin::utils::filesystem;
+using namespace origin::constants::filesystem;
 
 class TestFilesystemUtilsFile : public TestFilesystemUtilsBase {
 protected:
@@ -64,26 +64,26 @@ TEST_F(TestFilesystemUtilsFile, file_exists_type_invalid)
 
 TEST_F(TestFilesystemUtilsFile, create_file_already_exists)
 {
-    EXPECT_TRUE(utils::filesystem::create_file(m_process));
+    EXPECT_TRUE(create_file(m_process));
     EXPECT_EQ(get_thread_last_err(), ERR_UTILS_ALREADY_EXISTS) << get_thread_last_err_msg();
 }
 
 TEST_F(TestFilesystemUtilsFile, create_file_type_invalid)
 {
-    EXPECT_FALSE(utils::filesystem::create_file(m_processDir));
+    EXPECT_FALSE(create_file(m_processDir));
     EXPECT_EQ(get_thread_last_err(), ERR_UTILS_NOT_FILE) << get_thread_last_err_msg();
 }
 
 TEST_F(TestFilesystemUtilsFile, create_file_success)
 {
-    EXPECT_TRUE(utils::filesystem::create_file(m_testFile));
+    EXPECT_TRUE(create_file(m_testFile));
     EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS) << get_thread_last_err_msg();
 }
 
 TEST_F(TestFilesystemUtilsFile, create_file_dir_nonexistent)
 {
     auto newFile = to_absolute_path(m_testFilename, m_processDir + "/nonexistent");
-    EXPECT_FALSE(utils::filesystem::create_file(newFile));
+    EXPECT_FALSE(create_file(newFile));
     EXPECT_EQ(get_thread_last_err(), ERR_UTILS_NOT_FOUND) << get_thread_last_err_msg();
 }
 
@@ -102,7 +102,7 @@ TEST_F(TestFilesystemUtilsFile, delete_file_type_invalid)
 
 TEST_F(TestFilesystemUtilsFile, delete_file_file_exist)
 {
-    EXPECT_TRUE(utils::filesystem::create_file(m_testFile));
+    EXPECT_TRUE(create_file(m_testFile));
     EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS) << get_thread_last_err_msg();
     EXPECT_TRUE(delete_file(m_testFile));
     EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS) << get_thread_last_err_msg();

@@ -16,7 +16,8 @@
 #include "utils/date_time_utils.h"
 
 using namespace test::test_logging;
-using namespace logging;
+using namespace origin::utils;
+using namespace origin::logging;
 
 namespace test::test_logging {
 
@@ -32,7 +33,7 @@ protected:
 
     std::shared_ptr<Logger> _logger;
     std::shared_ptr<LogContentBufferSink> _sink = std::make_shared<LogContentBufferSink>();
-    std::shared_ptr<logging::TaskPool> _taskPool = create_task_pool(1024, 4);
+    std::shared_ptr<TaskPool> _taskPool = create_task_pool(1024, 4);
 };
 
 void TestAsyncLogger::wait_flush_complete(uint32_t expectedCount)
@@ -40,7 +41,7 @@ void TestAsyncLogger::wait_flush_complete(uint32_t expectedCount)
     constexpr uint32_t maxWaitTimeMs = 5000;
     uint32_t waitedTimeMs = 0;
     while (_sink->disk().size() < expectedCount) {
-        utils::date_time::sleep_ms(1);
+        date_time::sleep_ms(1);
         waitedTimeMs += 1;
         if (waitedTimeMs >= maxWaitTimeMs) {
             FAIL() << "Timeout waiting for log entries. Expected: " << expectedCount
@@ -131,7 +132,7 @@ TEST_F(TestAsyncLogger, log_log)
                          "fileLevel: {}, logLevel: {}.",
                          log_level_to_string(filterLevel),
                          log_level_to_string(logLevel));
-            utils::date_time::sleep_ms(1);
+            date_time::sleep_ms(1);
         }
 
         _logger->flush();
@@ -154,7 +155,7 @@ TEST_F(TestAsyncLogger, log_flush)
     constexpr uint32_t logCount = 100;
     for (uint32_t i = 0; i < logCount; ++i) {
         _logger->error(LOG_SRC_LOCAL, i);
-        utils::date_time::sleep_ms(1);
+        date_time::sleep_ms(1);
     }
 
     _logger->flush();
@@ -200,7 +201,7 @@ TEST_F(TestAsyncLogger, log_function)
         _logger->fatal("{}", i);
         _logger->fatal(LOG_SRC_LOCAL, i);
         _logger->fatal(i);
-        utils::date_time::sleep_ms(1);
+        date_time::sleep_ms(1);
     }
 
     _logger->flush();
@@ -216,7 +217,7 @@ TEST_F(TestAsyncLogger, set_pattern)
     constexpr uint32_t logCount = 100;
     for (uint32_t i = 0; i < logCount; i++) {
         _logger->error(i);
-        utils::date_time::sleep_ms(1);
+        date_time::sleep_ms(1);
     }
     _logger->flush();
     wait_flush_complete(logCount);
@@ -236,7 +237,7 @@ TEST_F(TestAsyncLogger, set_formatter)
     _logger->set_formatter(formatter);
     for (uint32_t i = 0; i < logCount; i++) {
         _logger->error(i);
-        utils::date_time::sleep_ms(1);
+        date_time::sleep_ms(1);
     }
     _logger->flush();
     wait_flush_complete(logCount);

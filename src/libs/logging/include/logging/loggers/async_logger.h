@@ -5,7 +5,7 @@
 
 #include "logging/loggers/logger_base.h"
 
-namespace logging {
+namespace origin::logging {
 class TaskPool;
 
 class AsyncLogger : public LoggerBase {
@@ -28,6 +28,6 @@ public:
     AsyncLogger(std::string_view name, const std::initializer_list<std::shared_ptr<Sink>>& sinks,
                 const std::weak_ptr<TaskPool>& pool);
 };
-}  // namespace logging
+}  // namespace origin::logging
 
 #endif  // LOGGING_LOGGERS_ASYNC_LOGGER_H

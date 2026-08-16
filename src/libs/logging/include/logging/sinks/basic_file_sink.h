@@ -7,7 +7,7 @@
 
 #include "logging/sinks/sink_base.h"
 
-namespace logging {
+namespace origin::logging {
 class BasicFileSink : public SinkBase {
 public:
     BasicFileSink();
@@ -17,6 +17,6 @@ public:
     [[nodiscard]] std::string file() const;
 };
 
-}  // namespace logging
+}  // namespace origin::logging
 
 #endif  // LOGGING_SINKS_BASIC_FILE_SINK_H

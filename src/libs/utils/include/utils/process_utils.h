@@ -17,7 +17,7 @@
 
 #include "common/types/process_types.h"
 
-namespace utils::process {
+namespace origin::utils::process {
 
 /**
  * @brief 获取当前进程的可执行文件路径
@@ -49,5 +49,5 @@ std::string get_proc_filename_stem();
  */
 ProcessId get_curr_proc_id();
 
-}  // namespace utils::process
+}  // namespace origin::utils::process
 #endif  // UTILS_PROCESS_H

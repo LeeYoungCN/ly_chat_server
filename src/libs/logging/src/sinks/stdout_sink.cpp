@@ -3,12 +3,12 @@
 #include <cstdio>
 #include <memory>
 
-#include "sinks/internal/stdout_sink_impl.h"
 #include "logging/sinks/sink_base.h"
+#include "sinks/internal/stdout_sink_impl.h"
 
-namespace logging {
+namespace origin::logging {
 StdoutSink::StdoutSink() : SinkBase(std::make_unique<StdoutSinkImpl>()) {}
 
 StdoutSink::StdoutSink(FILE *file) : SinkBase(std::make_unique<StdoutSinkImpl>(file)) {}
 
-}  // namespace logging
+}  // namespace origin::logging
