@@ -1,6 +1,6 @@
 #pragma once
-#ifndef LOGGING_INTERNAL_TASK_POOL_H
-#define LOGGING_INTERNAL_TASK_POOL_H
+#ifndef ORIGIN_LOGGING_INTERNAL_TASK_POOL_H
+#define ORIGIN_LOGGING_INTERNAL_TASK_POOL_H
 
 #include <cstdint>
 #include <memory>
@@ -40,4 +40,4 @@ private:
 };
 }  // namespace origin::logging
 
-#endif  // LOGGING_INTERNAL_TASK_POOL_H
+#endif  // ORIGIN_LOGGING_INTERNAL_TASK_POOL_H

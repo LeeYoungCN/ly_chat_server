@@ -1,6 +1,6 @@
 #pragma once
-#ifndef LOGGING_LOG_MSG_H
-#define LOGGING_LOG_MSG_H
+#ifndef ORIGIN_LOGGING_LOG_MSG_H
+#define ORIGIN_LOGGING_LOG_MSG_H
 
 #include <string>
 #include <string_view>
@@ -26,4 +26,4 @@ struct LogMsg {
 };
 
 }  // namespace origin::logging
-#endif  // LOGGING_LOG_MSG_H
+#endif  // ORIGIN_LOGGING_LOG_MSG_H

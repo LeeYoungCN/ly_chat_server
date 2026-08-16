@@ -1,6 +1,6 @@
 #pragma once
-#ifndef LOGGING_SINKS_INTERNAL_BASE_SINK_IMPL_H
-#define LOGGING_SINKS_INTERNAL_BASE_SINK_IMPL_H
+#ifndef ORIGIN_LOGGING_SINKS_INTERNAL_BASE_SINK_IMPL_H
+#define ORIGIN_LOGGING_SINKS_INTERNAL_BASE_SINK_IMPL_H
 #include <atomic>
 #include <memory>
 #include <mutex>
@@ -43,4 +43,4 @@ protected:
 };
 }  // namespace origin::logging
 
-#endif  // LOGGING_SINKS_INTERNAL_BASE_SINK_IMPL_H
+#endif  // ORIGIN_LOGGING_SINKS_INTERNAL_BASE_SINK_IMPL_H

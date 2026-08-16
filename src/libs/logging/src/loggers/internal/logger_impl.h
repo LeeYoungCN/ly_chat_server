@@ -1,5 +1,5 @@
-#ifndef LOGGING_LOGGERS_INTERNAL_LOGGER_IMPL_H
-#define LOGGING_LOGGERS_INTERNAL_LOGGER_IMPL_H
+#ifndef ORIGIN_LOGGING_LOGGERS_INTERNAL_LOGGER_IMPL_H
+#define ORIGIN_LOGGING_LOGGERS_INTERNAL_LOGGER_IMPL_H
 
 #include <atomic>
 #include <initializer_list>
@@ -58,4 +58,4 @@ protected:
     std::atomic<LogLevel> _flushLevel{LogLevel::OFF};
 };
 }  // namespace origin::logging
-#endif  // LOGGING_LOGGERS_INTERNAL_LOGGER_IMPL_H
+#endif  // ORIGIN_LOGGING_LOGGERS_INTERNAL_LOGGER_IMPL_H

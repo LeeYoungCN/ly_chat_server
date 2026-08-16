@@ -7,12 +7,12 @@
 using namespace origin::logging;
 
 extern "C" {
-TaskPoolSt *logging_create_task_pool(uint32_t capacity, uint32_t threadCnt)
+TaskPoolSt *origin_create_task_pool(uint32_t capacity, uint32_t threadCnt)
 {
-    return new TaskPoolSt(std::make_shared<TaskPool>(capacity, threadCnt));
+    return new struct TaskPoolSt(std::make_shared<TaskPool>(capacity, threadCnt));
 }
 
-void logging_destroy_task_pool(TaskPoolSt *taskPool)
+void origin_destroy_task_pool(TaskPoolSt *taskPool)
 {
     if (taskPool == nullptr) {
         return;

@@ -1,5 +1,5 @@
-#ifndef LOGGING_LOGGERS_ASYNC_LOGGER_H
-#define LOGGING_LOGGERS_ASYNC_LOGGER_H
+#ifndef ORIGIN_LOGGING_LOGGERS_ASYNC_LOGGER_H
+#define ORIGIN_LOGGING_LOGGERS_ASYNC_LOGGER_H
 
 #include <memory>
 
@@ -30,4 +30,4 @@ public:
 };
 }  // namespace origin::logging
 
-#endif  // LOGGING_LOGGERS_ASYNC_LOGGER_H
+#endif  // ORIGIN_LOGGING_LOGGERS_ASYNC_LOGGER_H

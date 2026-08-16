@@ -1,6 +1,6 @@
 #pragma once
-#ifndef LOGGING_SINKS_BASIC_FILE_SINK_H
-#define LOGGING_SINKS_BASIC_FILE_SINK_H
+#ifndef ORIGIN_LOGGING_SINKS_BASIC_FILE_SINK_H
+#define ORIGIN_LOGGING_SINKS_BASIC_FILE_SINK_H
 
 #include <string>
 #include <string_view>
@@ -19,4 +19,4 @@ public:
 
 }  // namespace origin::logging
 
-#endif  // LOGGING_SINKS_BASIC_FILE_SINK_H
+#endif  // ORIGIN_LOGGING_SINKS_BASIC_FILE_SINK_H

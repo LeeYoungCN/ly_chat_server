@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef LOGGING_INTERNAL_REGISTRY_H
-#define LOGGING_INTERNAL_REGISTRY_H
+#ifndef ORIGIN_LOGGING_INTERNAL_REGISTRY_H
+#define ORIGIN_LOGGING_INTERNAL_REGISTRY_H
 
 #include <memory>
 #include <mutex>
@@ -78,4 +78,4 @@ private:
 };
 }  // namespace origin::logging
 
-#endif  // LOGGING_INTERNAL_REGISTRY_H
+#endif  // ORIGIN_LOGGING_INTERNAL_REGISTRY_H

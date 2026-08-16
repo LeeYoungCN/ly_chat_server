@@ -1,5 +1,5 @@
-#ifndef LOGGING_LOGGING_H
-#define LOGGING_LOGGING_H
+#ifndef ORIGIN_LOGGING_LOGGING_H
+#define ORIGIN_LOGGING_LOGGING_H
 
 #include <format>
 #include <memory>
@@ -275,4 +275,4 @@ std::shared_ptr<TaskPool> root_task_pool();
 
 }  // namespace origin::logging
 
-#endif  // LOGGING_LOGGING_H
+#endif  // ORIGIN_LOGGING_LOGGING_H

@@ -1,6 +1,6 @@
 #pragma once
-#ifndef LOGGING_SINKS_STDOUT_SINK_H
-#define LOGGING_SINKS_STDOUT_SINK_H
+#ifndef ORIGIN_LOGGING_SINKS_STDOUT_SINK_H
+#define ORIGIN_LOGGING_SINKS_STDOUT_SINK_H
 
 #include <cstdio>
 
@@ -14,4 +14,4 @@ public:
     explicit StdoutSink(FILE *file);
 };
 }  // namespace origin::logging
-#endif  // LOGGING_SINKS_STDOUT_SINK_H
+#endif  // ORIGIN_LOGGING_SINKS_STDOUT_SINK_H

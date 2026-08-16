@@ -1,5 +1,5 @@
-#ifndef LOGGING_LOGGERS_LOGGER_BASE_H
-#define LOGGING_LOGGERS_LOGGER_BASE_H
+#ifndef ORIGIN_LOGGING_LOGGERS_LOGGER_BASE_H
+#define ORIGIN_LOGGING_LOGGERS_LOGGER_BASE_H
 #include <memory>
 #include <string_view>
 #include <vector>
@@ -42,4 +42,4 @@ protected:
     std::shared_ptr<LoggerImpl> _pImpl;
 };
 }  // namespace origin::logging
-#endif  // LOGGING_LOGGERS_LOGGER_BASE_H
+#endif  // ORIGIN_LOGGING_LOGGERS_LOGGER_BASE_H

@@ -1,6 +1,6 @@
 #pragma once
-#ifndef LOGGING_SINKS_BASE_SINK_H
-#define LOGGING_SINKS_BASE_SINK_H
+#ifndef ORIGIN_LOGGING_SINKS_BASE_SINK_H
+#define ORIGIN_LOGGING_SINKS_BASE_SINK_H
 
 #include <memory>
 #include <string_view>
@@ -34,4 +34,4 @@ protected:
 };
 }  // namespace origin::logging
 
-#endif  // LOGGING_SINKS_BASE_SINK_H
+#endif  // ORIGIN_LOGGING_SINKS_BASE_SINK_H

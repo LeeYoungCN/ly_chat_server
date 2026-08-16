@@ -1,5 +1,5 @@
-#ifndef LOGGING_LOG_SOURCE_H
-#define LOGGING_LOG_SOURCE_H
+#ifndef ORIGIN_LOGGING_LOG_SOURCE_H
+#define ORIGIN_LOGGING_LOG_SOURCE_H
 
 #include <string>
 
@@ -23,4 +23,4 @@ struct LogSource {
 #define LOG_SRC_EMPTY                  origin::logging::LogSource()
 #define LOG_SRC_INST(file, line, func) origin::logging::LogSource(file, line, func)
 
-#endif  // LOGGING_LOG_SOURCE_H
+#endif  // ORIGIN_LOGGING_LOG_SOURCE_H

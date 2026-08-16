@@ -1,5 +1,5 @@
-#ifndef LOGGING_SINKS_ROTATING_FILE_SINK_H
-#define LOGGING_SINKS_ROTATING_FILE_SINK_H
+#ifndef ORIGIN_LOGGING_SINKS_ROTATING_FILE_SINK_H
+#define ORIGIN_LOGGING_SINKS_ROTATING_FILE_SINK_H
 
 #include <cstdint>
 #include <string_view>
@@ -36,4 +36,4 @@ public:
     [[nodiscard]] uint32_t max_files() const;
 };
 }  // namespace origin::logging
-#endif  // LOGGING_SINKS_ROTATING_FILE_SINK_H
+#endif  // ORIGIN_LOGGING_SINKS_ROTATING_FILE_SINK_H

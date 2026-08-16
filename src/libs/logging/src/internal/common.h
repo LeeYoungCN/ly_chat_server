@@ -1,5 +1,5 @@
-#ifndef LOGGING_INTERNAL_COMMON_H
-#define LOGGING_INTERNAL_COMMON_H
+#ifndef ORIGIN_LOGGING_INTERNAL_COMMON_H
+#define ORIGIN_LOGGING_INTERNAL_COMMON_H
 
 #include <cstdint>
 #include <string>
@@ -14,4 +14,4 @@ bool rename_file(std::string_view src, std::string_view dest, bool overwrite = t
 
 }  // namespace origin::logging
 
-#endif  // LOGGING_INTERNAL_COMMON_H
+#endif  // ORIGIN_LOGGING_INTERNAL_COMMON_H

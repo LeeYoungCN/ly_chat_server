@@ -1,10 +1,9 @@
-#include "logging/c/logging_c.h"
-
 #include <cstdarg>
 #include <memory>
 
 #include "c/common_c.h"
 #include "internal/registry.h"
+#include "logging/c/logging_c.h"
 #include "logging/log_level.h"
 #include "utils/string_utils.h"
 
@@ -14,8 +13,8 @@ using namespace origin::logging::c;
 #define ROOT_LOGGER (INST(Registry).root_logger())
 
 namespace {
-void logging_log_it(const std::shared_ptr<Logger> &logger, const char *file, int line,
-                    const char *func, LogLevel level, const char *format, va_list args)
+void origin_log_it(const std::shared_ptr<Logger> &logger, const char *file, int line,
+                   const char *func, LogLevel level, const char *format, va_list args)
 {
     if (logger->should_log(level)) {
         logger->log(LogSource(file, line, func),
@@ -26,17 +25,17 @@ void logging_log_it(const std::shared_ptr<Logger> &logger, const char *file, int
 }  // namespace
 
 extern "C" {
-void logging_set_level(LoggingLevel level)
+void origin_set_level(OriginLogLevel level)
 {
-    ROOT_LOGGER->set_level(logging_to_log_level(level));
+    ROOT_LOGGER->set_level(c_to_cpp_log_level(level));
 }
 
-LoggingLevel logging_level()
+OriginLogLevel origin_level()
 {
-    return log_to_logging_level(ROOT_LOGGER->level());
+    return cpp_to_c_log_level(ROOT_LOGGER->level());
 }
 
-void logging_set_pattern(const char *pattern)
+void origin_set_pattern(const char *pattern)
 {
     if (pattern == nullptr) {
         return;
@@ -44,57 +43,57 @@ void logging_set_pattern(const char *pattern)
     ROOT_LOGGER->set_pattern(pattern);
 }
 
-void logging_flush()
+void origin_flush()
 {
     ROOT_LOGGER->flush();
 }
 
-void logging_log(const char *file, int line, const char *func, LoggingLevel level,
-                 const char *format, ...)
+void origin_log(const char *file, int line, const char *func, OriginLogLevel level,
+                const char *format, ...)
 {
     va_list args;
     va_start(args, format);
-    logging_log_it(ROOT_LOGGER, file, line, func, logging_to_log_level(level), format, args);
+    origin_log_it(ROOT_LOGGER, file, line, func, c_to_cpp_log_level(level), format, args);
     va_end(args);
 }
 
-void logging_debug(const char *file, int line, const char *func, const char *format, ...)
+void origin_debug(const char *file, int line, const char *func, const char *format, ...)
 {
     va_list args;
     va_start(args, format);
-    logging_log_it(ROOT_LOGGER, file, line, func, LogLevel::DEBUG, format, args);
+    origin_log_it(ROOT_LOGGER, file, line, func, LogLevel::DEBUG, format, args);
     va_end(args);
 }
 
-void logging_info(const char *file, int line, const char *func, const char *format, ...)
+void origin_info(const char *file, int line, const char *func, const char *format, ...)
 {
     va_list args;
     va_start(args, format);
-    logging_log_it(ROOT_LOGGER, file, line, func, LogLevel::INFO, format, args);
+    origin_log_it(ROOT_LOGGER, file, line, func, LogLevel::INFO, format, args);
     va_end(args);
 }
 
-void logging_warn(const char *file, int line, const char *func, const char *format, ...)
+void origin_warn(const char *file, int line, const char *func, const char *format, ...)
 {
     va_list args;
     va_start(args, format);
-    logging_log_it(ROOT_LOGGER, file, line, func, LogLevel::WARN, format, args);
+    origin_log_it(ROOT_LOGGER, file, line, func, LogLevel::WARN, format, args);
     va_end(args);
 }
 
-void logging_error(const char *file, int line, const char *func, const char *format, ...)
+void origin_error(const char *file, int line, const char *func, const char *format, ...)
 {
     va_list args;
     va_start(args, format);
-    logging_log_it(ROOT_LOGGER, file, line, func, LogLevel::ERR, format, args);
+    origin_log_it(ROOT_LOGGER, file, line, func, LogLevel::ERR, format, args);
     va_end(args);
 }
 
-void logging_fatal(const char *file, int line, const char *func, const char *format, ...)
+void origin_fatal(const char *file, int line, const char *func, const char *format, ...)
 {
     va_list args;
     va_start(args, format);
-    logging_log_it(ROOT_LOGGER, file, line, func, LogLevel::FATAL, format, args);
+    origin_log_it(ROOT_LOGGER, file, line, func, LogLevel::FATAL, format, args);
     va_end(args);
 }
 }

@@ -1,6 +1,6 @@
 #pragma once
-#ifndef LOGGING_INTERNAL_LOG_TASK_H
-#define LOGGING_INTERNAL_LOG_TASK_H
+#ifndef ORIGIN_LOGGING_INTERNAL_LOG_TASK_H
+#define ORIGIN_LOGGING_INTERNAL_LOG_TASK_H
 
 #include <memory>
 #include <utility>
@@ -35,4 +35,4 @@ struct LogTask {
 
 }  // namespace origin::logging
 
-#endif  // LOGGING_INTERNAL_LOG_TASK_H
+#endif  // ORIGIN_LOGGING_INTERNAL_LOG_TASK_H

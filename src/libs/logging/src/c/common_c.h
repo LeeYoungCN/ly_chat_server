@@ -1,5 +1,5 @@
-#ifndef LOGGING_C_COMMON_C_H
-#define LOGGING_C_COMMON_C_H
+#ifndef ORIGIN_LOGGING_C_COMMON_C_H
+#define ORIGIN_LOGGING_C_COMMON_C_H
 
 #include <memory>
 #include <vector>
@@ -40,9 +40,9 @@ struct TaskPoolSt {
 };
 
 namespace origin::logging::c {
-LogLevel logging_to_log_level(LoggingLevel level);
-LoggingLevel log_to_logging_level(LogLevel level);
+LogLevel c_to_cpp_log_level(OriginLogLevel level);
+OriginLogLevel cpp_to_c_log_level(LogLevel level);
 std::vector<std::shared_ptr<Sink>> sink_ptr_vector(const SinkSt *const sinks[], uint32_t sinkCnt);
 
 }  // namespace origin::logging::c
-#endif  // LOGGING_C_COMMON_C_H
+#endif  // ORIGIN_LOGGING_C_COMMON_C_H

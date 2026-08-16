@@ -1,5 +1,5 @@
-#ifndef LOGGING_C_LOGGING_C_H
-#define LOGGING_C_LOGGING_C_H
+#ifndef ORIGIN_LOGGING_C_LOGGING_C_H
+#define ORIGIN_LOGGING_C_LOGGING_C_H
 
 #include <cstdint>
 #ifdef __cplusplus
@@ -12,89 +12,89 @@ typedef struct SinkSt SinkSt;
 typedef struct FormatterSt FormatterSt;
 typedef struct TaskPoolSt TaskPoolSt;
 
-#define LOGGING_LOGGER_ROOT_NAME               "__root_logger__"
-#define LOGGING_FORMATTER_DEFAULT_PATTERN      "[%d][%L][%s:%#]: %v"
-#define LOGGING_THREAD_POOL_DEFAULT_CAPACITY   (4096)
-#define LOGGING_THREAD_POOL_DEFAULT_THREAD_CNT (1)
+#define ORIGIN_LOGGER_ROOT_NAME               "__root_logger__"
+#define ORIGIN_FORMATTER_DEFAULT_PATTERN      "[%d][%L][%s:%#]: %v"
+#define ORIGIN_THREAD_POOL_DEFAULT_CAPACITY   (4096)
+#define ORIGIN_THREAD_POOL_DEFAULT_THREAD_CNT (1)
 
 typedef enum {
-    LOGGING_LEVEL_TRACE = 0,
-    LOGGING_LEVEL_DEBUG,
-    LOGGING_LEVEL_INFO,
-    LOGGING_LEVEL_WARN,
-    LOGGING_LEVEL_ERROR,
-    LOGGING_LEVEL_FATAL,
-    LOGGING_LEVEL_OFF
-} LoggingLevel;
+    ORIGIN_LOG_LEVEL_TRACE = 0,
+    ORIGIN_LOG_LEVEL_DEBUG,
+    ORIGIN_LOG_LEVEL_INFO,
+    ORIGIN_LOG_LEVEL_WARN,
+    ORIGIN_LOG_LEVEL_ERROR,
+    ORIGIN_LOG_LEVEL_FATAL,
+    ORIGIN_LOG_LEVEL_OFF
+} OriginLogLevel;
 
 #pragma region Logger
-LoggerSt *logging_create_logger(const char *name, const SinkSt *const sinks[], uint32_t count);
-LoggerSt *logging_create_async_logger(const char *name, const SinkSt *const sinks[], uint32_t count,
-                                      const TaskPoolSt *taskPool);
-void logging_destroy_logger(LoggerSt *logger);
+LoggerSt *origin_create_logger(const char *name, const SinkSt *const sinks[], uint32_t count);
+LoggerSt *origin_create_async_logger(const char *name, const SinkSt *const sinks[], uint32_t count,
+                                     const TaskPoolSt *taskPool);
+void origin_destroy_logger(LoggerSt *logger);
 
-const char *logging_logger_name(LoggerSt *logger);
+const char *origin_logger_name(LoggerSt *logger);
 
-void logging_logger_set_level(LoggerSt *logger, LoggingLevel level);
-bool logging_logger_should_log(LoggerSt *logger, LoggingLevel level);
-LoggingLevel logging_logger_level(LoggerSt *logger);
+void origin_logger_set_level(LoggerSt *logger, OriginLogLevel level);
+bool origin_logger_should_log(LoggerSt *logger, OriginLogLevel level);
+OriginLogLevel origin_logger_level(LoggerSt *logger);
 
-void logging_logger_flush_on(LoggerSt *logger, LoggingLevel level);
-bool logging_logger_should_flush(LoggerSt *logger, LoggingLevel level);
-LoggingLevel logging_logger_flush_level(LoggerSt *logger);
+void origin_logger_flush_on(LoggerSt *logger, OriginLogLevel level);
+bool origin_logger_should_flush(LoggerSt *logger, OriginLogLevel level);
+OriginLogLevel origin_logger_flush_level(LoggerSt *logger);
 
-void logging_logger_set_pattern(LoggerSt *logger, const char *pattern);
-void logging_logger_set_formatter(LoggerSt *logger, const FormatterSt *formatter);
+void origin_logger_set_pattern(LoggerSt *logger, const char *pattern);
+void origin_logger_set_formatter(LoggerSt *logger, const FormatterSt *formatter);
 
-void logging_logger_flush(LoggerSt *logger);
+void origin_logger_flush(LoggerSt *logger);
 
-void logging_logger_log(LoggerSt *logger, const char *file, int line, const char *func,
-                        LoggingLevel level, const char *format, ...);
+void origin_logger_log(LoggerSt *logger, const char *file, int line, const char *func,
+                       OriginLogLevel level, const char *format, ...);
 #pragma endregion
 
 #pragma region Sink
-SinkSt *logging_create_stdout_sink(FILE *file);
-SinkSt *logging_create_basic_file_sink(const char *file, bool overwrite);
+SinkSt *origin_create_stdout_sink(FILE *file);
+SinkSt *origin_create_basic_file_sink(const char *file, bool overwrite);
 
-void logging_detroy_sink(SinkSt *sink);
+void origin_detroy_sink(SinkSt *sink);
 
-void logging_sink_set_level(SinkSt *sink, LoggingLevel level);
-bool logging_sink_should_log(SinkSt *sink, LoggingLevel level);
-LoggingLevel logging_sink_level(SinkSt *sink);
+void origin_sink_set_level(SinkSt *sink, OriginLogLevel level);
+bool origin_sink_should_log(SinkSt *sink, OriginLogLevel level);
+OriginLogLevel origin_sink_level(SinkSt *sink);
 
-void logging_sink_set_pattern(SinkSt *sink, const char *pattern);
-void logging_sink_set_formatter(SinkSt *sink, const FormatterSt *formatter);
+void origin_sink_set_pattern(SinkSt *sink, const char *pattern);
+void origin_sink_set_formatter(SinkSt *sink, const FormatterSt *formatter);
 #pragma endregion
 
 #pragma region Formatter
-FormatterSt *logging_create_pattern_formatter(const char *pattern);
-void logging_destroy_formatter(FormatterSt *formatter);
+FormatterSt *origin_create_pattern_formatter(const char *pattern);
+void origin_destroy_formatter(FormatterSt *formatter);
 #pragma endregion
 
 #pragma region Task pool
-TaskPoolSt *logging_create_task_pool(uint32_t capacity, uint32_t threadCnt);
-void logging_destroy_task_pool(TaskPoolSt *taskPool);
+TaskPoolSt *origin_create_task_pool(uint32_t capacity, uint32_t threadCnt);
+void origin_destroy_task_pool(TaskPoolSt *taskPool);
 #pragma endregion
 
 #pragma region Root logger
-LoggerSt *logging_root_logger();
-void logging_set_root_logger(LoggerSt *logger);
+LoggerSt *origin_root_logger();
+void origin_set_root_logger(LoggerSt *logger);
 
-void logging_set_level(LoggingLevel level);
-bool logging_should_log(LoggingLevel level);
-LoggingLevel logging_level();
+void origin_set_level(OriginLogLevel level);
+bool origin_should_log(OriginLogLevel level);
+OriginLogLevel origin_level();
 
-void logging_flush_on(LoggingLevel level);
-bool logging_should_flush(LoggingLevel level);
-LoggingLevel logging_flush_level();
+void origin_flush_on(OriginLogLevel level);
+bool origin_should_flush(OriginLogLevel level);
+OriginLogLevel origin_flush_level();
 
-void logging_set_pattern(const char *pattern);
-void logging_set_formatter(const FormatterSt *formatter);
+void origin_set_pattern(const char *pattern);
+void origin_set_formatter(const FormatterSt *formatter);
 
-void logging_flush();
+void origin_flush();
 
-void logging_log(const char *file, int line, const char *func, LoggingLevel level,
-                 const char *format, ...);
+void origin_log(const char *file, int line, const char *func, OriginLogLevel level,
+                const char *format, ...);
 #pragma endregion
 
 #pragma region Container
@@ -109,23 +109,23 @@ void logging_log(const char *file, int line, const char *func, LoggingLevel leve
 }
 #endif  // __cplusplus
 
-#define LOGGING_TRACE(fmt, ...) \
-    logging_log(                \
-        __FILE__, __LINE__, __FUNCTION__, LOGGING_LEVEL_TRACE, fmt __VA_OPT__(, ) __VA_ARGS__);
-#define LOGGING_DEBUG(fmt, ...) \
-    logging_log(                \
-        __FILE__, __LINE__, __FUNCTION__, LOGGING_LEVEL_DEBUG, fmt __VA_OPT__(, ) __VA_ARGS__);
-#define LOGGING_INFO(fmt, ...) \
-    logging_log(               \
-        __FILE__, __LINE__, __FUNCTION__, LOGGING_LEVEL_INFO, fmt __VA_OPT__(, ) __VA_ARGS__);
-#define LOGGING_WARN(fmt, ...) \
-    logging_log(               \
-        __FILE__, __LINE__, __FUNCTION__, LOGGING_LEVEL_WARN, fmt __VA_OPT__(, ) __VA_ARGS__);
-#define LOGGING_ERR(fmt, ...) \
-    logging_log(              \
-        __FILE__, __LINE__, __FUNCTION__, LOGGING_LEVEL_ERROR, fmt __VA_OPT__(, ) __VA_ARGS__);
-#define LOGGING_FATAL(fmt, ...) \
-    logging_log(                \
-        __FILE__, __LINE__, __FUNCTION__, LOGGING_LEVEL_FATAL, fmt __VA_OPT__(, ) __VA_ARGS__);
+#define ORIGIN_LOG_TRACE(fmt, ...) \
+    origin_log(                    \
+        __FILE__, __LINE__, __FUNCTION__, ORIGIN_LOG_LEVEL_TRACE, fmt __VA_OPT__(, ) __VA_ARGS__);
+#define ORIGIN_LOG_DEBUG(fmt, ...) \
+    origin_log(                    \
+        __FILE__, __LINE__, __FUNCTION__, ORIGIN_LOG_LEVEL_DEBUG, fmt __VA_OPT__(, ) __VA_ARGS__);
+#define ORIGIN_LOG_INFO(fmt, ...) \
+    origin_log(                   \
+        __FILE__, __LINE__, __FUNCTION__, ORIGIN_LOG_LEVEL_INFO, fmt __VA_OPT__(, ) __VA_ARGS__);
+#define ORIGIN_LOG_WARN(fmt, ...) \
+    origin_log(                   \
+        __FILE__, __LINE__, __FUNCTION__, ORIGIN_LOG_LEVEL_WARN, fmt __VA_OPT__(, ) __VA_ARGS__);
+#define ORIGIN_LOG_ERR(fmt, ...) \
+    origin_log(                  \
+        __FILE__, __LINE__, __FUNCTION__, ORIGIN_LOG_LEVEL_ERROR, fmt __VA_OPT__(, ) __VA_ARGS__);
+#define ORIGIN_LOG_FATAL(fmt, ...) \
+    origin_log(                    \
+        __FILE__, __LINE__, __FUNCTION__, ORIGIN_LOG_LEVEL_FATAL, fmt __VA_OPT__(, ) __VA_ARGS__);
 
-#endif  // LOGGING_C_LOGGING_C_H
+#endif  // ORIGIN_LOGGING_C_LOGGING_C_H

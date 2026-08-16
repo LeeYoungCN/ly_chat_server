@@ -10,8 +10,8 @@
  */
 #pragma once
 
-#ifndef LOGGING_DETAILS_LOG_LEVEL_H
-#define LOGGING_DETAILS_LOG_LEVEL_H
+#ifndef ORIGIN_LOGGING_DETAILS_LOG_LEVEL_H
+#define ORIGIN_LOGGING_DETAILS_LOG_LEVEL_H
 
 #include <string_view>
 
@@ -34,4 +34,4 @@ std::string_view log_level_to_string(LogLevel level, bool full = true);
 
 }  // namespace origin::logging
 
-#endif  // LOGGING_DETAILS_LOG_LEVEL_H
+#endif  // ORIGIN_LOGGING_DETAILS_LOG_LEVEL_H

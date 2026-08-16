@@ -1,6 +1,6 @@
 #pragma once
-#ifndef LOGGING_SINKS_INTERNAL_STDOUT_SINK_IMPL_H
-#define LOGGING_SINKS_INTERNAL_STDOUT_SINK_IMPL_H
+#ifndef ORIGIN_LOGGING_SINKS_INTERNAL_STDOUT_SINK_IMPL_H
+#define ORIGIN_LOGGING_SINKS_INTERNAL_STDOUT_SINK_IMPL_H
 
 #include <cstdio>
 #include <string_view>
@@ -23,4 +23,4 @@ private:
     FILE *m_stream = stdout;
 };
 }  // namespace origin::logging
-#endif  // LOGGING_SINKS_INTERNAL_STDOUT_SINK_IMPL_H
+#endif  // ORIGIN_LOGGING_SINKS_INTERNAL_STDOUT_SINK_IMPL_H

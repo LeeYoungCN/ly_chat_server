@@ -5,7 +5,7 @@
 using namespace origin::logging;
 
 extern "C" {
-FormatterSt *logging_create_pattern_formatter(const char *pattern)
+FormatterSt *origin_create_pattern_formatter(const char *pattern)
 {
     if (pattern == nullptr) {
         return new struct FormatterSt(new PatternFormatter());
@@ -14,7 +14,7 @@ FormatterSt *logging_create_pattern_formatter(const char *pattern)
     }
 }
 
-void logging_destroy_formatter(FormatterSt *formatter)
+void origin_destroy_formatter(FormatterSt *formatter)
 {
     if (formatter != nullptr) {
         if (formatter->ptr != nullptr) {
