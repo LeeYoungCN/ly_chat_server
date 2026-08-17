@@ -12,13 +12,11 @@
 
 #ifndef COMMON_TYPES_FILESYSTEM_TYPES_H
 #define COMMON_TYPES_FILESYSTEM_TYPES_H
-#include <cstdint>
+#include <cstddef>
 #include <string>
-#include <vector>
 
 #include "common/types/date_time_types.h"
 
-namespace origin::utils::filesystem {
 enum class PathType {
     Nonexistent,  // 不存在
     File,         // 是文件
@@ -26,24 +24,9 @@ enum class PathType {
 };
 
 /**
- * @brief 路径字符串类型，用于表示文件系统路径
- */
-using PathString = std::string;
-
-/**
- * @brief 路径列表类型，用于存储多个路径片段或路径集合
- */
-using PathList = std::vector<PathString>;
-
-/**
  * @brief 文件大小类型，以字节为单位
  */
-using FileSize = uint64_t;
-
-/**
- * @brief 二进制数据容器，用于存储文件的二进制内容
- */
-using ByteVector = std::vector<uint8_t>;
+typedef size_t FileSize;
 
 /**
  * @brief 文件/目录条目类型枚举
@@ -85,12 +68,10 @@ enum class FileAttribute {
  * @brief 文件信息结构体，包含文件的元数据
  */
 struct FileInfo {
-    PathString path;         ///< 文件的完整路径
+    std::string path;        ///< 文件的完整路径
     FileSize size;           ///< 文件大小（字节）
     EntryType type;          ///< 条目类型（文件/目录等）
     TimestampMs modifyTime;  ///< 最后修改时间戳
 };
-
-}  // namespace origin::utils::filesystem
 
 #endif  // COMMON_TYPES_FILESYSTEM_TYPES_H

@@ -1,12 +1,12 @@
 #ifndef UTILS_FILE_WRITER_H
 #define UTILS_FILE_WRITER_H
 
-#include <cstddef>
 #include <memory>
 #include <string>
 #include <string_view>
 
 #include "common/types/error_code_types.h"
+#include "common/types/filesystem_types.h"
 
 namespace origin::utils::filesystem {
 class FileWriterImpl;
@@ -23,7 +23,7 @@ public:
     void write_line(std::string_view str);
     void flush();
 
-    [[nodiscard]] size_t size() const;
+    [[nodiscard]] FileSize size() const;
     [[nodiscard]] std::string filename_stem() const;
     [[nodiscard]] std::string filename() const;
     [[nodiscard]] std::string directory() const;

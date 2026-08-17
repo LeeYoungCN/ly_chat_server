@@ -25,7 +25,6 @@
 #include <string>
 #include <system_error>
 
-#include "common/constants/date_time_constants.h"
 #include "common/debug/debug_logger.h"
 #include "common/types/date_time_types.h"
 #include "common/types/filesystem_types.h"
@@ -41,7 +40,6 @@
 
 namespace {
 namespace fs = std::filesystem;
-using namespace origin::constants::date_time;
 using namespace origin::utils::filesystem;
 using namespace origin::utils::filesystem::internal;
 
@@ -228,7 +226,7 @@ std::string read_text_file(std::string_view path)
     return {std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()};
 }
 
-ByteVector read_binary_file(std::string_view path)
+std::vector<uint8_t> read_binary_file(std::string_view path)
 {
     if (!file_exists(path)) {
         DEBUG_LOGGER_ERR(
@@ -245,7 +243,7 @@ ByteVector read_binary_file(std::string_view path)
         return {};
     }
     FileSize fileSize = fs::file_size(path);
-    ByteVector buffer(fileSize);
+    std::vector<uint8_t> buffer(fileSize);
     file.read(reinterpret_cast<char*>(buffer.data()), static_cast<int64_t>(fileSize));
     if (static_cast<size_t>(file.gcount()) != fileSize) {
         return {};

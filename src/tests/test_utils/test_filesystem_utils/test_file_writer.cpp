@@ -73,7 +73,7 @@ TEST_F(TestFileAppender, append_size)
     EXPECT_EQ(m_appender->size(), 0);
     EXPECT_TRUE(file_exists(m_testFile));
 
-    size_t expectSize = 0;
+    FileSize expectSize = 0;
     for (uint32_t i = 0; i < 1024; i++) {
         std::string line = "line" + std::to_string(i);
         expectSize += line.length();
@@ -95,7 +95,7 @@ TEST_F(TestFileAppender, append_line_size)
     EXPECT_EQ(m_appender->size(), 0);
     EXPECT_TRUE(file_exists(m_testFile));
 
-    size_t expectSize = 0;
+    FileSize expectSize = 0;
     for (uint32_t i = 0; i < 1024; i++) {
         std::string line = "line" + std::to_string(i);
         expectSize += line.length() + origin::constants::filesystem::LF_LENGTH;
@@ -118,7 +118,7 @@ TEST_F(TestFileAppender, append_mode)
     EXPECT_EQ(m_appender->size(), 0);
     EXPECT_TRUE(file_exists(m_testFile));
 
-    size_t expectSize = 0;
+    FileSize expectSize = 0;
     for (uint32_t i = 0; i < 64; i++) {
         std::string line = "line" + std::to_string(i);
         expectSize += line.length() + origin::constants::filesystem::LF_LENGTH;

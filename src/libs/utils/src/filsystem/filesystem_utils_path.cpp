@@ -24,10 +24,10 @@
 #include <exception>
 #include <filesystem>
 #include <string>
+#include <vector>
 
 #include "common/constants/filesystem_constants.h"
 #include "common/debug/debug_logger.h"
-#include "common/types/filesystem_types.h"
 #include "internal/utils/filesystem_utils_internal.h"
 #include "utils/filesystem_utils.h"
 #include "utils/thread_utils.h"
@@ -58,7 +58,7 @@ std::string get_curr_working_dir()
 }
 
 // ------------------------------ 路径处理接口 ------------------------------
-std::string join_paths(const PathList& parts)
+std::string join_paths(const std::vector<std::string>& parts)
 {
     if (parts.empty()) {
         set_thread_last_err(ERR_UTILS_PATH_INVALID);

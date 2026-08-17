@@ -1,9 +1,10 @@
+#include "logging/c/logging_c.h"
+
 #include <cstdarg>
 #include <memory>
 
 #include "c/common_c.h"
 #include "internal/registry.h"
-#include "logging/c/logging_c.h"
 #include "logging/log_level.h"
 #include "utils/string_utils.h"
 

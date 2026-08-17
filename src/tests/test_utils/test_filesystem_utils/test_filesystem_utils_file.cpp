@@ -28,8 +28,8 @@ protected:
     void TearDown() override;
 
 protected:
-    PathString m_testFile;
-    PathString m_testFilename{"test_file"};
+    std::string m_testFile;
+    std::string m_testFilename{"test_file"};
 };
 
 void TestFilesystemUtilsFile::SetUp()
@@ -209,7 +209,7 @@ TEST_F(TestFilesystemUtilsFile, write_text_file_target_invalid)
 
 TEST_F(TestFilesystemUtilsFile, copy_file_success)
 {
-    PathString newFile = m_processDir + PATH_SEP + "file2";
+    std::string newFile = m_processDir + PATH_SEP + "file2";
     std::string text = "12345";
 
     EXPECT_TRUE(create_file(m_testFile));
@@ -225,7 +225,7 @@ TEST_F(TestFilesystemUtilsFile, copy_file_success)
 
 TEST_F(TestFilesystemUtilsFile, copy_file_over_write_success)
 {
-    PathString newFile = m_processDir + PATH_SEP + "file2";
+    std::string newFile = m_processDir + PATH_SEP + "file2";
     EXPECT_TRUE(create_file(m_testFile));
     EXPECT_TRUE(copy_file(m_testFile, newFile));
     EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS) << get_thread_last_err_msg();
@@ -266,7 +266,7 @@ TEST_F(TestFilesystemUtilsFile, copy_file_dst_invalid)
 
 TEST_F(TestFilesystemUtilsFile, copy_file_dst_already_exist)
 {
-    PathString newFile = m_processDir + PATH_SEP + "file2";
+    std::string newFile = m_processDir + PATH_SEP + "file2";
     EXPECT_TRUE(create_file(m_testFile));
     EXPECT_TRUE(copy_file(m_testFile, newFile));
     EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS) << get_thread_last_err_msg();
@@ -284,7 +284,7 @@ TEST_F(TestFilesystemUtilsFile, copy_file_dst_already_exist)
 
 TEST_F(TestFilesystemUtilsFile, rename_file_success)
 {
-    PathString newFile = m_processDir + PATH_SEP + "file2";
+    std::string newFile = m_processDir + PATH_SEP + "file2";
     std::string text = "12345";
     EXPECT_TRUE(delete_file(newFile));
 
@@ -305,7 +305,7 @@ TEST_F(TestFilesystemUtilsFile, rename_file_success)
 
 TEST_F(TestFilesystemUtilsFile, rename_file_dest_already_exist)
 {
-    PathString newFile = m_processDir + PATH_SEP + "file2";
+    std::string newFile = m_processDir + PATH_SEP + "file2";
     std::string text = "12345";
     EXPECT_TRUE(delete_file(newFile));
 
@@ -330,7 +330,7 @@ TEST_F(TestFilesystemUtilsFile, rename_file_dest_already_exist)
 
 TEST_F(TestFilesystemUtilsFile, rename_file_overwrite)
 {
-    PathString newFile = m_processDir + PATH_SEP + "file2";
+    std::string newFile = m_processDir + PATH_SEP + "file2";
     std::string text = "12345";
     EXPECT_TRUE(delete_file(newFile));
 
@@ -356,7 +356,7 @@ TEST_F(TestFilesystemUtilsFile, rename_file_overwrite)
 
 TEST_F(TestFilesystemUtilsFile, rename_file_src_nonexistent)
 {
-    PathString newFile = m_processDir + PATH_SEP + "file2";
+    std::string newFile = m_processDir + PATH_SEP + "file2";
 
     EXPECT_FALSE(rename_file(m_testFile, newFile));
     EXPECT_EQ(get_thread_last_err(), ERR_UTILS_NOT_FOUND) << get_thread_last_err_msg();
@@ -364,7 +364,7 @@ TEST_F(TestFilesystemUtilsFile, rename_file_src_nonexistent)
 
 TEST_F(TestFilesystemUtilsFile, rename_file_src_invalid)
 {
-    PathString newFile = m_processDir + PATH_SEP + "file2";
+    std::string newFile = m_processDir + PATH_SEP + "file2";
 
     EXPECT_FALSE(rename_file(m_processDir, newFile));
     EXPECT_EQ(get_thread_last_err(), ERR_UTILS_NOT_FILE) << get_thread_last_err_msg();
@@ -372,7 +372,7 @@ TEST_F(TestFilesystemUtilsFile, rename_file_src_invalid)
 
 TEST_F(TestFilesystemUtilsFile, rename_file_dest_invalid)
 {
-    PathString newFile = m_processDir + PATH_SEP + "file2";
+    std::string newFile = m_processDir + PATH_SEP + "file2";
     std::string text = "12345";
 
     EXPECT_TRUE(create_file(m_testFile));

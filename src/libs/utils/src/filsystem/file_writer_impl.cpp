@@ -61,7 +61,7 @@ ErrorCode FileWriterImpl::open_it(bool overwrite)
     return _errcode;
 }
 
-size_t FileWriterImpl::get_file_size_it()
+FileSize FileWriterImpl::get_file_size_it()
 {
 #if OS_WINDOWS
     return get_file_size(_file);
@@ -72,7 +72,7 @@ size_t FileWriterImpl::get_file_size_it()
     if (pos == std::ofstream::pos_type(-1)) {
         return 0;
     } else {
-        return static_cast<size_t>(pos);
+        return static_cast<FileSize>(pos);
     }
 #endif
 }
@@ -149,7 +149,7 @@ void FileWriterImpl::flush()
     _currSize = get_file_size_it();
 }
 
-size_t FileWriterImpl::size()
+FileSize FileWriterImpl::size()
 {
     return _stream.is_open() ? _currSize : get_file_size(_file);
 }

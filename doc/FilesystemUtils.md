@@ -23,10 +23,10 @@
 namespace common {
 namespace types {
 namespace filesystem {
-    using PathString = std::string;          // 路径字符串类型
-    using PathList = std::vector<PathString>; // 路径列表类型
+    using std::string = std::string;          // 路径字符串类型
+    using std::vector<std::string> = std::vector<std::string>; // 路径列表类型
     using FileSize = uint64_t;               // 文件大小类型（字节）
-    using ByteVector = std::vector<uint8_t>; // 二进制数据容器
+    using std::vector<uint8_t> = std::vector<uint8_t>; // 二进制数据容器
 } // namespace filesystem
 } // namespace types
 } // namespace common
@@ -81,7 +81,7 @@ namespace types {
 namespace filesystem {
     // 文件信息结构体
     struct FileInfo {
-        PathString path;                                 ///< 文件的完整路径
+        std::string path;                                 ///< 文件的完整路径
         FileSize size;                                   ///< 文件大小（字节）
         EntryType type;                                  ///< 条目类型（文件/目录等）
         common::types::date_timeTimestampMs modifyTime;  ///< 最后修改时间戳）
@@ -163,15 +163,15 @@ namespace filesystem {
 
 | 接口名              | 功能描述                          | 参数说明                                  | 返回值类型                                   |
 |---------------------|-----------------------------------|-------------------------------------------|----------------------------------------------|
-| `join_paths`         | 拼接多个路径片段                  | `const PathList& parts`                   | `PathString`                                 |
-| `normalize_path`     | 规范化路径（去除./和../）         | `const PathString& path`                  | `PathString`                                 |
-| `to_absolute_path`    | 转换为绝对路径                    | `const PathString& relPath`               | `PathString`                                 |
-| `GetDirName`        | 获取父目录路径                    | `const PathString& path`                  | `PathString`                                 |
-| `get_base_name`       | 获取带扩展名的文件名              | `const PathString& path`                  | `PathString`                                 |
-| `get_file_name`       | 获取不带扩展名的文件名            | `const PathString& path`                  | `PathString`                                 |
-| `get_extension`      | 获取文件扩展名（含.）             | `const PathString& path`                  | `PathString`                                 |
-| `is_absolute_path`    | 判断是否为绝对路径                | `const PathString& path`                  | `bool`                                       |
-| `IsPathTooLong`     | 判断路径是否超过长度限制          | `const PathString& path`                  | `bool`                                       |
+| `join_paths`         | 拼接多个路径片段                  | `const std::vector<std::string>& parts`                   | `std::string`                                 |
+| `normalize_path`     | 规范化路径（去除./和../）         | `const std::string& path`                  | `std::string`                                 |
+| `to_absolute_path`    | 转换为绝对路径                    | `const std::string& relPath`               | `std::string`                                 |
+| `GetDirName`        | 获取父目录路径                    | `const std::string& path`                  | `std::string`                                 |
+| `get_base_name`       | 获取带扩展名的文件名              | `const std::string& path`                  | `std::string`                                 |
+| `get_file_name`       | 获取不带扩展名的文件名            | `const std::string& path`                  | `std::string`                                 |
+| `get_extension`      | 获取文件扩展名（含.）             | `const std::string& path`                  | `std::string`                                 |
+| `is_absolute_path`    | 判断是否为绝对路径                | `const std::string& path`                  | `bool`                                       |
+| `IsPathTooLong`     | 判断路径是否超过长度限制          | `const std::string& path`                  | `bool`                                       |
 
 **示例**：
 
@@ -179,7 +179,7 @@ namespace filesystem {
 using namespace common;
 
 // 拼接路径
-types::filesystem::PathList parts = {"data", "config", "app.json"};
+types::filesystem::std::vector<std::string> parts = {"data", "config", "app.json"};
 auto configPath = utils::filesystem::join_paths(parts);
 // Windows: "data\config\app.json"
 // Unix: "data/config/app.json"
@@ -189,29 +189,29 @@ auto configPath = utils::filesystem::join_paths(parts);
 
 | 接口名              | 功能描述                          | 参数说明                                  | 返回值类型                                   |
 |---------------------|-----------------------------------|-------------------------------------------|----------------------------------------------|
-| `file_exists`        | 判断文件是否存在                  | `const PathString& path`                  | `bool`                                       |
-| `create_file`        | 创建空文件                        | `const PathString& path`                  | `bool`                                       |
-| `delete_file`        | 删除文件                          | `const PathString& path`                  | `bool`                                       |
-| `copy_file`          | 复制文件                          | `const PathString& src, const PathString& dest, bool overwrite` | `bool` |
-| `rename_file`        | 移动或重命名文件                   | `const PathString& src, const PathString& dest, bool overwrite` | `bool` |
-| `read_text_file`      | 读取文本文件内容                  | `const PathString& path`                  | `PathString`                                 |
-| `read_binary_file`    | 读取二进制文件内容                | `const PathString& path`                  | `ByteVector`                                 |
-| `write_text_file`     | 写入文本内容到文件                | `const PathString& path, const PathString& content, bool overwrite` | `bool` |
-| `WriteBinaryFile`   | 写入二进制内容到文件              | `const PathString& path, const ByteVector& data, bool append` | `bool` |
-| `get_file_size`       | 获取文件大小（字节）              | `const PathString& path`                  | `FileSize`                                   |
-| `get_file_info`       | 获取文件详细信息                  | `const PathString& path`                  | `FileInfo`                                   |
-| `SetFilePermissions`| 设置文件权限                      | `const PathString& path, Permission perm` | `bool`                                       |
+| `file_exists`        | 判断文件是否存在                  | `const std::string& path`                  | `bool`                                       |
+| `create_file`        | 创建空文件                        | `const std::string& path`                  | `bool`                                       |
+| `delete_file`        | 删除文件                          | `const std::string& path`                  | `bool`                                       |
+| `copy_file`          | 复制文件                          | `const std::string& src, const std::string& dest, bool overwrite` | `bool` |
+| `rename_file`        | 移动或重命名文件                   | `const std::string& src, const std::string& dest, bool overwrite` | `bool` |
+| `read_text_file`      | 读取文本文件内容                  | `const std::string& path`                  | `std::string`                                 |
+| `read_binary_file`    | 读取二进制文件内容                | `const std::string& path`                  | `std::vector<uint8_t>`                                 |
+| `write_text_file`     | 写入文本内容到文件                | `const std::string& path, const std::string& content, bool overwrite` | `bool` |
+| `WriteBinaryFile`   | 写入二进制内容到文件              | `const std::string& path, const std::vector<uint8_t>& data, bool append` | `bool` |
+| `get_file_size`       | 获取文件大小（字节）              | `const std::string& path`                  | `FileSize`                                   |
+| `get_file_info`       | 获取文件详细信息                  | `const std::string& path`                  | `FileInfo`                                   |
+| `SetFilePermissions`| 设置文件权限                      | `const std::string& path, Permission perm` | `bool`                                       |
 
 ### 4.3 目录操作接口
 
 | 接口名              | 功能描述                          | 参数说明                                  | 返回值类型                                   |
 |---------------------|-----------------------------------|-------------------------------------------|----------------------------------------------|
-| `DirExists`         | 判断目录是否存在                  | `const PathString& path`                  | `bool`                                       |
-| `CreateDir`         | 创建目录（支持递归创建）          | `const PathString& path, bool recursive`  | `bool`                                       |
-| `DeleteDir`         | 删除目录（支持递归删除）          | `const PathString& path, bool recursive`  | `bool`                                       |
-| `ListDir`           | 列出目录中的所有条目              | `const PathString& path`                  | `PathList`                                   |
-| `ListDirDetailed`   | 列出目录中所有条目的详细信息      | `const PathString& path`                  | `std::vector<FileInfo>`                      |
-| `GetDirSize`        | 计算目录总大小（含子目录）        | `const PathString& path`                  | `FileSize`                                   |
+| `DirExists`         | 判断目录是否存在                  | `const std::string& path`                  | `bool`                                       |
+| `CreateDir`         | 创建目录（支持递归创建）          | `const std::string& path, bool recursive`  | `bool`                                       |
+| `DeleteDir`         | 删除目录（支持递归删除）          | `const std::string& path, bool recursive`  | `bool`                                       |
+| `ListDir`           | 列出目录中的所有条目              | `const std::string& path`                  | `std::vector<std::string>`                                   |
+| `ListDirDetailed`   | 列出目录中所有条目的详细信息      | `const std::string& path`                  | `std::vector<FileInfo>`                      |
+| `GetDirSize`        | 计算目录总大小（含子目录）        | `const std::string& path`                  | `FileSize`                                   |
 
 ### 4.4 错误处理接口
 
@@ -232,9 +232,9 @@ int main() {
     using namespace common;
     
     // 定义路径
-    types::filesystem::PathString baseDir = "app_data";
-    types::filesystem::PathString logDir = utils::filesystem::join_paths({baseDir, "logs"});
-    types::filesystem::PathString logFile = utils::filesystem::join_paths({logDir, "app.log"});
+    types::filesystem::std::string baseDir = "app_data";
+    types::filesystem::std::string logDir = utils::filesystem::join_paths({baseDir, "logs"});
+    types::filesystem::std::string logFile = utils::filesystem::join_paths({logDir, "app.log"});
 
     // 创建目录
     if (!utils::filesystem::DirExists(logDir)) {
@@ -266,7 +266,7 @@ int main() {
 1. **类型命名**：
    - 枚举类型：大驼峰（如 `EntryType`、`Permission`）
    - 结构体类型：大驼峰（如 `FileInfo`）
-   - 类型别名：大驼峰（如 `PathString`、`FileSize`）
+   - 类型别名：大驼峰（如 `std::string`、`FileSize`）
 
 2. **常量与枚举值命名**：
    - 常量：全大写+下划线（如 `PATH_MAX_STD`、`PATH_SEP`）

@@ -12,6 +12,8 @@
 #ifndef UTILS_FILESYSTEM_UTILS_H
 #define UTILS_FILESYSTEM_UTILS_H
 
+#include <vector>
+
 #include "common/types/filesystem_types.h"
 
 namespace origin::utils::filesystem {
@@ -60,7 +62,7 @@ std::string get_curr_working_dir();
  * @return 拼接后的完整路径字符串
  * @note 自动处理不同平台的路径分隔符
  */
-std::string join_paths(const PathList& parts);
+std::string join_paths(const std::vector<std::string>& parts);
 
 /**
  * @brief 规范化路径，去除其中的./和../等冗余部分
@@ -171,7 +173,7 @@ std::string read_text_file(std::string_view path);
  * @param path 二进制文件路径
  * @return 二进制数据容器，读取失败返回空容器
  */
-ByteVector read_binary_file(std::string_view path);
+std::vector<uint8_t> read_binary_file(std::string_view path);
 
 /**
  * @brief 写入文本内容到文件

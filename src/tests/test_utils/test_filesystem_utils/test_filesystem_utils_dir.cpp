@@ -16,8 +16,8 @@ protected:
     void TearDown() override;
 
 protected:
-    PathString m_testDir1;
-    PathString m_testDir2;
+    std::string m_testDir1;
+    std::string m_testDir2;
 };
 
 void TestFilesystemUtilsDir::SetUp()

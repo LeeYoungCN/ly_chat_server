@@ -53,7 +53,7 @@ TEST_F(TestFilesystemUtilsPath, AbsolutePath)
 TEST_F(TestFilesystemUtilsPath, ToAbsolute)
 {
     auto baseName = get_filename(m_process);
-    PathString relPah = std::string(".") + PATH_SEP + baseName;
+    std::string relPah = std::string(".") + PATH_SEP + baseName;
     EXPECT_FALSE(is_absolute_path(relPah));
     auto absFile = to_absolute_path(relPah, m_processDir);
     EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
@@ -68,7 +68,7 @@ TEST_F(TestFilesystemUtilsPath, BaseName)
     EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
     auto extention = get_extension(m_process);
     EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
-    PathString fileWithExt = filename + extention;
+    std::string fileWithExt = filename + extention;
     auto baseName = get_filename(m_process);
     EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS);
     EXPECT_EQ(baseName, fileWithExt);
@@ -86,8 +86,8 @@ TEST_F(TestFilesystemUtilsPath, normalize_path)
 
 TEST_F(TestFilesystemUtilsPath, NormalizePath_WithDots)
 {
-    PathString test = "a/b/../c/./d";
-    PathString expect(MAX_PATH_STD, '\0');
+    std::string test = "a/b/../c/./d";
+    std::string expect(MAX_PATH_STD, '\0');
     auto len = snprintf(expect.data(), MAX_PATH_STD, "a%sc%sd", PATH_SEP, PATH_SEP);
     expect.resize(static_cast<size_t>(len));
     auto result = normalize_path(test);
@@ -97,7 +97,7 @@ TEST_F(TestFilesystemUtilsPath, NormalizePath_WithDots)
 
 TEST_F(TestFilesystemUtilsPath, NormalizePath_EmptyPath)
 {
-    PathString result = normalize_path("");
+    std::string result = normalize_path("");
 
     EXPECT_EQ(result, "");
     EXPECT_EQ(get_thread_last_err(), ERR_COMM_SUCCESS) << get_thread_last_err_msg();
@@ -111,8 +111,8 @@ TEST_F(TestFilesystemUtilsPath, JoinPaths_empty)
 
 TEST_F(TestFilesystemUtilsPath, JoinPaths_Success)
 {
-    PathList test = {"a", "b", "c"};
-    PathString expect(MAX_PATH_STD, '\0');
+    std::vector<std::string> test = {"a", "b", "c"};
+    std::string expect(MAX_PATH_STD, '\0');
     auto size = snprintf(expect.data(), MAX_PATH_STD, "a%sb%sc", PATH_SEP, PATH_SEP);
     expect.resize(static_cast<size_t>(size));
     EXPECT_EQ(join_paths(test), expect);

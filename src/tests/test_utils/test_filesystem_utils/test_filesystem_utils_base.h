@@ -9,13 +9,11 @@
  *
  */
 
-#include "common/types/error_code_types.h"
-#include "common/types/filesystem_types.h"
+#include "common/common_error_code.h"
 #include "gtest/gtest.h"
 #include "utils/filesystem_utils.h"
 #include "utils/process_utils.h"
 #include "utils/thread_utils.h"
-#include "utils/utils_error_code.h"
 
 namespace test::test_utils::test_filesystem_utils {
 using namespace origin::utils::filesystem;
@@ -36,9 +34,9 @@ protected:
     void TearDown() override {};
 
 protected:
-    PathString m_process;
-    PathString m_processDir;
-    PathString m_workDir;
+    std::string m_process;
+    std::string m_processDir;
+    std::string m_workDir;
 };
 
 }  // namespace test::test_utils::test_filesystem_utils
