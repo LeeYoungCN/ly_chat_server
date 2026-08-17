@@ -58,7 +58,7 @@ namespace origin::common::types::date_time {
 
 ## 二、核心常量
 
-时间相关常量定义于 `common/constants/date_time_constants.h`，位于命名空间 `common::origin::constants::date_time`，关键常量如下：
+时间相关常量定义于 `common/constants/date_time_constants.h`，位于命名空间 `common::origin::date_time`，关键常量如下：
 
 | 常量 | 类型 | 说明 |
 |------|------|------|
@@ -71,7 +71,7 @@ namespace origin::common::types::date_time {
 
 ## 三、工具接口
 
-所有接口声明于 `common/utils/date_time_utils.h`，位于命名空间 `common::utils::date_time`。
+所有接口声明于 `common/utils/date_time_utils.h`，位于命名空间 `common::origin::date_time`。
 
 
 ### 3.1 时间获取接口
@@ -239,8 +239,8 @@ size_t format_time_buffer(
 | 命名空间 | 包含内容 | 示例 |
 |----------|----------|------|
 | `common::types::date_time` | `TimestampMs`、`TimeComponent` 类型定义 | `common::types::date_timeTimestampMs` |
-| `common::origin::constants::date_time` | 时间相关常量（如 `MILLIS_PER_SECOND`） | `common::origin::constants::date_time::MAX_TIME_STR_LEN` |
-| `common::utils::date_time` | 所有工具接口（`get_now_timestamp_ms` 等） | `common::utils::date_time::format_time_string` |
+| `common::origin::date_time` | 时间相关常量（如 `MILLIS_PER_SECOND`） | `common::origin::date_time::MAX_TIME_STR_LEN` |
+| `common::origin::date_time` | 所有工具接口（`get_now_timestamp_ms` 等） | `common::origin::date_time::format_time_string` |
 
 
 ### 4.3 命名空间使用建议
@@ -249,7 +249,7 @@ size_t format_time_buffer(
 
   ```cpp
   using namespace origin::common::types::date_time;    // 时间类型
-  using namespace origin::common::utils::date_time;    // 工具接口
+  using namespace origin::common::origin::date_time;    // 工具接口
   ```
 
 - 在头文件中，避免使用 `using namespace`，需使用完整命名空间（如 `common::types::date_timeTimestampMs`）。
@@ -268,7 +268,7 @@ size_t format_time_buffer(
 int main() {
     // 简化命名空间
     using namespace origin::common::types::date_time;
-    using namespace origin::common::utils::date_time;
+    using namespace origin::common::origin::date_time;
 
     // 1. 获取当前时间戳
     TimestampMs now_ts = get_now_timestamp_ms();
@@ -296,7 +296,7 @@ int main() {
 ```cpp
 int main() {
     using namespace origin::common::types::date_time;
-    using namespace origin::common::utils::date_time;
+    using namespace origin::common::origin::date_time;
 
     // 定义时间组件（2023年1月1日 00:00:00.500，星期日）
     TimeComponent comp = {2023, 1, 1, 0, 0, 0, 500, 0};

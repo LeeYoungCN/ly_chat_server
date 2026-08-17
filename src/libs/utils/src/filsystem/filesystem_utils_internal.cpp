@@ -21,7 +21,7 @@
 #include "utils/thread_utils.h"
 #include "utils/utils_error_code.h"
 
-namespace origin::utils::filesystem::internal {
+namespace origin::filesystem::internal {
 
 ErrorCode ConvertGenericCategory(const std::error_code& ec)
 {
@@ -96,4 +96,4 @@ ErrorCode ConvertSysEcToErrorCode(const std::error_code& ec)
     }
 }
 
-}  // namespace origin::utils::filesystem::internal
+}  // namespace origin::filesystem::internal

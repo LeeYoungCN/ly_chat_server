@@ -42,10 +42,10 @@
 
 namespace {
 namespace fs = std::filesystem;
-using namespace origin::utils::filesystem;
-using namespace origin::utils::filesystem::internal;
+using namespace origin::filesystem;
+using namespace origin::filesystem::internal;
 #if OS_WINDOWS
-using namespace origin::constants::date_time;
+using namespace origin::date_time;
 #endif  // OS_WINDOWS
 
 bool delete_file_it(std::string_view path)
@@ -68,10 +68,10 @@ bool delete_file_it(std::string_view path)
 }
 }  // namespace
 
-namespace origin::utils::filesystem {
+namespace origin::filesystem {
 
 namespace fs = std::filesystem;
-using namespace origin::utils::filesystem::internal;
+using namespace origin::filesystem::internal;
 
 bool file_exists(std::string_view path)
 {
@@ -368,4 +368,4 @@ FileInfo get_file_info(std::string_view path)
     return fileInfo;
 }
 
-}  // namespace origin::utils::filesystem
+}  // namespace origin::filesystem

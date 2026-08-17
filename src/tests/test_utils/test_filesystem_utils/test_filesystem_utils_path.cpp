@@ -20,8 +20,8 @@
 
 namespace test::test_utils::test_filesystem_utils {
 
-using namespace origin::utils::filesystem;
-using namespace origin::constants::filesystem;
+using namespace origin::filesystem;
+using namespace origin::filesystem;
 
 class TestFilesystemUtilsPath : public TestFilesystemUtilsBase {};
 

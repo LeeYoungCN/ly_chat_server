@@ -6,7 +6,7 @@
 
 #define MODE_STR(mode) ((mode) ? "overwrite" : "append")
 
-namespace origin::utils::filesystem {
+namespace origin::filesystem {
 
 FileWriter::~FileWriter()
 {
@@ -83,4 +83,4 @@ ErrorCode FileWriter::get_last_error() const
     return _pimpl->get_last_error();
 }
 
-}  // namespace origin::utils::filesystem
+}  // namespace origin::filesystem

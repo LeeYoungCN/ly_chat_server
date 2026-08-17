@@ -14,6 +14,6 @@ std::string get_logger_name(const testing::TestInfo* test_info)
 
 std::string get_log_dir()
 {
-    return utils::filesystem::join_paths({utils::process::get_proc_directory(), "logs"});
+    return filesystem::join_paths({process::get_proc_directory(), "logs"});
 }
 }  // namespace test::test_logging

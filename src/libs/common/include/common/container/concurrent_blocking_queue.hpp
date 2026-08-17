@@ -11,7 +11,7 @@
 #include "common/container/blocking_queue.hpp"
 #include "common/debug/debug_logger.h"
 
-namespace origin::common::container {
+namespace origin::container {
 
 constexpr uint32_t CONCURRENT_BLOCKING_QUEUE_DEFAULT_TIMEOUT = 200;
 constexpr uint32_t CONCURRENT_BLOCKING_QUEUE_DEFAULT_CAPACITY = 1024;
@@ -288,6 +288,6 @@ private:
     std::condition_variable _pushCv;
     std::atomic<size_t> _discardCounter = 0;
 };
-}  // namespace origin::common::container
+}  // namespace origin::container
 
 #endif  // COMMON_CONTAINER_CONCURRENT_BLOCKING_QUEUE_HPP

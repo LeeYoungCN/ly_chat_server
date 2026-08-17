@@ -30,10 +30,10 @@
 #include "utils/thread_utils.h"
 #include "utils/utils_error_code.h"
 
-namespace origin::utils::filesystem {
+namespace origin::filesystem {
 
 namespace fs = std::filesystem;
-using namespace origin::utils::filesystem::internal;
+using namespace origin::filesystem::internal;
 
 inline const char* recursive_mode_str(bool recursive)
 {
@@ -146,4 +146,4 @@ bool delete_dir(std::string_view path, bool recursive)
     }
 }
 
-}  // namespace origin::utils::filesystem
+}  // namespace origin::filesystem

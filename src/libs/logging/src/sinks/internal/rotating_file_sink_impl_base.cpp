@@ -13,7 +13,7 @@
 #include "internal/common.h"
 
 namespace origin::logging {
-using namespace origin::utils::filesystem;
+using namespace origin::filesystem;
 constexpr uint32_t DELETE_FILE_RETRY = 3;
 constexpr uint32_t DELETE_FILE_SLEEP_MS = 10;
 constexpr uint32_t RENAME_FILE_RETRY = 3;

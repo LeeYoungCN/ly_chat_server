@@ -7,8 +7,8 @@
 #include "utils/filesystem_utils.h"
 
 using namespace origin::logging;
-using namespace origin::utils::filesystem;
-using namespace origin::constants::filesystem;
+using namespace origin::filesystem;
+using namespace origin::filesystem;
 
 namespace test::test_logging {
 class TestBasicFileSink : public ::testing::Test {

@@ -16,8 +16,8 @@
 
 namespace test::test_utils::test_date_time_utils {
 
-using namespace origin::constants::date_time;
-using namespace origin::utils::date_time;
+using namespace origin::date_time;
+using namespace origin::date_time;
 
 tm TimestampToTimeInfo(TimestampMs ts)
 {

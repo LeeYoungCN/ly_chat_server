@@ -16,7 +16,7 @@
 
 #include "common/types/filesystem_types.h"
 
-namespace origin::utils::filesystem {
+namespace origin::filesystem {
 
 /**
  * @brief 判断指定路径的文件系统条目类型
@@ -223,5 +223,5 @@ bool create_dir(std::string_view path, bool recursive = true);
  */
 bool delete_dir(std::string_view path, bool recursive = true);
 
-}  // namespace origin::utils::filesystem
+}  // namespace origin::filesystem
 #endif  // UTILS_FILESYSTEM_UTILS_H

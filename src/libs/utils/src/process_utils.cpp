@@ -27,9 +27,8 @@
 #include "utils/filesystem_utils.h"
 #include "utils/thread_utils.h"
 
-namespace origin::utils::process {
-using namespace origin::utils::filesystem;
-using namespace origin::constants::filesystem;
+namespace origin::process {
+using namespace origin::filesystem;
 
 std::string get_proc_path()
 {
@@ -85,4 +84,4 @@ ProcessId get_curr_proc_id()
 #endif
     return pid;
 }
-}  // namespace origin::utils::process
+}  // namespace origin::process

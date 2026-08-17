@@ -13,7 +13,7 @@
 #include "logging/log_msg.h"
 
 namespace origin::logging {
-using namespace origin::common::container;
+using namespace origin::container;
 
 TaskPool::TaskPool() : TaskPool(TaskPool::DEFAULT_CAPACITY, TaskPool::DEFAULT_THREAD_CNT) {}
 

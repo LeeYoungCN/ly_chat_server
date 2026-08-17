@@ -16,8 +16,8 @@
 #include "utils/thread_utils.h"
 
 namespace test::test_utils::test_filesystem_utils {
-using namespace origin::utils::filesystem;
-using namespace origin::utils::process;
+using namespace origin::filesystem;
+using namespace origin::process;
 class TestFilesystemUtilsBase : public ::testing::Test {
 protected:
     static void SetUpTestSuite() {}

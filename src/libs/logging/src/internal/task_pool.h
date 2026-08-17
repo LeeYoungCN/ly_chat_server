@@ -33,7 +33,7 @@ private:
     void worker_loop(uint32_t idx);
 
 private:
-    common::container::ConcurrentBlockingQueue<LogTask> _buffer;
+    container::ConcurrentBlockingQueue<LogTask> _buffer;
     uint32_t _threadCnt{0};
     std::vector<std::thread> _threadPool;
     std::string _paramStr;

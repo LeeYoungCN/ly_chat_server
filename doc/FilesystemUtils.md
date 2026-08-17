@@ -2,11 +2,11 @@
 
 ## 一、模块概述
 
-**utils::filesystem** 模块是跨平台文件系统操作工具集，采用分层命名空间设计：
+**filesystem** 模块是跨平台文件系统操作工具集，采用分层命名空间设计：
 
-- **类型定义**：`utils::filesystem`（包含枚举、结构体等类型）
-- **常量定义**：`utils::filesystem`（包含路径长度、分隔符等常量）
-- **工具接口**：`utils::filesystem`（提供文件系统操作实现）
+- **类型定义**：`filesystem`（包含枚举、结构体等类型）
+- **常量定义**：`filesystem`（包含路径长度、分隔符等常量）
+- **工具接口**：`filesystem`（提供文件系统操作实现）
 
 模块适配 Windows、Linux、macOS 平台，接口设计遵循：
 
@@ -15,7 +15,7 @@
 - 接口和结构体成员采用大驼峰命名
 - 无任何匈牙利命名前缀
 
-## 二、类型定义（`utils::filesystem`）
+## 二、类型定义（`filesystem`）
 
 ### 2.1 基础类型别名
 
@@ -93,7 +93,7 @@ namespace filesystem {
 
 ## 三、常量与枚举值
 
-### 3.1 路径与尺寸常量（`utils::filesystem`）
+### 3.1 路径与尺寸常量（`filesystem`）
 
 ```cpp
 namespace common {
@@ -157,7 +157,7 @@ namespace filesystem {
 } // namespace common
 ```
 
-## 四、工具接口（`utils::filesystem`）
+## 四、工具接口（`filesystem`）
 
 ### 4.1 路径处理接口（大驼峰命名）
 
@@ -180,7 +180,7 @@ using namespace common;
 
 // 拼接路径
 types::filesystem::std::vector<std::string> parts = {"data", "config", "app.json"};
-auto configPath = utils::filesystem::join_paths(parts);
+auto configPath = filesystem::join_paths(parts);
 // Windows: "data\config\app.json"
 // Unix: "data/config/app.json"
 ```
@@ -217,7 +217,7 @@ auto configPath = utils::filesystem::join_paths(parts);
 
 | 接口名              | 功能描述                          | 参数说明                                  | 返回值类型                                   |
 |---------------------|-----------------------------------|-------------------------------------------|----------------------------------------------|
-| `GetLastError`      | 获取最后一次操作的错误码          | 无                                        | `origin::constants::filesystem::ErrorCode`           |
+| `GetLastError`      | 获取最后一次操作的错误码          | 无                                        | `origin::filesystem::ErrorCode`           |
 | `GetErrorString`    | 将错误码转换为描述字符串          | `ErrorCode code`                          | `std::string`                                |
 
 ## 五、完整使用示例
@@ -233,26 +233,26 @@ int main() {
     
     // 定义路径
     types::filesystem::std::string baseDir = "app_data";
-    types::filesystem::std::string logDir = utils::filesystem::join_paths({baseDir, "logs"});
-    types::filesystem::std::string logFile = utils::filesystem::join_paths({logDir, "app.log"});
+    types::filesystem::std::string logDir = filesystem::join_paths({baseDir, "logs"});
+    types::filesystem::std::string logFile = filesystem::join_paths({logDir, "app.log"});
 
     // 创建目录
-    if (!utils::filesystem::DirExists(logDir)) {
-        if (utils::filesystem::CreateDir(logDir, true)) {
+    if (!filesystem::DirExists(logDir)) {
+        if (filesystem::CreateDir(logDir, true)) {
             std::cout << "目录创建成功: " << logDir << std::endl;
         } else {
-            auto error = utils::filesystem::GetLastError();
-            std::cerr << "目录创建失败: " << utils::filesystem::GetErrorString(error) << std::endl;
+            auto error = filesystem::GetLastError();
+            std::cerr << "目录创建失败: " << filesystem::GetErrorString(error) << std::endl;
             return 1;
         }
     }
 
     // 写入日志文件
-    if (utils::filesystem::write_text_file(logFile, "Application started successfully", true)) {
+    if (filesystem::write_text_file(logFile, "Application started successfully", true)) {
         std::cout << "日志写入成功" << std::endl;
         
         // 获取文件信息
-        auto fileInfo = utils::filesystem::get_file_info(logFile);
+        auto fileInfo = filesystem::get_file_info(logFile);
         std::cout << "文件大小: " << fileInfo.Size << " bytes" << std::endl;
         std::cout << "最后修改时间: " << ctime(&fileInfo.ModifyTime);
     }
@@ -277,8 +277,8 @@ int main() {
    - 结构体成员：大驼峰（如 `FileInfo::Path`、`FileInfo::Size`）
 
 4. **命名空间结构**：
-   - `utils::filesystem`：仅包含类型定义
-   - `utils::filesystem`：仅包含常量和错误码
-   - `utils::filesystem`：仅包含操作接口
+   - `filesystem`：仅包含类型定义
+   - `filesystem`：仅包含常量和错误码
+   - `filesystem`：仅包含操作接口
 
 该命名规范保持了代码的清晰性和一致性，避免了冗余前缀，同时通过命名空间明确区分了不同类型的组件，适合大型项目开发使用。

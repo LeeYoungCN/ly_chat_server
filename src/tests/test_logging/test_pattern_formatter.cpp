@@ -15,9 +15,9 @@ namespace test::test_logging {
 
 using namespace origin::logging;
 
-using namespace origin::utils::date_time;
-using namespace origin::utils::process;
-using namespace origin::utils::filesystem;
+using namespace origin::date_time;
+using namespace origin::process;
+using namespace origin::filesystem;
 
 class TestPatternFormatter : public ::testing::Test {
 protected:

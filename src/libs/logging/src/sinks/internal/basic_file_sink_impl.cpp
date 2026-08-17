@@ -10,7 +10,7 @@
 #include "utils/utils_error_code.h"
 
 namespace origin::logging {
-using namespace origin::utils::filesystem;
+using namespace origin::filesystem;
 
 BasicFileSinkImpl::BasicFileSinkImpl() : BasicFileSinkImpl(get_default_log_file("log"), true) {}
 

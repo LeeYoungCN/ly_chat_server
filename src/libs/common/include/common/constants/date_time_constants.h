@@ -17,7 +17,7 @@
 
 #include "common/types/date_time_types.h"
 
-namespace origin::constants::date_time {
+namespace origin::date_time {
 
 [[maybe_unused]] constexpr int32_t DATE_TIME_START_YEAR = 1900;
 [[maybe_unused]] constexpr int32_t DATE_TIME_START_MONTH = 1;
@@ -79,6 +79,6 @@ namespace origin::constants::date_time {
 [[maybe_unused]] constexpr uint32_t MIN_HOUR = 0;
 [[maybe_unused]] constexpr uint32_t MAX_HOUR = 23;
 
-}  // namespace origin::constants::date_time
+}  // namespace origin::date_time
 
 #endif  // COMMON_CONSTANTS_DATE_TIME_CONSTANTS_H

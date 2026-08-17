@@ -31,25 +31,25 @@ DailyFileSink::DailyFileSink(std::string_view file, uint32_t hour, uint32_t minu
 std::string DailyFileSink::file() const
 {
     throw_if_pimpl_null();
-    return dynamic_cast<const DailyFileSinkImpl*>(_pImpl.get())->file();
+    return dynamic_cast<const DailyFileSinkImpl *>(_pImpl.get())->file();
 }
 
 std::vector<std::string> DailyFileSink::get_file_list()
 {
     throw_if_pimpl_null();
-    return dynamic_cast<DailyFileSinkImpl*>(_pImpl.get())->get_file_list();
+    return dynamic_cast<DailyFileSinkImpl *>(_pImpl.get())->get_file_list();
 }
 
 void DailyFileSink::set_max_files(uint32_t maxFiles)
 {
     throw_if_pimpl_null();
-    return dynamic_cast<DailyFileSinkImpl*>(_pImpl.get())->set_max_files(maxFiles);
+    return dynamic_cast<DailyFileSinkImpl *>(_pImpl.get())->set_max_files(maxFiles);
 }
 
 uint32_t DailyFileSink::max_files() const
 {
     throw_if_pimpl_null();
-    return dynamic_cast<DailyFileSinkImpl*>(_pImpl.get())->max_files();
+    return dynamic_cast<DailyFileSinkImpl *>(_pImpl.get())->max_files();
 }
 
 }  // namespace origin::logging

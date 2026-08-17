@@ -16,7 +16,7 @@
 
 #include "common/compiler/macros.h"
 
-namespace origin::constants::filesystem {
+namespace origin::filesystem {
 /**
  * @brief 路径长度常量（跨平台自动适配）
  */
@@ -56,6 +56,6 @@ namespace origin::constants::filesystem {
 
 [[maybe_unused]] constexpr unsigned int FILE_OPEN_INTERVAL_MS = 10;
 
-}  // namespace origin::constants::filesystem
+}  // namespace origin::filesystem
 
 #endif  // COMMON_CONSTANTS_FILESYSTEM_CONSTANTS_H

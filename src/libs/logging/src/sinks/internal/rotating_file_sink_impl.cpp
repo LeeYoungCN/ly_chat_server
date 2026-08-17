@@ -22,7 +22,7 @@
 #include "utils/thread_utils.h"
 
 namespace origin::logging {
-using namespace origin::utils::filesystem;
+using namespace origin::filesystem;
 
 struct LogFileInfo {
     uint32_t idx{0};
@@ -39,7 +39,7 @@ struct LogFileInfo {
         return std::format(
             "idx: {}, time: [{}], size: {}, file: \"{}\"",
             idx,
-            utils::date_time::format_time_string(modifyTime, "%Y-%m-%d %H:%M:%S.%3f"),
+            origin::date_time::format_time_string(modifyTime, "%Y-%m-%d %H:%M:%S.%3f"),
             fileSize,
             file);
     }

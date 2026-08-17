@@ -7,8 +7,8 @@
 #include "utils/thread_utils.h"
 
 namespace origin::logging {
-using namespace origin::utils::filesystem;
-using namespace origin::utils::process;
+using namespace origin::filesystem;
+using namespace origin::process;
 
 std::string get_default_log_file(std::string_view suffix)
 {
@@ -20,11 +20,11 @@ std::string get_default_log_file(std::string_view suffix)
 bool delete_file(std::string_view file, uint32_t maxRetry, uint32_t sleepMs)
 {
     for (uint32_t i = 0; i < maxRetry; i++) {
-        if (utils::filesystem::delete_file(file)) {
+        if (filesystem::delete_file(file)) {
             DEBUG_LOGGER_TRACE("Delete file success. file: \"{}\".", file);
             return true;
         }
-        utils::date_time::sleep_ms(sleepMs);
+        origin::date_time::sleep_ms(sleepMs);
     }
 
     DEBUG_LOGGER_ERR(
@@ -36,11 +36,11 @@ bool rename_file(std::string_view src, std::string_view dest, bool overwrite, ui
                  uint32_t sleepMs)
 {
     for (uint32_t i = 0; i < maxRetry; i++) {
-        if (utils::filesystem::rename_file(src, dest, overwrite)) {
+        if (filesystem::rename_file(src, dest, overwrite)) {
             DEBUG_LOGGER_TRACE("Rename file success. file: \"{}\".", dest);
             return true;
         }
-        utils::date_time::sleep_ms(sleepMs);
+        origin::date_time::sleep_ms(sleepMs);
     }
 
     DEBUG_LOGGER_ERR(

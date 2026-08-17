@@ -23,9 +23,9 @@
 #include "utils/thread_utils.h"
 
 namespace origin::logging {
-using namespace origin::utils::filesystem;
-using namespace origin::utils::date_time;
-using namespace origin::constants::date_time;
+using namespace origin::filesystem;
+using namespace origin::date_time;
+using namespace origin::date_time;
 
 constexpr char SPLIT_CHAR = '.';
 

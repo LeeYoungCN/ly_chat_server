@@ -30,7 +30,7 @@ protected:
     const std::string _filenameStem;
     const std::string _extention;
     bool _overwrite{false};
-    utils::filesystem::FileWriter _fileWriter;
+    filesystem::FileWriter _fileWriter;
 };
 
 }  // namespace origin::logging

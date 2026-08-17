@@ -11,8 +11,8 @@
 #include "utils/date_time_utils.h"
 #include "utils/filesystem_utils.h"
 
-using namespace origin::utils::date_time;
-using namespace origin::utils::filesystem;
+using namespace origin::date_time;
+using namespace origin::filesystem;
 
 namespace origin::logging {
 

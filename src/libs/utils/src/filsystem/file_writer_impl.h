@@ -8,7 +8,7 @@
 #include "common/types/error_code_types.h"
 #include "common/types/filesystem_types.h"
 
-namespace origin::utils::filesystem {
+namespace origin::filesystem {
 
 class FileWriterImpl {
 public:
@@ -42,5 +42,5 @@ private:
     ErrorCode _errcode{ERR_COMM_SUCCESS};
     FileSize _currSize{0};
 };
-}  // namespace origin::utils::filesystem
+}  // namespace origin::filesystem
 #endif  // UTILS_IMPL_FILE_WRITER_IMPL_H
