@@ -114,7 +114,7 @@ std::string_view get_weekday_abbr_name(uint32_t weekday);
  * @brief 将时间戳按指定格式转换为字符串
  * @param[in] timestamp 待格式化的毫秒级时间戳
  * @param[in] format 格式字符串（支持占位符，如%Y表示4位年份）
- *                   默认值：common::origin::constants::date_time::DEFAULT_TIME_FMT（"%Y-%m-%d
+ *                   默认值：origin::constants::date_time::DEFAULT_TIME_FMT（"%Y-%m-%d
  * %H:%M:%S"）
  * @return std::string 格式化后的时间字符串
  *         若格式化失败或参数无效，返回空字符串
@@ -128,7 +128,7 @@ std::string format_time_string(
  * @brief 将时间组件按指定格式转换为字符串
  * @param[in] dateTime 待格式化的时间组件
  * @param[in] format 格式字符串（支持占位符，如%Y表示4位年份）
- *                   默认值：common::origin::constants::date_time::DEFAULT_TIME_FMT（"%Y-%m-%d
+ *                   默认值：origin::constants::date_time::DEFAULT_TIME_FMT（"%Y-%m-%d
  * %H:%M:%S"）
  * @return std::string 格式化后的时间字符串
  *         若格式化失败或参数无效，返回空字符串
@@ -144,7 +144,7 @@ std::string format_time_string(
  * @param[in] bufferSize 缓冲区大小（字节），建议不小于256
  * @param[in] timestamp 待格式化的毫秒级时间戳
  * @param[in] format 格式字符串（支持占位符）
- *                   默认值：common::origin::constants::date_time::DEFAULT_TIME_FMT（"%Y-%m-%d
+ *                   默认值：origin::constants::date_time::DEFAULT_TIME_FMT（"%Y-%m-%d
  * %H:%M:%S"）
  * @return size_t 成功写入的字符数（不含终止符'\0'）
  *         若失败（缓冲区无效/空间不足/格式错误），返回0
@@ -161,7 +161,7 @@ size_t format_time_buffer(
  * @param[in] bufferSize 缓冲区大小（字节），建议不小于256
  * @param[in] dateTime 待格式化的时间组件
  * @param[in] format 格式字符串（支持占位符）
- *                   默认值：common::origin::constants::date_time::DEFAULT_TIME_FMT（"%Y-%m-%d
+ *                   默认值：origin::constants::date_time::DEFAULT_TIME_FMT（"%Y-%m-%d
  * %H:%M:%S"）
  * @return size_t 成功写入的字符数（不含终止符'\0'）
  *         若失败（缓冲区无效/空间不足/格式错误），返回0

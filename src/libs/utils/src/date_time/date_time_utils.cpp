@@ -4,6 +4,9 @@
 
 #if OS_WINDOWS
 #include <windows.h>
+
+#include "common/constants/date_time_constants.h"
+
 #else
 #include <cerrno>
 #include <chrono>
@@ -22,7 +25,9 @@
 namespace {
 
 using namespace origin::utils::date_time;
-using namespace ::origin::constants::date_time;
+#if OS_WINDOWS
+using namespace origin::constants::date_time;
+#endif  // OS_WINDOWS
 
 bool safe_localtime(time_t timer, tm& timeInfo)
 {

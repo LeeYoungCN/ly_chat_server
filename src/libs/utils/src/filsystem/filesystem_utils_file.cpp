@@ -13,6 +13,8 @@
 
 #if OS_WINDOWS
 #include <windows.h>
+
+#include "common/constants/date_time_constants.h"
 #else
 #include <chrono>
 #endif
@@ -42,6 +44,9 @@ namespace {
 namespace fs = std::filesystem;
 using namespace origin::utils::filesystem;
 using namespace origin::utils::filesystem::internal;
+#if OS_WINDOWS
+using namespace origin::constants::date_time;
+#endif  // OS_WINDOWS
 
 bool delete_file_it(std::string_view path)
 {
