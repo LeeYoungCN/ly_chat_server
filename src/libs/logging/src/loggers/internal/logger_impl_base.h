@@ -1,5 +1,5 @@
-#ifndef ORIGIN_LOGGING_LOGGERS_INTERNAL_LOGGER_IMPL_H
-#define ORIGIN_LOGGING_LOGGERS_INTERNAL_LOGGER_IMPL_H
+#ifndef ORIGIN_LOGGING_LOGGERS_INTERNAL_LOGGER_IMPL_BASE_H
+#define ORIGIN_LOGGING_LOGGERS_INTERNAL_LOGGER_IMPL_BASE_H
 
 #include <atomic>
 #include <initializer_list>
@@ -15,18 +15,18 @@
 #include "logging/sinks/sink.h"
 
 namespace origin::logging {
-class LoggerImpl : public Logger {
+class LoggerImplBase : public Logger {
 public:
-    LoggerImpl() = delete;
-    virtual ~LoggerImpl() = default;
+    LoggerImplBase() = delete;
+    ~LoggerImplBase() override  = default;
 
-    explicit LoggerImpl(std::string_view name);
+    explicit LoggerImplBase(std::string_view name);
 
-    LoggerImpl(std::string_view name, const std::shared_ptr<Sink>& sink);
+    LoggerImplBase(std::string_view name, const std::shared_ptr<Sink>& sink);
 
-    LoggerImpl(std::string_view name, const std::vector<std::shared_ptr<Sink>>& sinks);
+    LoggerImplBase(std::string_view name, const std::vector<std::shared_ptr<Sink>>& sinks);
 
-    LoggerImpl(std::string_view name, const std::initializer_list<std::shared_ptr<Sink>>& sinks);
+    LoggerImplBase(std::string_view name, const std::initializer_list<std::shared_ptr<Sink>>& sinks);
 
     [[nodiscard]] std::string_view name() const override;
     [[nodiscard]] const std::vector<std::shared_ptr<Sink>>& sinks() const override;
@@ -59,4 +59,4 @@ protected:
     std::atomic<LogLevel> _flushLevel{LogLevel::OFF};
 };
 }  // namespace origin::logging
-#endif  // ORIGIN_LOGGING_LOGGERS_INTERNAL_LOGGER_IMPL_H
+#endif  // ORIGIN_LOGGING_LOGGERS_INTERNAL_LOGGER_IMPL_BASE_H

@@ -12,7 +12,7 @@
 #include "logging/log_msg.h"
 
 namespace origin::logging {
-class LoggerImpl;
+class LoggerImplBase;
 class TaskPool {
 public:
     static constexpr uint32_t DEFAULT_CAPACITY = 4096;
@@ -24,8 +24,8 @@ public:
     explicit TaskPool(uint32_t capacity);
     TaskPool(uint32_t capacity, uint32_t threadCnt);
 
-    void log(const std::shared_ptr<LoggerImpl>& logger, const LogMsg& logMsg);
-    void flush(const std::shared_ptr<LoggerImpl>& logger);
+    void log(const std::shared_ptr<LoggerImplBase>& logger, const LogMsg& logMsg);
+    void flush(const std::shared_ptr<LoggerImplBase>& logger);
 
 private:
     void start();

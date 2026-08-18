@@ -9,7 +9,7 @@
 #include "common/container/concurrent_blocking_queue.hpp"
 #include "common/debug/debug_logger.h"
 #include "internal/log_task.h"
-#include "loggers/internal/logger_impl.h"
+#include "loggers/internal/logger_impl_base.h"
 #include "logging/log_msg.h"
 
 namespace origin::logging {
@@ -42,12 +42,12 @@ TaskPool::~TaskPool()
     DEBUG_LOGGER_DBG("Release task pool. {}", _paramStr);
 }
 
-void TaskPool::log(const std::shared_ptr<LoggerImpl>& logger, const LogMsg& logMsg)
+void TaskPool::log(const std::shared_ptr<LoggerImplBase>& logger, const LogMsg& logMsg)
 {
     _buffer.enqueue_wait(LogTask(TaskType::LOG, logger, logMsg));
 }
 
-void TaskPool::flush(const std::shared_ptr<LoggerImpl>& logger)
+void TaskPool::flush(const std::shared_ptr<LoggerImplBase>& logger)
 {
     _buffer.enqueue_wait(LogTask(TaskType::FLUSH, logger, LogMsg()));
 }

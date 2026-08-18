@@ -7,12 +7,12 @@
 #include <vector>
 
 #include "internal/task_pool.h"
-#include "loggers/internal/logger_impl.h"
+#include "loggers/internal/logger_impl_base.h"
 #include "logging/log_msg.h"
 #include "logging/sinks/sink.h"
 
 namespace origin::logging {
-class AsyncLoggerImpl : public LoggerImpl, public std::enable_shared_from_this<AsyncLoggerImpl> {
+class AsyncLoggerImpl : public LoggerImplBase, public std::enable_shared_from_this<AsyncLoggerImpl> {
 public:
     AsyncLoggerImpl() = delete;
     ~AsyncLoggerImpl() override = default;

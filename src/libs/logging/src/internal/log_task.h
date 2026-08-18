@@ -8,7 +8,7 @@
 #include "logging/log_msg.h"
 
 namespace origin::logging {
-class LoggerImpl;
+class LoggerImplBase;
 enum class TaskType {
     LOG,
     FLUSH,
@@ -18,16 +18,16 @@ enum class TaskType {
 struct LogTask {
     TaskType type = TaskType::SHUTDOWN;
     LogMsg logMsg;
-    std::shared_ptr<LoggerImpl> logger;
+    std::shared_ptr<LoggerImplBase> logger;
 
     LogTask() = default;
     explicit LogTask(TaskType type) : type(type) {}
 
-    LogTask(TaskType type, const std::shared_ptr<LoggerImpl>& logger) : type(type), logger(logger)
+    LogTask(TaskType type, const std::shared_ptr<LoggerImplBase>& logger) : type(type), logger(logger)
     {
     }
 
-    LogTask(TaskType type, const std::shared_ptr<LoggerImpl>& logger, LogMsg logMsg)
+    LogTask(TaskType type, const std::shared_ptr<LoggerImplBase>& logger, LogMsg logMsg)
         : type(type), logMsg(std::move(logMsg)), logger(logger)
     {
     }

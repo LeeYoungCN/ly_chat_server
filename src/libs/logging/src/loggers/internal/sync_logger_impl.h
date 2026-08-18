@@ -6,12 +6,12 @@
 #include <string_view>
 #include <vector>
 
-#include "loggers/internal/logger_impl.h"
+#include "loggers/internal/logger_impl_base.h"
 #include "logging/log_msg.h"
 #include "logging/sinks/sink.h"
 
 namespace origin::logging {
-class SyncLoggerImpl : public LoggerImpl {
+class SyncLoggerImpl : public LoggerImplBase {
 public:
     SyncLoggerImpl() = delete;
     ~SyncLoggerImpl() override = default;

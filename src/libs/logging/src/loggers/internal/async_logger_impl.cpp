@@ -7,14 +7,14 @@
 
 #include "internal/registry.h"
 #include "internal/task_pool.h"
-#include "loggers/internal/logger_impl.h"
+#include "loggers/internal/logger_impl_base.h"
 #include "logging/log_msg.h"
 #include "logging/sinks/sink.h"
 
 namespace origin::logging {
 
 AsyncLoggerImpl::AsyncLoggerImpl(std::string_view name, const std::shared_ptr<Sink>& sink)
-    : LoggerImpl(name, sink)
+    : LoggerImplBase(name, sink)
 {
     if (REGISTRY.task_pool() == nullptr) {
         throw std::runtime_error(
@@ -25,7 +25,7 @@ AsyncLoggerImpl::AsyncLoggerImpl(std::string_view name, const std::shared_ptr<Si
 
 AsyncLoggerImpl::AsyncLoggerImpl(std::string_view name,
                                  const std::vector<std::shared_ptr<Sink>>& sinks)
-    : LoggerImpl(name, sinks)
+    : LoggerImplBase(name, sinks)
 {
     if (REGISTRY.task_pool() == nullptr) {
         throw std::runtime_error(
@@ -36,7 +36,7 @@ AsyncLoggerImpl::AsyncLoggerImpl(std::string_view name,
 
 AsyncLoggerImpl::AsyncLoggerImpl(std::string_view name,
                                  const std::initializer_list<std::shared_ptr<Sink>>& sinks)
-    : LoggerImpl(name, sinks)
+    : LoggerImplBase(name, sinks)
 {
     if (REGISTRY.task_pool() == nullptr) {
         throw std::runtime_error(
@@ -47,7 +47,7 @@ AsyncLoggerImpl::AsyncLoggerImpl(std::string_view name,
 
 AsyncLoggerImpl::AsyncLoggerImpl(std::string_view name, const std::shared_ptr<Sink>& sink,
                                  const std::weak_ptr<TaskPool>& pool)
-    : LoggerImpl(name, sink), _taskPool(pool)
+    : LoggerImplBase(name, sink), _taskPool(pool)
 {
     if (pool.expired()) {
         throw std::invalid_argument("Task pool cannot be null.");
@@ -57,7 +57,7 @@ AsyncLoggerImpl::AsyncLoggerImpl(std::string_view name, const std::shared_ptr<Si
 AsyncLoggerImpl::AsyncLoggerImpl(std::string_view name,
                                  const std::vector<std::shared_ptr<Sink>>& sinks,
                                  const std::weak_ptr<TaskPool>& pool)
-    : LoggerImpl(name, sinks), _taskPool(pool)
+    : LoggerImplBase(name, sinks), _taskPool(pool)
 {
     if (pool.expired()) {
         throw std::invalid_argument("Task pool cannot be null.");
@@ -67,7 +67,7 @@ AsyncLoggerImpl::AsyncLoggerImpl(std::string_view name,
 AsyncLoggerImpl::AsyncLoggerImpl(std::string_view name,
                                  const std::initializer_list<std::shared_ptr<Sink>>& sinks,
                                  const std::weak_ptr<TaskPool>& pool)
-    : LoggerImpl(name, sinks), _taskPool(pool)
+    : LoggerImplBase(name, sinks), _taskPool(pool)
 {
     if (pool.expired()) {
         throw std::invalid_argument("Task pool cannot be null.");
