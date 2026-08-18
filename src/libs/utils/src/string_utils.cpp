@@ -5,7 +5,7 @@
 #include <stdexcept>
 #include <string>
 
-namespace origin::utils::string {
+namespace origin::string {
 
 bool string_is_null_or_empty(const char *str)
 {
@@ -28,4 +28,4 @@ std::string va_list_to_string(const char *format, va_list args)
     vsnprintf(message.data(), static_cast<uint32_t>(len) + 1, format, args);
     return message;
 }
-}  // namespace origin::utils::string
+}  // namespace origin::string

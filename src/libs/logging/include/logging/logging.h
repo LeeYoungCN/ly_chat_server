@@ -83,19 +83,19 @@ void log(const LogSource& source, LogLevel level, std::format_string<Args...> fo
     root_logger()->log(source, level, format, std::forward<Args>(args)...);
 }
 
-template <class T, std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+template <class T, std::enable_if_t<origin::type_traits::is_convertible_to_string_v<T>, int> = 0>
 void log(const LogSource& source, LogLevel level, const T& msg)
 {
     root_logger()->log(source, level, msg);
 }
 
-template <class T, std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+template <class T, std::enable_if_t<origin::type_traits::is_convertible_to_string_v<T>, int> = 0>
 void log(LogLevel level, const T& msg)
 {
-    root_logger()->log(level, utils::string::type_to_string(msg));
+    root_logger()->log(level, origin::string::type_to_string(msg));
 }
 
-template <class T, std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+template <class T, std::enable_if_t<origin::type_traits::is_convertible_to_string_v<T>, int> = 0>
 void trace(const LogSource& source, LogLevel level, const T& message)
 {
     root_logger()->trace(source, level, message);
@@ -113,19 +113,19 @@ void trace(const LogSource& source, std::format_string<Args...> format, Args&&..
     root_logger()->trace(source, format, std::forward<Args>(args)...);
 }
 
-template <class T, std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+template <class T, std::enable_if_t<origin::type_traits::is_convertible_to_string_v<T>, int> = 0>
 void trace(const T& message)
 {
     root_logger()->trace(message);
 }
 
-template <class T, std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+template <class T, std::enable_if_t<origin::type_traits::is_convertible_to_string_v<T>, int> = 0>
 void trace(const LogSource& source, const T& message)
 {
     root_logger()->trace(source, message);
 }
 
-template <class T, std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+template <class T, std::enable_if_t<origin::type_traits::is_convertible_to_string_v<T>, int> = 0>
 void debug(const LogSource& source, LogLevel level, const T& message)
 {
     root_logger()->debug(source, level, message);
@@ -143,13 +143,13 @@ void debug(const LogSource& source, std::format_string<Args...> format, Args&&..
     root_logger()->debug(source, format, std::forward<Args>(args)...);
 }
 
-template <class T, std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+template <class T, std::enable_if_t<origin::type_traits::is_convertible_to_string_v<T>, int> = 0>
 void debug(const T& message)
 {
     root_logger()->debug(message);
 }
 
-template <class T, std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+template <class T, std::enable_if_t<origin::type_traits::is_convertible_to_string_v<T>, int> = 0>
 void debug(const LogSource& source, const T& message)
 {
     root_logger()->debug(source, message);
@@ -167,13 +167,13 @@ void info(const LogSource& source, std::format_string<Args...> format, Args&&...
     root_logger()->info(source, format, std::forward<Args>(args)...);
 }
 
-template <class T, std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+template <class T, std::enable_if_t<origin::type_traits::is_convertible_to_string_v<T>, int> = 0>
 void info(const T& message)
 {
     root_logger()->info(message);
 }
 
-template <class T, std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+template <class T, std::enable_if_t<origin::type_traits::is_convertible_to_string_v<T>, int> = 0>
 void info(const LogSource& source, const T& message)
 {
     root_logger()->info(source, message);
@@ -191,13 +191,13 @@ void warn(const LogSource& source, std::format_string<Args...> format, Args&&...
     root_logger()->warn(source, format, std::forward<Args>(args)...);
 }
 
-template <class T, std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+template <class T, std::enable_if_t<origin::type_traits::is_convertible_to_string_v<T>, int> = 0>
 void warn(const T& message)
 {
     root_logger()->warn(message);
 }
 
-template <class T, std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+template <class T, std::enable_if_t<origin::type_traits::is_convertible_to_string_v<T>, int> = 0>
 void warn(const LogSource& source, const T& message)
 {
     root_logger()->warn(source, message);
@@ -215,13 +215,13 @@ void error(const LogSource& source, std::format_string<Args...> format, Args&&..
     root_logger()->error(source, format, std::forward<Args>(args)...);
 }
 
-template <class T, std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+template <class T, std::enable_if_t<origin::type_traits::is_convertible_to_string_v<T>, int> = 0>
 void error(const T& message)
 {
     root_logger()->error(message);
 }
 
-template <class T, std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+template <class T, std::enable_if_t<origin::type_traits::is_convertible_to_string_v<T>, int> = 0>
 void error(const LogSource& source, const T& message)
 {
     root_logger()->error(source, message);
@@ -239,13 +239,13 @@ void fatal(const LogSource& source, std::format_string<Args...> format, Args&&..
     root_logger()->fatal(source, format, std::forward<Args>(args)...);
 }
 
-template <class T, std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+template <class T, std::enable_if_t<origin::type_traits::is_convertible_to_string_v<T>, int> = 0>
 void fatal(const T& message)
 {
     root_logger()->fatal(message);
 }
 
-template <class T, std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+template <class T, std::enable_if_t<origin::type_traits::is_convertible_to_string_v<T>, int> = 0>
 void fatal(const LogSource& source, const T& message)
 {
     root_logger()->fatal(source, message);

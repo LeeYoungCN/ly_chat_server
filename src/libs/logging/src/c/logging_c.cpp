@@ -20,7 +20,7 @@ void origin_log_it(const std::shared_ptr<Logger> &logger, const char *file, int 
     if (logger->should_log(level)) {
         logger->log(LogSource(file, line, func),
                     level,
-                    origin::utils::string::va_list_to_string(format, args));
+                    origin::string::va_list_to_string(format, args));
     }
 }
 }  // namespace

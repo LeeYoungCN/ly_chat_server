@@ -38,11 +38,11 @@ public:
 
 #pragma region log function
     template <class T,
-              std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+              std::enable_if_t<origin::type_traits::is_convertible_to_string_v<T>, int> = 0>
     void log(const LogSource& source, LogLevel level, const T& message)
     {
         if (should_log(level)) {
-            log_it(source, level, utils::string::type_to_string(message));
+            log_it(source, level, origin::string::type_to_string(message));
         }
     }
 
@@ -128,84 +128,84 @@ public:
     }
 
     template <class T,
-              std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+              std::enable_if_t<origin::type_traits::is_convertible_to_string_v<T>, int> = 0>
     void trace(const T& message)
     {
         log(LogSource(), LogLevel::TRACE, message);
     }
 
     template <class T,
-              std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+              std::enable_if_t<origin::type_traits::is_convertible_to_string_v<T>, int> = 0>
     void debug(const T& message)
     {
         log(LogSource(), LogLevel::DEBUG, message);
     }
 
     template <class T,
-              std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+              std::enable_if_t<origin::type_traits::is_convertible_to_string_v<T>, int> = 0>
     void info(const T& message)
     {
         log(LogSource(), LogLevel::INFO, message);
     }
 
     template <class T,
-              std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+              std::enable_if_t<origin::type_traits::is_convertible_to_string_v<T>, int> = 0>
     void warn(const T& message)
     {
         log(LogSource(), LogLevel::WARN, message);
     }
 
     template <class T,
-              std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+              std::enable_if_t<origin::type_traits::is_convertible_to_string_v<T>, int> = 0>
     void error(const T& message)
     {
         log(LogSource(), LogLevel::ERR, message);
     }
 
     template <class T,
-              std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+              std::enable_if_t<origin::type_traits::is_convertible_to_string_v<T>, int> = 0>
     void fatal(const T& message)
     {
         log(LogSource(), LogLevel::FATAL, message);
     }
 
     template <class T,
-              std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+              std::enable_if_t<origin::type_traits::is_convertible_to_string_v<T>, int> = 0>
     void trace(const LogSource& source, const T& message)
     {
         log(source, LogLevel::TRACE, message);
     }
 
     template <class T,
-              std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+              std::enable_if_t<origin::type_traits::is_convertible_to_string_v<T>, int> = 0>
     void debug(const LogSource& source, const T& message)
     {
         log(source, LogLevel::DEBUG, message);
     }
 
     template <class T,
-              std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+              std::enable_if_t<origin::type_traits::is_convertible_to_string_v<T>, int> = 0>
     void info(const LogSource& source, const T& message)
     {
         log(source, LogLevel::INFO, message);
     }
 
     template <class T,
-              std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+              std::enable_if_t<origin::type_traits::is_convertible_to_string_v<T>, int> = 0>
     void warn(const LogSource& source, const T& message)
     {
         log(source, LogLevel::WARN, message);
     }
 
     template <class T,
-              std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+              std::enable_if_t<origin::type_traits::is_convertible_to_string_v<T>, int> = 0>
     void error(const LogSource& source, const T& message)
     {
         log(source, LogLevel::ERR, message);
     }
 
     template <class T,
-              std::enable_if_t<common::type_traits::is_convertible_to_string_v<T>, int> = 0>
+              std::enable_if_t<origin::type_traits::is_convertible_to_string_v<T>, int> = 0>
     void fatal(const LogSource& source, const T& message)
     {
         log(source, LogLevel::FATAL, message);

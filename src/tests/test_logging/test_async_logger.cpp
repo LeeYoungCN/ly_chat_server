@@ -16,7 +16,6 @@
 #include "utils/date_time_utils.h"
 
 using namespace test::test_logging;
-using namespace origin::utils;
 using namespace origin::date_time;
 using namespace origin::logging;
 
