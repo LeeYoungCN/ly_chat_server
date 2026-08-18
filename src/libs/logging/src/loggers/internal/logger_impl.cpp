@@ -116,7 +116,7 @@ void LoggerImpl::set_formatter(const std::unique_ptr<Formatter>& formatter) cons
     }
 }
 
-void LoggerImpl::log(const LogSource& source, LogLevel level, std::string_view message)
+void LoggerImpl::force_log(const LogSource& source, LogLevel level, std::string_view message)
 {
     log_it(LogMsg(source, name(), level, message));
 }

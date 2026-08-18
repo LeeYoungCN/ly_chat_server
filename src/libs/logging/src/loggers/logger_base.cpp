@@ -5,14 +5,13 @@
 #include <vector>
 
 #include "common/debug/debug_logger.h"
-#include "loggers/internal/logger_impl.h"
 #include "logging/formatters/formatter.h"
 #include "logging/log_level.h"
 #include "logging/log_source.h"
 #include "logging/sinks/sink.h"
 
 namespace origin::logging {
-LoggerBase::LoggerBase(std::shared_ptr<LoggerImpl> pImpl) : _pImpl(std::move(pImpl))
+LoggerBase::LoggerBase(std::shared_ptr<Logger> pImpl) : _pImpl(std::move(pImpl))
 {
     throw_if_pimpl_null();
     DEBUG_LOGGER_DBG("Create logger. \"{}\".", _pImpl->name());
@@ -32,13 +31,13 @@ std::string_view LoggerBase::name() const
     return _pImpl->name();
 }
 
-std::vector<std::shared_ptr<Sink>> LoggerBase::sinks() const
+const std::vector<std::shared_ptr<Sink>>& LoggerBase::sinks() const
 {
     throw_if_pimpl_null();
     return _pImpl->sinks();
 }
 
-void LoggerBase::set_level(LogLevel level) const
+void LoggerBase::set_level(LogLevel level)
 {
     throw_if_pimpl_null();
     _pImpl->set_level(level);
@@ -55,7 +54,7 @@ bool LoggerBase::should_log(LogLevel level) const
     return _pImpl->should_log(level);
 }
 
-void LoggerBase::flush_on(LogLevel level) const
+void LoggerBase::flush_on(LogLevel level)
 {
     throw_if_pimpl_null();
     _pImpl->flush_on(level);
@@ -91,10 +90,10 @@ void LoggerBase::flush()
     _pImpl->flush();
 }
 
-void LoggerBase::log_it(const LogSource& source, LogLevel level, std::string_view message)
+void LoggerBase::force_log(const LogSource& source, LogLevel level, std::string_view message)
 {
     throw_if_pimpl_null();
-    _pImpl->log(source, level, message);
+    _pImpl->force_log(source, level, message);
 }
 
 void LoggerBase::throw_if_pimpl_null() const

@@ -21,19 +21,20 @@ public:
     virtual ~Logger() = default;
 
     [[nodiscard]] virtual std::string_view name() const = 0;
-    [[nodiscard]] virtual std::vector<std::shared_ptr<Sink>> sinks() const = 0;
+    [[nodiscard]] virtual const std::vector<std::shared_ptr<Sink>>& sinks() const = 0;
 
-    void virtual set_level(LogLevel level) const = 0;
+    virtual void set_level(LogLevel level) = 0;
     [[nodiscard]] virtual LogLevel level() const = 0;
     [[nodiscard]] virtual bool should_log(LogLevel level) const = 0;
 
-    virtual void flush_on(LogLevel level) const = 0;
+    virtual void flush_on(LogLevel level) = 0;
     [[nodiscard]] virtual LogLevel flush_level() const = 0;
     [[nodiscard]] virtual bool should_flush(LogLevel level) const = 0;
 
     virtual void set_pattern(std::string_view pattern) const = 0;
     virtual void set_formatter(const std::unique_ptr<Formatter>& formatter) const = 0;
 
+    virtual void force_log(const LogSource& source, LogLevel level, std::string_view message) = 0;
     virtual void flush() = 0;
 
 #pragma region log function
@@ -42,7 +43,7 @@ public:
     void log(const LogSource& source, LogLevel level, const T& message)
     {
         if (should_log(level)) {
-            log_it(source, level, origin::string::type_to_string(message));
+            force_log(source, level, origin::string::type_to_string(message));
         }
     }
 
@@ -51,7 +52,7 @@ public:
              Args&&... args)
     {
         if (should_log(level)) {
-            log_it(source, level, std::format(format, std::forward<Args>(args)...));
+            force_log(source, level, std::format(format, std::forward<Args>(args)...));
         }
     }
 
@@ -211,9 +212,6 @@ public:
         log(source, LogLevel::FATAL, message);
     }
 #pragma endregion
-
-protected:
-    virtual void log_it(const LogSource& source, LogLevel level, std::string_view message) = 0;
 };
 }  // namespace origin::logging
 

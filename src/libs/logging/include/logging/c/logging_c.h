@@ -93,6 +93,9 @@ void origin_set_formatter(const FormatterSt *formatter);
 
 void origin_flush();
 
+void origin_force_log(const char *file, int line, const char *func, OriginLogLevel level,
+                      const char *format, ...);
+
 void origin_log(const char *file, int line, const char *func, OriginLogLevel level,
                 const char *format, ...);
 #pragma endregion

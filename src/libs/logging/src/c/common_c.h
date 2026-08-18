@@ -1,3 +1,4 @@
+#pragma once
 #ifndef ORIGIN_LOGGING_C_COMMON_C_H
 #define ORIGIN_LOGGING_C_COMMON_C_H
 
@@ -10,6 +11,7 @@
 #include "logging/log_level.h"
 #include "logging/loggers/sync_logger.h"
 #include "logging/sinks/sink.h"
+
 using namespace origin::logging;
 struct LoggerSt {
     std::shared_ptr<SyncLogger> ptr;
