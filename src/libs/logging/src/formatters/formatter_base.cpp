@@ -8,7 +8,7 @@
 namespace origin::logging {
 FormatterBase::~FormatterBase() = default;
 
-FormatterBase::FormatterBase(std::unique_ptr<Formatter> pimpl) : _pImpl(std::move(pimpl))
+FormatterBase::FormatterBase(std::unique_ptr<Formatter> pImpl) : _pImpl(std::move(pImpl))
 {
     throw_if_pimpl_null();
 }

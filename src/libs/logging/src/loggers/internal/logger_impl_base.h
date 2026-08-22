@@ -18,7 +18,7 @@ namespace origin::logging {
 class LoggerImplBase : public Logger {
 public:
     LoggerImplBase() = delete;
-    ~LoggerImplBase() override  = default;
+    ~LoggerImplBase() override = default;
 
     explicit LoggerImplBase(std::string_view name);
 
@@ -26,7 +26,8 @@ public:
 
     LoggerImplBase(std::string_view name, const std::vector<std::shared_ptr<Sink>>& sinks);
 
-    LoggerImplBase(std::string_view name, const std::initializer_list<std::shared_ptr<Sink>>& sinks);
+    LoggerImplBase(std::string_view name,
+                   const std::initializer_list<std::shared_ptr<Sink>>& sinks);
 
     [[nodiscard]] std::string_view name() const override;
     [[nodiscard]] const std::vector<std::shared_ptr<Sink>>& sinks() const override;

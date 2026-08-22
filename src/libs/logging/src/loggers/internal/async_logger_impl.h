@@ -12,7 +12,8 @@
 #include "logging/sinks/sink.h"
 
 namespace origin::logging {
-class AsyncLoggerImpl : public LoggerImplBase, public std::enable_shared_from_this<AsyncLoggerImpl> {
+class AsyncLoggerImpl : public LoggerImplBase,
+                        public std::enable_shared_from_this<AsyncLoggerImpl> {
 public:
     AsyncLoggerImpl() = delete;
     ~AsyncLoggerImpl() override = default;

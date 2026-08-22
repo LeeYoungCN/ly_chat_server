@@ -5,19 +5,12 @@
 #include <utility>
 
 #include "common/debug/debug_logger.h"
+#include "internal/common.h"
 #include "logging/formatters/pattern_formatter.h"
 
 namespace origin::logging {
 
-SinkImplBase::~SinkImplBase()
-{
-    DEBUG_LOGGER_DBG("Release sink. {}", _paramStr);
-}
-
-SinkImplBase::SinkImplBase(std::string_view parameter) : _paramStr(parameter)
-{
-    DEBUG_LOGGER_DBG("Create sink. {}", _paramStr);
-}
+SinkImplBase::SinkImplBase(std::string_view parameter) : _paramStr(parameter) {}
 
 void SinkImplBase::log(const LogMsg& logMsg)
 {
@@ -66,6 +59,7 @@ void SinkImplBase::set_pattern(std::string_view pattern)
 
 void SinkImplBase::set_formatter(std::unique_ptr<Formatter> formatter)
 {
+    RETURN_IF_PTR_NULL(formatter);
     std::lock_guard lock(_sinkMtx);
     _formatter = std::move(formatter);
 }

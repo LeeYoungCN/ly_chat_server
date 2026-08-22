@@ -49,7 +49,7 @@ public:
     bool exist(std::string_view loggerName);
 
     void init_root_task_pool(uint32_t capacity, uint32_t threadCnt);
-    std::shared_ptr<TaskPool> task_pool();
+    std::shared_ptr<TaskPool> root_task_pool();
 #pragma endregion
 
 private:

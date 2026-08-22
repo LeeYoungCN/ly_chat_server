@@ -10,7 +10,6 @@
  */
 #include "common/compiler/macros.h"
 #include "common/constants/filesystem_constants.h"
-#include "common/types/filesystem_types.h"
 #include "gtest/gtest.h"
 #include "test_filesystem_utils_base.h"
 #include "utils/filesystem_utils.h"
@@ -19,7 +18,6 @@
 
 namespace test::test_utils::test_filesystem_utils {
 
-using namespace origin::filesystem;
 using namespace origin::filesystem;
 
 class TestFilesystemUtilsFile : public TestFilesystemUtilsBase {

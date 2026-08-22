@@ -16,7 +16,7 @@ namespace origin::logging {
 class SinkImplBase : public Sink {
 public:
     SinkImplBase() = default;
-    ~SinkImplBase() override;
+    ~SinkImplBase() override = default;
     explicit SinkImplBase(std::string_view parameter);
 
     void log(const LogMsg& logMsg) override;

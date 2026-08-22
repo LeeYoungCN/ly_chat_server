@@ -6,6 +6,7 @@
 
 #include "common/debug/debug_log.h"
 #include "common/debug/debug_logger.h"
+#include "internal/common.h"
 #include "logging/formatters/pattern_formatter.h"
 #include "logging/loggers/sync_logger.h"
 #include "logging/sinks/stdout_sink.h"
@@ -33,17 +34,17 @@ Logger* Registry::root_logger_raw()
 
 void Registry::set_root_logger(std::shared_ptr<Logger> newLogger)
 {
+    RETURN_IF_PTR_NULL(newLogger);
     std::lock_guard<std::mutex> lock(_loggerMapMtx);
-    if (newLogger != nullptr) {
-        register_or_replace_logger_it(newLogger);
-    }
+    register_or_replace_logger_it(newLogger);
     _rootLogger = std::move(newLogger);
 }
 #pragma endregion
 
-#pragma region Module manager
+#pragma region logging manager
 void Registry::initialize_logger(const std::shared_ptr<Logger>& logger, bool autoRegister)
 {
+    RETURN_IF_PTR_NULL(logger);
     std::lock_guard<std::mutex> lock(_loggerMapMtx);
     logger->set_formatter(_globalFormatter->clone());
     logger->set_level(_globalLevel);
@@ -82,6 +83,7 @@ void Registry::set_pattern_all(std::string_view pattern)
 
 void Registry::set_formatter_all(std::unique_ptr<Formatter> formatter)
 {
+    RETURN_IF_PTR_NULL(formatter);
     std::lock_guard<std::mutex> lock(_loggerMapMtx);
     _globalFormatter = std::move(formatter);
     for (auto& [_, logger] : _loggers) {
@@ -110,15 +112,17 @@ void Registry::shutdown()
 }
 #pragma endregion
 
-#pragma region Container
+#pragma region registry
 bool Registry::register_logger(std::shared_ptr<Logger> logger)
 {
+    RETURN_VALUE_IF_PTR_NULL(logger, false);
     std::lock_guard<std::mutex> lock(_loggerMapMtx);
     return register_logger_it(std::move(logger));
 }
 
 void Registry::register_or_replace_logger(std::shared_ptr<Logger> logger)
 {
+    RETURN_IF_PTR_NULL(logger);
     std::lock_guard<std::mutex> lock(_loggerMapMtx);
     register_or_replace_logger_it(std::move(logger));
 }
@@ -168,7 +172,7 @@ void Registry::init_root_task_pool(uint32_t capacity, uint32_t threadCnt)
     _rootTaskPool = std::make_shared<TaskPool>(capacity, threadCnt);
 }
 
-std::shared_ptr<TaskPool> Registry::task_pool()
+std::shared_ptr<TaskPool> Registry::root_task_pool()
 {
     std::lock_guard<std::recursive_mutex> lock(_taskPoolMtx);
     return _rootTaskPool;

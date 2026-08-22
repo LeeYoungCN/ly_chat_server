@@ -101,4 +101,9 @@ void TaskPool::worker_loop(uint32_t idx)
     }
     DEBUG_LOGGER_DBG("Log task pool worker loop shutdown. [{}/{}]", idx, _threadCnt);
 }
+
+std::string_view TaskPool::param_str()
+{
+    return _paramStr;
+}
 }  // namespace origin::logging

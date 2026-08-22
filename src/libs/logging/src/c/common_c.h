@@ -9,15 +9,15 @@
 #include "logging/c/logging_c.h"
 #include "logging/formatters/formatter.h"
 #include "logging/log_level.h"
-#include "logging/loggers/sync_logger.h"
+#include "logging/loggers/logger.h"
 #include "logging/sinks/sink.h"
 
 using namespace origin::logging;
 struct LoggerSt {
-    std::shared_ptr<SyncLogger> ptr;
+    std::shared_ptr<Logger> ptr;
 
-    explicit LoggerSt(std::shared_ptr<SyncLogger> ptr) : ptr(std::move(ptr)) {}
-    explicit LoggerSt(SyncLogger *ptr) : ptr(ptr) {}
+    explicit LoggerSt(std::shared_ptr<Logger> ptr) : ptr(std::move(ptr)) {}
+    explicit LoggerSt(Logger *ptr) : ptr(ptr) {}
 };
 
 struct SinkSt {
@@ -46,5 +46,10 @@ LogLevel c_to_cpp_log_level(OriginLogLevel level);
 OriginLogLevel cpp_to_c_log_level(LogLevel level);
 std::vector<std::shared_ptr<Sink>> sink_ptr_vector(const SinkSt *const sinks[], uint32_t sinkCnt);
 
+void origin_force_log_it(const std::shared_ptr<Logger> &logger, const char *file, int line,
+                         const char *func, LogLevel level, const char *format, va_list args);
+
+void origin_log_it(const std::shared_ptr<Logger> &logger, const char *file, int line,
+                   const char *func, LogLevel level, const char *format, va_list args);
 }  // namespace origin::logging::c
 #endif  // ORIGIN_LOGGING_C_COMMON_C_H

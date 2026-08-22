@@ -11,7 +11,6 @@
 #include <string_view>
 #include <vector>
 
-#include "common/common_error_code.h"
 #include "common/debug/debug_logger.h"
 #include "internal/common.h"
 #include "logging/log_msg.h"
@@ -19,7 +18,6 @@
 #include "utils/date_time_utils.h"
 #include "utils/file_writer.h"
 #include "utils/filesystem_utils.h"
-#include "utils/thread_utils.h"
 
 namespace origin::logging {
 using namespace origin::filesystem;
@@ -63,13 +61,11 @@ RotatingFileSinkImpl::RotatingFileSinkImpl(std::string_view file, uint32_t maxFi
 {
     if (maxFileSize == 0) {
         DEBUG_LOGGER_ERR("Create RotatingFileSinkImpl failed. maxFileSize is 0.");
-        set_thread_last_err(ERR_COMM_PARAM_OUT_OF_RANGE);
         throw std::invalid_argument("maxFileSize is 0.");
     }
 
     if (maxFiles > RotatingFileSink::MAX_FILES) {
         DEBUG_LOGGER_ERR("Create RotatingFileSinkImpl failed. maxFiles out of range.");
-        set_thread_last_err(ERR_COMM_PARAM_INVALID);
         throw std::out_of_range("maxFiles out of range.");
     }
 

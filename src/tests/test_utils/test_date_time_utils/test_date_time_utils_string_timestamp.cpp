@@ -13,7 +13,6 @@ namespace test::test_utils::test_date_time_utils {
 using TestBufferParam = std::tuple<std::string_view, int32_t>;
 
 using namespace origin::date_time;
-using namespace origin::date_time;
 
 const std::vector<std::string_view> TestMillisFormats = {"%Y-%y-%m-%d-%H:%M:%S-%A-%a-%B-%b-%h-%3f",
                                                          "%3f",

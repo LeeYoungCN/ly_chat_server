@@ -26,7 +26,6 @@ namespace {
 
 using namespace origin::date_time;
 #if OS_WINDOWS
-using namespace origin::date_time;
 #endif  // OS_WINDOWS
 
 bool safe_localtime(time_t timer, tm& timeInfo)

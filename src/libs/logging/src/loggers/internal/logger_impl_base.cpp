@@ -7,6 +7,7 @@
 #include <string_view>
 #include <vector>
 
+#include "internal/common.h"
 #include "logging/formatters/formatter.h"
 #include "logging/formatters/pattern_formatter.h"
 #include "logging/log_level.h"
@@ -35,7 +36,8 @@ LoggerImplBase::LoggerImplBase(std::string_view name, const std::shared_ptr<Sink
     }
 }
 
-LoggerImplBase::LoggerImplBase(std::string_view name, const std::vector<std::shared_ptr<Sink>>& sinks)
+LoggerImplBase::LoggerImplBase(std::string_view name,
+                               const std::vector<std::shared_ptr<Sink>>& sinks)
     : _name(name), _sinks(sinks)
 {
     if (name.empty()) {
@@ -50,7 +52,7 @@ LoggerImplBase::LoggerImplBase(std::string_view name, const std::vector<std::sha
 }
 
 LoggerImplBase::LoggerImplBase(std::string_view name,
-                       const std::initializer_list<std::shared_ptr<Sink>>& sinks)
+                               const std::initializer_list<std::shared_ptr<Sink>>& sinks)
     : _name(name), _sinks(sinks)
 {
     if (name.empty()) {
@@ -111,6 +113,7 @@ void LoggerImplBase::set_pattern(std::string_view pattern) const
 
 void LoggerImplBase::set_formatter(const std::unique_ptr<Formatter>& formatter) const
 {
+    RETURN_IF_PTR_NULL(formatter);
     for (auto& sink : _sinks) {
         sink->set_formatter(formatter->clone());
     }

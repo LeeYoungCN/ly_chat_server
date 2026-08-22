@@ -22,7 +22,6 @@ namespace test::test_logging {
 using namespace origin::date_time;
 using namespace origin::logging;
 using namespace origin::filesystem;
-using namespace origin::date_time;
 
 class TestDailyFileSink : public ::testing::Test {
 protected:

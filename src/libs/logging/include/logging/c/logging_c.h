@@ -28,7 +28,7 @@ typedef enum {
 } OriginLogLevel;
 
 #pragma region Logger
-LoggerSt *origin_create_logger(const char *name, const SinkSt *const sinks[], uint32_t count);
+LoggerSt *origin_create_sync_logger(const char *name, const SinkSt *const sinks[], uint32_t count);
 LoggerSt *origin_create_async_logger(const char *name, const SinkSt *const sinks[], uint32_t count,
                                      const TaskPoolSt *taskPool);
 void origin_destroy_logger(LoggerSt *logger);
@@ -55,6 +55,10 @@ void origin_logger_log(LoggerSt *logger, const char *file, int line, const char 
 #pragma region Sink
 SinkSt *origin_create_stdout_sink(FILE *file);
 SinkSt *origin_create_basic_file_sink(const char *file, bool overwrite);
+SinkSt *origin_create_daily_file_sink(const char *file, uint32_t hour, uint32_t minute,
+                                      uint32_t maxFiles, bool overwrite);
+SinkSt *origin_create_rotating_file_sink(const char *file, uint32_t maxFileSize, uint32_t maxFiles,
+                                         bool rotateOnOpen);
 
 void origin_detroy_sink(SinkSt *sink);
 
@@ -100,12 +104,25 @@ void origin_log(const char *file, int line, const char *func, OriginLogLevel lev
                 const char *format, ...);
 #pragma endregion
 
-#pragma region Container
+#pragma region Registry
+bool register_logger(LoggerSt *logger);
+void register_or_replace_logger(LoggerSt *logger);
+void remove_logger(const char *name);
+void remove_all();
+LoggerSt *get_logger(const char *name);
 
+void init_root_task_pool(uint32_t capacity, uint32_t threadCnt);
+TaskPoolSt *root_task_pool();
 #pragma endregion
 
-#pragma region Module manager
-
+#pragma region Logging manager
+void initialize_logger(LoggerSt *logger,  bool autoRegister);
+void set_level_all(OriginLogLevel level);
+void flush_on_all(OriginLogLevel level);
+void set_pattern_all(const char *pattern);
+void set_formatter_all(FormatterSt *formatter);
+void flush_all();
+void shutdown();
 #pragma endregion
 
 #ifdef __cplusplus

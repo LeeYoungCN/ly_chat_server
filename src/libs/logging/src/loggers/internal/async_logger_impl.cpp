@@ -16,33 +16,33 @@ namespace origin::logging {
 AsyncLoggerImpl::AsyncLoggerImpl(std::string_view name, const std::shared_ptr<Sink>& sink)
     : LoggerImplBase(name, sink)
 {
-    if (REGISTRY.task_pool() == nullptr) {
+    if (REGISTRY.root_task_pool() == nullptr) {
         throw std::runtime_error(
             "Async logger requires a task pool to be registered in the registry.");
     }
-    _taskPool = REGISTRY.task_pool();
+    _taskPool = REGISTRY.root_task_pool();
 }
 
 AsyncLoggerImpl::AsyncLoggerImpl(std::string_view name,
                                  const std::vector<std::shared_ptr<Sink>>& sinks)
     : LoggerImplBase(name, sinks)
 {
-    if (REGISTRY.task_pool() == nullptr) {
+    if (REGISTRY.root_task_pool() == nullptr) {
         throw std::runtime_error(
             "Async logger requires a task pool to be registered in the registry.");
     }
-    _taskPool = REGISTRY.task_pool();
+    _taskPool = REGISTRY.root_task_pool();
 }
 
 AsyncLoggerImpl::AsyncLoggerImpl(std::string_view name,
                                  const std::initializer_list<std::shared_ptr<Sink>>& sinks)
     : LoggerImplBase(name, sinks)
 {
-    if (REGISTRY.task_pool() == nullptr) {
+    if (REGISTRY.root_task_pool() == nullptr) {
         throw std::runtime_error(
             "Async logger requires a task pool to be registered in the registry.");
     }
-    _taskPool = REGISTRY.task_pool();
+    _taskPool = REGISTRY.root_task_pool();
 }
 
 AsyncLoggerImpl::AsyncLoggerImpl(std::string_view name, const std::shared_ptr<Sink>& sink,

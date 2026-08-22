@@ -16,7 +16,6 @@
 using namespace origin::logging;
 using namespace origin::filesystem;
 using namespace origin::date_time;
-using namespace origin::filesystem;
 
 namespace test::test_logging {
 class TestRotatingFileSink : public ::testing::Test {

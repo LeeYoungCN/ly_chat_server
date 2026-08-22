@@ -1,6 +1,7 @@
 #include <memory>
 
 #include "c/common_c.h"
+#include "common/debug/debug_logger.h"
 #include "internal/task_pool.h"
 #include "logging/c/logging_c.h"
 
@@ -14,10 +15,14 @@ TaskPoolSt *origin_create_task_pool(uint32_t capacity, uint32_t threadCnt)
 
 void origin_destroy_task_pool(TaskPoolSt *taskPool)
 {
-    if (taskPool == nullptr) {
-        return;
+    if (taskPool != nullptr) {
+        if (taskPool->ptr != nullptr) {
+            DEBUG_LOGGER_DBG("Release TaskPoolSt. UseCnt: {}. {}.",
+                             taskPool->ptr.use_count(),
+                             taskPool->ptr->param_str());
+            taskPool->ptr.reset();
+        }
+        delete taskPool;
     }
-    taskPool->ptr.reset();
-    delete taskPool;
 }
 }

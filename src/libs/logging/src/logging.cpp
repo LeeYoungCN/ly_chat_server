@@ -143,7 +143,7 @@ void init_root_task_pool(uint32_t capacity, uint32_t threadCnt)
 
 std::shared_ptr<TaskPool> root_task_pool()
 {
-    return REGISTRY.task_pool();
+    return REGISTRY.root_task_pool();
 }
 #pragma endregion
 

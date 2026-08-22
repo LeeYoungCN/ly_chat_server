@@ -10,7 +10,6 @@
 #include <string_view>
 #include <utility>
 
-#include "common/common_error_code.h"
 #include "common/constants/date_time_constants.h"
 #include "common/debug/debug_logger.h"
 #include "common/types/date_time_types.h"
@@ -20,11 +19,9 @@
 #include "utils/date_time_utils.h"
 #include "utils/file_writer.h"
 #include "utils/filesystem_utils.h"
-#include "utils/thread_utils.h"
 
 namespace origin::logging {
 using namespace origin::filesystem;
-using namespace origin::date_time;
 using namespace origin::date_time;
 
 constexpr char SPLIT_CHAR = '.';
@@ -59,26 +56,22 @@ DailyFileSinkImpl::DailyFileSinkImpl(std::string_view file, uint32_t hour, uint3
       _minute(minute)
 {
     if (file.empty()) {
-        set_thread_last_err(ERR_COMM_PARAM_EMPTY);
         DEBUG_LOGGER_ERR("Create DailyFileSinkImpl failed. baseFile empty.");
         throw std::invalid_argument("baseFile empty.");
     }
 
     if (_hour < MIN_HOUR || _hour > MAX_HOUR) {
-        set_thread_last_err(ERR_COMM_PARAM_OUT_OF_RANGE);
         DEBUG_LOGGER_ERR("Create DailyFileSinkImpl failed. hour invalid: {}.", _hour);
         throw std::out_of_range("hour out of range.");
     }
 
     if (_minute < MIN_MINUTE || _minute > MAX_MINUTE) {
-        set_thread_last_err(ERR_COMM_PARAM_OUT_OF_RANGE);
         DEBUG_LOGGER_ERR("Create DailyFileSinkImpl failed. minute invalid: {}.", hour);
         throw std::out_of_range("minute out of range.");
     }
 
     if (maxFiles > DailyFileSink::MAX_FILES) {
         DEBUG_LOGGER_ERR("Create DailyFileSinkImpl failed. maxFiles out of range: {}.", maxFiles);
-        set_thread_last_err(ERR_COMM_PARAM_OUT_OF_RANGE);
         throw std::out_of_range("maxFiles out of range.");
     }
 

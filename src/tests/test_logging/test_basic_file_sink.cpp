@@ -8,7 +8,6 @@
 
 using namespace origin::logging;
 using namespace origin::filesystem;
-using namespace origin::filesystem;
 
 namespace test::test_logging {
 class TestBasicFileSink : public ::testing::Test {

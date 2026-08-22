@@ -8,7 +8,6 @@
 #include "utils/date_time_utils.h"
 
 using namespace origin::date_time;
-using namespace origin::date_time;
 
 namespace test::test_utils::test_date_time_utils {
 TEST(TestDateTimeUtilsMonthName, case)
