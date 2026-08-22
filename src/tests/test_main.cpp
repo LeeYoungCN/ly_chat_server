@@ -1,4 +1,3 @@
-#include "common/debug/debug_level.h"
 #include "common/debug/debug_logger.h"
 #include "common/debug/working_env.h"
 #include "gtest/gtest.h"
