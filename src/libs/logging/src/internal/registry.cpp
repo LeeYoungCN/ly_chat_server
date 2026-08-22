@@ -4,7 +4,6 @@
 #include <mutex>
 #include <utility>
 
-#include "common/debug/debug_log.h"
 #include "common/debug/debug_logger.h"
 #include "internal/common.h"
 #include "logging/formatters/pattern_formatter.h"
@@ -108,7 +107,7 @@ void Registry::shutdown()
             _rootTaskPool.reset();
         }
     }
-    DEBUG_LOG_DBG("Logging module shutdown.");
+    DEBUG_LOGGER_DBG("Logging module shutdown.");
 }
 #pragma endregion
 
@@ -146,7 +145,7 @@ void Registry::remove_all()
         }
         _loggers.clear();
     }
-    DEBUG_LOG_DBG("Remove all loggers.");
+    DEBUG_LOGGER_DBG("Remove all loggers.");
 }
 
 std::shared_ptr<Logger> Registry::get_logger(std::string_view name)
