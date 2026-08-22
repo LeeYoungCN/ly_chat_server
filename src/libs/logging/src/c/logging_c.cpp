@@ -90,29 +90,31 @@ void origin_log(const char *file, int line, const char *func, OriginLogLevel lev
     va_end(args);
 }
 
-bool register_logger(LoggerSt *logger)
+bool origin_register_logger(LoggerSt *logger)
 {
     RETURN_VALUE_IF_PTR_NULL(logger, false);
 
     return REGISTRY.register_logger(logger->ptr);
 }
-void register_or_replace_logger(LoggerSt *logger)
+
+void origin_register_or_replace_logger(LoggerSt *logger)
 {
     RETURN_IF_PTR_NULL(logger);
 
     REGISTRY.register_or_replace_logger(logger->ptr);
 }
-void remove_logger(const char *name)
+
+void origin_remove_logger(const char *name)
 {
     REGISTRY.remove_logger(name);
 }
 
-void remove_all()
+void origin_remove_all()
 {
     REGISTRY.remove_all();
 }
 
-LoggerSt *get_logger(const char *name)
+LoggerSt *origin_get_logger(const char *name)
 {
     auto logger = REGISTRY.get_logger(name);
     if (logger == nullptr) {
@@ -122,12 +124,12 @@ LoggerSt *get_logger(const char *name)
     }
 }
 
-void init_root_task_pool(uint32_t capacity, uint32_t threadCnt)
+void origin_init_root_task_pool(uint32_t capacity, uint32_t threadCnt)
 {
     REGISTRY.init_root_task_pool(capacity, threadCnt);
 }
 
-TaskPoolSt *root_task_pool()
+TaskPoolSt *origin_root_task_pool()
 {
     auto taskPool = REGISTRY.root_task_pool();
     if (taskPool == nullptr) {
@@ -137,41 +139,41 @@ TaskPoolSt *root_task_pool()
     }
 }
 
-void initialize_logger(LoggerSt *logger, bool autoRegister)
+void origin_initialize_logger(LoggerSt *logger, bool autoRegister)
 {
     RETURN_IF_PTR_NULL(logger);
     REGISTRY.initialize_logger(logger->ptr, autoRegister);
 }
 
-void set_level_all(OriginLogLevel level)
+void origin_set_level_all(OriginLogLevel level)
 {
     REGISTRY.set_level_all(c_to_cpp_log_level(level));
 }
 
-void flush_on_all(OriginLogLevel level)
+void origin_flush_on_all(OriginLogLevel level)
 {
     REGISTRY.flush_on_all(c_to_cpp_log_level(level));
 }
 
-void set_pattern_all(const char *pattern)
+void origin_set_pattern_all(const char *pattern)
 {
     RETURN_IF_PTR_NULL(pattern);
     REGISTRY.set_pattern_all(pattern);
 }
 
-void set_formatter_all(FormatterSt *formatter)
+void origin_set_formatter_all(FormatterSt *formatter)
 {
     RETURN_IF_PTR_NULL(formatter);
     RETURN_IF_PTR_NULL(formatter->ptr);
     REGISTRY.set_formatter_all(formatter->ptr->clone());
 }
 
-void flush_all()
+void origin_flush_all()
 {
     REGISTRY.flush_all();
 }
 
-void shutdown()
+void origin_shutdown()
 {
     REGISTRY.shutdown();
 }

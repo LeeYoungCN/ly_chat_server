@@ -105,24 +105,24 @@ void origin_log(const char *file, int line, const char *func, OriginLogLevel lev
 #pragma endregion
 
 #pragma region Registry
-bool register_logger(LoggerSt *logger);
-void register_or_replace_logger(LoggerSt *logger);
-void remove_logger(const char *name);
-void remove_all();
-LoggerSt *get_logger(const char *name);
+bool origin_register_logger(LoggerSt *logger);
+void origin_register_or_replace_logger(LoggerSt *logger);
+void origin_remove_logger(const char *name);
+void origin_remove_all();
+LoggerSt *origin_get_logger(const char *name);
 
-void init_root_task_pool(uint32_t capacity, uint32_t threadCnt);
-TaskPoolSt *root_task_pool();
+void origin_init_root_task_pool(uint32_t capacity, uint32_t threadCnt);
+TaskPoolSt *origin_root_task_pool();
 #pragma endregion
 
 #pragma region Logging manager
-void initialize_logger(LoggerSt *logger,  bool autoRegister);
-void set_level_all(OriginLogLevel level);
-void flush_on_all(OriginLogLevel level);
-void set_pattern_all(const char *pattern);
-void set_formatter_all(FormatterSt *formatter);
-void flush_all();
-void shutdown();
+void origin_initialize_logger(LoggerSt *logger,  bool autoRegister);
+void origin_set_level_all(OriginLogLevel level);
+void origin_flush_on_all(OriginLogLevel level);
+void origin_set_pattern_all(const char *pattern);
+void origin_set_formatter_all(FormatterSt *formatter);
+void origin_flush_all();
+void origin_shutdown();
 #pragma endregion
 
 #ifdef __cplusplus
